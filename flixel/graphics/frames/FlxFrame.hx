@@ -105,8 +105,6 @@ class FlxFrame implements IFlxDestroyable
 
 	/**
 	 * UV coordinates for this frame.
-	 * WARNING: For optimization purposes, width and height of this rect
-	 * contain right and bottom coordinates (`x + width` and `y + height`).
 	 */
 	public var uv:FlxUVRect;
 
@@ -143,7 +141,7 @@ class FlxFrame implements IFlxDestroyable
 
 	/** Internal cache used to draw this frame **/
 	var tileMatrix:MatrixVector;
-
+	
 	/** Internal cache used to draw this frame **/
 	var blitMatrix:MatrixVector;
 
@@ -174,7 +172,7 @@ class FlxFrame implements IFlxDestroyable
 		if (FlxG.renderTile)
 			tileMatrix.copyFrom(this, false);
 	}
-
+	
 	/**
 	 * Applies frame rotation to the specified matrix, which should be used for tiling or blitting.
 	 * Required for rotated frame support.
@@ -466,7 +464,7 @@ class FlxFrame implements IFlxDestroyable
 			return frameToFill;
 		}
 
-		final clippedRect:FlxRect = FlxRect.get().setSize(frame.width, frame.height);
+		var clippedRect:FlxRect = FlxRect.get().setSize(frame.width, frame.height);
 		if (angle != FlxFrameAngle.ANGLE_0)
 		{
 			clippedRect.width = frame.height;
@@ -478,7 +476,7 @@ class FlxFrame implements IFlxDestroyable
 
 		rect.offset(-ox, -oy);
 		var frameRect:FlxRect = clippedRect.intersection(rect);
-		clippedRect.put();
+		clippedRect = FlxDestroyUtil.put(clippedRect);
 		rect.offset(ox, oy);
 
 		if (frameRect.isEmpty)
@@ -552,10 +550,11 @@ class FlxFrame implements IFlxDestroyable
 	{
 		if (clippedFrame == null)
 			clippedFrame = new FlxFrame(parent, angle);
+
 		copyTo(clippedFrame);
 		return clippedFrame.clip(rect);
 	}
-
+	
 	/**
 	 * Whether there is any overlap between this frame and the given rect. If clipping this frame to
 	 * the given rect would result in an empty frame, the result is `false`
@@ -570,7 +569,8 @@ class FlxFrame implements IFlxDestroyable
 		rect.y -= frame.y - offset.y;
 		return result;
 	}
-
+	
+	
 	/**
 	 * Whether this frame fully contains the given rect. If clipping this frame to
 	 * the given rect would result in a smaller frame, the result is `false`
@@ -585,7 +585,7 @@ class FlxFrame implements IFlxDestroyable
 		rect.y -= frame.y - offset.y;
 		return result;
 	}
-
+	
 	/**
 	 * Whether this frame is fully contained by the given rect. If clipping this frame to
 	 * the given rect would result in a smaller frame, the result is `false`
@@ -600,30 +600,30 @@ class FlxFrame implements IFlxDestroyable
 		rect.y -= frame.y - offset.y;
 		return result;
 	}
-
+	
 	/**
- 	 * Clips this frame to the desired rect
- 	 *
- 	 * @param   rect  Clipping rectangle to apply
- 	 */
+	 * Clips this frame to the desired rect
+	 *
+	 * @param   rect  Clipping rectangle to apply
+	 */
 	public function clip(rect:FlxRect)
 	{
 		// no need to make all calculations if original frame is empty...
 		if (type == FlxFrameType.EMPTY)
 			return this;
-
+		
 		final clippedRect = FlxRect.get(0, 0, frame.width, frame.height);
 		if (angle != FlxFrameAngle.ANGLE_0)
 		{
 			clippedRect.width = frame.height;
 			clippedRect.height = frame.width;
 		}
-
+		
 		rect.offset(-offset.x, -offset.y);
 		final frameRect:FlxRect = clippedRect.intersection(rect);
 		rect.offset(offset.x, offset.y);
 		clippedRect.put();
-
+		
 		if (frameRect.isEmpty)
 		{
 			type = FlxFrameType.EMPTY;
@@ -634,7 +634,7 @@ class FlxFrame implements IFlxDestroyable
 		{
 			type = FlxFrameType.REGULAR;
 			offset.add(frameRect.x, frameRect.y);
-
+			
 			if (angle != FlxFrameAngle.ANGLE_0)
 			{
 				final p1 = FlxPoint.weak(frameRect.x, frameRect.y);
@@ -652,17 +652,17 @@ class FlxFrame implements IFlxDestroyable
 					_matrix.rotateByNegative90();
 					_matrix.translate(0, frame.height);
 				}
-
+				
 				p1.transform(_matrix);
 				p2.transform(_matrix);
 				frameRect.fromTwoPoints(p1, p2);
 			}
-
+			
 			frameRect.offset(frame.x, frame.y);
 			frame.copyFrom(frameRect);
 			cacheFrameMatrix();
 		}
-
+		
 		frameRect.put();
 		return this;
 	}
@@ -730,150 +730,6 @@ class FlxFrame implements IFlxDestroyable
 }
 
 /**
- * Used internally instead of a FlxMatrix, for some unknown reason.
- * Perhaps improves performance, tbh, I'm skeptical
- */
-abstract MatrixVector(Vector<Float>)
-{
-	public var a(get, set):Float;
-
-	inline function get_a()
-		return this[0];
-
-	inline function set_a(value:Float)
-		return this[0] = value;
-
-	public var b(get, set):Float;
-
-	inline function get_b()
-		return this[1];
-
-	inline function set_b(value:Float)
-		return this[1] = value;
-
-	public var c(get, set):Float;
-
-	inline function get_c()
-		return this[2];
-
-	inline function set_c(value:Float)
-		return this[2] = value;
-
-	public var d(get, set):Float;
-
-	inline function get_d()
-		return this[3];
-
-	inline function set_d(value:Float)
-		return this[3] = value;
-
-	public var tx(get, set):Float;
-
-	inline function get_tx()
-		return this[4];
-
-	inline function set_tx(value:Float)
-		return this[4] = value;
-
-	public var ty(get, set):Float;
-
-	inline function get_ty()
-		return this[5];
-
-	inline function set_ty(value:Float)
-		return this[5] = value;
-
-	public inline function new()
-	{
-		this = new Vector<Float>(6);
-		identity();
-	}
-
-	public inline function identity()
-	{
-		a = 1;
-		b = 0;
-		c = 0;
-		d = 1;
-		tx = 0;
-		ty = 0;
-	}
-
-	public inline function set(a = 1.0, b = 0.0, c = 0.0, d = 1.0, tx = 0.0, ty = 0.0)
-	{
-		set_a(a);
-		set_b(b);
-		set_c(c);
-		set_d(d);
-		set_tx(tx);
-		set_ty(ty);
-		return this;
-	}
-
-	public inline function translate(dx:Float, dy:Float)
-	{
-		tx += dx;
-		ty += dy;
-		return this;
-	}
-
-	public inline function scale(sx:Float, sy:Float)
-	{
-		a *= sx;
-		b *= sy;
-		c *= sx;
-		d *= sy;
-		tx *= sx;
-		ty *= sy;
-		return this;
-	}
-
-	overload public inline extern function copyFrom(frame:FlxFrame, forBlit = true):MatrixVector
-	{
-		identity();
-
-		if (forBlit)
-			translate(-frame.frame.x, -frame.frame.y);
-
-		if (frame.angle == FlxFrameAngle.ANGLE_90)
-		{
-			set(-b, a, -d, c, -ty, tx);
-			translate(frame.frame.height, 0);
-		}
-		else if (frame.angle == FlxFrameAngle.ANGLE_NEG_90)
-		{
-			set(b, -a, d, -c, ty, -tx);
-			translate(0, frame.frame.width);
-		}
-
-		translate(frame.offset.x, frame.offset.y);
-		return cast this;
-	}
-
-	overload public inline extern function copyFrom(mat:FlxMatrix):MatrixVector
-	{
-		a = mat.a;
-		b = mat.b;
-		c = mat.c;
-		d = mat.d;
-		tx = mat.tx;
-		ty = mat.ty;
-		return cast this;
-	}
-
-	public inline function copyTo(mat:FlxMatrix):FlxMatrix
-	{
-		mat.a = a;
-		mat.b = b;
-		mat.c = c;
-		mat.d = d;
-		mat.tx = tx;
-		mat.ty = ty;
-		return mat;
-	}
-}
-
-/**
  * Just enumeration of all types of frames.
  * Added for faster type detection with less usage of casting.
  */
@@ -891,7 +747,6 @@ enum abstract FlxFrameAngle(Int) from Int to Int
 	var ANGLE_NEG_90 = -90;
 	var ANGLE_270 = -90;
 }
-
 
 /**
  * FlxRect, but instead of `x`, `y`, `width` and `height`, it takes a `left`, `right`, `top` and
@@ -937,5 +792,126 @@ abstract FlxUVRect(FlxRect) from FlxRect to flixel.util.FlxPool.IFlxPooled
 	public static function get(l = 0.0, t = 0.0, r = 0.0, b = 0.0)
 	{
 		return FlxRect.get(l, t, r, b);
+	}
+}
+
+/**
+ * Used internally instead of a FlxMatrix, for some unknown reason.
+ * Perhaps improves performance, tbh, I'm skeptical
+ */
+abstract MatrixVector(Vector<Float>)
+{
+	public var a(get, set):Float;
+	inline function get_a() return this[0];
+	inline function set_a(value:Float) return this[0] = value;
+	
+	public var b(get, set):Float;
+	inline function get_b() return this[1];
+	inline function set_b(value:Float) return this[1] = value;
+	
+	public var c(get, set):Float;
+	inline function get_c() return this[2];
+	inline function set_c(value:Float) return this[2] = value;
+	
+	public var d(get, set):Float;
+	inline function get_d() return this[3];
+	inline function set_d(value:Float) return this[3] = value;
+	
+	public var tx(get, set):Float;
+	inline function get_tx() return this[4];
+	inline function set_tx(value:Float) return this[4] = value;
+	
+	public var ty(get, set):Float;
+	inline function get_ty() return this[5];
+	inline function set_ty(value:Float) return this[5] = value;
+	
+	
+	public inline function new ()
+	{
+		this = new Vector<Float>(6);
+		identity();
+	}
+	
+	public inline function identity()
+	{
+		a = 1;
+		b = 0;
+		c = 0;
+		d = 1;
+		tx = 0;
+		ty = 0;
+	}
+	
+	public inline function set(a = 1.0, b = 0.0, c = 0.0, d = 1.0, tx = 0.0, ty = 0.0)
+	{
+		set_a(a);
+		set_b(b);
+		set_c(c);
+		set_d(d);
+		set_tx(tx);
+		set_ty(ty);
+		return this;
+	}
+	
+	public inline function translate(dx:Float, dy:Float)
+	{
+		tx += dx;
+		ty += dy;
+		return this;
+	}
+	
+	public inline function scale(sx:Float, sy:Float)
+	{
+		a *= sx;
+		b *= sy;
+		c *= sx;
+		d *= sy;
+		tx *= sx;
+		ty *= sy;
+		return this;
+	}
+	
+	overload public inline extern function copyFrom(frame:FlxFrame, forBlit = true):MatrixVector
+	{
+		identity();
+
+		if (forBlit)
+			translate(-frame.frame.x, -frame.frame.y);
+
+		if (frame.angle == FlxFrameAngle.ANGLE_90)
+		{
+			set(-b, a, -d, c, -ty, tx);
+			translate(frame.frame.height, 0);
+		}
+		else if (frame.angle == FlxFrameAngle.ANGLE_NEG_90)
+		{
+			set(b, -a, d, -c, ty, -tx);
+			translate(0, frame.frame.width);
+		}
+
+		translate(frame.offset.x, frame.offset.y);
+		return cast this;
+	}
+	
+	overload public inline extern function copyFrom(mat:FlxMatrix):MatrixVector
+	{
+		a = mat.a;
+		b = mat.b;
+		c = mat.c;
+		d = mat.d;
+		tx = mat.tx;
+		ty = mat.ty;
+		return cast this;
+	}
+	
+	public inline function copyTo(mat:FlxMatrix):FlxMatrix
+	{
+		mat.a = a;
+		mat.b = b;
+		mat.c = c;
+		mat.d = d;
+		mat.tx = tx;
+		mat.ty = ty;
+		return mat;
 	}
 }

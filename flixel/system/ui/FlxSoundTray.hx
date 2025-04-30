@@ -3,6 +3,7 @@ package flixel.system.ui;
 #if FLX_SOUND_SYSTEM
 import flixel.FlxG;
 import flixel.math.FlxMath;
+import flixel.sound.FlxSound;
 import flixel.system.FlxAssets;
 import flixel.util.FlxColor;
 import openfl.Lib;

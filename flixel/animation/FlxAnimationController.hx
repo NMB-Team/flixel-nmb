@@ -44,21 +44,20 @@ class FlxAnimationController implements IFlxDestroyable
 	/**
 	 * The total number of frames in this image.
 	 * WARNING: assumes each row in the sprite sheet is full!
-	 * 
 	 * @since 5.3.0
 	 */
 	public var numFrames(get, never):Int;
 
 	/**
 	 * If assigned, will be called each time the current animation's frame changes
- 	 * 
- 	 * @param   animName     The name of the current animation
- 	 * @param   frameNumber  The progress of the current animation, in frames
- 	 * @param   frameIndex   The current animation's frameIndex in the tile sheet
+	 * 
+	 * @param   animName     The name of the current animation
+	 * @param   frameNumber  The progress of the current animation, in frames
+	 * @param   frameIndex   The current animation's frameIndex in the tile sheet
 	 */
 	@:deprecated('callback is deprecated, use onFrameChange.add') // 5.9.0
-	public var callback:(animName:String, frameNumber:Int, frameIndex:Int) -> Void;
-
+	public var callback:(animName:String, frameNumber:Int, frameIndex:Int)->Void;
+	
 	/**
 	 * If assigned, will be called each time the current animation finishes.
 	 * 
@@ -75,7 +74,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   frameIndex   The current animation's frameIndex in the tile sheet
 	 * @since 5.9.0
 	 */
-	public final onFrameChange = new FlxTypedSignal<(animName:String, frameNumber:Int, frameIndex:Int) -> Void>();
+	public final onFrameChange = new FlxTypedSignal<(animName:String, frameNumber:Int, frameIndex:Int)->Void>();
 	
 	/**
 	 * Dispatches each time the current animation finishes.
@@ -83,8 +82,8 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   animName  The name of the current animation
 	 * @since 5.9.0
 	 */
-	public final onFinish = new FlxTypedSignal<(animName:String) -> Void>();
-
+	public final onFinish = new FlxTypedSignal<(animName:String)->Void>();
+	
 	/**
 	 * Dispatches each time the current animation's loop is complete.
 	 * Works only with looped animations.
@@ -92,8 +91,8 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   animName  The name of the current animation
 	 * @since 5.9.0
 	 */
-	public final onLoop = new FlxTypedSignal<(animName:String) -> Void>();
-
+	public final onLoop = new FlxTypedSignal<(animName:String)->Void>();
+	
 	/**
 	 * How fast or slow time should pass for this animation controller
 	 */
@@ -711,10 +710,11 @@ class FlxAnimationController implements IFlxDestroyable
 		{
 			callback(name, number, frameIndex);
 		}
-
+		
 		onFrameChange.dispatch(name, number, frameIndex);
 	}
 
+	@:allow(flixel.animation)
 	@:haxe.warning("-WDeprecated")
 	function fireFinishCallback(?name:String):Void
 	{
@@ -722,7 +722,7 @@ class FlxAnimationController implements IFlxDestroyable
 		{
 			finishCallback(name);
 		}
-
+		
 		onFinish.dispatch(name);
 	}
 

@@ -521,7 +521,7 @@ class SoundFrontEnd
 		if (volumeHandler != null)
 			volumeHandler(muted ? 0 : volume);
 
-		onVolumeChange.dispatch(muted ? 0 : Volume);
+		onVolumeChange.dispatch(muted ? 0 : volume);
 
 		return this.volume = volume;
 	}

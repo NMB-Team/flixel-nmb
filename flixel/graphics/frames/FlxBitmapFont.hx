@@ -71,7 +71,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	 * Helper map where character's xAdvance are stored by char codes.
 	 */
 	var charAdvance:Map<Int, Int>;
-
+	
 	var kerning:Map<Int, Map<Int, Int>>;
 
 	/**
@@ -182,7 +182,6 @@ class FlxBitmapFont extends FlxFramesCollection
 
 		final font = new FlxBitmapFont(frame);
 		final fontInfo = data.parse();
-
 		return fontInfo.initBitmapFont(font);
 	}
 
@@ -231,10 +230,9 @@ class FlxBitmapFont extends FlxFramesCollection
 		var frameWidth:Int = Std.int(frame.frame.width);
 		var frameHeight:Int = Std.int(frame.frame.height);
 		var letterIdx:Int = 0;
-		var numLetters:Int = letters.length();
+		var numLetters:Int = letters.length;
 
 		var cy:Int = 0;
-
 		while (cy < frameHeight && letterIdx < numLetters)
 		{
 			var rowHeight:Int = 0;
@@ -444,6 +442,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		var charName:String = String.fromCharCode(charCode);
 		if (frame.width == 0 || frame.height == 0 || getByName(charName) != null)
 			return;
+		
 		setCharFrame(charCode, frame, xAdvance, offset);
 	}
 	
@@ -460,14 +459,14 @@ class FlxBitmapFont extends FlxFramesCollection
 		final charName:UnicodeString = String.fromCharCode(charCode);
 		if (frame.width == 0 || frame.height == 0)
 			FlxG.log.error('Invalid frame size: $frame for char "$charName" in font "$fontName"');
-			
+		
 		final charFrame:FlxFrame = this.frame.subFrameTo(frame);
 
 		final w:Float = charFrame.sourceSize.x + (offset != null && offset.x > 0 ? offset.x : 0);
 		final h:Float = charFrame.sourceSize.y + (offset != null && offset.y > 0 ? offset.y : 0);
 		charFrame.sourceSize.set(w, h);
 		if (offset != null)
-			charFrame.offset.add(offset); // calls putWeak
+			charFrame.offset.add(offset);//calls putWeak
 		charFrame.name = charName;
 		pushFrame(charFrame, true);
 		charMap.set(charCode, charFrame);
@@ -497,7 +496,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	{
 		return charAdvance.exists(charCode) ? charAdvance.get(charCode) : 0;
 	}
-
+	
 	public function getKerning(prevCode:Int, nextCode:Int):Int
 	{
 		if (kerning.exists(prevCode) && kerning[prevCode].exists(nextCode))
@@ -510,7 +509,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	{
 		if (!kerning.exists(prevCode))
 			kerning.set(prevCode, new Map<Int, Int>());
-			
+		
 		kerning[prevCode][nextCode] = amount;
 	}
 
@@ -561,7 +560,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		{
 			charWithBorder = char.setBorderTo(border);
 			font.pushFrame(charWithBorder);
-			code = (char.name : UnicodeString).charCodeAt(0);
+			code = (char.name:UnicodeString).charCodeAt(0);
 			font.charMap.set(code, charWithBorder);
 			font.charAdvance.set(code, charAdvance.get(code));
 		}
