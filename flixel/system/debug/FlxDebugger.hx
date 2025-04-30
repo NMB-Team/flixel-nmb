@@ -505,7 +505,7 @@ class FlxDebugger extends openfl.display.Sprite
 
 	inline function openGitHub():Void
 	{
-		var url = "https://github.com/HaxeFlixel/flixel";
+		var url = "https://github.com/dtwotwo/flixel-dtwotwo-custom";
 		if (FlxVersion.sha != "")
 		{
 			url += '/commit/${FlxVersion.sha}';
