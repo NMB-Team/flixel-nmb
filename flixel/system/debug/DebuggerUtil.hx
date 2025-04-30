@@ -1,11 +1,11 @@
 package flixel.system.debug;
 
-import flixel.system.FlxAssets;
-import flixel.util.FlxColor;
 import openfl.display.BitmapData;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
 import openfl.text.TextFormat;
+import flixel.system.FlxAssets;
+import flixel.util.FlxColor;
 #if flash
 import openfl.text.AntiAliasType;
 import openfl.text.GridFitType;

@@ -5,10 +5,10 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.system.FlxAssets;
 import flixel.util.FlxColor;
 import openfl.Assets;
-#if !flash
+#if FLX_OPENGL_AVAILABLE
 import lime.graphics.opengl.GL;
 #end
 
@@ -19,9 +19,13 @@ import lime.graphics.opengl.GL;
  */
 class BitmapFrontEnd
 {
-	#if !flash
+	#if FLX_OPENGL_AVAILABLE
 	/**
-	 * Gets max texture size for native targets
+ 	 * Returns the maximum allowed width and height (in pixels) for a texture.
+ 	 * This value is only available on hardware-accelerated targets that use OpenGL.
+ 	 * On unsupported targets, the returned value will always be -1.
+ 	 * 
+ 	 * @see https://opengl.gpuinfo.org/displaycapability.php?name=GL_MAX_TEXTURE_SIZE
 	 */
 	public var maxTextureSize(get, never):Int;
 	#end
@@ -49,62 +53,11 @@ class BitmapFrontEnd
 		for (key in _cache.keys())
 		{
 			var obj = _cache.get(key);
-			if (obj != null && obj.canBeDumped)
+			if (obj != null && obj.canBeRefreshed)
 			{
 				obj.onAssetsReload();
 			}
 		}
-	}
-
-	/**
-	 * New context handler.
-	 * Regenerates tilesheets for all dumped graphics objects in the cache.
-	 */
-	public function onContext():Void
-	{
-		for (key in _cache.keys())
-		{
-			var obj = _cache.get(key);
-			if (obj != null && obj.isDumped)
-			{
-				obj.onContext();
-			}
-		}
-	}
-
-	/**
-	 * Dumps bits of all graphics in the cache. This frees some memory, but you can't read/write pixels on those graphics anymore.
-	 * You can call undump() method for each FlxGraphic (or undumpCache()) object which will restore it again.
-	 */
-	public function dumpCache():Void
-	{
-		#if !web
-		for (key in _cache.keys())
-		{
-			var obj = _cache.get(key);
-			if (obj != null && obj.canBeDumped)
-			{
-				obj.dump();
-			}
-		}
-		#end
-	}
-
-	/**
-	 * Restores graphics of all dumped objects in the cache.
-	 */
-	public function undumpCache():Void
-	{
-		#if !web
-		for (key in _cache.keys())
-		{
-			var obj = _cache.get(key);
-			if (obj != null && obj.isDumped)
-			{
-				obj.undump();
-			}
-		}
-		#end
 	}
 
 	/**
@@ -135,28 +88,24 @@ class BitmapFrontEnd
 
 	/**
 	 * Loads a bitmap from a file, clones it if necessary and caches it.
-	 * @param	Graphic		Optional FlxGraphics object to create FlxGraphic from.
-	 * @param	Frames			Optional FlxFramesCollection object to create FlxGraphic from.
-	 * @param	Bitmap			Optional BitmapData object to create FlxGraphic from.
-	 * @param	BitmapClass	Optional Class for BitmapData to create FlxGraphic from.
-	 * @param	Str			Optional String key to use for FlxGraphic instantiation.
-	 * @param	Unique			Ensures that the bitmap data uses a new slot in the cache.
-	 * @param	Key				Force the cache to use a specific Key to index the bitmap.
-	 * @return	The FlxGraphic we just created.
+	 * @param   graphic  Optional FlxGraphics object to create FlxGraphic from.
+ 	 * @param   unique   Ensures that the bitmap data uses a new slot in the cache.
+ 	 * @param   key      Force the cache to use a specific Key to index the bitmap.
+ 	 * @return  The FlxGraphic we just created.
 	 */
-	public function add(Graphic:FlxGraphicAsset, Unique:Bool = false, ?Key:String):FlxGraphic
+	public function add(graphic:FlxGraphicAsset, unique = false, ?key:String):FlxGraphic
 	{
-		if ((Graphic is FlxGraphic))
+		if ((graphic is FlxGraphic))
 		{
-			return FlxGraphic.fromGraphic(cast Graphic, Unique, Key);
+			return FlxGraphic.fromGraphic(cast graphic, unique, key);
 		}
-		else if ((Graphic is BitmapData))
+		else if ((graphic is BitmapData))
 		{
-			return FlxGraphic.fromBitmapData(cast Graphic, Unique, Key);
+			return FlxGraphic.fromBitmapData(cast graphic, unique, key);
 		}
 
 		// String case
-		return FlxGraphic.fromAssetKey(Std.string(Graphic), Unique, Key);
+		return FlxGraphic.fromAssetKey(Std.string(graphic), unique, key);
 	}
 
 	/**
@@ -212,7 +161,7 @@ class BitmapFrontEnd
 	/**
 	 * Creates string key for further caching.
 	 *
-	 * @param	systemKey	The first string key to use as a base for a new key. It's usually a key from openfl.Assets ("assets/image.png").
+	 * @param	systemKey	The first string key to use as a base for a new key. It's usually an asset key ("assets/image.png").
 	 * @param	userKey		The second string key to use as a base for a new key. It's usually a key provided by the user
 	 * @param	unique		Whether generated key should be unique or not.
 	 * @return	Created key.
@@ -287,14 +236,16 @@ class BitmapFrontEnd
 
 	/**
 	 * Totally removes specified FlxGraphic object.
-	 * @param	FlxGraphic object you want to remove and destroy.
+	 * @param graphic object you want to remove and destroy.
 	 */
 	public function remove(graphic:FlxGraphic):Void
 	{
 		if (graphic != null)
 		{
 			removeKey(graphic.key);
-			graphic.destroy();
+			// TODO: find causes of this, and prevent crashes from double graphic destroys
+			if (!graphic.isDestroyed)
+				graphic.destroy();
 		}
 	}
 
@@ -389,10 +340,14 @@ class BitmapFrontEnd
 		}
 	}
 
-	#if !flash
+	#if FLX_OPENGL_AVAILABLE
+	static var _maxTextureSize = -1;
 	function get_maxTextureSize():Int
 	{
-		return cast GL.getParameter(GL.MAX_TEXTURE_SIZE);
+		if (_maxTextureSize < 0 && FlxG.stage.window.context.attributes.hardware)
+			_maxTextureSize = cast GL.getParameter(GL.MAX_TEXTURE_SIZE);
+			
+		return _maxTextureSize;
 	}
 	#end
 

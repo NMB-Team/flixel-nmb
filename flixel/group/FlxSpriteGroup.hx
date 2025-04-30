@@ -1,5 +1,7 @@
 package flixel.group;
 
+import openfl.display.BitmapData;
+import openfl.display.BlendMode;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxFrame;
@@ -13,8 +15,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDirectionFlags;
 import flixel.util.FlxSort;
-import openfl.display.BitmapData;
-import openfl.display.BlendMode;
 
 /**
  * `FlxSpriteGroup` is a special `FlxSprite` that can be treated like a single sprite even if it's

@@ -3,6 +3,7 @@ package flixel;
 import flixel.graphics.tile.FlxDrawBaseItem;
 import flixel.system.FlxSplash;
 import flixel.util.FlxArrayUtil;
+import flixel.util.FlxDestroyUtil;
 import flixel.util.typeLimit.NextState;
 import openfl.Assets;
 import openfl.Lib;
@@ -333,7 +334,6 @@ class FlxGame extends Sprite
 		stage.addEventListener(Event.DEACTIVATE, onFocusLost);
 		stage.addEventListener(Event.ACTIVATE, onFocus);
 		#end
-
 
 		// Instantiate the initial state
 		resetGame();
@@ -700,7 +700,13 @@ class FlxGame extends Sprite
 		#end
 
 		#if FLX_POINTER_INPUT
-		FlxArrayUtil.clearArray(FlxG.swipes);
+		var len = FlxG.swipes.length;
+		while (len-- > 0)
+		{
+			final swipe = FlxG.swipes.pop();
+			if (swipe != null)
+				swipe.destroy();
+		}
 		#end
 
 		filters = filtersEnabled ? _filters : null;

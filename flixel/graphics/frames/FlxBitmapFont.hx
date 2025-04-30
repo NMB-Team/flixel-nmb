@@ -72,6 +72,8 @@ class FlxBitmapFont extends FlxFramesCollection
 	 */
 	var charAdvance:Map<Int, Int>;
 
+	var kerning:Map<Int, Map<Int, Int>>;
+
 	/**
 	 * Atlas frame from which this font has been parsed.
 	 */
@@ -88,6 +90,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		parent.destroyOnNoUse = false;
 		charMap = new Map<Int, FlxFrame>();
 		charAdvance = new Map<Int, Int>();
+		kerning = new Map<Int, Map<Int, Int>>();
 	}
 
 	override public function destroy():Void
@@ -114,7 +117,7 @@ class FlxBitmapFont extends FlxFramesCollection
 				return font;
 		}
 
-		var letters:String = "";
+		var letters:UnicodeString = "";
 		var bd:BitmapData = new BitmapData(700, 9, true, 0xFF888888);
 		graphic = FlxG.bitmap.add(bd, false, DEFAULT_FONT_KEY);
 
@@ -173,50 +176,14 @@ class FlxBitmapFont extends FlxFramesCollection
 			frame = graphic.imageFrame.frame;
 		}
 
-		var font:FlxBitmapFont = FlxBitmapFont.findFont(frame);
+		final font:FlxBitmapFont = FlxBitmapFont.findFont(frame);
 		if (font != null)
 			return font;
 
-		font = new FlxBitmapFont(frame);
-
+		final font = new FlxBitmapFont(frame);
 		final fontInfo = data.parse();
 
-		// how much to move the cursor when going to the next line.
-		font.lineHeight = fontInfo.common.lineHeight;
-		font.size = fontInfo.info.size;
-		font.fontName = fontInfo.info.face;
-		font.bold = fontInfo.info.bold;
-		font.italic = fontInfo.info.italic;
-		
-		for (char in fontInfo.chars)
-		{
-			final frame = FlxRect.get();
-			frame.x = char.x; // X position within the bitmap image file.
-			frame.y = char.y; // Y position within the bitmap image file.
-			frame.width = char.width; // Width of the character in the image file.
-			frame.height = char.height; // Height of the character in the image file.
-			
-			font.minOffsetX = (font.minOffsetX < -char.xoffset) ? -char.xoffset : font.minOffsetX;
-			
-			if (char.id == -1)
-			{
-				throw 'Invalid font data!';
-			}
-			
-			font.addCharFrame(char.id, frame, FlxPoint.weak(char.xoffset, char.yoffset), char.xadvance);
-			
-			if (char.id == SPACE_CODE)
-			{
-				font.spaceWidth = char.xadvance;
-			}
-			else
-			{
-				font.lineHeight = (font.lineHeight > char.height + char.yoffset) ? font.lineHeight : char.height + char.yoffset;
-			}
-		}
-		
-		font.updateSourceHeight();
-		return font;
+		return fontInfo.initBitmapFont(font);
 	}
 
 	/**
@@ -385,7 +352,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	 *                    Use white pixels if you intend to change the color.
 	 * @param   letters   The characters used in the font set, in display order.
 	 *                    You can use the `TEXT_SET` constants for common font set arrangements.
-	 * @param   charSiz   The size of each character in the font set.
+	 * @param   charSize  The size of each character in the font set.
 	 * @param   region    The region of image to use for the font.
 	 *                    Default is null which means that the whole image will be used.
 	 * @param   spacing   Spaces between characters in the font set. Default is `null` which means no spaces.
@@ -500,7 +467,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		final h:Float = charFrame.sourceSize.y + (offset != null && offset.y > 0 ? offset.y : 0);
 		charFrame.sourceSize.set(w, h);
 		if (offset != null)
-			charFrame.offset.addPoint(offset); // calls putWeak
+			charFrame.offset.add(offset); // calls putWeak
 		charFrame.name = charName;
 		pushFrame(charFrame, true);
 		charMap.set(charCode, charFrame);
@@ -531,6 +498,22 @@ class FlxBitmapFont extends FlxFramesCollection
 		return charAdvance.exists(charCode) ? charAdvance.get(charCode) : 0;
 	}
 
+	public function getKerning(prevCode:Int, nextCode:Int):Int
+	{
+		if (kerning.exists(prevCode) && kerning[prevCode].exists(nextCode))
+			return kerning[prevCode][nextCode];
+		else
+			return 0;
+	}
+	
+	public function addKerningPair(prevCode:Int, nextCode:Int, amount:Int)
+	{
+		if (!kerning.exists(prevCode))
+			kerning.set(prevCode, new Map<Int, Int>());
+			
+		kerning[prevCode][nextCode] = amount;
+	}
+
 	public inline function getCharWidth(charCode:Int):Float
 	{
 		return charMap.exists(charCode) ? charMap.get(charCode).sourceSize.x : 0;
@@ -554,7 +537,7 @@ class FlxBitmapFont extends FlxFramesCollection
 
 	override public function addBorder(border:FlxPoint):FlxBitmapFont
 	{
-		var resultBorder:FlxPoint = FlxPoint.weak().addPoint(this.border).addPoint(border);
+		var resultBorder:FlxPoint = FlxPoint.weak().add(this.border).add(border);
 
 		var font:FlxBitmapFont = FlxBitmapFont.findFont(frame, resultBorder);
 		if (font != null)

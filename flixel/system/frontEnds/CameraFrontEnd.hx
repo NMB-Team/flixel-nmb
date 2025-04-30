@@ -75,7 +75,6 @@ class CameraFrontEnd
 		return NewCamera;
 	}
 
-		
 	/**
  	 * Inserts a new camera object to the game.
  	 * 

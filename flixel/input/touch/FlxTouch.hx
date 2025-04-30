@@ -87,7 +87,7 @@ class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInpu
 		#if FLX_POINTER_INPUT
 		else if (justReleased)
 		{
-			FlxG.swipes.push(new FlxSwipe(touchPointID, justPressedPosition, getViewPosition(), justPressedTimeInTicks));
+			FlxG.swipes.push(new FlxSwipe(touchPointID, justPressedPosition.copyTo(), getViewPosition(), justPressedTimeInTicks));
 		}
 		#end
 	}

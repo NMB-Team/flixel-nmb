@@ -1298,14 +1298,14 @@ class FlxCamera extends FlxBasic
 				}
 				deadzone = FlxRect.get((width - w) * .5, (height - h) * .5 - h * .25, w, h);
 			case PLATFORMER:
-				final w = (width / 8);
-				final h = (height / 3);
+				final w = (width * .125); // / 8
+				final h = (height / 3); // for safety
 				deadzone = FlxRect.get((width - w) * .5, (height - h) * .5 - h * .25, w, h);
 			case TOPDOWN:
 				final helper = Math.max(width, height) * .25;
 				deadzone = FlxRect.get((width - helper) * .5, (height - helper) * .5, helper, helper);
 			case TOPDOWN_TIGHT:
-				final helper = Math.max(width, height) / 8;
+				final helper = Math.max(width, height) * .125; // / 8
 				deadzone = FlxRect.get((width - helper) * .5, (height - helper) * .5, helper, helper);
 			case SCREEN_BY_SCREEN: deadzone = FlxRect.get(0, 0, width, height);
 			case NO_DEAD_ZONE: deadzone = null;

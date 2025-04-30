@@ -9,11 +9,9 @@ import flixel.sound.FlxSound;
 import flixel.sound.FlxSoundGroup;
 import flixel.system.FlxAssets;
 import flixel.system.ui.FlxSoundTray;
-import openfl.Assets;
+import flixel.text.FlxInputText;
+import flixel.util.FlxSignal;
 import openfl.media.Sound;
-#if (openfl >= "8.0.0")
-import openfl.utils.AssetType;
-#end
 
 /**
  * Accessed via `FlxG.sound`.
@@ -35,7 +33,13 @@ class SoundFrontEnd
 	 * Set this hook to get a callback whenever the volume changes.
 	 * Function should take the form myVolumeHandler(volume:Float).
 	 */
+	@:deprecated("volumeHandler is deprecated, use onVolumeChange, instead")
 	public var volumeHandler:Float->Void;
+	
+	/**
+	 * A signal that gets dispatched whenever the volume changes.
+	 */
+	public var onVolumeChange(default, null):FlxTypedSignal<Float->Void> = new FlxTypedSignal<Float->Void>();
 
 	#if FLX_KEYBOARD
 
@@ -108,6 +112,8 @@ class SoundFrontEnd
 
 	/**
 	 * Set up and play a looping background soundtrack.
+	 * 
+	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedMusic  The sound file you want to loop in the background.
 	 * @param   volume         How loud the sound should be, from 0 to 1.
@@ -130,6 +136,8 @@ class SoundFrontEnd
 
 	/**
 	 * Creates a new FlxSound object.
+	 * 
+	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedSound   The embedded sound resource you want to play.  To stream, use the optional URL parameter instead.
 	 * @param   volume          How loud to play it (0 to 1).
@@ -208,8 +216,8 @@ class SoundFrontEnd
 	public inline function cache(embeddedSound:String):Sound
 	{
 		// load the sound into the OpenFL assets cache
-		if (Assets.exists(embeddedSound, AssetType.SOUND) || Assets.exists(embeddedSound, AssetType.MUSIC))
-			return Assets.getSound(embeddedSound, true);
+		if (FlxG.assets.exists(embeddedSound, SOUND))
+			return FlxG.assets.getSoundUnsafe(embeddedSound, true);
 		FlxG.log.error('Could not find a Sound asset with an ID of \'$embeddedSound\'.');
 		return null;
 	}
@@ -220,7 +228,7 @@ class SoundFrontEnd
 	 */
 	public function cacheAll():Void
 	{
-		for (id in Assets.list(AssetType.SOUND))
+		for (id in FlxG.assets.list(SOUND))
 		{
 			cache(id);
 		}
@@ -228,6 +236,8 @@ class SoundFrontEnd
 
 	/**
 	 * Plays a sound from an embedded sound. Tries to recycle a cached sound first.
+	 * 
+	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedSound  The embedded sound resource you want to play.
 	 * @param   volume         How loud to play it (0 to 1).
@@ -331,6 +341,7 @@ class SoundFrontEnd
 	/**
 	 * Toggles muted, also activating the sound tray.
 	 */
+	@:haxe.warning("-WDeprecated")
 	public function toggleMuted():Void
 	{
 		muted = !muted;
@@ -339,6 +350,8 @@ class SoundFrontEnd
 		{
 			volumeHandler(muted ? 0 : volume);
 		}
+
+		onVolumeChange.dispatch(muted ? 0 : volume);
 
 		showSoundTray(true);
 	}
@@ -419,7 +432,7 @@ class SoundFrontEnd
 			list.update(elapsed);
 
 		#if FLX_KEYBOARD
-		if (keysAllowed) {
+		if (keysAllowed && !FlxInputText.globalManager.isTyping) {
 			final justPressedMute:Bool = FlxG.keys.anyJustPressed(muteKeys);
 			final justPressedUp:Bool = FlxG.keys.anyJustPressed(volumeUpKeys);
 			final justPressedDown:Bool = FlxG.keys.anyJustPressed(volumeDownKeys);
@@ -501,9 +514,15 @@ class SoundFrontEnd
 	}
 	#end
 
+	@:haxe.warning("-WDeprecated")
 	inline function set_volume(volume:Float):Float {
 		volume = FlxMath.bound(volume, 0, 1);
-		if (volumeHandler != null) volumeHandler(muted ? 0 : volume);
+
+		if (volumeHandler != null)
+			volumeHandler(muted ? 0 : volume);
+
+		onVolumeChange.dispatch(muted ? 0 : Volume);
+
 		return this.volume = volume;
 	}
 }
