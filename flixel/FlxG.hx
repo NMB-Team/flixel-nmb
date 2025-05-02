@@ -1,5 +1,12 @@
 package flixel;
 
+#if !macro
+import openfl.Lib;
+import openfl.display.DisplayObject;
+import openfl.display.Stage;
+import openfl.display.StageDisplayState;
+import openfl.net.URLRequest;
+#end
 import flixel.math.FlxMath;
 import flixel.math.FlxRandom;
 import flixel.math.FlxRect;
@@ -24,11 +31,6 @@ import flixel.util.FlxAxes;
 import flixel.util.FlxCollision;
 import flixel.util.FlxSave;
 import flixel.util.typeLimit.NextState;
-import openfl.Lib;
-import openfl.display.DisplayObject;
-import openfl.display.Stage;
-import openfl.display.StageDisplayState;
-import openfl.net.URLRequest;
 #if FLX_TOUCH
 import flixel.input.touch.FlxTouchManager;
 #end
@@ -101,7 +103,7 @@ class FlxG
 	 * The HaxeFlixel version, in semantic versioning syntax. Use `Std.string()`
 	 * on it to get a `String` formatted like this: `"HaxeFlixel MAJOR.MINOR.PATCH-COMMIT_SHA"`.
 	 */
-	public static var VERSION(default, null):FlxVersion = new FlxVersion(6, 1, 0);
+	public static var VERSION(default, null):FlxVersion = new FlxVersion(6, 2, 0);
 
 	/**
 	 * Internal tracker for game object.
@@ -134,6 +136,8 @@ class FlxG
 	 */
 	public static var drawFramerate(default, set):Int;
 
+	public static var fixedDelta(default, null) = .0;
+
 	/**
 	 * Whether the game is running on a mobile device.
 	 * If on HTML5, it returns `FlxG.html5.onMobile`.
@@ -152,6 +156,12 @@ class FlxG
 	 */
 	@:allow(flixel.FlxGame.updateElapsed)
 	public static var elapsed(default, null):Float = 0;
+
+	/**
+	 * Represents the amount of time in seconds that passed since last frame. (Ignoring timescale)
+	 */
+	@:allow(flixel.FlxGame.updateElapsed)
+	public static var rawElapsed(default, null):Float = 0;
 
 	/**
 	 * Useful when the timestep is NOT fixed (i.e. variable),
@@ -314,6 +324,11 @@ class FlxG
 	 * Contains a list of all plugins and the functions required to `add()`, `remove()` them etc.
 	 */
 	public static var plugins(default, null):PluginFrontEnd;
+
+	/**
+	 * Whenever rendering with antialiasing should be enabled. If `false`, no sprite will render with antialiasing.
+	 */
+	public static var enableAntialiasing:Bool = true;
 
 	public static var initialWidth(default, null):Int = 0;
 	public static var initialHeight(default, null):Int = 0;
@@ -748,6 +763,8 @@ class FlxG
 			log.warn("FlxG.drawFramerate: the update framerate shouldn't be smaller than the draw framerate," + " since it can stop your game from updating.");
 
 		drawFramerate = Std.int(Math.abs(value));
+
+		fixedDelta = FlxMath.roundDecimal(1 / drawFramerate, 6);
 
 		if (game.stage != null)
 			game.stage.frameRate = drawFramerate;

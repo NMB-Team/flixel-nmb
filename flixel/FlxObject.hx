@@ -1,5 +1,7 @@
 package flixel;
 
+import flixel.FlxTypes;
+import openfl.display.Graphics;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
@@ -12,7 +14,6 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDirectionFlags;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxStringUtil;
-import openfl.display.Graphics;
 
 /**
  * At their core `FlxObjects` are just boxes with positions that can move and collide with other
@@ -1039,8 +1040,9 @@ class FlxObject extends FlxBasic
 		result.set(x, y);
 		if (pixelPerfectPosition)
 			result.floor();
+		result.subtract(camera.scroll.x * scrollFactor.x, camera.scroll.y * scrollFactor.y);
 
-		return result.subtract(camera.scroll.x * scrollFactor.x, camera.scroll.y * scrollFactor.y);
+		return camera.alterScreenPosition(this, result);
 	}
 
 	/**
@@ -1095,6 +1097,8 @@ class FlxObject extends FlxBasic
 		revive();
 	}
 
+	public var forceIsOnScreen:Bool = false;
+
 	/**
 	 * Check and see if this object is currently on screen.
 	 *
@@ -1104,6 +1108,8 @@ class FlxObject extends FlxBasic
 	 */
 	public function isOnScreen(?camera:FlxCamera):Bool
 	{
+		if (forceIsOnScreen) return true;
+
 		if (camera == null) camera = getDefaultCamera();
 
 		getScreenPosition(_point, camera);
@@ -1461,7 +1467,7 @@ class FlxObject extends FlxBasic
 /**
  * Determines when to apply collision drag to one object that collided with another.
  */
-enum abstract CollisionDragType(Int)
+enum abstract CollisionDragType(ByteUInt)
 {
 	/** Never drags on colliding objects. */
 	var NEVER = 0;

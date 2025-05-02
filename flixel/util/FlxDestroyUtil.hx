@@ -5,7 +5,7 @@ import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
 import flixel.util.FlxPool.IFlxPooled;
 
-class FlxDestroyUtil
+@:access(openfl.display.BitmapData) class FlxDestroyUtil
 {
 	/**
 	 * Checks if an object is not null before calling destroy(), always returns null.
@@ -13,12 +13,10 @@ class FlxDestroyUtil
 	 * @param	object	An IFlxDestroyable object that will be destroyed if it's not null.
 	 * @return	null
 	 */
-	public static function destroy<T:IFlxDestroyable>(object:Null<IFlxDestroyable>):T
+	public static inline function destroy<T:IFlxDestroyable>(object:Null<IFlxDestroyable>):T
 	{
-		if (object != null)
-		{
-			object.destroy();
 		}
+		if (object != null) object.destroy();
 		return null;
 	}
 
@@ -36,6 +34,7 @@ class FlxDestroyUtil
 				destroy(e);
 			array.splice(0, array.length);
 		}
+		array.splice(0, array.length);
 		return null;
 	}
 
@@ -45,12 +44,9 @@ class FlxDestroyUtil
 	 * @param	object	An IFlxPooled object that will be put back into the pool if it's not null
 	 * @return	null
 	 */
-	public static function put<T:IFlxPooled>(object:IFlxPooled):T
+	public static inline function put<T:IFlxPooled>(object:IFlxPooled):T
 	{
-		if (object != null)
-		{
-			object.put();
-		}
+		if (object != null) object.put();
 		return null;
 	}
 
@@ -63,12 +59,9 @@ class FlxDestroyUtil
 	 */
 	public static function putArray<T:IFlxPooled>(array:Array<T>):Array<T>
 	{
-		if (array != null)
-		{
-			for (e in array)
-				put(e);
-			array.splice(0, array.length);
-		}
+		if (array == null) return null;
+		for (e in array) put(e);
+		array.splice(0, array.length);
 		return null;
 	}
 
@@ -83,6 +76,7 @@ class FlxDestroyUtil
 	{
 		if (bitmapData != null)
 		{
+			bitmapData.__texture?.dispose();
 			bitmapData.dispose();
 		}
 		return null;
@@ -95,15 +89,11 @@ class FlxDestroyUtil
 	{
 		if (bitmapData != null && (bitmapData.width != width || bitmapData.height != height))
 		{
+			bitmapData.__texture?.dispose();
 			bitmapData.dispose();
 			return null;
 		}
-		else if (bitmapData != null)
-		{
-			return bitmapData;
-		}
-
-		return null;
+		return bitmapData;
 	}
 
 	public static function removeChild<T:DisplayObject>(parent:DisplayObjectContainer, child:T):T

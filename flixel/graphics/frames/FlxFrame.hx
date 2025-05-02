@@ -1,5 +1,6 @@
 package flixel.graphics.frames;
 
+import flixel.FlxTypes;
 import flixel.graphics.FlxGraphic;
 import flixel.math.FlxMath;
 import flixel.math.FlxMatrix;
@@ -733,14 +734,14 @@ class FlxFrame implements IFlxDestroyable
  * Just enumeration of all types of frames.
  * Added for faster type detection with less usage of casting.
  */
-enum abstract FlxFrameType(Int)
+enum abstract FlxFrameType(ByteInt)
 {
 	var REGULAR = 0;
 	var EMPTY = 2;
 	var GLYPH = 3;
 }
 
-enum abstract FlxFrameAngle(Int) from Int to Int
+enum abstract FlxFrameAngle(ByteInt) from ByteInt to ByteInt
 {
 	var ANGLE_0 = 0;
 	var ANGLE_90 = 90;

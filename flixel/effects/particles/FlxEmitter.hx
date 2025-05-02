@@ -1,5 +1,6 @@
 package flixel.effects.particles;
 
+import flixel.FlxTypes;
 import openfl.display.BlendMode;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -630,8 +631,9 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T>
 		return Solid;
 	}
 }
-enum FlxEmitterMode
+
+enum abstract FlxEmitterMode(ByteUInt)
 {
-	SQUARE;
-	CIRCLE;
+	var SQUARE;
+	var CIRCLE;
 }

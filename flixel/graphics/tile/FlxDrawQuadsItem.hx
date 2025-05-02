@@ -1,5 +1,6 @@
 package flixel.graphics.tile;
 
+import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.tile.FlxDrawBaseItem.FlxDrawItemType;
@@ -109,6 +110,16 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 		}
 	}
 
+	#if debug
+	private static var ERROR_BITMAP = new openfl.display.BitmapData(1, 1, true, 0xFFff0000);
+	#end
+	#if ANTIALIASING_DEBUG
+	private static var ALPHA_ERROR_BITMAP = new openfl.display.BitmapData(1, 1, true, 0x40ff0000);
+	#end
+	#if DRAW_CALLS_DEBUG
+	private static var randColors:Array<openfl.display.BitmapData> = [];
+	#end
+
 	#if !flash
 	override public function render(camera:FlxCamera):Void
 	{
@@ -121,7 +132,7 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 			
 		final shader = shader != null ? shader : graphics.shader;
 		shader.bitmap.input = graphics.bitmap;
-		shader.bitmap.filter = (camera.antialiasing || antialiasing) ? LINEAR : NEAREST;
+		shader.bitmap.filter = (FlxG.enableAntialiasing && (camera.antialiasing || antialiasing)) ? LINEAR : NEAREST;
 		shader.alpha.value = alphas;
 
 		if (colored || hasColorOffsets)
@@ -136,6 +147,38 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 		camera.canvas.graphics.overrideBlendMode(blend);
 		camera.canvas.graphics.beginShaderFill(shader);
 		camera.canvas.graphics.drawQuads(rects, null, transforms);
+
+
+		#if ANTIALIASING_DEBUG
+		if (!antialiasing)
+		{
+			#if debug
+			#if (openfl > "8.7.0")
+			camera.canvas.graphics.overrideBlendMode(blend);
+			#end
+			camera.canvas.graphics.beginBitmapFill(ALPHA_ERROR_BITMAP);
+			camera.canvas.graphics.drawQuads(rects, null, transforms);
+			camera.canvas.graphics.endFill();
+			#end
+		}
+		#end
+
+		#if DRAW_CALLS_DEBUG
+		var drawCalls = FlxDrawBaseItem.drawCalls;
+
+		while (randColors[drawCalls] == null)
+		{
+			var color = FlxColor.fromRGB(Std.int(Math.random() * 255), Std.int(Math.random() * 255), Std.int(Math.random() * 255), 0x40);
+			randColors.push(new openfl.display.BitmapData(1, 1, true, color));
+		}
+
+		#if (openfl > "8.7.0")
+		camera.canvas.graphics.overrideBlendMode(blend);
+		#end
+		camera.canvas.graphics.beginBitmapFill(randColors[drawCalls]);
+		camera.canvas.graphics.drawQuads(rects, null, transforms);
+		camera.canvas.graphics.endFill();
+		#end
 		super.render(camera);
 	}
 

@@ -249,13 +249,31 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 		frames = new FlxAtlasFrames(graphic);
 
-		var data:Access = new Access(xml.getXml().firstElement());
+		var data:Xml = xml.getXml().firstElement();
+		var firstElement = null;
+		for(node in data.elements())
+		{
+			if (firstElement == null)
+			{
+				firstElement = node;
+				if (firstElement.nodeName == "SubTexture" && (firstElement.exists("w") || firstElement.exists("h"))) {}
+				else break;
+			}
+			if(node.nodeName == "SubTexture")
+			{
+				node.set("width", node.get("w"));
+				node.remove("w");
+				node.set("height", node.get("h"));
+				node.remove("h");
+			} else return frames;
+		}
+
+		if (firstElement == null) return frames;
+
+		var data:Access = new Access(data);
 
 		for (texture in data.nodes.SubTexture)
 		{
-			if (!texture.has.width && texture.has.w)
-				throw "Sparrow v1 is not supported, use Sparrow v2";
-			
 			var name = texture.att.name;
 			var trimmed = texture.has.frameX;
 			var rotated = (texture.has.rotated && texture.att.rotated == "true");

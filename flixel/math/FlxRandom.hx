@@ -255,7 +255,9 @@ class FlxRandom
 	 * @param   EndIndex       Optional index at which to restrict selection. Ignored if 0, which is the default value.
 	 * @return  A pseudorandomly chosen object from Objects.
 	 */
+	#if FLX_GENERIC
 	@:generic
+	#end
 	public function getObject<T>(Objects:Array<T>, ?WeightsArray:Array<Float>, StartIndex:Int = 0, ?EndIndex:Null<Int>):T
 	{
 		var selected:Null<T> = null;
@@ -302,7 +304,9 @@ class FlxRandom
 	 * @param  array  The array to shuffle.
 	 * @since  4.2.0
 	 */
+	#if FLX_GENERIC
 	@:generic
+	#end
 	public function shuffle<T>(array:Array<T>):Void
 	{
 		var maxValidIndex = array.length - 1;

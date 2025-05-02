@@ -1,5 +1,6 @@
 package flixel;
 
+import flixel.FlxTypes;
 import flixel.group.FlxContainer;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import flixel.util.FlxStringUtil;
@@ -258,7 +259,7 @@ class FlxBasic implements IFlxDestroyable
 /**
  * Types of flixel objects - mainly for collisions.
  */
-enum abstract FlxType(Int)
+enum abstract FlxType(ByteInt)
 {
 	var NONE = 0;
 	var OBJECT = 1;

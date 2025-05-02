@@ -1,5 +1,6 @@
 package flixel;
 
+import flixel.graphics.tile.FlxGraphicsShader;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.tile.FlxDrawBaseItem;
@@ -121,6 +122,12 @@ class FlxCamera extends FlxBasic
 	 */
 	public var followLerp = 1.;
 
+
+	/**
+	 * Whenever target following is enabled. Defaults to `true`.
+	 */
+	public var followEnabled = true;
+
 	/**
 	 * You can assign a "dead zone" to the camera in order to better control its movement.
 	 * The camera will always keep the focus object inside the dead zone, unless it is bumping up against
@@ -188,6 +195,15 @@ class FlxCamera extends FlxBasic
 	 * Default value is `false`.
 	 */
 	public var useBgAlphaBlending = false;
+
+	/**
+ 	 * Whenever sprites rendered to this camera should be flipped horizontally
+ 	 */
+	public var flipX:Bool = false;
+	/**
+	 * Whenever sprites rendered to this camera should be flipped vertically
+	 */
+	public var flipY:Bool = false;
 
 	/**
 	 * Used to render buffer to screen space.
@@ -347,6 +363,11 @@ class FlxCamera extends FlxBasic
 	 * The angle of the camera display (in degrees).
 	 */
 	public var angle(default, set) = .0;
+
+	/**
+ 	 * Whenever the sprite should be rotated.
+ 	 */
+	public var rotateSprite(default, set):Bool = false;
 
 	/**
 	 * The color tint of the camera display.
@@ -589,6 +610,44 @@ class FlxCamera extends FlxBasic
 	static var renderPoint = FlxPoint.get();
 	static var renderRect = FlxRect.get();
 
+	/**
+ 	 * Adds a FlxShader as a filter to the camera
+ 	 * @param shader Shader to add
+ 	 * @return ShaderFilter
+ 	 */
+	public function addShader(shader:FlxShader)
+	{
+		var filter:ShaderFilter = null;
+		if (_filters == null)
+			_filters = [];
+		_filters.push(filter = new ShaderFilter(shader));
+		return filter;
+	}
+
+	/**
+	 * Removes a FlxShader's ShaderFilter from the camera.
+	 * @param shader Shader to remove
+	 * @return Whenever the shader has been successfully removed or not.
+	 */
+	public function removeShader(shader:FlxShader):Bool
+	{
+		if (_filters == null)
+			_filters = [];
+		for (f in _filters)
+		{
+			if (f is ShaderFilter)
+			{
+				var sf = cast(f, ShaderFilter);
+				if (sf.shader == shader)
+				{
+					_filters.remove(f);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public function alterScreenPosition(spr:FlxObject, pos:FlxPoint):FlxPoint return pos;
 
 	@:noCompletion public function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets = false, ?blend:BlendMode, smooth = false, ?shader:FlxShader) {
@@ -738,6 +797,11 @@ class FlxCamera extends FlxBasic
 				buffer.draw(pixels, _helperMatrix, null, blend, null, (smoothing || antialiasing));
 			}
 		} else {
+			if (!rotateSprite) {
+				matrix.translate(-width * .5, -height * .5);
+				matrix.rotate(angle * FlxAngle.TO_RAD);
+				matrix.translate(width * .5, height * .5);
+			}
 			var isColored = (transform != null && transform.hasRGBMultipliers());
 			var hasColorOffsets = (transform != null #if !html5 && transform.hasRGBAOffsets() #end);
 
@@ -1035,7 +1099,7 @@ class FlxCamera extends FlxBasic
 	override public function update(elapsed:Float):Void
 	{
 		// follow the target, if there is one
-		if (target != null && !paused) {
+		if (target != null && followEnabled && !paused) {
 			updateFollow();
 			updateLerp(elapsed);
 		}
@@ -1052,6 +1116,25 @@ class FlxCamera extends FlxBasic
 		else {
 			flashSprite.x += lastShakeX;
 			flashSprite.y += lastShakeY;
+		}
+
+		if (filtersEnabled && flashSprite.filters != null && _scrollRect != null)
+		{
+			var w = width * initialZoom * FlxG.scaleMode.scale.x * FlxG.stage.window.scale;
+			var h = height * initialZoom * FlxG.scaleMode.scale.y * FlxG.stage.window.scale;
+
+			for (f in flashSprite.filters)
+			{
+				if (f is ShaderFilter)
+				{
+					var f:ShaderFilter = cast f;
+					if (f.shader is FlxGraphicsShader)
+					{
+						var shader:FlxGraphicsShader = cast f.shader;
+						shader.setCamSize(0, 0, w, h);
+					}
+				}
+			}
 		}
 	}
 
@@ -1587,6 +1670,8 @@ class FlxCamera extends FlxBasic
 		scaleX = x;
 		scaleY = y;
 
+		FlxG.cameras.preCameraResized.dispatch(this);
+
 		totalScaleX = scaleX * FlxG.scaleMode.scale.x;
 		totalScaleY = scaleY * FlxG.scaleMode.scale.y;
 
@@ -1731,6 +1816,9 @@ class FlxCamera extends FlxBasic
 	@:noCompletion function set_width(value:Int):Int {
 		if (width != value && value > 0) {
 			width = value;
+			
+			FlxG.cameras.preCameraResized.dispatch(this);
+
 			calcMarginX();
 			updateFlashOffset();
 			updateScrollRect();
@@ -1743,6 +1831,9 @@ class FlxCamera extends FlxBasic
 	@:noCompletion function set_height(value:Int):Int {
 		if (height != value && value > 0) {
 			height = value;
+			
+			FlxG.cameras.preCameraResized.dispatch(this);
+
 			calcMarginY();
 			updateFlashOffset();
 			updateScrollRect();
@@ -1765,9 +1856,15 @@ class FlxCamera extends FlxBasic
 		return alpha;
 	}
 
+	@:noCompletion function set_rotateSprite(rotate:Bool) {
+		rotateSprite = rotate;
+		set_angle(angle);
+		return rotateSprite;
+	}
+
 	@:noCompletion function set_angle(angle:Float):Float {
 		this.angle = angle;
-		flashSprite.rotation = angle;
+		flashSprite.rotation = rotateSprite ? angle : 0;
 		return angle;
 	}
 

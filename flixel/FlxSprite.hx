@@ -1,5 +1,7 @@
 package flixel;
 
+import flixel.FlxTypes;
+import flixel.graphics.tile.FlxGraphicsShader;
 import flixel.FlxBasic.IFlxBasic;
 import flixel.animation.FlxAnimationController;
 import flixel.graphics.FlxGraphic;
@@ -265,6 +267,13 @@ class FlxSprite extends FlxObject
 
 	public var colorTransform(default, null):ColorTransform;
 
+	public var onDraw(default, set):FlxSprite->Void;
+	public function set_onDraw(drawFunc:FlxSprite->Void):FlxSprite->Void {
+		__drawOverrided = drawFunc != null;
+		return onDraw = drawFunc;
+	}
+	@:noCompletion public var __drawOverrided:Bool = false; // Avoid null checks
+
 	/**
 	 * Whether or not to use a `ColorTransform` set via `setColorTransform()`.
 	 */
@@ -280,10 +289,31 @@ class FlxSprite extends FlxObject
 	var _lastClipRect = FlxRect.get(Math.NaN);
 
 	/**
+	 * Clipping rectangle for this sprite.
+	 * Changing the rect's properties directly doesn't have any effect,
+	 * reassign the property to update it (`sprite.rawClipRect = sprite.rawClipRect;`).
+	 * Set to `null` to discard graphic frame clipping.
+	 * Differences between `clipRect` and `rawClipRect`:
+	 * - `clipRect` is rounded to the nearest pixel.
+	 * - `rawClipRect` is not rounded at all.
+	 */
+	public var rawClipRect(get, set):FlxRect;
+
+	/**
 	 * GLSL shader for this sprite. Avoid changing it frequently as this is a costly operation.
 	 * @since 4.1.0
 	 */
 	public var shader:FlxShader;
+
+	/**
+	 * Whether the shader should be enabled.
+	 */
+	public var shaderEnabled:Bool = true;
+
+	/**
+ 	 * Layer to draw on
+ 	 */
+	public var layer:FlxLayer;
 
 	/**
 	 * The actual frame used for sprite rendering
@@ -298,9 +328,9 @@ class FlxSprite extends FlxObject
 	var _frameGraphic:FlxGraphic;
 
 	@:noCompletion
-	var _facingHorizontalMult:Int = 1;
+	var _facingHorizontalMult:ByteInt = 1;
 	@:noCompletion
-	var _facingVerticalMult:Int = 1;
+	var _facingVerticalMult:ByteInt = 1;
 
 	/**
 	 * Internal, reused frequently during drawing and animating.
@@ -436,6 +466,7 @@ class FlxSprite extends FlxObject
 		frames = null;
 		graphic = null;
 		_frame = FlxDestroyUtil.destroy(_frame);
+		isFrameNull = true;
 		_frameGraphic = FlxDestroyUtil.destroy(_frameGraphic);
 
 		shader = null;
@@ -658,6 +689,35 @@ class FlxSprite extends FlxObject
 	}
 
 	/**
+ 	 * This function creates a solid colored rectangular image dynamically.
+ 	 *
+ 	 * HaxeFlixel's graphic caching system keeps track of loaded image data.
+ 	 * When you make an identical copy of a previously used image, by default
+ 	 * HaxeFlixel copies the previous reference onto the pixels field instead
+ 	 * of creating another copy of the image data, to save memory.
+ 	 *
+ 	 * @param   Width    The width of the sprite you want to generate.
+ 	 * @param   Height   The height of the sprite you want to generate.
+ 	 * @param   Color    Specifies the color of the generated block (ARGB format).
+ 	 * @param   Unique   Whether the graphic should be a unique instance in the graphics cache. Default is `false`.
+ 	 *                   Set this to `true` if you want to modify the `pixels` field without changing the
+ 	 *                   `pixels` of other sprites with the same `BitmapData`.
+ 	 * @param   Key      An optional `String` key to identify this graphic in the cache.
+ 	 *                   If `null`, the key is determined by `Width`, `Height` and `Color`.
+ 	 *                   If `Unique` is `true` and a graphic with this `Key` already exists,
+ 	 *                   it is used as a prefix to find a new unique name like `"Key3"`.
+ 	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
+ 	 */
+	public function makeSolid(Width:Int, Height:Int, Color:FlxColor = FlxColor.WHITE, Unique:Bool = false, ?Key:String):FlxSprite
+	{
+		var graph:FlxGraphic = FlxG.bitmap.create(1, 1, Color, Unique, Key);
+		frames = graph.imageFrame;
+		scale.set(Width, Height);
+		updateHitbox();
+		return this;
+	}
+
+	/**
 	 * Called whenever a new graphic is loaded for this sprite (after `loadGraphic()`, `makeGraphic()` etc).
 	 */
 	public function graphicLoaded():Void {}
@@ -798,16 +858,28 @@ class FlxSprite extends FlxObject
 		}
 	}
 
+	var isFrameNull(default, null):Bool = true;
+
 	/**
 	 * Called by game loop, updates then blits or renders current frame of animation to the screen.
 	 */
 	override public function draw():Void
 	{
+		if (__drawOverrided) {
+			__drawOverrided = false; 
+			onDraw(this);
+			__drawOverrided = true;
+			return;
+		}
 		checkClipRect();
-		checkEmptyFrame();
+		if (isFrameNull)
+			checkEmptyFrame();
 
 		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY)
 			return;
+
+		if (shader != null && shader is FlxGraphicsShader)
+			shader.setCamSize(_frame.frame.x, _frame.frame.y, _frame.frame.width, _frame.frame.height);
 
 		if (dirty) // rarely
 			calcFrame(useFramePixels);
@@ -874,8 +946,22 @@ class FlxSprite extends FlxObject
 
 	function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void {
 		final matrix = this._matrix; // TODO: Just use local?
-		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
+		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX() != camera.flipX, checkFlipY() != camera.flipY());
 		matrix.translate(-origin.x, -origin.y);
+
+		if (frameOffsetAngle != null && frameOffsetAngle != angle)
+		{
+			var angleOff = (frameOffsetAngle - angle) * FlxAngle.TO_RAD;
+			var cos = Math.cos(angleOff);
+			var sin = Math.sin(angleOff);
+			// cos doesnt need to be negated
+			_matrix.rotateWithTrig(cos, -sin);
+			_matrix.translate(-frameOffset.x, -frameOffset.y);
+			_matrix.rotateWithTrig(cos, sin);
+		}
+		else
+			_matrix.translate(-frameOffset.x, -frameOffset.y);
+
 		matrix.scale(scale.x, scale.y);
 
 		if (bakedRotationAngle <= 0)
@@ -898,8 +984,18 @@ class FlxSprite extends FlxObject
 			matrix.ty = Math.floor(matrix.ty);
 		}
 
-		camera.drawPixels(frame, framePixels, matrix, colorTransform, blend, antialiasing, shader);
+		doAdditionalMatrixStuff(_matrix, camera);
+
+		if (layer != null)
+			layer.drawPixels(this, camera, frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
+		else
+			camera.drawPixels(frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 	}
+
+	/**
+ 	 * Made in case developer wanna finalize stuff with the matrix.
+ 	 */
+	public function doAdditionalMatrixStuff(matrix:FlxMatrix, camera:FlxCamera) {}
 
 	/**
 	 * Stamps / draws another `FlxSprite` onto this `FlxSprite`.
@@ -1244,6 +1340,7 @@ class FlxSprite extends FlxObject
 			// recreate _frame for native target, so it will use modified framePixels
 			_frameGraphic = FlxGraphic.fromBitmapData(framePixels, false, null, false);
 			_frame = _frameGraphic.imageFrame.frame.copyTo(_frame);
+			isFrameNull = false;
 		}
 
 		dirty = false;
@@ -1300,8 +1397,9 @@ class FlxSprite extends FlxObject
 	 */
 	override public function isOnScreen(?camera:FlxCamera):Bool
 	{
-		if (camera == null)
-			camera = getDefaultCamera();
+		if (forceIsOnScreen) return true;
+
+		if (camera == null) camera = getDefaultCamera();
 		
 		return camera.containsRect(getScreenBounds(_rect, camera));
 	}
@@ -1371,6 +1469,7 @@ class FlxSprite extends FlxObject
 		if (pixelPerfectPosition)
 			newRect.floor();
 		_scaledOrigin.set(origin.x * scale.x, origin.y * scale.y);
+		_scaledFrameOffset.set(frameOffset.x * scale.x, frameOffset.y * scale.y);
 		newRect.x += -camera.scroll.x * scrollFactor.x - offset.x + origin.x - _scaledOrigin.x;
 		newRect.y += -camera.scroll.y * scrollFactor.y - offset.y + origin.y - _scaledOrigin.y;
 		if (animation.curAnim != null)
@@ -1381,7 +1480,7 @@ class FlxSprite extends FlxObject
 		if (isPixelPerfectRender(camera))
 			newRect.floor();
 		newRect.setSize(frameWidth * Math.abs(scale.x), frameHeight * Math.abs(scale.y));
-		return newRect.getRotatedBounds(angle, _scaledOrigin, newRect);
+		return newRect.getRotatedBounds(angle, _scaledOrigin, newRect, _scaledFrameOffset);
 	}
 	
 	/**
@@ -1495,6 +1594,8 @@ class FlxSprite extends FlxObject
 		if (clipRect != null)
 			_frame.clip(clipRect);
 
+		isFrameNull = false;
+
 		return frame;
 	}
 
@@ -1599,6 +1700,23 @@ class FlxSprite extends FlxObject
 			clipRect = null;
 
 		return rect;
+	}
+
+	@:noCompletion
+	function set_rawClipRect(rect:FlxRect):FlxRect
+	{
+		@:bypassAccessor clipRect = rect;
+		
+		if (frames != null)
+			frame = frames.frames[animation.frameIndex];
+			
+		return rect;
+	}
+	
+	@:noCompletion
+	inline function get_rawClipRect():FlxRect
+	{
+		return clipRect;
 	}
 
 	/**

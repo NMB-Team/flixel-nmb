@@ -324,8 +324,8 @@ import openfl.geom.Point;
 	 */
 	public overload extern inline function add(x:Float = 0, y:Float = 0):FlxPoint
 	{
-		this.x += x;
-		this.y += y;
+		this.x = this.x + x;
+		this.y = this.y + y;
 		return this;
 	}
 
@@ -352,8 +352,8 @@ import openfl.geom.Point;
 	 */
 	public overload inline extern function add(p:Point):FlxPoint
 	{
-		x += p.x;
-		y += p.y;
+		x = x + p.x;
+		y = y + p.y;
 		
 		return this;
 	}
@@ -379,8 +379,8 @@ import openfl.geom.Point;
 	 */
 	public overload inline extern function subtract(x:Float = 0, y:Float = 0):FlxPoint
 	{
-		this.x -= x;
-		this.y -= y;
+		this.x = this.x - x;
+		this.y = this.y - y;
 		return this;
 	}
 
@@ -434,8 +434,8 @@ import openfl.geom.Point;
 	 */
 	public overload inline extern function scale(x:Float, y:Float):FlxPoint
 	{
-		this.x *= x;
-		this.y *= y;
+		this.x = this.x * x;
+		this.y = this.y * y;
 		return this;
 	}
 	
@@ -448,8 +448,8 @@ import openfl.geom.Point;
 	 */
 	public overload inline extern function scale(amount:Float):FlxPoint
 	{
-		this.x *= amount;
-		this.y *= amount;
+		this.x = this.x * amount;
+		this.y = this.y * amount;
 		return this;
 	}
 	
@@ -599,8 +599,8 @@ import openfl.geom.Point;
 	 */
 	public inline function addToFlash(p:Point):Point
 	{
-		p.x += x;
-		p.y += y;
+		p.x = p.x + x;
+		p.y = p.x + y;
 
 		return p;
 	}
@@ -613,8 +613,8 @@ import openfl.geom.Point;
 	 */
 	public inline function subtractFromFlash(p:Point):Point
 	{
-		p.x -= x;
-		p.y -= y;
+		p.x = p.x - x;
+		p.y = p.x - y;
 
 		return p;
 	}
@@ -624,8 +624,8 @@ import openfl.geom.Point;
 	 */
 	public inline function floor():FlxPoint
 	{
-		x = Math.floor(x);
-		y = Math.floor(y);
+		x = Math.ffloor(x);
+		y = Math.ffloor(y);
 		return this;
 	}
 
@@ -634,8 +634,8 @@ import openfl.geom.Point;
 	 */
 	public inline function ceil():FlxPoint
 	{
-		x = Math.ceil(x);
-		y = Math.ceil(y);
+		x = Math.fceil(x);
+		y = Math.fceil(y);
 		return this;
 	}
 
@@ -644,8 +644,8 @@ import openfl.geom.Point;
 	 */
 	public inline function round():FlxPoint
 	{
-		x = Math.round(x);
-		y = Math.round(y);
+		x = Math.fround(x);
+		y = Math.fround(y);
 		return this;
 	}
 
@@ -686,7 +686,7 @@ import openfl.geom.Point;
 	public function pivotRadians(pivot:FlxPoint, radians:Float):FlxPoint
 	{
 		_point1.copyFrom(this).subtractPoint(pivot);
-		_point1.radians += radians;
+		_point1.radians = _point1.radians + radians;
 		set(_point1.x + pivot.x, _point1.y + pivot.y);
 		pivot.putWeak();
 		return this;
@@ -1074,8 +1074,8 @@ import openfl.geom.Point;
 	 */
 	public inline function negate():FlxPoint
 	{
-		x *= -1;
-		y *= -1;
+		x = -x;
+		y = -y;
 		return this;
 	}
 

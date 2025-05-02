@@ -1,5 +1,6 @@
 package flixel.system.macros;
 
+#if macro
 import haxe.io.Path;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
@@ -62,6 +63,7 @@ private enum UserDefines
 	 * Used to make the debug windows bigger
 	 */
 	FLX_DEBUGGER_SCALE;
+	FLX_NO_GENERIC;
 }
 
 /**
@@ -111,6 +113,7 @@ private enum HelperDefines
 	/** The normalized, absolute path of `FLX_CUSTOM_ASSETS_DIRECTORY`, used internally */
 	FLX_CUSTOM_ASSETS_DIRECTORY_ABS;
 	FLX_NO_DEFAULT_SOUND_EXT;
+	FLX_GENERIC;
 }
 
 class FlxDefines
@@ -215,6 +218,7 @@ class FlxDefines
 		defineInversion(FLX_TRACK_POOLS, FLX_NO_TRACK_POOLS);
 		defineInversion(FLX_DEFAULT_SOUND_EXT, FLX_NO_DEFAULT_SOUND_EXT);
 		// defineInversion(FLX_TRACK_GRAPHICS, FLX_NO_TRACK_GRAPHICS); // special case
+		defineInversion(FLX_NO_GENERIC, FLX_GENERIC);
 	}
 
 	static function defineHelperDefines()
@@ -356,3 +360,4 @@ class FlxDefines
 		Context.fatalError(message, pos);
 	}
 }
+#end

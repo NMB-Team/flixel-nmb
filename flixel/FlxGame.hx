@@ -275,6 +275,44 @@ class FlxGame extends Sprite
 	}
 
 	/**
+ 	 * Adds a FlxShader as a filter to the FlxGame
+ 	 * @param shader Shader to add
+ 	 * @return ShaderFilter
+ 	 */
+	public function addShader(shader:FlxShader)
+	{
+		var filter:ShaderFilter = null;
+		if (_filters == null)
+			_filters = [];
+		_filters.push(filter = new ShaderFilter(shader));
+		return filter;
+	}
+
+	/**
+	 * Removes a FlxShader's ShaderFilter from the FlxGame.
+	 * @param shader Shader to remove
+	 * @return Whenever the shader has been successfully removed or not.
+	 */
+	public function removeShader(shader:FlxShader):Bool
+	{
+		if (_filters == null)
+			_filters = [];
+		for (f in _filters)
+		{
+			if (f is ShaderFilter)
+			{
+				var sf = cast(f, ShaderFilter);
+				if (sf.shader == shader)
+				{
+					_filters.remove(f);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Sets the filter array to be applied to the game.
 	 */
 	public function setFilters(filters:Array<BitmapFilter>):Void
@@ -568,12 +606,12 @@ class FlxGame extends Sprite
 		FlxRandom.updateStateSeed();
 		#end
 
+		// we mark the entire cache as destroyable. while the cache is marked as destroyable, nothing is immediately removed, to make loading times faster
+		FlxG.bitmap.mapCacheAsDestroyable();
+
 		// Destroy the old state (if there is an old state)
 		if (_state != null)
 			_state.destroy();
-
-		// we need to clear bitmap cache only after previous state is destroyed, which will reset useCount for FlxGraphic objects
-		FlxG.bitmap.clearCache();
 
 		// Finally assign and create the new state
 		_state = _nextState.createInstance();
@@ -594,6 +632,10 @@ class FlxGame extends Sprite
 		debugger.console.registerObject("state", _state);
 		#end
 
+		// we remove the destroyable attribute from the cache, and remove all bitmaps that are unused.
+		FlxG.bitmap.clearCache();
+
+		_state.createPost();
 		FlxG.signals.postStateSwitch.dispatch();
 	}
 
@@ -717,14 +759,15 @@ class FlxGame extends Sprite
 		if (FlxG.fixedTimestep)
 		{
 			FlxG.elapsed = FlxG.timeScale * _stepSeconds; // fixed timestep
+			FlxG.rawElapsed = _stepSeconds;
 		}
 		else
 		{
-			FlxG.elapsed = FlxG.timeScale * (_elapsedMS / 1000); // variable timestep
+			FlxG.rawElapsed = _elapsedMS * .001;
+			if (FlxG.rawElapsed > FlxG.maxElapsed)
+				FlxG.rawElapsed = FlxG.maxElapsed;
 
-			var max = FlxG.maxElapsed * FlxG.timeScale;
-			if (FlxG.elapsed > max)
-				FlxG.elapsed = max;
+			FlxG.elapsed = FlxG.timeScale * FlxG.rawElapsed;
 		}
 	}
 
@@ -788,6 +831,9 @@ class FlxGame extends Sprite
 		#end
 	}
 
+	var accumulatedTime = .0;
+	public var useFixedStep = false;
+
 	/**
 	 * Goes through the game state and draws all the game objects and special effects.
 	 */
@@ -801,6 +847,17 @@ class FlxGame extends Sprite
 			ticks = getTicks();
 		#end
 
+		if (useFixedStep) {
+			final frameTimeExceeded = (accumulatedTime += FlxG.elapsed) > FlxG.fixedDelta;
+			if (frameTimeExceeded) {
+				renderFrame();
+				accumulatedTime -= FlxG.fixedDelta;
+			}
+		} else
+			renderFrame();
+	}
+
+	function renderFrame():Void {
 		FlxG.signals.preDraw.dispatch();
 
 		if (FlxG.renderTile)

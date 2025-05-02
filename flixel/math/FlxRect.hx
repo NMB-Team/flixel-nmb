@@ -350,10 +350,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function floor():FlxRect
 	{
-		x = Math.floor(x);
-		y = Math.floor(y);
-		width = Math.floor(width);
-		height = Math.floor(height);
+		x = Math.ffloor(x);
+		y = Math.ffloor(y);
+		width = Math.ffloor(width);
+		height = Math.ffloor(height);
 		return this;
 	}
 
@@ -362,10 +362,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function ceil():FlxRect
 	{
-		x = Math.ceil(x);
-		y = Math.ceil(y);
-		width = Math.ceil(width);
-		height = Math.ceil(height);
+		x = Math.fceil(x);
+		y = Math.fceil(y);
+		width = Math.fceil(width);
+		height = Math.fceil(height);
 		return this;
 	}
 
@@ -374,10 +374,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function round():FlxRect
 	{
-		x = Math.round(x);
-		y = Math.round(y);
-		width = Math.round(width);
-		height = Math.round(height);
+		x = Math.fround(x);
+		y = Math.fround(y);
+		width = Math.fround(width);
+		height = Math.fround(height);
 		return this;
 	}
 
@@ -390,11 +390,11 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function fromTwoPoints(Point1:FlxPoint, Point2:FlxPoint):FlxRect
 	{
-		var minX:Float = Math.min(Point1.x, Point2.x);
-		var minY:Float = Math.min(Point1.y, Point2.y);
+		final minX:Float = Math.min(Point1.x, Point2.x);
+		final minY:Float = Math.min(Point1.y, Point2.y);
 
-		var maxX:Float = Math.max(Point1.x, Point2.x);
-		var maxY:Float = Math.max(Point1.y, Point2.y);
+		final maxX:Float = Math.max(Point1.x, Point2.x);
+		final maxY:Float = Math.max(Point1.y, Point2.y);
 
 		Point1.putWeak();
 		Point2.putWeak();
@@ -410,10 +410,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function unionWithPoint(Point:FlxPoint):FlxRect
 	{
-		var minX:Float = Math.min(x, Point.x);
-		var minY:Float = Math.min(y, Point.y);
-		var maxX:Float = Math.max(right, Point.x);
-		var maxY:Float = Math.max(bottom, Point.y);
+		final minX:Float = Math.min(x, Point.x);
+		final minY:Float = Math.min(y, Point.y);
+		final maxX:Float = Math.max(right, Point.x);
+		final maxY:Float = Math.max(bottom, Point.y);
 
 		Point.putWeak();
 		return set(minX, minY, maxX - minX, maxY - minY);
@@ -421,8 +421,8 @@ class FlxRect implements IFlxPooled
 
 	public inline function offset(dx:Float, dy:Float):FlxRect
 	{
-		x += dx;
-		y += dy;
+		x = x + dx;
+		y = y + dy;
 		return this;
 	}
 
@@ -433,22 +433,28 @@ class FlxRect implements IFlxPooled
 	 *                if `null` , the top-left (or 0,0) is used.
 	 * @param newRect Optional output `FlxRect`, if `null`, a new one is created. Note: If you like, you can
 	 *                pass in the input rect to manipulate it. ex: `rect.calcRotatedBounds(angle, null, rect)`
+	 * @param innerOffset Inner offset.
 	 * @return A globally aligned `FlxRect` that fully contains the input rectangle.
 	 * @since 4.11.0
 	 */
-	public function getRotatedBounds(degrees:Float, ?origin:FlxPoint, ?newRect:FlxRect):FlxRect
+	public function getRotatedBounds(degrees:Float, ?origin:FlxPoint, ?newRect:FlxRect, ?innerOffset:FlxPoint):FlxRect
 	{
 		if (origin == null)
 			origin = FlxPoint.weak(0, 0);
 		
 		if (newRect == null)
 			newRect = FlxRect.get();
+
+		if (innerOffset == null)
+			innerOffset = FlxPoint.weak();
 		
 		degrees = degrees % 360;
 		if (degrees == 0)
 		{
+			newRect.set(x - innerOffset.x, y - innerOffset.y, width, height);
 			origin.putWeak();
-			return newRect.set(x, y, width, height);
+			innerOffset.putWeak();
+			return newRect;
 		}
 		
 		if (degrees < 0)
@@ -458,10 +464,10 @@ class FlxRect implements IFlxPooled
 		var cos = Math.cos(radians);
 		var sin = Math.sin(radians);
 		
-		var left = -origin.x;
-		var top = -origin.y;
-		var right = -origin.x + width;
-		var bottom = -origin.y + height;
+		var left = -origin.x - innerOffset.x;
+		var top = -origin.y - innerOffset.y;
+		var right = -origin.x + width - innerOffset.x;
+		var bottom = -origin.y + height - innerOffset.y;
 		if (degrees < 90)
 		{
 			newRect.x = x + origin.x + cos * left - sin * bottom;
@@ -488,6 +494,7 @@ class FlxRect implements IFlxPooled
 		newRect.height = newHeight;
 		
 		origin.putWeak();
+		innerOffset.putWeak();
 		return newRect;
 	}
 
