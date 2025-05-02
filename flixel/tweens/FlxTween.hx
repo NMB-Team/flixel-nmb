@@ -1544,7 +1544,7 @@ class FlxTweenManager extends FlxBasic
 			var propertyInfos = new Array<TweenProperty>();
 			for (fieldPath in fieldPaths)
 			{
-				var target:Dynamic = Object;
+				var target:Dynamic = object;
 				var path = FlxTween.parseFieldString(fieldPath);
 				var field = path.pop();
 				for (component in path)

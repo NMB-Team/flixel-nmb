@@ -295,7 +295,7 @@ class BitmapFrontEnd
 		__doNotDelete = false;
 
 		for(g in __countCache)
-			g.useCount -= 10;
+			g.decreasseToUseCount(10);
 
 		__countCache = [];
 
@@ -332,7 +332,7 @@ class BitmapFrontEnd
 			if (e == null) continue;
 			if (e.assetsKey != null) {
 				__countCache.push(e);
-				e.useCount += 10;
+				e.addToUseCount(10);
 			} else if (e.destroyOnNoUse) {
 				FlxG.bitmap.removeByKey(k);
 				continue;

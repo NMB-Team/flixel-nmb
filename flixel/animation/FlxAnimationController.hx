@@ -105,6 +105,17 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @since 6.2.0
 	 */
 	public final onFinishEnd = new FlxTypedSignal<(animName:String) -> Void>();
+
+	/**
+	 * Dispatches each time the current animation is played.
+	 *
+	 * @param   animName     The name of the current animation
+	 * @param   forced       Whether the animation was forced to play
+	 * @param   reversed     Whether the animation was played in reverse
+	 * @param   frame        The current animation's frameIndex in the tile sheet
+	 * @since 5.9.0
+	 */
+	public final onPlay = new FlxTypedSignal<(animName:String, forced:Bool, reversed:Bool, frame:Int) -> Void>();
 	
 	/**
 	 * Dispatches each time the current animation's loop is complete.
@@ -467,7 +478,7 @@ class FlxAnimationController implements IFlxDestroyable
 		if (frameIndices.length > 0)
 		{
 			var anim:FlxAnimation = new FlxAnimation(this, Name, frameIndices, FrameRate, Looped, FlipX, FlipY);
-			anim.prefix = prefix;
+			anim.prefix = Prefix;
 			anim.usesIndicies = true;
 			_animations.set(Name, anim);
 		}
@@ -763,12 +774,6 @@ class FlxAnimationController implements IFlxDestroyable
 			loopCallback(name);
 		}
 
-		onLoop.dispatch(name);
-	}
-
-	@:allow(flixel.animation)
-	function fireLoopCallback(?name:String):Void
-	{
 		onLoop.dispatch(name);
 	}
 

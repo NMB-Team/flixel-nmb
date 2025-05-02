@@ -93,6 +93,11 @@ class FlxBar extends FlxSprite
 	public var numDivisions(default, set):Int = 100;
 
 	/**
+	 * Determines whenever numDivisions will make stuff blocky
+	 */
+	public var continuous:Bool = false;
+
+	/**
 	 * This function will be called when value will hit it's minimum
 	 */
 	public var emptyCallback:Void->Void;
@@ -1009,11 +1014,11 @@ class FlxBar extends FlxSprite
 	{
 		if (FlxG.renderTile)
 		{
-			if (value != null)
+			/*if (value != null)
 				value.parent.incrementUseCount();
 				
 			if (frontFrames != null)
-				frontFrames.parent.decrementUseCount();
+				frontFrames.parent.decrementUseCount();*/
 
 			frontFrames = value;
 			_frontFrame = (value != null) ? value.frame.copyTo(_frontFrame) : FlxDestroyUtil.destroy(_frontFrame);

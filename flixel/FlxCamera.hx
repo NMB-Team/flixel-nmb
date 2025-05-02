@@ -1,5 +1,7 @@
 package flixel;
 
+import flixel.math.FlxAngle;
+import openfl.filters.ShaderFilter;
 import flixel.graphics.tile.FlxGraphicsShader;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
@@ -28,7 +30,7 @@ import openfl.geom.Rectangle;
 
 using flixel.util.FlxColorTransformUtil;
 
-private typedef FlxDrawItem = flixel.graphics.tile.FlxDrawQuadsItem;
+typedef FlxDrawItem = flixel.graphics.tile.FlxDrawQuadsItem;
 
 /**
  * The camera class is used to display the game's visuals.
@@ -610,6 +612,12 @@ class FlxCamera extends FlxBasic
 	static var renderPoint = FlxPoint.get();
 	static var renderRect = FlxRect.get();
 
+	@:noCompletion
+	var _sinAngle:Float = 0;
+
+	@:noCompletion
+	var _cosAngle:Float = 1;
+
 	/**
  	 * Adds a FlxShader as a filter to the camera
  	 * @param shader Shader to add
@@ -618,9 +626,9 @@ class FlxCamera extends FlxBasic
 	public function addShader(shader:FlxShader)
 	{
 		var filter:ShaderFilter = null;
-		if (_filters == null)
-			_filters = [];
-		_filters.push(filter = new ShaderFilter(shader));
+		if (filters == null)
+			filters = [];
+		filters.push(filter = new ShaderFilter(shader));
 		return filter;
 	}
 
@@ -631,16 +639,16 @@ class FlxCamera extends FlxBasic
 	 */
 	public function removeShader(shader:FlxShader):Bool
 	{
-		if (_filters == null)
-			_filters = [];
-		for (f in _filters)
+		if (filters == null)
+			filters = [];
+		for (f in filters)
 		{
 			if (f is ShaderFilter)
 			{
 				var sf = cast(f, ShaderFilter);
 				if (sf.shader == shader)
 				{
-					_filters.remove(f);
+					filters.remove(f);
 					return true;
 				}
 			}
@@ -661,7 +669,6 @@ class FlxCamera extends FlxBasic
 			&& _headTiles.graphics == graphic
 			&& _headTiles.colored == colored
 			&& _headTiles.hasColorOffsets == hasColorOffsets
-			&& _headTiles.blending == blendInt
 			&& _headTiles.blend == blend
 			&& _headTiles.antialiasing == smooth
 			&& _headTiles.shader == shader) return _headTiles;
@@ -684,7 +691,6 @@ class FlxCamera extends FlxBasic
 		itemToReturn.antialiasing = smooth;
 		itemToReturn.colored = colored;
 		itemToReturn.hasColorOffsets = hasColorOffsets;
-		itemToReturn.blending = blendInt;
 		itemToReturn.blend = blend;
 		itemToReturn.shader = shader;
 
@@ -707,7 +713,6 @@ class FlxCamera extends FlxBasic
 			&& _headTriangles.graphics == graphic
 			&& _headTriangles.antialiasing == smoothing
 			&& _headTriangles.colored == isColored
-			&& _headTriangles.blending == blendInt
 			&& _headTriangles.blend == blend
 			#if !flash
 			&& _headTriangles.hasColorOffsets == hasColorOffsets
@@ -731,7 +736,6 @@ class FlxCamera extends FlxBasic
 		itemToReturn.graphics = graphic;
 		itemToReturn.antialiasing = smoothing;
 		itemToReturn.colored = isColored;
-		itemToReturn.blending = blendInt;
 		itemToReturn.blend = blend;
 		#if !flash
 		itemToReturn.hasColorOffsets = hasColorOffsets;
@@ -797,13 +801,15 @@ class FlxCamera extends FlxBasic
 				buffer.draw(pixels, _helperMatrix, null, blend, null, (smoothing || antialiasing));
 			}
 		} else {
-			if (!rotateSprite) {
-				matrix.translate(-width * .5, -height * .5);
-				matrix.rotate(angle * FlxAngle.TO_RAD);
-				matrix.translate(width * .5, height * .5);
-			}
 			var isColored = (transform != null && transform.hasRGBMultipliers());
 			var hasColorOffsets = (transform != null #if !html5 && transform.hasRGBAOffsets() #end);
+
+			if (!rotateSprite && angle != 0)
+			{
+				matrix.translate(-width * .5, -height * .5);
+				matrix.rotateWithTrig(_cosAngle, _sinAngle);
+				matrix.translate(width * .5, height * .5);
+			}
 
 			#if FLX_RENDER_TRIANGLE
 			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
@@ -1865,6 +1871,10 @@ class FlxCamera extends FlxBasic
 	@:noCompletion function set_angle(angle:Float):Float {
 		this.angle = angle;
 		flashSprite.rotation = rotateSprite ? angle : 0;
+
+		var radians:Float = angle * FlxAngle.TO_RAD;
+		_sinAngle = Math.sin(radians);
+		_cosAngle = Math.cos(radians);
 		return angle;
 	}
 

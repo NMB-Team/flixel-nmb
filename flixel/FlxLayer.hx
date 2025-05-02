@@ -254,9 +254,9 @@ class FlxLayer extends FlxBasic
 
 			if (!camera.rotateSprite && camera.angle != 0)
 			{
-				matrix.translate(-camera.width / 2, -camera.height / 2);
+				matrix.translate(-camera.width * .5, -camera.height * .5);
 				matrix.rotateWithTrig(camera._cosAngle, camera._sinAngle);
-				matrix.translate(camera.width / 2, camera.height / 2);
+				matrix.translate(camera.width * .5, camera.height * .5);
 			}
 
 			#if FLX_RENDER_TRIANGLE

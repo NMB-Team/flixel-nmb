@@ -1,5 +1,7 @@
 package flixel;
 
+import openfl.filters.ShaderFilter;
+import flixel.system.FlxAssets.FlxShader;
 import flixel.graphics.tile.FlxDrawBaseItem;
 import flixel.system.FlxSplash;
 import flixel.util.FlxArrayUtil;

@@ -577,6 +577,17 @@ class FlxGraphic implements IFlxDestroyable
 	{
 		useCount++;
 	}
+
+	public function addToUseCount(count:Int)
+	{
+		useCount += count;
+	}
+
+	public function decreasseToUseCount(count:Int)
+	{
+		useCount -= count;
+		checkUseCount();
+	}
 	
 	public function decrementUseCount()
 	{

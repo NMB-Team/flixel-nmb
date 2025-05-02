@@ -246,6 +246,17 @@ class FlxSprite extends FlxObject
 	public var offset(default, null):FlxPoint;
 
 	/**
+	 * The position of the sprite's graphic relative to the frame, scaling and angles. For example, `offset.x = 10;` with
+	 * a scale of 2 will move the sprite 20 pixels to the left.
+	 */
+	public var frameOffset(default, null):FlxPoint;
+
+	/**
+	 * (Nullable) Custom angle to be applied to `frameOffset`
+	 */
+	public var frameOffsetAngle:Null<Float> = null;
+
+	/**
 	 * Change the size of your sprite's graphic.
 	 * NOTE: The hitbox is not automatically adjusted, use `updateHitbox()` for that.
 	 * WARNING: With `FlxG.renderBlit`, scaling sprites decreases rendering performance by a factor of about x10!
@@ -375,6 +386,12 @@ class FlxSprite extends FlxObject
 	var _scaledOrigin:FlxPoint;
 
 	/**
+	 *  Helper variable
+	 */
+	@:noCompletion
+	var _scaledFrameOffset:FlxPoint;
+
+	/**
 	 * These vars are being used for rendering in some of `FlxSprite` subclasses (`FlxTileblock`, `FlxBar`,
 	 * and `FlxBitmapText`) and for checks if the sprite is in camera's view.
 	 */
@@ -383,6 +400,7 @@ class FlxSprite extends FlxObject
 
 	@:noCompletion
 	var _cosAngle:Float = 1;
+
 	@:noCompletion
 	var _angleChanged:Bool = true;
 
@@ -422,12 +440,14 @@ class FlxSprite extends FlxObject
 		_flashRect2 = new Rectangle();
 		_flashPointZero = new Point();
 		offset = FlxPoint.get();
+		frameOffset = FlxPoint.get();
 		origin = FlxPoint.get();
 		scale = FlxPoint.get(1, 1);
 		_halfSize = FlxPoint.get();
 		_matrix = new FlxMatrix();
 		colorTransform = new ColorTransform();
 		_scaledOrigin = new FlxPoint();
+		_scaledFrameOffset = new FlxPoint();
 	}
 
 	/**
@@ -447,11 +467,13 @@ class FlxSprite extends FlxObject
 		animation = FlxDestroyUtil.destroy(animation);
 
 		offset = FlxDestroyUtil.put(offset);
+		frameOffset = FlxDestroyUtil.put(frameOffset);
 		origin = FlxDestroyUtil.put(origin);
 		scale = FlxDestroyUtil.put(scale);
 		_halfSize = FlxDestroyUtil.put(_halfSize);
 		_scaledOrigin = FlxDestroyUtil.put(_scaledOrigin);
 		_lastClipRect = FlxDestroyUtil.put(_lastClipRect);
+		_scaledFrameOffset = FlxDestroyUtil.put(_scaledFrameOffset);
 
 		framePixels = FlxDestroyUtil.dispose(framePixels);
 
@@ -946,7 +968,7 @@ class FlxSprite extends FlxObject
 
 	function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void {
 		final matrix = this._matrix; // TODO: Just use local?
-		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX() != camera.flipX, checkFlipY() != camera.flipY());
+		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX() != camera.flipX, checkFlipY() != camera.flipY);
 		matrix.translate(-origin.x, -origin.y);
 
 		if (frameOffsetAngle != null && frameOffsetAngle != angle)
@@ -1392,7 +1414,7 @@ class FlxSprite extends FlxObject
 	 * Check and see if this object is currently on screen. Differs from `FlxObject`'s implementation
 	 * in that it takes the actual graphic into account, not just the hitbox or bounding box or whatever.
 	 *
-	 * @param   Camera  Specify which game camera you want. If `null`, `getDefaultCamera()` is used.
+	 * @param   camera  Specify which game camera you want. If `null`, `getDefaultCamera()` is used.
 	 * @return  Whether the object is on screen or not.
 	 */
 	override public function isOnScreen(?camera:FlxCamera):Bool
