@@ -891,7 +891,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 		var hue:Float = 0;
 		if (hueRad != 0)
 		{
-			hue = FlxAngle.TO_DEG * hueRad;
+			hue = flixel.math.FlxAngle.TO_DEG * hueRad;
 		}
 
 		return hue < 0 ? hue + 360 : hue;
