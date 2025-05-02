@@ -15,7 +15,6 @@ import flixel.util.FlxPool.IFlxPooled;
 	 */
 	public static inline function destroy<T:IFlxDestroyable>(object:Null<IFlxDestroyable>):T
 	{
-		}
 		if (object != null) object.destroy();
 		return null;
 	}
@@ -28,12 +27,8 @@ import flixel.util.FlxPool.IFlxPooled;
 	 */
 	public static function destroyArray<T:IFlxDestroyable>(array:Array<T>):Array<T>
 	{
-		if (array != null)
-		{
-			for (e in array)
-				destroy(e);
-			array.splice(0, array.length);
-		}
+		if (array == null) return null;
+		for (e in array) destroy(e);
 		array.splice(0, array.length);
 		return null;
 	}
