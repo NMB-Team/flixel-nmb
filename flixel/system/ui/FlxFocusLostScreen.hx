@@ -41,8 +41,8 @@ class FlxFocusLostScreen extends Sprite
 		gfx.endFill();
 
 		// Draw white arrow
-		var halfWidth:Int = Std.int(screenWidth / 2);
-		var halfHeight:Int = Std.int(screenHeight / 2);
+		var halfWidth:Int = Std.int(screenWidth * .5);
+		var halfHeight:Int = Std.int(screenHeight * .5);
 		var helper:Int = Std.int(Math.min(halfWidth, halfHeight) / 3);
 		gfx.moveTo(halfWidth - helper, halfHeight - helper);
 		gfx.beginFill(0xffffff, 0.65);
