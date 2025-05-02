@@ -29,7 +29,7 @@ class FlxStringUtil
 	 */
 	public static inline function formatTicks(StartTicks:Int, EndTicks:Int):String
 	{
-		return (Math.abs(EndTicks - StartTicks) / 1000) + "s";
+		return (Math.abs(EndTicks - StartTicks) * .001) + "s";
 	}
 
 	/**
@@ -128,8 +128,8 @@ class FlxStringUtil
 				comma = (EnglishStyle ? "," : ".");
 
 			var zeroes = "";
-			var helper = amount - Math.ffloor(amount / 1000) * 1000;
-			amount = Math.ffloor(amount / 1000);
+			var helper = amount - Math.ffloor(amount * .001) * 1000;
+			amount = Math.ffloor(amount * .001);
 			if (amount > 0)
 			{
 				if (helper < 100)

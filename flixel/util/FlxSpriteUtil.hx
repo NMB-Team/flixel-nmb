@@ -105,7 +105,7 @@ class FlxSpriteUtil
 	 */
 	public static function screenWrap(sprite:FlxSprite, Left:Bool = true, Right:Bool = true, Top:Bool = true, Bottom:Bool = true):FlxSprite
 	{
-		if (Left && ((sprite.x + sprite.frameWidth / 2) <= 0))
+		if (Left && ((sprite.x + sprite.frameWidth * .5) <= 0))
 		{
 			sprite.x = FlxG.width;
 		}
@@ -114,7 +114,7 @@ class FlxSpriteUtil
 			sprite.x = 0;
 		}
 
-		if (Top && ((sprite.y + sprite.frameHeight / 2) <= 0))
+		if (Top && ((sprite.y + sprite.frameHeight * .5) <= 0))
 		{
 			sprite.y = FlxG.height;
 		}
@@ -470,15 +470,15 @@ class FlxSpriteUtil
 		if (X == -1 || Y == -1)
 		{
 			if (X == -1)
-				X = sprite.frameWidth / 2;
+				X = sprite.frameWidth * .5;
 			if (Y == -1)
-				Y = sprite.frameHeight / 2;
+				Y = sprite.frameHeight * .5;
 		}
 
 		if (Radius < 1)
 		{
 			var minVal = Math.min(sprite.frameWidth, sprite.frameHeight);
-			Radius = (minVal / 2);
+			Radius = (minVal * .5);
 		}
 
 		beginDraw(FillColor, lineStyle);
@@ -525,10 +525,10 @@ class FlxSpriteUtil
 			?drawStyle:DrawStyle):FlxSprite
 	{
 		beginDraw(FillColor, lineStyle);
-		flashGfx.moveTo(X + Height / 2, Y);
+		flashGfx.moveTo(X + Height * .5, Y);
 		flashGfx.lineTo(X + Height, Height + Y);
 		flashGfx.lineTo(X, Height + Y);
-		flashGfx.lineTo(X + Height / 2, Y);
+		flashGfx.lineTo(X + Height * .5, Y);
 		endDraw(sprite, drawStyle);
 		return sprite;
 	}

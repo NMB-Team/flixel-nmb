@@ -29,7 +29,7 @@ class FlxVelocity
 			var d:Int = FlxMath.distanceBetween(Source, Dest);
 
 			//	We know how many pixels we need to move, but how fast?
-			Speed = Std.int(d / (MaxTime / 1000));
+			Speed = Std.int(d / (MaxTime * .001));
 		}
 
 		Source.velocity.x = Math.cos(a) * Speed;
@@ -72,7 +72,7 @@ class FlxVelocity
 			var d:Int = FlxMath.distanceToMouse(Source);
 
 			//	We know how many pixels we need to move, but how fast?
-			Speed = Std.int(d / (MaxTime / 1000));
+			Speed = Std.int(d / (MaxTime * .001));
 		}
 
 		Source.velocity.x = Math.cos(a) * Speed;
@@ -100,7 +100,7 @@ class FlxVelocity
 			var d:Int = FlxMath.distanceToTouch(Source, Touch);
 
 			//	We know how many pixels we need to move, but how fast?
-			Speed = Std.int(d / (MaxTime / 1000));
+			Speed = Std.int(d / (MaxTime * .001));
 		}
 
 		Source.velocity.x = Math.cos(a) * Speed;
@@ -165,7 +165,7 @@ class FlxVelocity
 			var d:Int = FlxMath.distanceToPoint(Source, Target);
 
 			//	We know how many pixels we need to move, but how fast?
-			Speed = Std.int(d / (MaxTime / 1000));
+			Speed = Std.int(d / (MaxTime * .001));
 		}
 
 		Source.velocity.x = Math.cos(a) * Speed;

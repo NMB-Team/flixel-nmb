@@ -271,8 +271,8 @@ class FlxObject extends FlxBasic
 				#if FLX_4_LEGACY_COLLISION
 				legacySeparateY(object1, object2, overlap);
 				#else
-				object1.y -= overlap / 2;
-				object2.y += overlap / 2;
+				object1.y -= overlap * .5;
+				object2.y += overlap * .5;
 				
 				final mass1 = object1.mass;
 				final mass2 = object2.mass;

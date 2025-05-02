@@ -48,7 +48,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		updateName();
 		
 		addChild(removeButton = new FlxSystemButton(Icon.close, ()->onRemove.dispatch()));
-		removeButton.y = (TEXT_HEIGHT - removeButton.height) / 2;
+		removeButton.y = (TEXT_HEIGHT - removeButton.height) * .5;
 		removeButton.alpha = 0.3;
 	}
 	

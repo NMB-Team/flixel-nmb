@@ -331,11 +331,11 @@ class FlxQuadTree extends FlxRect
 		_southWestTree = null;
 		_leftEdge = x;
 		_rightEdge = x + width;
-		_halfWidth = width / 2;
+		_halfWidth = width * .5;
 		_midpointX = _leftEdge + _halfWidth;
 		_topEdge = y;
 		_bottomEdge = y + height;
-		_halfHeight = height / 2;
+		_halfHeight = height * .5;
 		_midpointY = _topEdge + _halfHeight;
 	}
 

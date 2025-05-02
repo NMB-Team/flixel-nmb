@@ -329,7 +329,7 @@ class FlxAtlas implements IFlxDestroyable
 				if (firstGrandChildRotated)
 				{
 					matrix.identity();
-					matrix.rotate(Math.PI / 2);
+					matrix.rotate(Math.PI * .5);
 					matrix.translate(firstGrandChildData.height + firstGrandChild.x, firstGrandChild.y);
 					bitmapData.draw(firstGrandChildData, matrix);
 				}

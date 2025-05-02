@@ -71,6 +71,6 @@ class FlxSwipe implements IFlxDestroyable
 
 	inline function get_duration():Float
 	{
-		return (_endTimeInTicks - _startTimeInTicks) / 1000;
+		return (_endTimeInTicks - _startTimeInTicks) * .001;
 	}
 }

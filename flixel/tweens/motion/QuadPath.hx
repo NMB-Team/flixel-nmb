@@ -178,7 +178,7 @@ class QuadPath extends Motion
 		var i:Int = 0;
 		var j:Int = 0;
 		_distance = 0;
-		_numSegs = Std.int((_points.length - 1) / 2);
+		_numSegs = Std.int((_points.length - 1) * .5);
 		while (i < _numSegs)
 		{
 			j = i * 2;

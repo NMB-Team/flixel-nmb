@@ -1045,7 +1045,7 @@ class FlxBitmapText extends FlxSprite
 
 			if (alignment == FlxTextAlign.CENTER)
 			{
-				ox += Std.int((frameWidth - lineWidth) / 2);
+				ox += Std.int((frameWidth - lineWidth) * .5);
 			}
 			else if (alignment == FlxTextAlign.RIGHT)
 			{

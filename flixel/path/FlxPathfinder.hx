@@ -214,8 +214,8 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 		var i = 1; // Skip first
 		while (i < points.length - 1) // Skip last, too
 		{
-			p1.copyFrom(points[i - 1]).subtract(width / 2, height / 2);
-			p2.copyFrom(points[i + 1]).subtract(width / 2, height / 2);
+			p1.copyFrom(points[i - 1]).subtract(width * .5, height * .5);
+			p2.copyFrom(points[i + 1]).subtract(width * .5, height * .5);
 			// If a ray can be drawn from the 2 adjacent points without hitting a wall
 			if (data.map.ray(p1, p2)                               // top left
 			&&  data.map.ray(p1.add(width, 0), p2.add(width, 0))   // top right

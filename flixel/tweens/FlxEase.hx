@@ -15,12 +15,12 @@ package flixel.tweens;
  *
  * - **inOut(t)**
  *
- *       return (t <= .5) ? in(t * 2) / 2 : out(t * 2 - 1) / 2 + .5;
+ *       return (t <= .5) ? in(t * 2) * 0.5 : out(t * 2 - 1) * 0.5 + .5;
  */
 class FlxEase
 {
 	/** Easing constants */
-	static var PI2:Float = Math.PI / 2;
+	static var PI2:Float = Math.PI * .5;
 
 	static var EL:Float = 2 * Math.PI / .45;
 	static var B1:Float = 1 / 2.75;
@@ -36,6 +36,11 @@ class FlxEase
 	public static inline function linear(t:Float):Float
 	{
 		return t;
+	}
+
+	public static inline function step(t:Float):Float
+	{
+		return t < 1 ? 0 : 1;
 	}
 
 	public static inline function quadIn(t:Float):Float
@@ -80,7 +85,7 @@ class FlxEase
 
 	public static inline function quartInOut(t:Float):Float
 	{
-		return t <= .5 ? t * t * t * t * 8 : (1 - (t = t * 2 - 2) * t * t * t) / 2 + .5;
+		return t <= .5 ? t * t * t * t * 8 : (1 - (t = t * 2 - 2) * t * t * t) * .5 + .5;
 	}
 
 	public static inline function quintIn(t:Float):Float
@@ -95,19 +100,19 @@ class FlxEase
 
 	public static inline function quintInOut(t:Float):Float
 	{
-		return ((t *= 2) < 1) ? (t * t * t * t * t) / 2 : ((t -= 2) * t * t * t * t + 2) / 2;
+		return ((t *= 2) < 1) ? (t * t * t * t * t) * .5 : ((t -= 2) * t * t * t * t + 2) * .5;
 	}
 
 	/** @since 4.3.0 */
 	public static inline function smoothStepIn(t:Float):Float
 	{
-		return 2 * smoothStepInOut(t / 2);
+		return 2 * smoothStepInOut(t * .5);
 	}
 
 	/** @since 4.3.0 */
 	public static inline function smoothStepOut(t:Float):Float
 	{
-		return 2 * smoothStepInOut(t / 2 + 0.5) - 1;
+		return 2 * smoothStepInOut(t * .5 + 0.5) - 1;
 	}
 
 	/** @since 4.3.0 */
@@ -119,13 +124,13 @@ class FlxEase
 	/** @since 4.3.0 */
 	public static inline function smootherStepIn(t:Float):Float
 	{
-		return 2 * smootherStepInOut(t / 2);
+		return 2 * smootherStepInOut(t * .5);
 	}
 
 	/** @since 4.3.0 */
 	public static inline function smootherStepOut(t:Float):Float
 	{
-		return 2 * smootherStepInOut(t / 2 + 0.5) - 1;
+		return 2 * smootherStepInOut(t * .5 + 0.5) - 1;
 	}
 
 	/** @since 4.3.0 */
@@ -146,7 +151,7 @@ class FlxEase
 
 	public static inline function sineInOut(t:Float):Float
 	{
-		return -Math.cos(Math.PI * t) / 2 + .5;
+		return -Math.cos(Math.PI * t) * .5 + .5;
 	}
 
 	public static function bounceIn(t:Float):Float
@@ -168,8 +173,20 @@ class FlxEase
 	public static function bounceInOut(t:Float):Float
 	{
 		return t < 0.5
-			? (1 - bounceOut(1 - 2 * t)) / 2
-			: (1 + bounceOut(2 * t - 1)) / 2;
+			? (1 - bounceOut(1 - 2 * t)) * .5
+			: (1 + bounceOut(2 * t - 1)) * .5;
+	}
+
+	public static function bounceHardOut(t:Float):Float
+	{
+		t = 1 - t;
+		if (t < 1 / 2.75)
+			return 1 - (7.5625 * t * t);
+		if (t < 2 / 2.75)
+			return 1 - (7.5625 * (t -= 1.5 / 2.75) * t + 0.75);
+		if (t < 2.5 / 2.75)
+			return 1 - (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375);
+		return 1 - (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375);
 	}
 
 	public static inline function circIn(t:Float):Float
@@ -184,7 +201,13 @@ class FlxEase
 
 	public static function circInOut(t:Float):Float
 	{
-		return t <= .5 ? (Math.sqrt(1 - t * t * 4) - 1) / -2 : (Math.sqrt(1 - (t * 2 - 2) * (t * 2 - 2)) + 1) / 2;
+		return t <= .5 ? (Math.sqrt(1 - t * t * 4) - 1) * -.5 : (Math.sqrt(1 - (t * 2 - 2) * (t * 2 - 2)) + 1) * .5;
+	}
+
+	public static function cubicBezierEase(t:Float, p0:Float, p1:Float, p2:Float, p3:Float):Float
+	{
+		final u = 1 - t;
+		return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3;
 	}
 
 	public static inline function expoIn(t:Float):Float
@@ -199,7 +222,7 @@ class FlxEase
 
 	public static function expoInOut(t:Float):Float
 	{
-		return t < .5 ? Math.pow(2, 10 * (t * 2 - 1)) / 2 : (-Math.pow(2, -10 * (t * 2 - 1)) + 2) / 2;
+		return t < .5 ? Math.pow(2, 10 * (t * 2 - 1)) * .5 : (-Math.pow(2, -10 * (t * 2 - 1)) + 2) * .5;
 	}
 
 	public static inline function backIn(t:Float):Float
@@ -216,9 +239,9 @@ class FlxEase
 	{
 		t *= 2;
 		if (t < 1)
-			return t * t * (2.70158 * t - 1.70158) / 2;
+			return t * t * (2.70158 * t - 1.70158) * .5;
 		t--;
-		return (1 - (--t) * (t) * (-2.70158 * t - 1.70158)) / 2 + .5;
+		return (1 - (--t) * (t) * (-2.70158 * t - 1.70158)) * .5 + .5;
 	}
 
 	public static inline function elasticIn(t:Float):Float
@@ -238,9 +261,27 @@ class FlxEase
 	{
 		if (t < 0.5)
 		{
-			return -0.5 * (Math.pow(2, 10 * (t -= 0.5)) * Math.sin((t - (ELASTIC_PERIOD / 4)) * (2 * Math.PI) / ELASTIC_PERIOD));
+			return -0.5 * (Math.pow(2, 10 * (t -= 0.5)) * Math.sin((t - (ELASTIC_PERIOD * .25)) * (2 * Math.PI) / ELASTIC_PERIOD));
 		}
-		return Math.pow(2, -10 * (t -= 0.5)) * Math.sin((t - (ELASTIC_PERIOD / 4)) * (2 * Math.PI) / ELASTIC_PERIOD) * 0.5 + 1;
+		return Math.pow(2, -10 * (t -= 0.5)) * Math.sin((t - (ELASTIC_PERIOD * .25)) * (2 * Math.PI) / ELASTIC_PERIOD) * 0.5 + 1;
+	}
+
+	public static inline function powIn(t:Float):Float
+	{
+		return Math.pow(t, 3);
+	}
+	
+	public static inline function powOut(t:Float):Float
+	{
+		return 1 - Math.pow(1 - t, 3);
+	}
+	
+	public static inline function powInOut(t:Float):Float
+	{
+		t *= 2;
+		if (t < 1)
+			return 0.5 * Math.pow(t, 3);
+		return 1 - 0.5 * Math.abs(Math.pow(2 - t, 3));
 	}
 }
 

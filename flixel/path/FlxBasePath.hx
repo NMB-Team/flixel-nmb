@@ -408,7 +408,7 @@ class FlxTypedBasePath<TTarget:FlxBasic> extends FlxBasic implements IFlxDestroy
 		final size = debugDrawData.lineSize;
 		gfx.lineStyle(size, color.rgb, color.alphaFloat);
 		
-		final lineOffset = debugDrawData.lineSize / 2;
+		final lineOffset = debugDrawData.lineSize * .5;
 		gfx.moveTo(node1.x + lineOffset, node1.y + lineOffset);
 		gfx.lineTo(node2.x + lineOffset, node2.y + lineOffset);
 	}

@@ -703,7 +703,7 @@ class FlxInputText extends FlxText implements IFlxInputText
 	{
 		return switch (alignment)
 		{
-			case CENTER: (width / 2);
+			case CENTER: (width * .5);
 			case RIGHT: width - GUTTER;
 			default: GUTTER;
 		}
@@ -744,7 +744,7 @@ class FlxInputText extends FlxText implements IFlxInputText
 						return lineOffset + char;
 					if (x <= boundaries.right)
 					{
-						if (x <= boundaries.x + (boundaries.width / 2))
+						if (x <= boundaries.x + (boundaries.width * .5))
 						{
 							return lineOffset + char;
 						}
@@ -825,7 +825,7 @@ class FlxInputText extends FlxText implements IFlxInputText
 			x = GUTTER;
 		}
 		
-		var y = GUTTER + getLineY(lineIndex) + textField.getLineMetrics(lineIndex).height / 2;
+		var y = GUTTER + getLineY(lineIndex) + textField.getLineMetrics(lineIndex).height * .5;
 		
 		return getCharAtPosition(x, y);
 	}

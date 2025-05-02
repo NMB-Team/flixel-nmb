@@ -106,7 +106,7 @@ class VCR
 	public function updateRuntime(Time:Float):Void
 	{
 		runtime += Time;
-		runtimeDisplay.text = FlxStringUtil.formatTime(Std.int(runtime / 1000), true);
+		runtimeDisplay.text = FlxStringUtil.formatTime(Std.int(runtime * .001), true);
 		if (!runtimeDisplay.visible)
 		{
 			runtimeDisplay.visible = true;

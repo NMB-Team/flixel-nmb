@@ -319,7 +319,7 @@ class Stats extends Window
 	 */
 	public inline function intervalTime():Float
 	{
-		return (_currentTime - _itvTime) / 1000;
+		return (_currentTime - _itvTime) * .001;
 	}
 
 	/**
@@ -327,7 +327,7 @@ class Stats extends Window
 	 */
 	public inline function currentMem():Float
 	{
-		return (#if (openfl >= "9.4.0") System.totalMemoryNumber #else System.totalMemory #end / 1024) / 1000;
+		return (#if (openfl >= "9.4.0") System.totalMemoryNumber #else System.totalMemory #end / 1024) * .001;
 	}
 
 	/**

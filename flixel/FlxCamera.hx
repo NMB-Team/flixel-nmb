@@ -1797,7 +1797,7 @@ class FlxCamera extends FlxBasic
 		final matrix = new openfl.geom.Matrix();
 		matrix.translate(-width * rotationOffset.x, -height * rotationOffset.y);
 		matrix.scale(scaleX, scaleY);
-		matrix.rotate(angle * (Math.PI / 180));
+		matrix.rotate(angle * FlxAngle.TO_RAD);
 		matrix.translate(width * rotationOffset.x, height * rotationOffset.y);
 		matrix.translate(flashSprite.x, flashSprite.y);
 		matrix.scale(FlxG.scaleMode.scale.x, FlxG.scaleMode.scale.y);

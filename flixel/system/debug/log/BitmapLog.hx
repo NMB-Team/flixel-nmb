@@ -272,8 +272,8 @@ class BitmapLog extends Window
 		final bitmap = entries[index].bitmap;
 		// find the window center
 		final point = FlxPoint.get();
-		point.x = (canvasBmd.width / 2) - (bitmap.width * zoom / 2);
-		point.y = (canvasBmd.height / 2) - (bitmap.height * zoom / 2);
+		point.x = (canvasBmd.width * .5) - (bitmap.width * zoom * .5);
+		point.y = (canvasBmd.height * .5) - (bitmap.height * zoom * .5);
 		
 		point.add(canvasOffset);
 		
@@ -386,7 +386,7 @@ class Header extends Sprite
 		next.x = width - next.width - 3;
 		reset.x = next.x - reset.width - 3;
 		prev.x = reset.x - prev.width - 3;
-		dimensions.x = (width - dimensions.textWidth) / 2;
+		dimensions.x = (width - dimensions.textWidth) * .5;
 		dimensions.visible = width > 200;
 	}
 	
@@ -415,7 +415,7 @@ class Footer extends Sprite
 	{
 		text.text = (entry.name == "") ? "" : '"${entry.name}" | '
 			+ FlxStringUtil.formatBytes(entry.bitmap.getMemorySize());
-		text.x = (bg.width - text.width) / 2;
+		text.x = (bg.width - text.width) * .5;
 	}
 	
 	public function resize(width:Float)

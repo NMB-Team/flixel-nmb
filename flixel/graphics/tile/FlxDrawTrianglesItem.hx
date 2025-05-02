@@ -148,7 +148,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 
 		var verticesLength:Int = vertices.length;
 		var prevVerticesLength:Int = this.vertices.length;
-		var numberOfVertices:Int = Std.int(verticesLength / 2);
+		var numberOfVertices:Int = Std.int(verticesLength * .5);
 		var prevIndicesLength:Int = this.indices.length;
 		var prevUVTDataLength:Int = this.uvtData.length;
 		var prevColorsLength:Int = this.colors.length;
@@ -378,7 +378,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 
 	override function get_numVertices():Int
 	{
-		return Std.int(vertices.length / 2);
+		return Std.int(vertices.length * .5);
 	}
 
 	override function get_numTriangles():Int

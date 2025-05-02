@@ -573,8 +573,8 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T>
 			particle.elasticityRange.active = false;
 
 		// Set position
-		particle.x = FlxG.random.float(x, x + width) - particle.width / 2;
-		particle.y = FlxG.random.float(y, y + height) - particle.height / 2;
+		particle.x = FlxG.random.float(x, x + width) - particle.width * .5;
+		particle.y = FlxG.random.float(y, y + height) - particle.height * .5;
 
 		// Restart animation
 		if (particle.animation.curAnim != null)

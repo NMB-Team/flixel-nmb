@@ -112,8 +112,8 @@ class FlxSplash extends FlxState
 	{
 		super.onResize(Width, Height);
 
-		_sprite.x = (Width / 2);
-		_sprite.y = (Height / 2) - 20 * FlxG.game.scaleY;
+		_sprite.x = (Width * .5);
+		_sprite.y = (Height * .5) - 20 * FlxG.game.scaleY;
 
 		_text.width = Width / FlxG.game.scaleX;
 		_text.x = 0;

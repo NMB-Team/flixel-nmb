@@ -54,10 +54,10 @@ class StatsGraph extends Sprite
 		_axis.x = _labelWidth + 10;
 
 		maxLabel = DebuggerUtil.createTextField(0, 0, Stats.LABEL_COLOR, Stats.TEXT_SIZE);
-		curLabel = DebuggerUtil.createTextField(0, (_height / 2) - (Stats.TEXT_SIZE / 2), graphColor, Stats.TEXT_SIZE);
+		curLabel = DebuggerUtil.createTextField(0, (_height * .5) - (Stats.TEXT_SIZE * .5), graphColor, Stats.TEXT_SIZE);
 		minLabel = DebuggerUtil.createTextField(0, _height - Stats.TEXT_SIZE, Stats.LABEL_COLOR, Stats.TEXT_SIZE);
 
-		avgLabel = DebuggerUtil.createTextField(_labelWidth + 20, (_height / 2) - (Stats.TEXT_SIZE / 2) - 10, Stats.LABEL_COLOR, Stats.TEXT_SIZE);
+		avgLabel = DebuggerUtil.createTextField(_labelWidth + 20, (_height * .5) - (Stats.TEXT_SIZE * .5) - 10, Stats.LABEL_COLOR, Stats.TEXT_SIZE);
 		avgLabel.width = _width;
 		avgLabel.defaultTextFormat.align = TextFormatAlign.CENTER;
 		avgLabel.alpha = 0.5;

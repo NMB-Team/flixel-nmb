@@ -151,7 +151,7 @@ class FlxBitmapDataUtil
 
 	static inline function mergeColorComponent(source:Int, dest:Int, multiplier:Int):Int
 	{
-		return Std.int(((source * multiplier) + (dest * (256 - multiplier))) / 256);
+		return Std.int(((source * multiplier) + (dest * (256 - multiplier))) * .00390625);
 	}
 
 	/**

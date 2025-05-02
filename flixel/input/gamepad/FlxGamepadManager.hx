@@ -508,7 +508,7 @@ class FlxGamepadManager implements IFlxInputManager
 			{
 				// in legacy this returns a (-1, 1) range, but in flash/next it
 				// returns (0,1) so we normalize to (0, 1) for legacy target only
-				newAxis[i] = (newAxis[i] + 1) / 2;
+				newAxis[i] = (newAxis[i] + 1) * .5;
 			}
 			else if (isForStick)
 			{

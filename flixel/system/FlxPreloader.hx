@@ -79,16 +79,16 @@ class FlxPreloader extends FlxBasePreloader
 
 		_logo = new Sprite();
 		FlxAssets.drawLogo(_logo.graphics);
-		_logo.scaleX = _logo.scaleY = _height / 8 * 0.04;
-		_logo.x = (_width - _logo.width) / 2;
-		_logo.y = (_height - _logo.height) / 2;
+		_logo.scaleX = _logo.scaleY = _height * .125 * 0.04;
+		_logo.x = (_width - _logo.width) * .5;
+		_logo.y = (_height - _logo.height) * .5;
 		_buffer.addChild(_logo);
 		_logoGlow = new Sprite();
 		FlxAssets.drawLogo(_logoGlow.graphics);
 		_logoGlow.blendMode = BlendMode.SCREEN;
-		_logoGlow.scaleX = _logoGlow.scaleY = _height / 8 * 0.04;
-		_logoGlow.x = (_width - _logoGlow.width) / 2;
-		_logoGlow.y = (_height - _logoGlow.height) / 2;
+		_logoGlow.scaleX = _logoGlow.scaleY = _height * .125 * 0.04;
+		_logoGlow.x = (_width - _logoGlow.width) * .5;
+		_logoGlow.y = (_height - _logoGlow.height) * .5;
 		_buffer.addChild(_logoGlow);
 		var corners = createBitmap(GraphicLogoCorners, function(corners)
 		{
@@ -171,12 +171,12 @@ class FlxPreloader extends FlxBasePreloader
 		}
 		else if ((Percent > 0.8) && (Percent < 0.9))
 		{
-			_logoGlow.alpha = 1 - (Percent - 0.8) / 0.1;
+			_logoGlow.alpha = 1 - (Percent - 0.8) * 10;
 			_logo.alpha = 0;
 		}
 		else if (Percent > 0.9)
 		{
-			_buffer.alpha = 1 - (Percent - 0.9) / 0.1;
+			_buffer.alpha = 1 - (Percent - 0.9) * 10;
 		}
 	}
 }

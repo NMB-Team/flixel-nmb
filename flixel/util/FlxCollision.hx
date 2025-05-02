@@ -90,7 +90,7 @@ class FlxCollision
 			testMatrix.scale(contact.scale.x, contact.scale.y);
 
 			// translate it back!
-			testMatrix.translate(boundsA.width / 2, boundsA.height / 2);
+			testMatrix.translate(boundsA.width * .5, boundsA.height * .5);
 
 			// prepare an empty canvas
 			var testA2:BitmapData = FlxBitmapDataPool.get(Math.floor(boundsA.width), Math.floor(boundsA.height), true, FlxColor.TRANSPARENT, false);
@@ -104,7 +104,7 @@ class FlxCollision
 			testMatrix.translate(-target.origin.x, -target.origin.y);
 			testMatrix.rotate(target.angle * FlxAngle.TO_RAD);
 			testMatrix.scale(target.scale.x, target.scale.y);
-			testMatrix.translate(boundsB.width / 2, boundsB.height / 2);
+			testMatrix.translate(boundsB.width * .5, boundsB.height * .5);
 
 			var testB2:BitmapData = FlxBitmapDataPool.get(Math.floor(boundsB.width), Math.floor(boundsB.height), true, FlxColor.TRANSPARENT, false);
 			testB2.draw(testB, testMatrix, null, null, null, false);
@@ -136,7 +136,7 @@ class FlxCollision
 		var alphaIdx:Int = 0;
 
 		// check even pixels
-		for (i in 0...Math.ceil(overlapPixels / 2))
+		for (i in 0...Math.ceil(overlapPixels * .5))
 		{
 			alphaIdx = i << 3;
 			pixelsA.position = pixelsB.position = alphaIdx;

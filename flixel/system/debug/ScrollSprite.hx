@@ -195,7 +195,7 @@ class ScrollBar extends Sprite
 				handle.y = localY - offsetY;
 				onHandleMove();
 			case DRAG_BG:
-				handle.y = localY - handle.height / 2;
+				handle.y = localY - handle.height * .5;
 				onHandleMove();
 		}
 	}
