@@ -167,6 +167,15 @@ enum abstract FlxDirectionFlags(Int)
 	}
 
 	/**
+	 * Generates a FlxDirectonFlags instance from 2 bools
+	 * @since 6.2.0
+	 */
+	public static function fromSidesBools(left:Bool, right:Bool):FlxDirectionFlags
+	{
+		return (left ? LEFT : NONE) | (right ? RIGHT : NONE);
+	}
+
+	/**
 	 * Generates a FlxDirectonFlags instance from 4 bools
 	 * @since 5.0.0
 	 */
