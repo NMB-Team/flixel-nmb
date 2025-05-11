@@ -58,8 +58,8 @@ class FlxRandom
 	{
 		if (min == 0 && max == FlxMath.MAX_VALUE_INT && excludes == null)
 			return Std.int(generate());
-		else if (Min == Max)
-			return Min;
+		else if (min == max)
+			return min;
 		else
 		{
 			// Swap values if reversed
