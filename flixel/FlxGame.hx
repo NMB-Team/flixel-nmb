@@ -648,7 +648,7 @@ class FlxGame extends Sprite
 		FlxG.signals.postStateSwitch.dispatch();
 	}
 
-	function gameStart()
+	function gameStart():Void
 	{
 		FlxG.signals.postGameStart.dispatch();
 		_gameJustStarted = false;
