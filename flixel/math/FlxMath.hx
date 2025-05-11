@@ -114,6 +114,21 @@ class FlxMath
 	}
 
 	/**
+	 * Converts a per-frame linear interpolation factor to an exponential decay factor
+	 * based on the actual elapsed time.
+	 * 
+	 * Use this to apply consistent smoothing regardless of frame rate.
+	 * 
+	 * @param   lerp     The "strength" of the interpolation (larger = faster convergence)
+	 * @param   elapsed  The actual time that has passed, in seconds
+	 * @since 6.2.0
+	 */
+	public static function getExponentialDecayLerp(lerp:Float, elapsed:Float):Float
+	{
+		return Math.exp(-elapsed * lerp * 60);
+	}
+
+	/**
 	 * Checks if number is in defined range. A null bound means that side is unbounded.
 	 *
 	 * @param Value		Number to check.
