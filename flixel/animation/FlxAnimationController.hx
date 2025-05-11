@@ -49,24 +49,6 @@ class FlxAnimationController implements IFlxDestroyable
 	public var numFrames(get, never):Int;
 
 	/**
-	 * If assigned, will be called each time the current animation's frame changes
-	 * 
-	 * @param   animName     The name of the current animation
-	 * @param   frameNumber  The progress of the current animation, in frames
-	 * @param   frameIndex   The current animation's frameIndex in the tile sheet
-	 */
-	@:deprecated('callback is deprecated, use onFrameChange.add') // 5.9.0
-	public var callback:(animName:String, frameNumber:Int, frameIndex:Int)->Void;
-	
-	/**
-	 * If assigned, will be called each time the current animation finishes.
-	 * 
-	 * @param   animName  The name of the current animation
-	 */
-	@:deprecated('finishCallback is deprecated, use onFinish.add') // 5.9.0
-	public var finishCallback:(animName:String) -> Void;
-
-	/**
  	 * If assigned, will be called each time the current animation is played.
  	 *
  	 * playCallback is deprecated, use onPlay.add
@@ -172,7 +154,8 @@ class FlxAnimationController implements IFlxDestroyable
 
 		for (anim in controller._animations)
 		{
-			add(anim.name, anim.frames, anim.frameRate, anim.looped, anim.flipX, anim.flipY);
+			final a:FlxAnimation = add(anim.name, anim.frames, anim.frameRate, anim.looped, anim.flipX, anim.flipY);
+			a.offset.copyFrom(anim.offset);
 		}
 
 		if (controller._prerotated != null)
@@ -204,7 +187,6 @@ class FlxAnimationController implements IFlxDestroyable
 		clearPrerotated();
 	}
 
-	@:haxe.warning("-WDeprecated")
 	public function destroy():Void
 	{
 		FlxDestroyUtil.destroy(onFrameChange);
@@ -214,8 +196,6 @@ class FlxAnimationController implements IFlxDestroyable
 
 		destroyAnimations();
 		_animations = null;
-		callback = null;
-		finishCallback = null;
 		playCallback = null;
 		loopCallback = null;
 		_sprite = null;
@@ -265,12 +245,12 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   flipX       Whether the frames should be flipped horizontally.
 	 * @param   flipY       Whether the frames should be flipped vertically.
 	 */
-	public function add(name:String, frames:Array<Int>, frameRate = 30.0, looped = true, flipX = false, flipY = false):Void
+	public function add(name:String, frames:Array<Int>, frameRate = 30.0, looped = true, flipX = false, flipY = false):FlxAnimation
 	{
 		if (numFrames == 0)
 		{
 			FlxG.log.warn('Could not create animation: "$name", this sprite has no frames');
-			return;
+			return null;
 		}
 		
 		// Check _animations frames
@@ -301,9 +281,13 @@ class FlxAnimationController implements IFlxDestroyable
 			
 			if (hasInvalidFrames)
 				FlxG.log.warn('Could not add frames above ${numFrames - 1} to animation: "$name"');
+
+			return anim;
 		}
 		else
 			FlxG.log.warn('Could not create animation: "$name", no valid frames were given');
+
+		return null;
 	}
 
 	/**
@@ -717,6 +701,22 @@ class FlxAnimationController implements IFlxDestroyable
 	}
 
 	/**
+	 * Sets the X and Y offset for a specified animation.
+	 * 
+	 * @param name  The animation to offset.
+	 * @param x     The new X offset.
+	 * @param y     The new Y offset.
+	 */
+	public inline function setOffset(name:String, x:Float = 0, y:Float = 0)
+	{
+		final anim:FlxAnimation = _animations.get(name);
+		if (anim == null)
+			return;
+			
+		anim.offset.set(x, y);
+	}
+
+	/**
 	 * Changes to a random animation frame.
 	 * Useful for instantiating particles or other weird things.
 	 */
@@ -730,28 +730,16 @@ class FlxAnimationController implements IFlxDestroyable
 		frameIndex = FlxG.random.int(0, numFrames - 1);
 	}
 
-	@:haxe.warning("-WDeprecated")
 	function fireCallback():Void
 	{
 		final name = (_curAnim != null) ? (_curAnim.name) : null;
 		final number = (_curAnim != null) ? (_curAnim.curFrame) : frameIndex;
-		if (callback != null)
-		{
-			callback(name, number, frameIndex);
-		}
-		
 		onFrameChange.dispatch(name, number, frameIndex);
 	}
 
 	@:allow(flixel.animation)
-	@:haxe.warning("-WDeprecated")
 	function fireFinishCallback(?name:String):Void
 	{
-		if (finishCallback != null)
-		{
-			finishCallback(name);
-		}
-		
 		onFinish.dispatch(name);
 	}
 

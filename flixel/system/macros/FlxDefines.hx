@@ -24,8 +24,6 @@ private enum UserDefines
 	FLX_NO_SOUND_TRAY;
 	FLX_NO_FOCUS_LOST_SCREEN;
 	FLX_NO_DEBUG;
-	/* Removes FlxObject.health */
-	FLX_NO_HEALTH;
 	FLX_RECORD;
 	/* Defined in HaxeFlixel CI tests, do not use */
 	FLX_UNIT_TEST;
@@ -53,6 +51,8 @@ private enum UserDefines
 	 * any `</asset>` tags in your project.xml, to reduce your total memory
 	 */
 	FLX_CUSTOM_ASSETS_DIRECTORY;
+	FLX_CUSTOM_RUNTIME_ASSETS_DIRECTORY;
+	FLX_NO_VALIDATE_CUSTOM_ASSETS_DIRECTORY;
 	/**
 	 * Allows you to use sound paths with no extension, and the default sound type for that
 	 * target will be used. If enabled it will use ogg on all targets except flash, which uses mp3.
@@ -104,7 +104,6 @@ private enum HelperDefines
 	/* Used in HaxeFlixel CI, should have no effect on personal projects */
 	FLX_NO_CI;
 	FLX_SAVE;
-	FLX_HEALTH;
 	FLX_NO_TRACK_POOLS;
 	FLX_NO_TRACK_GRAPHICS;
 	FLX_OPENGL_AVAILABLE;
@@ -112,6 +111,8 @@ private enum HelperDefines
 	FLX_STANDARD_ASSETS_DIRECTORY;
 	/** The normalized, absolute path of `FLX_CUSTOM_ASSETS_DIRECTORY`, used internally */
 	FLX_CUSTOM_ASSETS_DIRECTORY_ABS;
+	/** Whether or not to validate the contents of `FLX_CUSTOM_ASSETS_DIRECTORY` on runtime */
+	FLX_VALIDATE_CUSTOM_ASSETS_DIRECTORY;
 	FLX_NO_DEFAULT_SOUND_EXT;
 	FLX_GENERIC;
 }
@@ -149,12 +150,12 @@ class FlxDefines
 		checkOpenFLVersions();
 		#end
 		
-		#if (flixel_addons < version("3.0.2"))
-		abortVersion("Flixel Addons", "3.0.2 or newer", "flixel-addons", (macro null).pos);
+		#if (flixel_addons < version("3.3.0"))
+		abortVersion("Flixel Addons", "3.3.0 or newer", "flixel-addons", (macro null).pos);
 		#end
 
-		#if (flixel_ui < version("2.4.0"))
-		abortVersion("Flixel UI", "2.4.0 or newer", "flixel-addons", (macro null).pos);
+		#if (flixel_ui < version("2.6.2"))
+		abortVersion("Flixel UI", "2.6.2 or newer", "flixel-addons", (macro null).pos);
 		#end
 	}
 
@@ -214,7 +215,6 @@ class FlxDefines
 		defineInversion(FLX_UNIT_TEST, FLX_NO_UNIT_TEST);
 		defineInversion(FLX_COVERAGE_TEST, FLX_NO_COVERAGE_TEST);
 		defineInversion(FLX_SWF_VERSION_TEST, FLX_NO_SWF_VERSION_TEST);
-		defineInversion(FLX_NO_HEALTH, FLX_HEALTH);
 		defineInversion(FLX_TRACK_POOLS, FLX_NO_TRACK_POOLS);
 		defineInversion(FLX_DEFAULT_SOUND_EXT, FLX_NO_DEFAULT_SOUND_EXT);
 		// defineInversion(FLX_TRACK_GRAPHICS, FLX_NO_TRACK_GRAPHICS); // special case
@@ -249,6 +249,9 @@ class FlxDefines
 		
 		if (!defined(FLX_NO_SAVE))
 			define(FLX_SAVE);
+
+		if (!defined(FLX_NO_VALIDATE_CUSTOM_ASSETS_DIRECTORY))
+			define(FLX_VALIDATE_CUSTOM_ASSETS_DIRECTORY);
 		
 		if (!defined("flash") || defined("flash11_8"))
 			define(FLX_GAMEINPUT_API);
@@ -300,15 +303,23 @@ class FlxDefines
 			}
 			else
 			{
-				// Todo: check sys targets
-				final rawDirectory = Path.normalize(definedValue(FLX_CUSTOM_ASSETS_DIRECTORY));
-				final directory = Path.normalize(rawDirectory);
-				final absPath = sys.FileSystem.absolutePath(directory);
-				if (!sys.FileSystem.isDirectory(directory) || directory == "1")
-				{
-					abort('FLX_CUSTOM_ASSETS_DIRECTORY must be a path to a directory, got "$rawDirectory"' + '\nabsolute path: $absPath', (macro null).pos);
+				if (!defined(FLX_CUSTOM_RUNTIME_ASSETS_DIRECTORY)) {
+					// Todo: check sys targets
+					final rawDirectory = Path.normalize(definedValue(FLX_CUSTOM_ASSETS_DIRECTORY));
+					final directory = Path.normalize(rawDirectory);
+					final absPath = sys.FileSystem.absolutePath(directory);
+					if (!sys.FileSystem.isDirectory(directory) || directory == "1")
+					{
+						abort('FLX_CUSTOM_ASSETS_DIRECTORY must be a path to a directory, got "$rawDirectory"' + '\nabsolute path: $absPath', (macro null).pos);
+					}
+					define(FLX_CUSTOM_ASSETS_DIRECTORY_ABS, absPath);
 				}
-				define(FLX_CUSTOM_ASSETS_DIRECTORY_ABS, absPath);
+				else
+				{
+					final rawDirectory = Path.normalize(definedValue(FLX_CUSTOM_ASSETS_DIRECTORY));
+					final directory = Path.normalize(rawDirectory);
+					define(FLX_CUSTOM_ASSETS_DIRECTORY_ABS, directory);
+				}
 			}
 		}
 		else // define boolean inversion

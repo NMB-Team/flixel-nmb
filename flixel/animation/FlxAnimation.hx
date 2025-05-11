@@ -99,7 +99,7 @@ class FlxAnimation extends FlxBaseAnimation
 	 * Optional offset of the animation's frames from the sprite's position.
 	 * This can be useful for creating animations that are not centered around the sprite.
 	 */
-	public var offset(default, null):FlxPoint = FlxPoint.get();
+	public var offset(default, null) = FlxPoint.get();
 
 	public var usesIndices:Bool = false;
 	

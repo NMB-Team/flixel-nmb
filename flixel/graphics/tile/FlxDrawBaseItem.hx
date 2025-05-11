@@ -17,11 +17,6 @@ class FlxDrawBaseItem<T>
 	 */
 	public static var drawCalls:Int = 0;
 
-	public inline static function blendToInt(blend:BlendMode):Int
-	{
-		return 0; // no blend mode support in drawQuads()
-	}
-
 	public var nextTyped:T;
 
 	public var next:FlxDrawBaseItem<T>;

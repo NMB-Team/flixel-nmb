@@ -776,8 +776,4 @@ enum FlxSaveStatus
 	 * There was an issue while loading
 	 */
 	LOAD_ERROR(type:LoadFailureType);
-	
-	@:noCompletion
-	@:deprecated("FlxSaveStatus.ERROR is never used, it has been replaced by SAVE_ERROR")
-	ERROR(msg:String);
 }

@@ -22,7 +22,7 @@ class WatchFrontEnd
 	 * This lets you see the value of the variable all the time.
 	 *
 	 * @param	object		A reference to any object in your game, e.g. Player or Robot or this.
-	 * @param	field		The name of the variable you want to watch, in quotes, as a string: e.g. "speed" or "health".
+	 * @param	field		The name of the variable you want to watch, in quotes, as a string: e.g. "speed".
 	 * @param	displayName	Optional, display your own string instead of the class name + variable name: e.g. "enemy count".
 	 */
 	public inline function add(object:Dynamic, field:String, ?displayName:String):Void
@@ -36,7 +36,7 @@ class WatchFrontEnd
 	 * Remove a variable from the watch list in the debugger.
 	 *
 	 * @param	object	A reference to any object in your game, e.g. Player or Robot or this.
-	 * @param	field	The name of the variable you want to watch, in quotes, as a string: e.g. "speed" or "health".
+	 * @param	field	The name of the variable you want to watch, in quotes, as a string: e.g. "speed".
 	 */
 	public inline function remove(object:Dynamic, field:String):Void
 	{

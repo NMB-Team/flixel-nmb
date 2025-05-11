@@ -28,13 +28,9 @@ class FlxRandom
 	public function new(?InitialSeed:Int)
 	{
 		if (InitialSeed != null)
-		{
 			initialSeed = InitialSeed;
-		}
 		else
-		{
 			resetInitialSeed();
-		}
 	}
 
 	/**
@@ -54,43 +50,37 @@ class FlxRandom
 	 * Will not return a number in the Excludes array, if provided.
 	 * Please note that large Excludes arrays can slow calculations.
 	 *
-	 * @param   Min        The minimum value that should be returned. 0 by default.
-	 * @param   Max        The maximum value that should be returned. 2,147,483,647 by default.
-	 * @param   Excludes   Optional array of values that should not be returned.
+	 * @param   min        The minimum value that should be returned. 0 by default.
+	 * @param   max        The maximum value that should be returned. 2,147,483,647 by default.
+	 * @param   excludes   Optional array of values that should not be returned.
 	 */
-	public function int(Min:Int = 0, Max:Int = FlxMath.MAX_VALUE_INT, ?Excludes:Array<Int>):Int
+	public function int(min:Int = 0, max:Int = FlxMath.MAX_VALUE_INT, ?excludes:Array<Int>):Int
 	{
-		if (Min == 0 && Max == FlxMath.MAX_VALUE_INT && Excludes == null)
-		{
+		if (min == 0 && max == FlxMath.MAX_VALUE_INT && excludes == null)
 			return Std.int(generate());
-		}
 		else if (Min == Max)
-		{
 			return Min;
-		}
 		else
 		{
 			// Swap values if reversed
-			if (Min > Max)
+			if (min > max)
 			{
-				Min = Min + Max;
-				Max = Min - Max;
-				Min = Min - Max;
+				min = min + max;
+				max = min - max;
+				min = min - max;
 			}
 
-			if (Excludes == null)
-			{
-				return Math.floor(Min + generate() / MODULUS * (Max - Min + 1));
-			}
+			if (excludes == null)
+				return Math.floor(min + generate() / MODULUS * (max - min + 1));
 			else
 			{
 				var result:Int = 0;
 
 				do
 				{
-					result = Math.floor(Min + generate() / MODULUS * (Max - Min + 1));
+					result = Math.floor(min + generate() / MODULUS * (max - min + 1));
 				}
-				while (Excludes.indexOf(result) >= 0);
+				while (excludes.indexOf(result) >= 0);
 
 				return result;
 			}
@@ -111,13 +101,9 @@ class FlxRandom
 		var result:Float = 0;
 
 		if (Min == 0 && Max == 1 && Excludes == null)
-		{
 			return generate() / MODULUS;
-		}
 		else if (Min == Max)
-		{
 			result = Min;
-		}
 		else
 		{
 			// Swap values if reversed.
@@ -129,9 +115,7 @@ class FlxRandom
 			}
 
 			if (Excludes == null)
-			{
 				result = Min + (generate() / MODULUS) * (Max - Min);
-			}
 			else
 			{
 				do
@@ -149,7 +133,7 @@ class FlxRandom
 	var _hasFloatNormalSpare:Bool = false;
 	var _floatNormalRand1:Float = 0;
 	var _floatNormalRand2:Float = 0;
-	var _twoPI:Float = Math.PI * 2;
+	final _twoPI:Float = Math.PI * 2;
 	var _floatNormalRho:Float = 0;
 
 	/**
@@ -167,15 +151,15 @@ class FlxRandom
 		if (_hasFloatNormalSpare)
 		{
 			_hasFloatNormalSpare = false;
-			var scale:Float = StdDev * _floatNormalRho;
+			final scale:Float = StdDev * _floatNormalRho;
 			return Mean + scale * _floatNormalRand2;
 		}
 
 		_hasFloatNormalSpare = true;
 
-		var theta:Float = _twoPI * (generate() / MODULUS);
+		final theta:Float = _twoPI * (generate() / MODULUS);
 		_floatNormalRho = Math.sqrt(-2 * Math.log(1 - (generate() / MODULUS)));
-		var scale:Float = StdDev * _floatNormalRho;
+		final scale:Float = StdDev * _floatNormalRho;
 
 		_floatNormalRand1 = Math.cos(theta);
 		_floatNormalRand2 = Math.sin(theta);
@@ -224,9 +208,7 @@ class FlxRandom
 		var pick:Int = 0;
 
 		for (i in WeightsArray)
-		{
 			totalWeight += i;
-		}
 
 		totalWeight = float(0, totalWeight);
 
@@ -265,14 +247,10 @@ class FlxRandom
 		if (Objects.length != 0)
 		{
 			if (WeightsArray == null)
-			{
 				WeightsArray = [for (i in 0...Objects.length) 1];
-			}
 
 			if (EndIndex == null)
-			{
 				EndIndex = Objects.length - 1;
-			}
 
 			StartIndex = Std.int(FlxMath.bound(StartIndex, 0, Objects.length - 1));
 			EndIndex = Std.int(FlxMath.bound(EndIndex, 0, Objects.length - 1));
@@ -286,9 +264,7 @@ class FlxRandom
 			}
 
 			if (EndIndex > WeightsArray.length - 1)
-			{
 				EndIndex = WeightsArray.length - 1;
-			}
 
 			_arrayFloatHelper = [for (i in StartIndex...EndIndex + 1) WeightsArray[i]];
 			selected = Objects[StartIndex + weightedPick(_arrayFloatHelper)];
@@ -309,11 +285,11 @@ class FlxRandom
 	#end
 	public function shuffle<T>(array:Array<T>):Void
 	{
-		var maxValidIndex = array.length - 1;
+		final maxValidIndex = array.length - 1;
 		for (i in 0...maxValidIndex)
 		{
-			var j = int(i, maxValidIndex);
-			var tmp = array[i];
+			final j = int(i, maxValidIndex);
+			final tmp = array[i];
 			array[i] = array[j];
 			array[j] = tmp;
 		}
@@ -431,9 +407,9 @@ class FlxRandom
 	 * @see Stephen K. Park and Keith W. Miller and Paul K. Stockmeyer (1988).
 	 *      "Technical Correspondence". Communications of the ACM 36 (7): 105–110.
 	 */
-	static inline var MULTIPLIER:Float = 48271.0;
+	static inline final MULTIPLIER:Float = 48271.0;
 
-	static inline var MODULUS:Int = FlxMath.MAX_VALUE_INT;
+	static inline final MODULUS:Int = FlxMath.MAX_VALUE_INT;
 
 	#if FLX_RECORD
 	/**

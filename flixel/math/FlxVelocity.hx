@@ -22,11 +22,11 @@ class FlxVelocity
 	 */
 	public static function moveTowardsObject(Source:FlxSprite, Dest:FlxSprite, Speed:Float = 60, MaxTime:Int = 0):Void
 	{
-		var a:Float = FlxAngle.angleBetween(Source, Dest);
+		final a:Float = FlxAngle.angleBetween(Source, Dest);
 
 		if (MaxTime > 0)
 		{
-			var d:Int = FlxMath.distanceBetween(Source, Dest);
+			final d:Int = FlxMath.distanceBetween(Source, Dest);
 
 			//	We know how many pixels we need to move, but how fast?
 			Speed = Std.int(d / (MaxTime * .001));
@@ -48,7 +48,7 @@ class FlxVelocity
 	 */
 	public static function accelerateTowardsObject(Source:FlxSprite, Dest:FlxSprite, Acceleration:Float, MaxSpeed:Float):Void
 	{
-		var a:Float = FlxAngle.angleBetween(Source, Dest);
+		final a:Float = FlxAngle.angleBetween(Source, Dest);
 		accelerateFromAngle(Source, a, Acceleration, MaxSpeed);
 	}
 
@@ -65,11 +65,11 @@ class FlxVelocity
 	 */
 	public static function moveTowardsMouse(Source:FlxSprite, Speed:Float = 60, MaxTime:Int = 0):Void
 	{
-		var a:Float = FlxAngle.angleBetweenMouse(Source);
+		final a:Float = FlxAngle.angleBetweenMouse(Source);
 
 		if (MaxTime > 0)
 		{
-			var d:Int = FlxMath.distanceToMouse(Source);
+			final d:Int = FlxMath.distanceToMouse(Source);
 
 			//	We know how many pixels we need to move, but how fast?
 			Speed = Std.int(d / (MaxTime * .001));
@@ -93,11 +93,11 @@ class FlxVelocity
 	 */
 	public static function moveTowardsTouch(Source:FlxSprite, Touch:FlxTouch, Speed:Float = 60, MaxTime:Int = 0):Void
 	{
-		var a:Float = FlxAngle.angleBetweenTouch(Source, Touch);
+		final a:Float = FlxAngle.angleBetweenTouch(Source, Touch);
 
 		if (MaxTime > 0)
 		{
-			var d:Int = FlxMath.distanceToTouch(Source, Touch);
+			final d:Int = FlxMath.distanceToTouch(Source, Touch);
 
 			//	We know how many pixels we need to move, but how fast?
 			Speed = Std.int(d / (MaxTime * .001));
@@ -120,7 +120,7 @@ class FlxVelocity
 	 */
 	public static function accelerateTowardsMouse(Source:FlxSprite, Acceleration:Float, MaxSpeed:Float):Void
 	{
-		var a:Float = FlxAngle.angleBetweenMouse(Source);
+		final a:Float = FlxAngle.angleBetweenMouse(Source);
 
 		accelerateFromAngle(Source, a, Acceleration, MaxSpeed);
 	}
@@ -139,7 +139,7 @@ class FlxVelocity
 	 */
 	public static function accelerateTowardsTouch(Source:FlxSprite, Touch:FlxTouch, Acceleration:Float, MaxSpeed:Float):Void
 	{
-		var a:Float = FlxAngle.angleBetweenTouch(Source, Touch);
+		final a:Float = FlxAngle.angleBetweenTouch(Source, Touch);
 
 		accelerateFromAngle(Source, a, Acceleration, MaxSpeed);
 	}
@@ -158,11 +158,11 @@ class FlxVelocity
 	 */
 	public static function moveTowardsPoint(Source:FlxSprite, Target:FlxPoint, Speed:Float = 60, MaxTime:Int = 0):Void
 	{
-		var a:Float = FlxAngle.angleBetweenPoint(Source, Target);
+		final a:Float = FlxAngle.angleBetweenPoint(Source, Target);
 
 		if (MaxTime > 0)
 		{
-			var d:Int = FlxMath.distanceToPoint(Source, Target);
+			final d:Int = FlxMath.distanceToPoint(Source, Target);
 
 			//	We know how many pixels we need to move, but how fast?
 			Speed = Std.int(d / (MaxTime * .001));
@@ -186,7 +186,7 @@ class FlxVelocity
 	 */
 	public static function accelerateTowardsPoint(Source:FlxSprite, Target:FlxPoint, Acceleration:Float, MaxSpeed:Float):Void
 	{
-		var a:Float = FlxAngle.angleBetweenPoint(Source, Target);
+		final a:Float = FlxAngle.angleBetweenPoint(Source, Target);
 
 		accelerateFromAngle(Source, a, Acceleration, MaxSpeed);
 
@@ -202,7 +202,7 @@ class FlxVelocity
 	 */
 	public static inline function velocityFromAngle(Angle:Float, Speed:Float):FlxPoint
 	{
-		var a:Float = FlxAngle.asRadians(Angle);
+		final a:Float = FlxAngle.asRadians(Angle);
 
 		return FlxPoint.get(Math.cos(a) * Speed, Math.sin(a) * Speed);
 	}
@@ -232,35 +232,23 @@ class FlxVelocity
 	public static function computeVelocity(Velocity:Float, Acceleration:Float, Drag:Float, Max:Float, Elapsed:Float):Float
 	{
 		if (Acceleration != 0)
-		{
 			Velocity += Acceleration * Elapsed;
-		}
 		else if (Drag != 0)
 		{
-			var drag:Float = Drag * Elapsed;
+			final drag:Float = Drag * Elapsed;
 			if (Velocity - drag > 0)
-			{
 				Velocity -= drag;
-			}
 			else if (Velocity + drag < 0)
-			{
 				Velocity += drag;
-			}
 			else
-			{
 				Velocity = 0;
-			}
 		}
 		if ((Velocity != 0) && (Max != 0))
 		{
 			if (Velocity > Max)
-			{
 				Velocity = Max;
-			}
 			else if (Velocity < -Max)
-			{
 				Velocity = -Max;
-			}
 		}
 		return Velocity;
 	}
@@ -277,8 +265,8 @@ class FlxVelocity
 	 */
 	public static inline function accelerateFromAngle(source:FlxSprite, radians:Float, acceleration:Float, maxSpeed:Float, resetVelocity:Bool = true):Void
 	{
-		var sinA = Math.sin(radians);
-		var cosA = Math.cos(radians);
+		final sinA = Math.sin(radians);
+		final cosA = Math.cos(radians);
 
 		if (resetVelocity)
 			source.velocity.set(0, 0);

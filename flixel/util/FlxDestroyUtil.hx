@@ -1,9 +1,9 @@
 package flixel.util;
 
+import flixel.util.FlxPool.IFlxPooled;
 import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
-import flixel.util.FlxPool.IFlxPooled;
 
 @:access(openfl.display.BitmapData) class FlxDestroyUtil
 {
@@ -42,6 +42,20 @@ import flixel.util.FlxPool.IFlxPooled;
 	public static inline function put<T:IFlxPooled>(object:IFlxPooled):T
 	{
 		if (object != null) object.put();
+		return null;
+	}
+
+	/**
+	 * Checks if an object is not null before calling `putWeak`, always returns `null`
+	 *
+	 * @param   object  An `IFlxPooled` object that will be put back into the pool if it's not `null`
+	 * @return  `null`
+	 * @since 6.2.0
+	 */
+	public static function putWeak<T:IFlxPooled>(object:IFlxPooled):T
+	{
+		if (object != null)
+			object.putWeak();
 		return null;
 	}
 

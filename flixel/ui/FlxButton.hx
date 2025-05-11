@@ -21,16 +21,16 @@ import flixel.input.touch.FlxTouch;
 enum abstract FlxButtonState(Int) to Int
 {
 	/** The button is not highlighted or pressed */
-	var NORMAL = 0;
+	final NORMAL = 0;
 	
 	/** The button is selected, usually meaning the mouse is hovering over it */
-	var HIGHLIGHT = 1;
+	final HIGHLIGHT = 1;
 	
 	/** The button is being pressed usually by a mouse */
-	var PRESSED = 2;
+	final PRESSED = 2;
 	
 	/** The button is not interactible */
-	var DISABLED = 3;
+	final DISABLED = 3;
 	
 	public function toInt()
 	{
@@ -54,34 +54,6 @@ enum abstract FlxButtonState(Int) to Int
  */
 class FlxButton extends FlxTypedButton<FlxText>
 {
-	/**
-	 * Used with public variable status, means not highlighted or pressed.
-	 */
-	@:dox(hide) @:noCompletion
-	@:deprecated("FlxButton.NORMAL is deprecated, use FlxButtonState.NORMAL")
-	public static inline var NORMAL = FlxButtonState.NORMAL;
-
-	/**
-	 * Used with public variable status, means highlighted (usually from mouse over).
-	 */
-	@:dox(hide) @:noCompletion
-	@:deprecated("FlxButton.HIGHLIGHT is deprecated, use FlxButtonState.HIGHLIGHT")
-	public static inline var HIGHLIGHT = FlxButtonState.HIGHLIGHT;
-
-	/**
-	 * Used with public variable status, means pressed (usually from mouse click).
-	 */
-	@:dox(hide) @:noCompletion
-	@:deprecated("FlxButton.PRESSED is deprecated, use FlxButtonState.PRESSED")
-	public static inline var PRESSED = FlxButtonState.PRESSED;
-
-	/**
-	 * Used with public variable status, means non interactible.
-	 */
-	@:dox(hide) @:noCompletion
-	@:deprecated("FlxButton.DISABLED is deprecated, use FlxButtonState.DISABLED")
-	public static inline var DISABLED = FlxButtonState.DISABLED;
-
 	/**
 	 * Shortcut to setting label.text
 	 */
@@ -173,13 +145,6 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	 * Multiplied with the button's `alpha`.
 	 */
 	public var labelAlphas:Array<Float> = [0.8, 1.0, 0.5, 0.3];
-
-	/**
-	 * What animation should be played for each status.
-	 * Default is ["normal", "highlight", "pressed"].
-	 */
-	@:deprecated("statusAnimations is deprecated, use status.toString(), instead")
-	public var statusAnimations:Array<String> = ["normal", "highlight", "pressed", "disabled"];
 
 	/**
 	 * Whether you can press the button simply by releasing the touch / mouse button over it (default).

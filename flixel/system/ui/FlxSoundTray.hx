@@ -39,7 +39,7 @@ class FlxSoundTray extends Sprite
 	 */
 	public var _bars:Array<Bitmap>;
 
-	var _sound:FlxSound = new FlxSound();
+	final _sound = new FlxSound();
 
 	/**
 	 * How wide the sound tray background is.

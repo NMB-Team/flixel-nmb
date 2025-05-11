@@ -64,6 +64,12 @@ class FlxBasic implements IFlxDestroyable
 	public var cameras(get, set):Array<FlxCamera>;
 
 	/**
+	 * The z-index of this object, used for dynamically
+	 * layering objects after adding them to groups.
+	 */
+	public var zIndex:Int = 0;
+
+	/**
 	 * Enum that informs the collision system which type of object this is (to avoid expensive type casting).
 	 */
 	@:noCompletion
@@ -261,11 +267,11 @@ class FlxBasic implements IFlxDestroyable
  */
 enum abstract FlxType(ByteInt)
 {
-	var NONE = 0;
-	var OBJECT = 1;
-	var GROUP = 2;
-	var TILEMAP = 3;
-	var SPRITEGROUP = 4;
+	final NONE = 0;
+	final OBJECT = 1;
+	final GROUP = 2;
+	final TILEMAP = 3;
+	final SPRITEGROUP = 4;
 }
 
 interface IFlxBasic

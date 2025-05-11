@@ -13,8 +13,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxMatrix;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.system.FlxAssets.FlxShader;
+import flixel.system.FlxAssets;
 import flixel.util.FlxBitmapDataUtil;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
@@ -276,25 +275,34 @@ class FlxSprite extends FlxObject
 	 */
 	public var color(default, set):FlxColor = FlxColor.WHITE;
 
-	public var colorTransform(default, null):ColorTransform;
+	/**
+	 * The color effects of this sprite, changes to `color` or `alplha` will be reflected here
+	 */
+	public var colorTransform(default, null) = new ColorTransform();
 
 	public var onDraw(default, set):FlxSprite->Void;
+
 	public function set_onDraw(drawFunc:FlxSprite->Void):FlxSprite->Void {
 		__drawOverrided = drawFunc != null;
 		return onDraw = drawFunc;
 	}
+
 	@:noCompletion public var __drawOverrided:Bool = false; // Avoid null checks
 
 	/**
 	 * Whether or not to use a `ColorTransform` set via `setColorTransform()`.
 	 */
+	@:deprecated("useColorTransform is deprecated, use hasColorTransform(), instead") // 6.1.0
 	public var useColorTransform(default, null):Bool = false;
 
 	/**
-	 * Clipping rectangle for this sprite.
-	 * Changing the rect's properties directly doesn't have any effect,
-	 * reassign the property to update it (`sprite.clipRect = sprite.clipRect;`).
-	 * Set to `null` to discard graphic frame clipping.
+	 * Clipping rectangle for this sprite's frame. When `null`, the entire
+ 	 * frame is shown, otherwise `x`, `y`, `width` and `height` determine which portion
+ 	 * of the frame is shown. Expected values are within (`0`,`0`) and (`frameWidth`,`frameHeight`),
+ 	 * extending the rect beyond the frame will not extend the graphic.
+ 	 * 
+ 	 * Fields like position `scale`, `offset`, `angle`, `flipX` and `flipY` have no effect and are
+ 	 * applied after the frame is clipped. Use `clipToWorldBounds` or `clipToViewBounds` to convert
 	 */
 	public var clipRect(default, set):FlxRect;
 	var _lastClipRect = FlxRect.get(Math.NaN);
@@ -314,7 +322,7 @@ class FlxSprite extends FlxObject
 	 * GLSL shader for this sprite. Avoid changing it frequently as this is a costly operation.
 	 * @since 4.1.0
 	 */
-	public var shader:FlxShader;
+	public var shader(default, set):FlxShader;
 
 	/**
 	 * Whether the shader should be enabled.
@@ -445,7 +453,6 @@ class FlxSprite extends FlxObject
 		scale = FlxPoint.get(1, 1);
 		_halfSize = FlxPoint.get();
 		_matrix = new FlxMatrix();
-		colorTransform = new ColorTransform();
 		_scaledOrigin = new FlxPoint();
 		_scaledFrameOffset = new FlxPoint();
 	}
@@ -482,7 +489,6 @@ class FlxSprite extends FlxObject
 		_flashRect2 = null;
 		_flashPointZero = null;
 		_matrix = null;
-		colorTransform = null;
 		blend = null;
 
 		frames = null;
@@ -491,6 +497,7 @@ class FlxSprite extends FlxObject
 		isFrameNull = true;
 		_frameGraphic = FlxDestroyUtil.destroy(_frameGraphic);
 
+		@:bypassAccessor clipRect = FlxDestroyUtil.put(clipRect);
 		shader = null;
 	}
 
@@ -730,7 +737,7 @@ class FlxSprite extends FlxObject
  	 *                   it is used as a prefix to find a new unique name like `"Key3"`.
  	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
  	 */
-	public function makeSolid(Width:Int, Height:Int, Color:FlxColor = FlxColor.WHITE, Unique:Bool = false, ?Key:String):FlxSprite
+	public function makeSolid(Width:Float, Height:Float, Color:FlxColor = FlxColor.WHITE, Unique:Bool = false, ?Key:String):FlxSprite
 	{
 		var graph:FlxGraphic = FlxG.bitmap.create(1, 1, Color, Unique, Key);
 		frames = graph.imageFrame;
@@ -809,6 +816,147 @@ class FlxSprite extends FlxObject
 			scale.x = newScaleY;
 		else if (height <= 0)
 			scale.y = newScaleX;
+	}
+
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered,
+	 * will be clipped to the given world coordinates.
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToWorldRect(x:Float, y:Float, width:Float, height:Float)
+	{
+		clipToWorldBounds(x, y, x + width, y + height);
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered,
+	 * will be clipped to the given screen rectangle.
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToWorldRect(rect:FlxRect)
+	{
+		clipToWorldBounds(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered,
+	 * will be clipped to the given world coordinates.
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	public function clipToWorldBounds(left:Float, top:Float, right:Float, bottom:Float)
+	{
+		if (clipRect == null)
+			clipRect = new FlxRect();
+			
+		final p1 = worldToFramePosition(left, top);
+		final p2 = worldToFramePosition(right, bottom);
+		
+		clipRect.setBoundsAbs(p1.x, p1.y, p2.x, p2.y);
+		p1.put();
+		p2.put();
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered, will be clipped to the given
+	 * world coordinates. Same as `clipToWorldBounds` but never uses a camera, therefore
+	 * `scrollFactor` is ignored
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToWorldRectSimple(x:Float, y:Float, width:Float, height:Float)
+	{
+		clipToWorldBoundsSimple(x, y, x + width, y + height);
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered, will be clipped to the given
+	 * world coordinates. Same as `clipToWorldBounds` but never uses a camera, therefore
+	 * `scrollFactor` is ignored
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToWorldRectSimple(rect:FlxRect)
+	{
+		clipToWorldBoundsSimple(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered, will be clipped to the given
+	 * world coordinates. Same as `clipToWorldBounds` but never uses a camera, therefore
+	 * `scrollFactor` is ignored
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	public function clipToWorldBoundsSimple(left:Float, top:Float, right:Float, bottom:Float)
+	{
+		if (clipRect == null)
+			clipRect = new FlxRect();
+			
+		final p1 = worldToFrameSimpleHelper(left, top);
+		final p2 = worldToFrameSimpleHelper(right, bottom);
+		
+		clipRect.setBoundsAbs(p1.x, p1.y, p2.x, p2.y);
+		p1.put();
+		p2.put();
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered,
+	 * will be clipped to the given screen coordinates.
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToViewRect(x:Float, y:Float, width:Float, height:Float, ?camera:FlxCamera)
+	{
+		clipToViewBounds(x, y, x + width, y + height, camera);
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered, will be clipped to the given
+	 * screen rectangle. If `clipRect` is `null` a new instance is created
+	 * 
+	 * **NOTE:** `clipRect` is not set to the passed in rect instance
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	overload public inline extern function clipToViewRect(rect:FlxRect, ?camera:FlxCamera)
+	{
+		clipToViewBounds(rect.left, rect.top, rect.right, rect.bottom, camera);
+		rect.putWeak();
+	}
+	
+	/**
+	 * Sets this sprite's `clipRect` so that, when rendered,
+	 * will be clipped to the given screen coordinates.
+	 * 
+	 * **NOTE:** Does not work with most angles
+	 * @since 6.2.0
+	 */
+	public function clipToViewBounds(left:Float, top:Float, right:Float, bottom:Float, ?camera:FlxCamera)
+	{
+		if (clipRect == null)
+			clipRect = new FlxRect();
+			
+		if (camera != null)
+			camera = getDefaultCamera();
+			
+		final p1 = viewToFramePosition(left, top, camera);
+		final p2 = viewToFramePosition(right, bottom, camera);
+		
+		clipRect.setBoundsAbs(p1.x, p1.y, p2.x, p2.y);
+		p1.put();
+		p2.put();
 	}
 
 	/**
@@ -893,7 +1041,9 @@ class FlxSprite extends FlxObject
 			__drawOverrided = true;
 			return;
 		}
+
 		checkClipRect();
+
 		if (isFrameNull)
 			checkEmptyFrame();
 
@@ -1145,32 +1295,44 @@ class FlxSprite extends FlxObject
 	 * @param   blueOffset        The offset for the blue color channel value, in the range from `-255` to `255`.
 	 * @param   alphaOffset       The offset for alpha transparency channel value, in the range from `-255` to `255`.
 	 */
+	@:haxe.warning("-WDeprecated")
 	public function setColorTransform(redMultiplier = 1.0, greenMultiplier = 1.0, blueMultiplier = 1.0, alphaMultiplier = 1.0,
 			redOffset = 0.0, greenOffset = 0.0, blueOffset = 0.0, alphaOffset = 0.0):Void
 	{
-		@:bypassAccessor color = FlxColor.fromRGBFloat(redMultiplier, greenMultiplier, blueMultiplier, 0);
+		@:bypassAccessor color = FlxColor.fromRGBFloat(redMultiplier, greenMultiplier, blueMultiplier, 1.0);
 		@:bypassAccessor alpha = alphaMultiplier;
 
 		colorTransform.setMultipliers(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier);
 		colorTransform.setOffsets(redOffset, greenOffset, blueOffset, alphaOffset);
 
-		useColorTransform = alpha != 1 || color != 0xffffff || colorTransform.hasRGBAOffsets();
+		useColorTransform = hasColorTransformRaw();
 		dirty = true;
 	}
 	
+	@:haxe.warning("-WDeprecated")
 	function updateColorTransform():Void
 	{
-		if (colorTransform == null)
-			return;
-
-		useColorTransform = alpha != 1 || color.rgb != 0xffffff;
-		if (useColorTransform)
-			colorTransform.setMultipliers(color.redFloat, color.greenFloat, color.blueFloat, alpha);
-		else
-			colorTransform.setMultipliers(1, 1, 1, 1);
-
-		useColorTransform = useColorTransform || colorTransform.hasRGBAOffsets();
+		colorTransform.setMultipliers(color.redFloat, color.greenFloat, color.blueFloat, alpha);
+		useColorTransform = hasColorTransformRaw();
 		dirty = true;
+	}
+
+	/**
+	 * Whether this sprite has a color transform, menaing any of the following: less than full
+	 * `alpha`, a `color` tint, or a `colorTransform` whos values are not the default.
+	 */
+	@:haxe.warning("-WDeprecated")
+	public function hasColorTransform()
+	{
+		return useColorTransform || hasColorTransformRaw();
+	}
+	
+	/**
+	 * Helper for the non-deprecated component of `hasColorTransform`
+	 */
+	function hasColorTransformRaw()
+	{
+		return alpha != 1 || color.rgb != 0xffffff || colorTransform.hasRGBAOffsets();
 	}
 
 	/**
@@ -1193,10 +1355,34 @@ class FlxSprite extends FlxObject
 		// point is outside of the graphic
 		return false;
 	}
+
+	/**
+	 * Helper to apply the sprite's color or colorTransform to the specified color
+	 */
+	function transformColor(colorIn:FlxColor):FlxColor
+	{
+		final colorStr = color.toHexString();
+		if (useColorTransform)
+		{
+			final ct = colorTransform;
+			return FlxColor.fromRGB(Math.round(colorIn.red * ct.redMultiplier + ct.redOffset),
+				Math.round(colorIn.green * ct.greenMultiplier + ct.greenOffset), Math.round(colorIn.blue * ct.blueMultiplier + ct.blueOffset),
+				Math.round(colorIn.alpha * alpha));
+		}
+		
+		if (color.rgb != 0xffffff)
+		{
+			final result = FlxColor.fromRGBFloat(colorIn.redFloat * color.redFloat, colorIn.greenFloat * color.greenFloat,
+				colorIn.blueFloat * color.blueFloat, colorIn.alphaFloat * alpha);
+			return result;
+		}
+		
+		return colorIn;
+	}
 	
 	/**
 	 * Determines which of this sprite's pixels are at the specified world coordinate, if any.
-	 * Factors in `scale`, `angle`, `offset`, `origin`, and `scrollFactor`.
+	 * Factors in `scale`, `angle`, `offset`, `origin`, `scrollFactor`, `flipX` and `flipY`.
 	 * 
 	 * @param  worldPoint  The point in world space
 	 * @param  camera      The camera, used for `scrollFactor`. If `null`, `getDefaultCamera()` is used.
@@ -1205,16 +1391,15 @@ class FlxSprite extends FlxObject
 	 */
 	public function getPixelAt(worldPoint:FlxPoint, ?camera:FlxCamera):Null<FlxColor>
 	{
-		transformWorldToPixels(worldPoint, camera, _point);
-		
-		// point is inside the graphic
-		if (_point.x >= 0 && _point.x <= frameWidth && _point.y >= 0 && _point.y <= frameHeight)
+		final point = worldToFramePosition(worldPoint, camera, FlxPoint.weak());
+		final overlaps = point.x >= 0 && point.x <= frameWidth && point.y >= 0 && point.y <= frameHeight;
+		if (!overlaps)
 		{
-			var frameData:BitmapData = updateFramePixels();
-			return frameData.getPixel32(Std.int(_point.x), Std.int(_point.y));
+			point.put();
+			return null;
 		}
 		
-		return null;
+		return transformColor(frame.getPixelAt(point));
 	}
 	
 	/**
@@ -1228,27 +1413,25 @@ class FlxSprite extends FlxObject
 	 */
 	public function getPixelAtScreen(screenPoint:FlxPoint, ?camera:FlxCamera):Null<FlxColor>
 	{
-		transformScreenToPixels(screenPoint, camera, _point);
+		final point = viewToFramePosition(screenPoint, camera);
 		
-		// point is inside the graphic
-		if (_point.x >= 0 && _point.x <= frameWidth && _point.y >= 0 && _point.y <= frameHeight)
-		{
-			var frameData:BitmapData = updateFramePixels();
-			return frameData.getPixel32(Std.int(_point.x), Std.int(_point.y));
-		}
+		final overlaps = point.x >= 0 && point.x <= frameWidth && point.y >= 0 && point.y <= frameHeight;
+		final result = overlaps ? frame.getPixelAt(point) : null;
 		
-		return null;
+		point.put();
+		return result;
 	}
 	
 	/**
-	 * Converts the point from world coordinates to this sprite's pixel coordinates where (0,0)
-	 * is the top left of the graphic.
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame.
 	 * Factors in `scale`, `angle`, `offset`, `origin`, and `scrollFactor`.
 	 * 
 	 * @param   worldPoint  The world coordinates.
 	 * @param   camera      The camera, used for `scrollFactor`. If `null`, `getDefaultCamera()` is used.
 	 * @param   result      Optional arg for the returning point
 	 */
+	@:deprecated("transformWorldToPixels is deprecated, use worldToFramePosition")
 	public function transformWorldToPixels(worldPoint:FlxPoint, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
 	{
 		if (camera == null)
@@ -1260,13 +1443,16 @@ class FlxSprite extends FlxObject
 	}
 	
 	/**
-	 * Converts the point from world coordinates to this sprite's pixel coordinates where (0,0)
-	 * is the top left of the graphic. Same as `worldToPixels` but never uses a camera,
-	 * therefore `scrollFactor` is ignored
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame. Same as `worldToFramePosition` but never uses a camera,
+	 * therefore `scrollFactor` is ignored.
+	 * 
+	 * **Note:** the term "pixels" in this title is a misnomer, this transforms to frame coordinates.
 	 * 
 	 * @param   worldPoint  The world coordinates.
 	 * @param   result      Optional arg for the returning point
 	 */
+	@:deprecated("transformWorldToPixelsSimple is deprecated, use worldToFramePositionSimple")
 	public function transformWorldToPixelsSimple(worldPoint:FlxPoint, ?result:FlxPoint):FlxPoint
 	{
 		result = getPosition(result);
@@ -1287,19 +1473,22 @@ class FlxSprite extends FlxObject
 	}
 
 	/**
-	 * Converts the point from screen coordinates to this sprite's pixel coordinates where (0,0)
-	 * is the top left of the graphic.
-	 * Factors in `scale`, `angle`, `offset`, `origin`, and `scrollFactor`.
+	 * Converts the point from screen coordinates to this sprite's frame coordinates where (0,0)
+ 	 * is the top left of the frame.
+ 	 * Factors in `scale`, `angle`, `offset`, `origin`, and `scrollFactor`
 	 * 
-	 * @param   screenPoint  The screen coordinates
-	 * @param   camera       The desired "screen" coordinate space. If `null`, `getDefaultCamera()` is used.
-	 * @param   result       Optional arg for the returning point
+	 * **Note:** the term "pixels" in this title is a misnomer, this transforms to frame coordinates.
+ 	 * 
+ 	 * @param   screenPos  The screen coordinates
+ 	 * @param   camera     The desired "screen" space. If `null`, `getDefaultCamera()` is used
+ 	 * @param   result     Optional arg for the returning point
 	 */
+	@:deprecated("transformScreenToPixels is deprecated, use screenToFramePosition")
 	public function transformScreenToPixels(screenPoint:FlxPoint, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
 	{
 		result = getScreenPosition(result, camera);
 		
-		result.subtract(screenPoint.x, screenPoint.y);
+		result.subtract(screenPos.x, screenPos.y);
 		result.negate();
 		result.add(offset);
 		if (animation.curAnim != null)
@@ -1309,8 +1498,165 @@ class FlxSprite extends FlxObject
 		result.degrees -= angle;
 		result.add(origin);
 		
-		screenPoint.putWeak();
+		screenPos.putWeak();
+		return result;
+	}
+
+
+	/**
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame. Factors in `scale`, `angle`, `offset`, `origin`,
+	 * `scrollFactor`, `flipX` and `flipY`.
+	 * 
+	 * @param   worldPos  The world coordinates
+	 * @param   camera    The camera, used for `scrollFactor`. If `null`, `getDefaultCamera()` is used
+	 * @param   result    Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function worldToFramePosition(worldPos:FlxPoint, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		result = worldToFrameHelper(worldPos.x, worldPos.y, camera, result);
+		worldPos.putWeak();
+		return result;
+	}
+	
+	/**
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame. Factors in `scale`, `angle`, `offset`, `origin`,
+	 * `scrollFactor`, `flipX` and `flipY`.
+	 * 
+	 * @param   worldX    The world coordinates
+	 * @param   worldY    The world coordinates
+	 * @param   camera    The camera, used for `scrollFactor`. If `null`, `getDefaultCamera()` is used
+	 * @param   result    Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function worldToFramePosition(worldX:Float, worldY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		return worldToFrameHelper(worldX, worldY, camera, result);
+	}
+	
+	function worldToFrameHelper(worldX:Float, worldY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		if (camera == null)
+			camera = getDefaultCamera();
+			
+		// get the screen pos without scrollFactor, then get the world, WITH scrollFactor
+		return viewToFrameHelper(camera.worldToViewX(worldX), camera.worldToViewY(worldY), camera, result);
+	}
+	
+	/**
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame. Same as `worldToFrameCoord` but never uses a camera,
+	 * therefore `scrollFactor` is ignored
+	 * 
+	 * @param   worldPos  The world coordinates.
+	 * @param   result    Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function worldToFramePositionSimple(worldPos:FlxPoint, ?result:FlxPoint):FlxPoint
+	{
+		result = worldToFrameSimpleHelper(worldPos.x, worldPos.y, result);
+		worldPos.putWeak();
+		return result;
+	}
+	
+	/**
+	 * Converts the point from world coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the frame. Same as `worldToFrameCoord` but never uses a camera,
+	 * therefore `scrollFactor` is ignored
+	 * 
+	 * @param   worldX    The world coordinates.
+	 * @param   worldY    The world coordinates.
+	 * @param   result    Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function worldToFramePositionSimple(worldX:Float, worldY:Float, ?result:FlxPoint):FlxPoint
+	{
+		return worldToFrameSimpleHelper(worldX, worldY, result);
+	}
+
+	function worldToFrameSimpleHelper(worldX:Float, worldY:Float, ?result:FlxPoint):FlxPoint
+	{
+		if (result == null)
+			result = FlxPoint.get();
+			
+		result.set(worldX - x, worldY - y);
+		result.add(offset);
+		result.subtract(origin);
+		result.scale(1 / scale.x, 1 / scale.y);
+		result.degrees -= angle;
+		result.add(origin);
 		
+		final animFlipX = animation.curAnim != null && animation.curAnim.flipX;
+		if (flipX != animFlipX)
+			result.x = frameWidth - result.x;
+			
+		final animFlipY = animation.curAnim != null && animation.curAnim.flipY;
+		if (flipY != animFlipY)
+			result.y = frameHeight - result.y;
+			
+		return result;
+	}
+
+	/**
+	 * Converts the point from camera coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the camera's frame. Factors in `scale`, `angle`, `offset`, `origin`,
+	 * `scrollFactor`, `flipX` and `flipY`.
+	 * 
+	 * @param   viewPoint  The coordinates in the camera's view
+	 * @param   camera     The desired "screen" space. If `null`, `getDefaultCamera()` is used
+	 * @param   result     Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function viewToFramePosition(viewPoint:FlxPoint, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		result = viewToFrameHelper(viewPoint.x, viewPoint.y, camera, result);
+		viewPoint.putWeak();
+		return result;
+	}
+
+	/**
+	 * Converts the point from camera coordinates to this sprite's frame coordinates where (0,0)
+	 * is the top left of the camera's frame. Factors in `scale`, `angle`, `offset`, `origin`,
+	 * `scrollFactor`, `flipX` and `flipY`.
+	 * 
+	 * @param   viewX   The coordinates in the camera's view
+	 * @param   viewY   The coordinates in the camera's view
+	 * @param   camera  The desired "screen" space. If `null`, `getDefaultCamera()` is used
+	 * @param   result  Optional arg for the returning point
+	 * @since 6.2.0
+	 */
+	overload public inline extern function viewToFramePosition(viewX:Float, viewY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		return viewToFrameHelper(viewX, viewY, camera, result);
+	}
+	
+	function viewToFrameHelper(viewX:Float, viewY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		if (camera == null)
+			camera = this.getDefaultCamera();
+			
+		result = camera.viewToWorldPosition(viewX, viewY, scrollFactor, result);
+		result.subtract(x, y);
+		// return result;
+		
+		// result = getViewPosition(camera, result);
+		// result.set(viewX - result.x, viewY - result.y);
+		result.add(offset);
+		result.subtract(origin);
+		result.scale(1 / scale.x, 1 / scale.y);
+		result.degrees -= angle;
+		result.add(origin);
+
+		final animFlipX = animation.curAnim != null && animation.curAnim.flipX;
+		if (flipX != animFlipX)
+			result.x = frameWidth - result.x;
+			
+		final animFlipY = animation.curAnim != null && animation.curAnim.flipY;
+		if (flipY != animFlipY)
+			result.y = frameHeight - result.y;
+			
 		return result;
 	}
 
@@ -1354,7 +1700,7 @@ class FlxSprite extends FlxObject
 		else
 			framePixels = _frame.paintRotatedAndFlipped(framePixels, _flashPointZero, FlxFrameAngle.ANGLE_0, doFlipX, doFlipY, false, true);
 
-		if (FlxG.renderBlit && useColorTransform)
+		if (FlxG.renderBlit && hasColorTransform())
 			framePixels.colorTransform(_flashRect, colorTransform);
 
 		if (FlxG.renderTile && useFramePixels)
@@ -1490,10 +1836,10 @@ class FlxSprite extends FlxObject
 		newRect.setPosition(x, y);
 		if (pixelPerfectPosition)
 			newRect.floor();
-		_scaledOrigin.set(origin.x * scale.x, origin.y * scale.y);
+		_scaledOrigin.set(origin.x * Math.abs(scale.x), origin.y * Math.abs(scale.y));
 		_scaledFrameOffset.set(frameOffset.x * scale.x, frameOffset.y * scale.y);
-		newRect.x += -camera.scroll.x * scrollFactor.x - offset.x + origin.x - _scaledOrigin.x;
-		newRect.y += -camera.scroll.y * scrollFactor.y - offset.y + origin.y - _scaledOrigin.y;
+		newRect.x += -Std.int(camera.scroll.x * scrollFactor.x) - offset.x + origin.x - _scaledOrigin.x;
+		newRect.y += -Std.int(camera.scroll.y * scrollFactor.y) - offset.y + origin.y - _scaledOrigin.y;
 		if (animation.curAnim != null)
 		{
 			newRect.x -= animation.curAnim.offset.x;
@@ -1624,7 +1970,7 @@ class FlxSprite extends FlxObject
 	@:noCompletion
 	function set_facing(Direction:FlxDirectionFlags):FlxDirectionFlags
 	{
-		var flip = _facingFlip.get(Direction);
+		final flip = _facingFlip.get(Direction);
 		if (flip != null)
 		{
 			flipX = flip.x;
@@ -1662,8 +2008,8 @@ class FlxSprite extends FlxObject
 	@:noCompletion
 	override function set_angle(Value:Float):Float
 	{
-		var newAngle = (angle != Value);
-		var ret = super.set_angle(Value);
+		final newAngle = (angle != Value);
+		final ret = super.set_angle(Value);
 		if (newAngle)
 		{
 			_angleChanged = true;
@@ -1677,7 +2023,7 @@ class FlxSprite extends FlxObject
 	{
 		if (_angleChanged)
 		{
-			var radians:Float = angle * FlxAngle.TO_RAD;
+			final radians:Float = angle * FlxAngle.TO_RAD;
 			_sinAngle = Math.sin(radians);
 			_cosAngle = Math.cos(radians);
 			_angleChanged = false;
@@ -1688,6 +2034,12 @@ class FlxSprite extends FlxObject
 	function set_blend(Value:BlendMode):BlendMode
 	{
 		return blend = Value;
+	}
+
+	@:noCompletion
+	function set_shader(Value:FlxShader):FlxShader
+	{
+		return shader = Value;
 	}
 
 	/**
@@ -1716,10 +2068,7 @@ class FlxSprite extends FlxObject
 	@:noCompletion
 	function set_clipRect(rect:FlxRect):FlxRect
 	{
-		if (rect != null)
-			clipRect = rect.round();
-		else
-			clipRect = null;
+		clipRect = rect;
 
 		return rect;
 	}

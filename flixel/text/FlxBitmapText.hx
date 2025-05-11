@@ -79,19 +79,6 @@ class FlxBitmapText extends FlxSprite
 	public var wrap(default, set):Wrap = WORD(NEVER);
 
 	/**
-	 * A Boolean value that indicates whether the text field has word wrap.
-	 */
-	@:deprecated("wordWrap is deprecated use wrap, instead")
-	public var wordWrap(get, set):Bool;
-
-	/**
-	 * Whether word wrapping algorithm should wrap lines by words or by single character.
-	 * Default value is true.
-	 */
-	@:deprecated("wrapByWord is deprecated use wrap with values CHAR or WORD, instead")
-	public var wrapByWord(get, set):Bool;
-
-	/**
 	 * Whether this text field have fixed width or not.
 	 * Default value if true.
 	 */
@@ -161,18 +148,6 @@ class FlxBitmapText extends FlxSprite
 	 * NOTE: If the borderSize is 1, borderQuality of 0 or 1 will have the exact same effect (and performance).
 	 */
 	public var borderQuality(default, set):Float = 0;
-	
-	/**
-	 * Internal handler for deprecated `shadowOffset` field
-	 */
-	var _shadowOffset:FlxPoint = FlxPoint.get(1, 1);
-	
-	/**
-	 * Offset that is applied to the shadow border style, if active.
-	 * `x` and `y` are multiplied by `borderSize`. Default is `(1, 1)`, or lower-right corner.
-	 */
-	@:deprecated("shadowOffset is deprecated, use setBorderStyle(SHADOW_XY(offsetX, offsetY)), instead") // 5.9.0
-	public var shadowOffset(get, never):FlxPoint;
 
 	/**
 	 * Specifies whether the text should have a background. It is recommended to use a
@@ -259,7 +234,6 @@ class FlxBitmapText extends FlxSprite
 		_lines = null;
 		_linesWidth = null;
 
-		_shadowOffset = FlxDestroyUtil.put(_shadowOffset);
 		textBitmap = FlxDestroyUtil.dispose(textBitmap);
 
 		_colorParams = null;
@@ -1237,24 +1211,6 @@ class FlxBitmapText extends FlxSprite
 	{
 		switch (borderStyle)
 		{
-			case SHADOW if (_shadowOffset.x != 1 || _shadowOffset.y != 1):
-				var iterationsX = Math.round(Math.abs(_shadowOffset.x) * borderQuality);
-				iterationsX = (iterationsX <= 0) ? 1 : iterationsX;
-				
-				var iterationsY = Math.round(Math.abs(_shadowOffset.y) * borderQuality);
-				iterationsY = (iterationsY <= 0) ? 1 : iterationsY;
-				
-				final deltaX = Math.round(_shadowOffset.x / iterationsX);
-				final deltaY = Math.round(_shadowOffset.y / iterationsY);
-				
-				for (iterY in 0...iterationsY)
-				{
-					for (iterX in 0...iterationsX)
-					{
-						func(deltaX * (iterX + 1), deltaY * (iterY + 1));
-					}
-				}
-				
 			case SHADOW:
 				final iterations = borderQuality < 1 ? 1 : Std.int(Math.abs(borderSize) * borderQuality);
 				final delta = borderSize / iterations; 
@@ -1406,10 +1362,6 @@ class FlxBitmapText extends FlxSprite
 		borderColor = color;
 		borderSize = size;
 		borderQuality = quality;
-		if (borderStyle == FlxTextBorderStyle.SHADOW)
-		{
-			_shadowOffset.set(borderSize, borderSize);
-		}
 		pendingTextBitmapChange = true;
 	}
 
@@ -1490,27 +1442,6 @@ class FlxBitmapText extends FlxSprite
 			pendingTextChange = true;
 
 		return wrap = value;
-	}
-
-	function get_wordWrap():Bool
-	{
-		return wrap != NONE;
-	}
-
-	function set_wordWrap(value:Bool):Bool
-	{
-		wrap = value ? WORD(NEVER) : NONE;
-		return value;
-	}
-
-	function get_wrapByWord():Bool
-	{
-		return wrap.match(WORD(_));
-	}
-	function set_wrapByWord(value:Bool):Bool
-	{
-		wrap = value ? WORD(NEVER) : CHAR;
-		return value;
 	}
 
 	function set_autoSize(value:Bool):Bool
@@ -1675,11 +1606,6 @@ class FlxBitmapText extends FlxSprite
 	{
 		checkPendingChanges(true);
 		return super.get_height();
-	}
-	
-	inline function get_shadowOffset()
-	{
-		return _shadowOffset;
 	}
 	
 	/**

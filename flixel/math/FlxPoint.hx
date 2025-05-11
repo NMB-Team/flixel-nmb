@@ -71,8 +71,8 @@ import openfl.geom.Point;
  */
 @:forward abstract FlxPoint(FlxBasePoint) to FlxBasePoint from FlxBasePoint 
 {
-	public static inline var EPSILON:Float = 0.0000001;
-	public static inline var EPSILON_SQUARED:Float = EPSILON * EPSILON;
+	public static inline final EPSILON:Float = 0.0000001;
+	public static inline final EPSILON_SQUARED:Float = EPSILON * EPSILON;
 
 	static var _point1 = new FlxPoint();
 	static var _point2 = new FlxPoint();
@@ -110,7 +110,7 @@ import openfl.geom.Point;
 	@:op(A + B)
 	static inline function plusOp(a:FlxPoint, b:FlxPoint):FlxPoint
 	{
-		var result = get(a.x + b.x, a.y + b.y);
+		final result = get(a.x + b.x, a.y + b.y);
 		a.putWeak();
 		b.putWeak();
 		return result;
@@ -123,7 +123,7 @@ import openfl.geom.Point;
 	@:op(A - B)
 	static inline function minusOp(a:FlxPoint, b:FlxPoint):FlxPoint
 	{
-		var result = get(a.x - b.x, a.y - b.y);
+		final result = get(a.x - b.x, a.y - b.y);
 		a.putWeak();
 		b.putWeak();
 		return result;
@@ -137,7 +137,7 @@ import openfl.geom.Point;
 	@:commutative
 	static inline function scaleOp(a:FlxPoint, b:Float):FlxPoint
 	{
-		var result = get(a.x * b, a.y * b);
+		final result = get(a.x * b, a.y * b);
 		a.putWeak();
 		return result;
 	}
@@ -150,7 +150,7 @@ import openfl.geom.Point;
 	@:op(A / B)
 	static inline function divideOp(a:FlxPoint, b:Float):FlxPoint
 	{
-		var result = get(a.x / b, a.y / b);
+		final result = get(a.x / b, a.y / b);
 		a.putWeak();
 		return result;
 	}
@@ -185,7 +185,6 @@ import openfl.geom.Point;
 		return a.scale(b);
 	}
 
-	
 	/**
 	 * Operator that adds two points, returning a new point.
 	 */
@@ -194,7 +193,7 @@ import openfl.geom.Point;
 	@:commutative
 	static inline function plusFlashOp(a:FlxPoint, b:Point):FlxPoint
 	{
-		var result = get(a.x + b.x, a.y + b.y);
+		final result = get(a.x + b.x, a.y + b.y);
 		a.putWeak();
 		return result;
 	}
@@ -206,7 +205,7 @@ import openfl.geom.Point;
 	@:op(A - B)
 	static inline function minusFlashOp(a:FlxPoint, b:Point):FlxPoint
 	{
-		var result = get(a.x - b.x, a.y - b.y);
+		final result = get(a.x - b.x, a.y - b.y);
 		a.putWeak();
 		return result;
 	}
@@ -218,7 +217,7 @@ import openfl.geom.Point;
 	@:op(A - B)
 	static inline function minusFlashOp2(a:Point, b:FlxPoint):FlxPoint
 	{
-		var result = get(a.x - b.x, a.y - b.y);
+		final result = get(a.x - b.x, a.y - b.y);
 		b.putWeak();
 		return result;
 	}
@@ -558,10 +557,7 @@ import openfl.geom.Point;
 	 */
 	public overload inline extern function copyTo(?p:FlxPoint):FlxPoint
 	{
-		if (p == null)
-		{
-			p = get();
-		}
+		if (p == null) p = get();
 		return p.set(x, y);
 	}
 
@@ -814,8 +810,8 @@ import openfl.geom.Point;
 	 */
 	public inline function transform(matrix:Matrix):FlxPoint
 	{
-		var x1 = x * matrix.a + y * matrix.c + matrix.tx;
-		var y1 = x * matrix.b + y * matrix.d + matrix.ty;
+		final x1 = x * matrix.a + y * matrix.c + matrix.tx;
+		final y1 = x * matrix.b + y * matrix.d + matrix.ty;
 
 		return set(x1, y1);
 	}
@@ -839,7 +835,7 @@ import openfl.geom.Point;
 	 */
 	public inline function dotProduct(p:FlxPoint):Float
 	{
-		var dp = dotProductWeak(p);
+		final dp = dotProductWeak(p);
 		p.putWeak();
 		return dp;
 	}
@@ -864,7 +860,7 @@ import openfl.geom.Point;
 	 */
 	public inline function dotProdWithNormalizing(p:FlxPoint):Float
 	{
-		var normalized:FlxPoint = p.clone(_point1).normalize();
+		final normalized:FlxPoint = p.clone(_point1).normalize();
 		p.putWeak();
 		return dotProductWeak(normalized);
 	}
@@ -888,7 +884,7 @@ import openfl.geom.Point;
 	 */
 	public inline function crossProductLength(p:FlxPoint):Float
 	{
-		var cp = crossProductLengthWeak(p);
+		final cp = crossProductLengthWeak(p);
 		p.putWeak();
 		return cp;
 	}
@@ -913,7 +909,7 @@ import openfl.geom.Point;
 	 */
 	public inline function isParallel(p:FlxPoint):Bool
 	{
-		var pp = isParallelWeak(p);
+		final pp = isParallelWeak(p);
 		p.putWeak();
 		return pp;
 	}
@@ -977,9 +973,9 @@ import openfl.geom.Point;
 	 */
 	public inline function rotateByRadians(rads:Float):FlxPoint
 	{
-		var s:Float = Math.sin(rads);
-		var c:Float = Math.cos(rads);
-		var tempX:Float = x;
+		final s:Float = Math.sin(rads);
+		final c:Float = Math.cos(rads);
+		final tempX:Float = x;
 
 		x = tempX * c - y * s;
 		y = tempX * s + y * c;
@@ -1007,7 +1003,7 @@ import openfl.geom.Point;
 	 */
 	public inline function rotateWithTrig(sin:Float, cos:Float):FlxPoint
 	{
-		var tempX:Float = x;
+		final tempX:Float = x;
 		x = tempX * cos - y * sin;
 		y = tempX * sin + y * cos;
 		return this;
@@ -1048,10 +1044,7 @@ import openfl.geom.Point;
 	 */
 	public function rightNormal(?p:FlxPoint):FlxPoint
 	{
-		if (p == null)
-		{
-			p = get();
-		}
+		if (p == null) p = get();
 		p.set(-y, x);
 		return p;
 	}
@@ -1061,10 +1054,7 @@ import openfl.geom.Point;
 	 */
 	public function leftNormal(?p:FlxPoint):FlxPoint
 	{
-		if (p == null)
-		{
-			p = get();
-		}
+		if (p == null) p = get();
 		p.set(y, -x);
 		return p;
 	}
@@ -1094,13 +1084,10 @@ import openfl.geom.Point;
 	 */
 	public function projectTo(p:FlxPoint, ?proj:FlxPoint):FlxPoint
 	{
-		var dp:Float = dotProductWeak(p);
-		var lenSq:Float = p.lengthSquared;
+		final dp:Float = dotProductWeak(p);
+		final lenSq:Float = p.lengthSquared;
 
-		if (proj == null)
-		{
-			proj = get();
-		}
+		if (proj == null) proj = get();
 
 		proj.set(dp * p.x / lenSq, dp * p.y / lenSq);
 		p.putWeak();
@@ -1131,12 +1118,9 @@ import openfl.geom.Point;
 	 */
 	inline function projectToNormalizedWeak(p:FlxPoint, ?proj:FlxPoint):FlxPoint
 	{
-		var dp:Float = dotProductWeak(p);
+		final dp:Float = dotProductWeak(p);
 
-		if (proj == null)
-		{
-			proj = get();
-		}
+		if (proj == null) proj = get();
 
 		return proj.set(dp * p.x, dp * p.y);
 	}
@@ -1146,7 +1130,7 @@ import openfl.geom.Point;
 	 */
 	public inline function perpProduct(p:FlxPoint):Float
 	{
-		var pp:Float = perpProductWeak(p);
+		final pp:Float = perpProductWeak(p);
 		p.putWeak();
 		return pp;
 	}
@@ -1170,7 +1154,7 @@ import openfl.geom.Point;
 	 */
 	public inline function ratio(a:FlxPoint, b:FlxPoint, p:FlxPoint):Float
 	{
-		var r = ratioWeak(a, b, p);
+		final r = ratioWeak(a, b, p);
 		a.putWeak();
 		b.putWeak();
 		p.putWeak();
@@ -1209,21 +1193,15 @@ import openfl.geom.Point;
 	 */
 	public function findIntersection(a:FlxPoint, b:FlxPoint, p:FlxPoint, ?intersection:FlxPoint):FlxPoint
 	{
-		var t:Float = ratioWeak(a, b, p);
+		final t:Float = ratioWeak(a, b, p);
 
 		if (intersection == null)
-		{
 			intersection = get();
-		}
 
 		if (Math.isNaN(t))
-		{
 			intersection.set(Math.NaN, Math.NaN);
-		}
 		else
-		{
 			intersection.set(a.x + t * x, a.y + t * y);
-		}
 
 		a.putWeak();
 		b.putWeak();
@@ -1242,20 +1220,14 @@ import openfl.geom.Point;
 	public function findIntersectionInBounds(a:FlxPoint, b:FlxPoint, p:FlxPoint, ?intersection:FlxPoint):FlxPoint
 	{
 		if (intersection == null)
-		{
 			intersection = get();
-		}
 
-		var t1:Float = ratioWeak(a, b, p);
-		var t2:Float = p.ratioWeak(b, a, this);
+		final t1:Float = ratioWeak(a, b, p);
+		final t2:Float = p.ratioWeak(b, a, this);
 		if (!Math.isNaN(t1) && !Math.isNaN(t2) && t1 > 0 && t1 <= 1 && t2 > 0 && t2 <= 1)
-		{
 			intersection.set(a.x + t1 * x, a.y + t1 * y);
-		}
 		else
-		{
 			intersection.set(Math.NaN, Math.NaN);
-		}
 
 		a.putWeak();
 		b.putWeak();
@@ -1282,7 +1254,7 @@ import openfl.geom.Point;
 	 */
 	public inline function radiansBetween(p:FlxPoint):Float
 	{
-		var rads = Math.acos(dotProductWeak(p) / (length * p.length));
+		final rads = Math.acos(dotProductWeak(p) / (length * p.length));
 		p.putWeak();
 		return rads;
 	}
@@ -1306,13 +1278,10 @@ import openfl.geom.Point;
 	 */
 	public function sign(a:FlxPoint, b:FlxPoint):Int
 	{
-		var signFl:Float = (a.x - x) * (b.y - y) - (a.y - y) * (b.x - x);
+		final signFl:Float = (a.x - x) * (b.y - y) - (a.y - y) * (b.x - x);
 		a.putWeak();
 		b.putWeak();
-		if (signFl == 0)
-		{
-			return 0;
-		}
+		if (signFl == 0) return 0;
 		return Math.round(signFl / Math.abs(signFl));
 	}
 
@@ -1359,7 +1328,7 @@ import openfl.geom.Point;
 	 */
 	public inline function bounce(normal:FlxPoint, bounceCoeff:Float = 1):FlxPoint
 	{
-		var d:Float = (1 + bounceCoeff) * dotProductWeak(normal);
+		final d:Float = (1 + bounceCoeff) * dotProductWeak(normal);
 		x -= d * normal.x;
 		y -= d * normal.y;
 		normal.putWeak();
@@ -1376,12 +1345,12 @@ import openfl.geom.Point;
 	 */
 	public inline function bounceWithFriction(normal:FlxPoint, bounceCoeff:Float = 1, friction:Float = 0):FlxPoint
 	{
-		var p1:FlxPoint = projectToNormalizedWeak(normal.rightNormal(_point3), _point1);
-		var p2:FlxPoint = projectToNormalizedWeak(normal, _point2);
-		var bounceX:Float = -p2.x;
-		var bounceY:Float = -p2.y;
-		var frictionX:Float = p1.x;
-		var frictionY:Float = p1.y;
+		final p1:FlxPoint = projectToNormalizedWeak(normal.rightNormal(_point3), _point1);
+		final p2:FlxPoint = projectToNormalizedWeak(normal, _point2);
+		final bounceX:Float = -p2.x;
+		final bounceY:Float = -p2.y;
+		final frictionX:Float = p1.x;
+		final frictionY:Float = p1.y;
 		x = bounceX * bounceCoeff + frictionX * friction;
 		y = bounceY * bounceCoeff + frictionY * friction;
 		normal.putWeak();
@@ -1454,7 +1423,7 @@ import openfl.geom.Point;
 	{
 		if (!isZero())
 		{
-			var a:Float = radians;
+			final a:Float = radians;
 			x = l * Math.cos(a);
 			y = l * Math.sin(a);
 		}
@@ -1484,7 +1453,7 @@ import openfl.geom.Point;
 
 	inline function set_radians(rads:Float):Float
 	{
-		var len:Float = length;
+		final len:Float = length;
 
 		x = len * Math.cos(rads);
 		y = len * Math.sin(rads);
@@ -1539,7 +1508,7 @@ class FlxBasePoint implements IFlxPooled
 	public static inline function get(x:Float = 0, y:Float = 0):FlxBasePoint
 	{
 		#if FLX_POINT_POOL
-		var point = pool.get().set(x, y);
+		final point = pool.get().set(x, y);
 		point._inPool = false;
 		return point;
 		#else
@@ -1557,7 +1526,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public static inline function weak(x:Float = 0, y:Float = 0):FlxBasePoint
 	{
-		var point = get(x, y);
+		final point = get(x, y);
 		#if FLX_POINT_POOL
 		point._weak = true;
 		#end
@@ -1612,10 +1581,7 @@ class FlxBasePoint implements IFlxPooled
 	public inline function putWeak():Void
 	{
 		#if FLX_POINT_POOL
-		if (_weak)
-		{
-			put();
-		}
+		if (_weak) put();
 		#end
 	}
 
@@ -1627,7 +1593,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function equals(point:FlxBasePoint):Bool
 	{
-		var result = FlxMath.equal(x, point.x) && FlxMath.equal(y, point.y);
+		final result = FlxMath.equal(x, point.x) && FlxMath.equal(y, point.y);
 		point.putWeak();
 		return result;
 	}

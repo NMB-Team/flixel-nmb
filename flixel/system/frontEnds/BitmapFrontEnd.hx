@@ -41,6 +41,8 @@ class BitmapFrontEnd
 
 	var _whitePixel:FlxFrame;
 
+	public var autoClearCache:Bool = true;
+
 	var _lastUniqueKeyIndex:Int = 0;
 
 	public function new()

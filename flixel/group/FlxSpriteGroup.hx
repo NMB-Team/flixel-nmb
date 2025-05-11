@@ -72,13 +72,6 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	var _skipTransformChildren:Bool = false;
 
 	/**
-	 * Array of all the `FlxSprite`s that exist in this group for
-	 * optimization purposes / static typing on cpp targets.
-	 */
-	@:deprecated("_sprites is deprecated, use group.members")
-	var _sprites(get, never):Array<FlxSprite>;
-
-	/**
 	 * @param   X         The initial X position of the group.
 	 * @param   Y         The initial Y position of the group.
 	 * @param   MaxSize   Maximum amount of members allowed.
@@ -1166,11 +1159,6 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	override function get_pixels():BitmapData
 	{
 		return null;
-	}
-	
-	inline function get__sprites():Array<FlxSprite>
-	{
-		return cast group.members;
 	}
 	
 	function set_group(value:FlxTypedGroup<T>):FlxTypedGroup<T>

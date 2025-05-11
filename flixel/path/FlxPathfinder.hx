@@ -135,7 +135,6 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 			case NONE: points;
 			case LINE: simplifyLine(data, points);
 			case RAY: simplifyRay(data, points);
-			case RAY_STEP(resolution): simplifyRayStep(data, points, resolution);
 			case RAY_BOX(width, height): simplifyRayBox(data, points, width, height);
 			case CUSTOM(method): points = method(cast data, points);
 		}
@@ -232,36 +231,6 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 		// Put our temp point back in the pool for reuse 
 		p1.put();
 		p2.put();
-	}
-
-	/**
-	 * Pathfinding helper function, strips out even more points by rayStepping from one
-	 * point to the next and dropping unnecessary points.
-	 *
-	 * @param data       The pathfinder data for this current search.
-	 * @param points     An array of FlxPoint nodes.
-	 * @param reolution  Defaults to 1, meaning check every tile or so.  Higher means more checks!
-	 */
-	function simplifyRayStep(data:Data, points:Array<FlxPoint>, resolution:Float):Void
-	{
-		// A point used to calculate rays
-		var tempPoint = FlxPoint.get();
-
-		var i = 1; // Skip first
-		while (i < points.length - 1) // Skip last, too
-		{
-			// If a ray can be drawn from the 2 adjacent points without hitting a wall
-			if (data.map.rayStep(points[i - 1], points[i + 1], tempPoint, resolution))
-			{
-				// Remove the point inbetween
-				points.remove(points[i]);
-			}
-			else
-				i++;
-		}
-
-		// Put our temp point back in the pool for reuse 
-		tempPoint.put();
 	}
 	
 	/**
@@ -682,12 +651,6 @@ enum FlxPathSimplifier
 	 * Uses `tilemap.ray`.
 	 */
 	RAY;
-
-	/**
-	 * Removes nodes who'with neighbors that have no walls directly blocking
-	 * Uses `tilemap.rayStep`.
-	 */
-	RAY_STEP(resolution:Float);
 
 	/**
 	 * Removes nodes who'with neighbors that have no walls directly

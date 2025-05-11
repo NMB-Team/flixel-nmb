@@ -21,6 +21,16 @@ import flixel.input.touch.FlxTouch;
 class FlxAngle
 {
 	/**
+	 * Convert radians to degrees by multiplying it with this value.
+	 */
+	public static inline final TO_DEG:Float = 57.29577951308232; // 180 / Math.PI;
+	
+	/**
+	 * Convert degrees to radians by multiplying it with this value.
+	 */
+	public static inline final TO_RAD:Float = .017453292519943295; // Math.PI / 180;
+
+	/**
 	 * Generate a sine and cosine table during compilation
 	 *
 	 * The parameters allow you to specify the length, amplitude and frequency of the wave.
@@ -34,27 +44,17 @@ class FlxAngle
 	 */
 	public static macro function sinCosGenerator(length:Int = 360, sinAmplitude:Float = 1.0, cosAmplitude:Float = 1.0, frequency:Float = 1.0):Expr
 	{
-		var table = {cos: [], sin: []};
+		final table = {cos: [], sin: []};
 
 		for (c in 0...length)
 		{
-			var radian = c * frequency * Math.PI / 180;
+			final radian = c * frequency * TO_RAD;
 			table.cos.push(Math.cos(radian) * cosAmplitude);
 			table.sin.push(Math.sin(radian) * sinAmplitude);
 		}
 
 		return Context.makeExpr(table, Context.currentPos());
 	}
-
-	/**
-	 * Convert radians to degrees by multiplying it with this value.
-	 */
-	public static inline final TO_DEG:Float = 57.29577951308232; // 180 / Math.PI;
-
-	/**
-	 * Convert degrees to radians by multiplying it with this value.
-	 */
-	public static inline final TO_RAD:Float = .017453292519943295; // Math.PI / 180;
 
 	#if !macro
 	/**
@@ -103,13 +103,9 @@ class FlxAngle
 	public static function wrapAngle(angle:Float):Float
 	{
 		if (angle > 180)
-		{
 			angle = wrapAngle(angle - 360);
-		}
 		else if (angle < -180)
-		{
 			angle = wrapAngle(angle + 360);
-		}
 
 		return angle;
 	}
@@ -148,8 +144,8 @@ class FlxAngle
 	 */
 	public static function angleBetween(SpriteA:FlxSprite, SpriteB:FlxSprite, AsDegrees:Bool = false):Float
 	{
-		var dx:Float = (SpriteB.x + SpriteB.origin.x) - (SpriteA.x + SpriteA.origin.x);
-		var dy:Float = (SpriteB.y + SpriteB.origin.y) - (SpriteA.y + SpriteA.origin.y);
+		final dx = (SpriteB.x + SpriteB.origin.x) - (SpriteA.x + SpriteA.origin.x);
+		final dy = (SpriteB.y + SpriteB.origin.y) - (SpriteA.y + SpriteA.origin.y);
 
 		return angleFromOrigin(dx, dy, AsDegrees);
 	}
@@ -191,8 +187,8 @@ class FlxAngle
 	 */
 	public static function angleBetweenPoint(Sprite:FlxSprite, Target:FlxPoint, AsDegrees:Bool = false):Float
 	{
-		var dx:Float = (Target.x) - (Sprite.x + Sprite.origin.x);
-		var dy:Float = (Target.y) - (Sprite.y + Sprite.origin.y);
+		final dx = (Target.x) - (Sprite.x + Sprite.origin.x);
+		final dy = (Target.y) - (Sprite.y + Sprite.origin.y);
 
 		Target.putWeak();
 
@@ -241,10 +237,10 @@ class FlxAngle
 		if (Object == null)
 			return 0;
 
-		var p:FlxPoint = Object.getScreenPosition();
+		final p = Object.getScreenPosition();
 
-		var dx:Float = FlxG.mouse.viewX - p.x;
-		var dy:Float = FlxG.mouse.viewY - p.y;
+		final dx = FlxG.mouse.viewX - p.x;
+		final dy = FlxG.mouse.viewY - p.y;
 
 		p.put();
 
@@ -291,10 +287,10 @@ class FlxAngle
 	public static function angleBetweenTouch(Object:FlxObject, Touch:FlxTouch, AsDegrees:Bool = false):Float
 	{
 		// In order to get the angle between the object and mouse, we need the objects screen coordinates (rather than world coordinates)
-		var p:FlxPoint = Object.getScreenPosition();
+		final p = Object.getScreenPosition();
 
-		var dx:Float = Touch.viewX - p.x;
-		var dy:Float = Touch.viewY - p.y;
+		final dx = Touch.viewX - p.x;
+		final dy = Touch.viewY - p.y;
 
 		p.put();
 
@@ -334,6 +330,6 @@ class FlxAngle
 
 typedef FlxSinCos =
 {
-	var cos:Array<Float>;
-	var sin:Array<Float>;
+	final cos:Array<Float>;
+	final sin:Array<Float>;
 };

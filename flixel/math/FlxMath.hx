@@ -59,11 +59,8 @@ class FlxMath
 	 */
 	public static function roundDecimal(Value:Float, Precision:Int):Float
 	{
-		var mult:Float = 1;
-		for (i in 0...Precision)
-		{
-			mult *= 10;
-		}
+		var mult = 1.;
+		for (i in 0...Precision) mult *= 10;
 		return Math.fround(Value * mult) / mult;
 	}
 
@@ -80,6 +77,22 @@ class FlxMath
 	public static inline function bound(Value:Float, ?Min:Float, ?Max:Float):Float
 	{
 		final lowerBound:Float = (Min != null && Value < Min) ? Min : Value;
+		return (Max != null && lowerBound > Max) ? Max : lowerBound;
+	}
+
+	/**
+	 * Bound a integer by a minimum and maximum. Ensures that this integer is
+	 * no smaller than the minimum, and no larger than the maximum.
+	 * Leaving a bound `null` means that side is unbounded.
+	 *
+	 * @param	Value	Any integer.
+	 * @param	Min		Any integer.
+	 * @param	Max		Any integer.
+	 * @return	The bounded value of the integer.
+	 */
+	public static inline function boundInt(Value:Int, ?Min:Int, ?Max:Int):Int
+	{
+		final lowerBound:Int = (Min != null && Value < Min) ? Min : Value;
 		return (Max != null && lowerBound > Max) ? Max : lowerBound;
 	}
 
@@ -207,18 +220,12 @@ class FlxMath
 	public static inline function mouseInFlxRect(useWorldCoords:Bool, rect:FlxRect):Bool
 	{
 		if (rect == null)
-		{
 			return true;
-		}
 
 		if (useWorldCoords)
-		{
 			return pointInFlxRect(Math.floor(FlxG.mouse.x), Math.floor(FlxG.mouse.y), rect);
-		}
 		else
-		{
 			return pointInFlxRect(FlxG.mouse.viewX, FlxG.mouse.viewY, rect);
-		}
 	}
 	#end
 
@@ -250,13 +257,9 @@ class FlxMath
 		value += amount;
 
 		if (value > max)
-		{
 			value = max;
-		}
 		else if (value < min)
-		{
 			value = min;
-		}
 
 		return value;
 	}
@@ -272,7 +275,7 @@ class FlxMath
 	 */
 	public static function wrap(value:Int, min:Int, max:Int):Int
 	{
-		final range:Int = max - min + 1;
+		final range = max - min + 1;
 
 		if (value < min)
 			value += range * Std.int((min - value) / range + 1);
@@ -282,7 +285,7 @@ class FlxMath
 
 	public static inline function wrapMax(value:Int, max:Int):Int
 	{
-		var range:Int = max + 1;
+		final range = max + 1;
 		value = value % range;
 
 		if (value < 0)
@@ -339,8 +342,8 @@ class FlxMath
 	 */
 	public static inline function distanceBetween(SpriteA:FlxSprite, SpriteB:FlxSprite):Int
 	{
-		var dx:Float = (SpriteA.x + SpriteA.origin.x) - (SpriteB.x + SpriteB.origin.x);
-		var dy:Float = (SpriteA.y + SpriteA.origin.y) - (SpriteB.y + SpriteB.origin.y);
+		final dx = (SpriteA.x + SpriteA.origin.x) - (SpriteB.x + SpriteB.origin.x);
+		final dy = (SpriteA.y + SpriteA.origin.y) - (SpriteB.y + SpriteB.origin.y);
 		return Std.int(FlxMath.vectorLength(dx, dy));
 	}
 
@@ -356,8 +359,8 @@ class FlxMath
 	 */
 	public static inline function isDistanceWithin(SpriteA:FlxSprite, SpriteB:FlxSprite, Distance:Float, IncludeEqual:Bool = false):Bool
 	{
-		var dx:Float = (SpriteA.x + SpriteA.origin.x) - (SpriteB.x + SpriteB.origin.x);
-		var dy:Float = (SpriteA.y + SpriteA.origin.y) - (SpriteB.y + SpriteB.origin.y);
+		final dx = (SpriteA.x + SpriteA.origin.x) - (SpriteB.x + SpriteB.origin.x);
+		final dy = (SpriteA.y + SpriteA.origin.y) - (SpriteB.y + SpriteB.origin.y);
 
 		if (IncludeEqual)
 			return dx * dx + dy * dy <= Distance * Distance;
@@ -375,8 +378,8 @@ class FlxMath
 	 */
 	public static inline function distanceToPoint(Sprite:FlxSprite, Target:FlxPoint):Int
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - Target.x;
-		var dy:Float = (Sprite.y + Sprite.origin.y) - Target.y;
+		final dx = (Sprite.x + Sprite.origin.x) - Target.x;
+		final dy = (Sprite.y + Sprite.origin.y) - Target.y;
 		Target.putWeak();
 		return Std.int(FlxMath.vectorLength(dx, dy));
 	}
@@ -394,8 +397,8 @@ class FlxMath
 	 */
 	public static inline function isDistanceToPointWithin(Sprite:FlxSprite, Target:FlxPoint, Distance:Float, IncludeEqual:Bool = false):Bool
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - (Target.x);
-		var dy:Float = (Sprite.y + Sprite.origin.y) - (Target.y);
+		final dx = (Sprite.x + Sprite.origin.x) - (Target.x);
+		final dy = (Sprite.y + Sprite.origin.y) - (Target.y);
 
 		Target.putWeak();
 
@@ -414,8 +417,8 @@ class FlxMath
 	 */
 	public static inline function distanceToMouse(Sprite:FlxSprite):Int
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - FlxG.mouse.screenX;
-		var dy:Float = (Sprite.y + Sprite.origin.y) - FlxG.mouse.screenY;
+		final dx = (Sprite.x + Sprite.origin.x) - FlxG.mouse.viewX;
+		final dy = (Sprite.y + Sprite.origin.y) - FlxG.mouse.viewY;
 		return Std.int(FlxMath.vectorLength(dx, dy));
 	}
 
@@ -430,8 +433,8 @@ class FlxMath
 	 */
 	public static inline function isDistanceToMouseWithin(Sprite:FlxSprite, Distance:Float, IncludeEqual:Bool = false):Bool
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - FlxG.mouse.viewX;
-		var dy:Float = (Sprite.y + Sprite.origin.y) - FlxG.mouse.viewY;
+		final dx = (Sprite.x + Sprite.origin.x) - FlxG.mouse.viewX;
+		final dy = (Sprite.y + Sprite.origin.y) - FlxG.mouse.viewY;
 
 		if (IncludeEqual)
 			return dx * dx + dy * dy <= Distance * Distance;
@@ -450,8 +453,8 @@ class FlxMath
 	 */
 	public static inline function distanceToTouch(Sprite:FlxSprite, Touch:FlxTouch):Int
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - Touch.viewX;
-		var dy:Float = (Sprite.y + Sprite.origin.y) - Touch.viewY;
+		final dx = (Sprite.x + Sprite.origin.x) - Touch.viewX;
+		final dy = (Sprite.y + Sprite.origin.y) - Touch.viewY;
 		return Std.int(FlxMath.vectorLength(dx, dy));
 	}
 
@@ -466,8 +469,8 @@ class FlxMath
 	 */
 	public static inline function isDistanceToTouchWithin(Sprite:FlxSprite, Touch:FlxTouch, Distance:Float, IncludeEqual:Bool = false):Bool
 	{
-		var dx:Float = (Sprite.x + Sprite.origin.x) - Touch.viewX;
-		var dy:Float = (Sprite.y + Sprite.origin.y) - Touch.viewY;
+		final dx = (Sprite.x + Sprite.origin.x) - Touch.viewX;
+		final dy = (Sprite.y + Sprite.origin.y) - Touch.viewY;
 
 		if (IncludeEqual)
 			return dx * dx + dy * dy <= Distance * Distance;
@@ -521,23 +524,15 @@ class FlxMath
 
 		// bound between -1 and 1
 		if (n > 1)
-		{
 			n -= (Math.ceil(n) >> 1) << 1;
-		}
 		else if (n < -1)
-		{
 			n += (Math.ceil(-n) >> 1) << 1;
-		}
 
 		// this approx only works for -pi <= rads <= pi, but it's quite accurate in this region
 		if (n > 0)
-		{
 			return n * (3.1 + n * (0.5 + n * (-7.2 + n * 3.6)));
-		}
 		else
-		{
 			return n * (3.1 - n * (0.5 + n * (7.2 + n * 3.6)));
-		}
 	}
 
 	/**

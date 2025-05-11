@@ -15,7 +15,6 @@ import openfl.display.BitmapData;
 
 using StringTools;
 
-@:autoBuild(flixel.system.macros.FlxMacroUtil.deprecateOverride("overlapsWithCallback", "overlapsWithCallback is deprecated, use objectOverlapsTiles"))
 class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 {
 	/**
@@ -184,23 +183,6 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "getRowPos must be implemented";
 	}
-	
-	/**
-	 * **Note:** This method name is misleading! It does not return a `tileIndex`, it returns a `mapIndex`
-	 * 
-	 * @param   worldPos  A location in the world
-	 * @return  The `mapIndex` placed at the given world location
-	 */
-	@:deprecated("getTileIndexByCoords is deprecated, use getMapIndex, instead") // 5.9.0
-	public function getTileIndexByCoords(worldPos:FlxPoint):Int
-	{
-		return getMapIndex(worldPos);
-	}
-	@:deprecated("getTileCoordsByIndex is deprecated, use getTilePos, instead") // 5.9.0
-	public function getTileCoordsByIndex(mapIndex:Int, midpoint = true):FlxPoint
-	{
-		return getTilePos(mapIndex, midpoint);
-	}
 
 	/**
 	 * Shoots a ray from the start point to the end point.
@@ -218,27 +200,6 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	public function ray(start:FlxPoint, end:FlxPoint, ?result:FlxPoint):Bool
 	{
 		throw "ray must be implemented";
-		return false;
-	}
-
-	/**
-	 * Shoots a ray from the start point to the end point.
-	 * If/when it passes through a tile, it stores that point and returns false.
-	 * This method checks at steps and can miss, for better results use `ray()`
-	 * @since 5.0.0
-	 *
-	 * @param   start       The world coordinates of the start of the ray.
-	 * @param   end         The world coordinates of the end of the ray.
-	 * @param   result      Optional result vector, to avoid creating a new instance to be returned.
-	 *                      Only returned if the line enters the rect.
-	 * @param   resolution  Defaults to 1, meaning check every tile or so.  Higher means more checks!
-	 * @return  Returns true if the ray made it from Start to End without hitting anything.
-	 *          Returns false and fills Result if a tile was hit.
-	 */
-	@:deprecated("rayStep is deprecated, ray() has an infinite resolution, without any loss in performance")
-	public function rayStep(start:FlxPoint, end:FlxPoint, ?result:FlxPoint, resolution:Float = 1):Bool
-	{
-		throw "rayStep must be implemented?";
 		return false;
 	}
 
@@ -316,12 +277,6 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	public function forEachOverlappingTile(object:FlxObject, func:(tile:Tile)->Void, ?position:FlxPoint):Bool
 	{
 		throw "overlapsWithCallback must be implemented";
-	}
-	
-	@:deprecated("overlapsWithCallback is deprecated, use objectOverlapsTiles(object, callback, pos), instead") // 5.9.0
-	public function overlapsWithCallback(object:FlxObject, ?callback:(FlxObject, FlxObject)->Bool, flipCallbackParams = false, ?position:FlxPoint):Bool
-	{
-		return objectOverlapsTiles(object, (t, o)->{ return flipCallbackParams ? callback(o, t) : callback(t, o); }, position);
 	}
 	
 	/**
@@ -1135,34 +1090,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		}
 		return result;
 	}
-	
-	/**
-	 * Check the value of a particular tile.
-	 *
-	 * @param   column  The grid X location, in tiles
-	 * @param   row     The grid Y location, in tiles
-	 * @return  The tile index of the tile at this location
-	 */
-	@:deprecated("getTile is deprecated use getTileIndex(column, row), instead") // 5.9.0
-	public function getTile(column:Int, row:Int):Int
-	{
-		return getTileIndex(column, row);
-	}
-	
-	/**
-	 * Get the `tileIndex` at the given map location
-	 * 
-	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
-	 * 
-	 * @param   mapIndex  The desired location in the map
-	 * @return  An integer containing the value of the tile at this spot in the array.
-	 */
-	@:deprecated("getTileByIndex is deprecated use getTileIndex(mapIndex), instead") // 5.9.0
-	public function getTileByIndex(mapIndex:Int):Int
-	{
-		return getTileIndex(mapIndex);
-	}
-	
+
 	/**
 	 * Gets the collision flags of the tile at the given location
 	 * 
@@ -1178,23 +1106,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileData(mapIndex).allowCollisions;
 	}
-	
-	/**
-	 * Returns a new array full of every map index of the requested tile type
-	 * 
-	 * **Note:** Unlike `getAllMapIndices` this will return `null` if no tiles are found
-	 *
-	 * @param   index  The requested tile type.
-	 * @return  An Array with a list of all map indices of that tile type.
-	 */
-	@:deprecated("getTileInstances is deprecated, use getTileIndices, instead")// 5.9.0
-	public inline function getTileInstances(tileIndex:Int):Array<Int>
-	{
-		// for backwards compat, return `null` if none are found
-		final result = getAllMapIndices(tileIndex);
-		return result.length == 0 ? null : result;
-	}
-	
+
 	/**
 	 * Returns a new array full of every map index of the requested tile type.
 	 * 
@@ -1295,36 +1207,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return setTileHelper(getMapIndexAt(worldX, worldY), tileIndex, redraw);
 	}
-	
-	/**
-	 * Change the data and graphic of a tile in the tilemap.
-	 *
-	 * @param   column     The grid X location, in tiles
-	 * @param   row        The grid Y location, in tiles
-	 * @param   tileIndex  The new integer data you wish to inject.
-	 * @param   redraw     Whether the graphical representation of this tile should change.
-	 * @return  Whether or not the tile was actually changed.
-	 */
-	@:deprecated("setTile is deprecated, use setTileIndex(column, row, tileIndex,...), instead") // 5.9.0
-	public function setTile(column:Int, row:Int, tileIndex:Int, redraw = true):Bool
-	{
-		return setTileIndex(getMapIndex(column, row), tileIndex, redraw);
-	}
-	
-	/**
-	 * Change the data and graphic of a tile in the tilemap.
-	 *
-	 * @param   mapIndex   The slot in the data array (Y * widthInTiles + X) where this tile is stored.
-	 * @param   tileIndex  The new tileIndex to place at the mapIndex
-	 * @param   redraw     Whether the graphical representation of this tile should change.
-	 * @return  Whether or not the tile was actually changed.
-	 */
-	@:deprecated("setTileByIndex is deprecated, use setTileIndex(mapIndex, tileIndex,...), instead") // 5.9.0
-	public function setTileByIndex(mapIndex:Int, tileIndex:Int, redraw = true):Bool
-	{
-		return setTileIndex(mapIndex, tileIndex, redraw);
-	}
-	
+
 	function setTileHelper(mapIndex:Int, tileIndex:Int, redraw = true):Bool
 	{
 		if (!tileExists(mapIndex))

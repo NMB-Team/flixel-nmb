@@ -852,19 +852,6 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 	}
 
 	/**
-	 * Returns a new array full of every coordinate of the requested tile type.
-	 *
-	 * @param   index     The requested tile type.
-	 * @param   midpoint  Whether to return the coordinates of the tile midpoint, or upper left corner. Default is true, return midpoint.
-	 * @return  An Array with a list of all the coordinates of that tile type.
-	 */
-	@:deprecated("getTileCoords is deprecated, use getAllTilePos, instead")
-	public function getTileCoords(tileIndex:Int, midpoint = true):Array<FlxPoint>
-	{
-		return getAllTilePos(tileIndex, midpoint);
-	}
-
-	/**
 	 * Call this function to lock the automatic camera to the map's edges.
 	 *
 	 * @param   camera       The desired camera.  If `null`, `getDefaultCamera()` is used.
@@ -890,7 +877,6 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 	/**
 	 * Shoots a ray from the start point to the end point.
 	 * If/when it passes through a tile, it stores that point and returns false.
-	 * Note: In flixel 5.0.0, this was redone, the old method is now `rayStep`
 	 *
 	 * @param   start   The world coordinates of the start of the ray.
 	 * @param   end     The world coordinates of the end of the ray.
@@ -1048,119 +1034,6 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 	}
 
 	/**
-	 * Shoots a ray from the start point to the end point.
-	 * If/when it passes through a tile, it stores that point and returns false.
-	 * This method checks at steps and can miss, for better results use `ray()`
-	 * @since 5.0.0
-	 *
-	 * @param   start       The world coordinates of the start of the ray.
-	 * @param   end         The world coordinates of the end of the ray.
-	 * @param   result      Optional result vector, to avoid creating a new instance to be returned.
-	 * @param   resolution  Defaults to 1, meaning check every tile or so.  Higher means more checks!
-	 *                      Only returned if the line enters the rect.
-	 * @return  Returns true if the ray made it from Start to End without hitting anything.
-	 *          Returns false and fills Result if a tile was hit.
-	 */
-	override function rayStep(start:FlxPoint, end:FlxPoint, ?result:FlxPoint, resolution:Float = 1):Bool
-	{
-		var step:Float = scaledTileWidth;
-
-		if (scaledTileHeight < scaledTileWidth)
-			step = scaledTileHeight;
-
-		step /= resolution;
-		var deltaX:Float = end.x - start.x;
-		var deltaY:Float = end.y - start.y;
-		var distance:Float = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-		var steps:Int = Math.ceil(distance / step);
-		var stepX:Float = deltaX / steps;
-		var stepY:Float = deltaY / steps;
-		var curX:Float = start.x - stepX - x;
-		var curY:Float = start.y - stepY - y;
-		var i:Int = 0;
-
-		start.putWeak();
-		end.putWeak();
-
-		while (i < steps)
-		{
-			curX += stepX;
-			curY += stepY;
-
-			if ((curX < 0) || (curX > scaledWidth) || (curY < 0) || (curY > scaledHeight))
-			{
-				i++;
-				continue;
-			}
-
-			var tileX = Math.floor(curX / scaledTileWidth);
-			var tileY = Math.floor(curY / scaledTileHeight);
-			
-			final tile = getTileData(tileX, tileY);
-			if (tile != null && tile.solid)
-			{
-				// Some basic helper stuff
-				tileX *= Std.int(scaledTileWidth);
-				tileY *= Std.int(scaledTileHeight);
-				var rx:Float = 0;
-				var ry:Float = 0;
-				var q:Float;
-				var lx:Float = curX - stepX;
-				var ly:Float = curY - stepY;
-
-				// Figure out if it crosses the X boundary
-				q = tileX;
-
-				if (deltaX < 0)
-				{
-					q += scaledTileWidth;
-				}
-
-				rx = q;
-				ry = ly + stepY * ((q - lx) / stepX);
-
-				if ((ry >= tileY) && (ry <= tileY + scaledTileHeight))
-				{
-					if (result == null)
-					{
-						result = FlxPoint.get();
-					}
-
-					result.set(rx + x, ry + y);
-					return false;
-				}
-
-				// Else, figure out if it crosses the Y boundary
-				q = tileY;
-
-				if (deltaY < 0)
-				{
-					q += scaledTileHeight;
-				}
-
-				rx = lx + stepX * ((q - ly) / stepY);
-				ry = q;
-
-				if ((rx >= tileX) && (rx <= tileX + scaledTileWidth))
-				{
-					if (result == null)
-					{
-						result = FlxPoint.get();
-					}
-
-					result.set(rx + x, ry + y);
-					return false;
-				}
-
-				return true;
-			}
-			i++;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Change a particular tile to FlxSprite. Or just copy the graphic if you dont want any changes to map data itself.
 	 *
 	 * @param   tileX          The X coordinate of the tile (in tiles, not pixels).
@@ -1287,7 +1160,7 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 						#if FLX_DEBUG
 						if (FlxG.debugger.drawDebug && !ignoreDrawDebug)
 						{
-							if (tile.allowCollisions <= NONE)
+							if (tile.allowCollisions == NONE)
 							{
 								debugTile = _debugTileNotSolid;
 							}

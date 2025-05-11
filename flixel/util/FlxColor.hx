@@ -386,17 +386,6 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	}
 
 	/**
-	 * Return a 24 bit version of this color (i.e. without an alpha value)
-	 *
-	 * @return A 24 bit version of this color
-	 */
-	@:deprecated("to24Bit() is deprecated, use rgb field, instead.")
-	public inline function to24Bit():FlxColor
-	{
-		return this & 0xffffff;
-	}
-
-	/**
 	 * Return a String representation of the color in the format
 	 *
 	 * @param Alpha Whether to include the alpha value in the hex string

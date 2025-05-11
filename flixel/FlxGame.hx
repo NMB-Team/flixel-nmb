@@ -222,7 +222,10 @@ class FlxGame extends Sprite
 
 	/**
 	 * Instantiate a new game object.
-	 *
+	 * 
+	 * @param initialState     A constructor for the initial state, ex: `PlayState.new` or `()->new PlayState()`.
+	 *                         Note: Before Flixel 6, this took a `Class<FlxState>`, this has been
+	 *                         deprecated, but is still available, for backwards compatibility.
 	 * @param gameWidth        The width of your game in pixels. If `0`, the `Project.xml` width is used.
 	 *                         If the demensions don't match the `Project.xml`, 
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
@@ -231,18 +234,14 @@ class FlxGame extends Sprite
 	 *                         If the demensions don't match the `Project.xml`, 
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 *                         will determine the actual display size of the game.
-	 * @param initialState     A constructor for the initial state, ex: `PlayState.new` or `()->new PlayState()`.
-	 *                         Note: Before Flixel 6, this took a `Class<FlxState>`, this has been
-	 *                         deprecated, but is still available, for backwards compatibility.
-	 * @param updateFramerate  How frequently the game should update. Default is 60 fps.
-	 * @param drawFramerate    Sets the actual display / draw framerate for the game. Default is 60 fps.
+	 * @param framerate   	 	Sets the actual display framerate for the game. Default is 60 fps.
 	 * @param skipSplash       Whether you want to skip the flixel splash screen with `FLX_NO_DEBUG`.
 	 * @param startFullscreen  Whether to start the game in fullscreen mode (desktop targets only).
 	 *
 	 * @see [scale modes](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 */
-	public function new(gameWidth = 0, gameHeight = 0, ?initialState:InitialState, updateFramerate = 60, drawFramerate = 60, skipSplash = false,
-			startFullscreen = false)
+	public function new(?initialState:NextState, ?gameWidth:Int = 0, ?gameHeight:Int = 0, ?framerate:Int = 60, ?skipSplash:Bool = false,
+			?startFullscreen:Bool = false)
 	{
 		super();
 
@@ -261,8 +260,7 @@ class FlxGame extends Sprite
 		// Basic display and update setup stuff
 		FlxG.init(this, gameWidth, gameHeight);
 
-		FlxG.updateFramerate = updateFramerate;
-		FlxG.drawFramerate = drawFramerate;
+		FlxG.drawFramerate = FlxG.updateFramerate = framerate;
 		_accumulator = _stepMS;
 		_skipSplash = skipSplash;
 
@@ -271,7 +269,7 @@ class FlxGame extends Sprite
 		#end
 
 		// Then get ready to create the game object for real
-		_initialState = (initialState == null) ? FlxState.new : initialState.toNextState();
+		_initialState = (initialState == null) ? FlxState.new : initialState;
 
 		addEventListener(Event.ADDED_TO_STAGE, create);
 	}
@@ -409,7 +407,9 @@ class FlxGame extends Sprite
 
 		_lostFocus = false;
 		FlxG.signals.focusGained.dispatch();
-		_state.onFocus();
+
+		if (_state != null)
+			_state.onFocus();
 
 		if (!FlxG.autoPause)
 			return;
@@ -439,7 +439,9 @@ class FlxGame extends Sprite
 
 		_lostFocus = true;
 		FlxG.signals.focusLost.dispatch();
-		_state.onFocusLost();
+
+		if (_state != null)
+			_state.onFocusLost();
 
 		if (!FlxG.autoPause)
 			return;
@@ -473,7 +475,8 @@ class FlxGame extends Sprite
 	{
 		FlxG.resizeGame(width, height);
 
-		_state.onResize(width, height);
+		if (_state != null)
+			_state.onResize(width, height);
 
 		FlxG.cameras.resize();
 		FlxG.signals.gameResized.dispatch(width, height);
@@ -617,7 +620,7 @@ class FlxGame extends Sprite
 
 		// Finally assign and create the new state
 		_state = _nextState.createInstance();
-		_state._constructor = _nextState.getConstructor();
+		_state._constructor = _nextState;
 		_nextState = null;
 
 		if (_gameJustStarted)
@@ -625,7 +628,8 @@ class FlxGame extends Sprite
 
 		FlxG.signals.preStateCreate.dispatch(_state);
 
-		_state.create();
+		if (_state != null)
+			_state.create();
 
 		if (_gameJustStarted)
 			gameStart();
@@ -635,9 +639,12 @@ class FlxGame extends Sprite
 		#end
 
 		// we remove the destroyable attribute from the cache, and remove all bitmaps that are unused.
-		FlxG.bitmap.clearCache();
+		if (FlxG.bitmap.autoClearCache)
+			FlxG.bitmap.clearCache();
 
-		_state.createPost();
+		if (_state != null)
+			_state.createPost();
+
 		FlxG.signals.postStateSwitch.dispatch();
 	}
 
@@ -712,9 +719,6 @@ class FlxGame extends Sprite
 	 */
 	function update():Void
 	{
-		if (!_state.active || !_state.exists)
-			return;
-
 		if (_nextState != null)
 			switchState();
 
@@ -734,7 +738,8 @@ class FlxGame extends Sprite
 		#end
 		FlxG.plugins.update(FlxG.elapsed);
 
-		_state.tryUpdate(FlxG.elapsed);
+		if (_state != null && (_state.active && _state.exists))
+			_state.tryUpdate(FlxG.elapsed);
 
 		FlxG.cameras.update(FlxG.elapsed);
 		FlxG.signals.postUpdate.dispatch();
@@ -753,7 +758,7 @@ class FlxGame extends Sprite
 		}
 		#end
 
-		filters = filtersEnabled ? _filters : null;
+		setFiltersSuper(filtersEnabled ? _filters : null);
 	}
 
 	function updateElapsed():Void
@@ -841,9 +846,6 @@ class FlxGame extends Sprite
 	 */
 	function draw():Void
 	{
-		if (!_state.visible || !_state.exists)
-			return;
-
 		#if FLX_DEBUG
 		if (FlxG.debugger.visible)
 			ticks = getTicks();
@@ -869,13 +871,17 @@ class FlxGame extends Sprite
 
 		if (FlxG.plugins.drawOnTop)
 		{
-			_state.draw();
+			if (_state != null && (_state.active && _state.exists))
+				_state.draw();
+
 			FlxG.plugins.draw();
 		}
 		else
 		{
 			FlxG.plugins.draw();
-			_state.draw();
+
+			if (_state != null && (_state.active && _state.exists))
+				_state.draw();
 		}
 
 		if (FlxG.renderTile)
@@ -905,6 +911,17 @@ class FlxGame extends Sprite
 	{
 		// expensive, only call if necessary
 		return Lib.getTimer();
+	}
+
+	override function set_filters(value:Array<BitmapFilter>):Array<BitmapFilter>
+	{
+		setFilters(value);
+		return value;
+	}
+	
+	function setFiltersSuper(value:Array<BitmapFilter>):Array<BitmapFilter>
+	{
+		return super.set_filters(value);
 	}
 }
 

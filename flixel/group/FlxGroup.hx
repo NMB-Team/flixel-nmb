@@ -89,6 +89,15 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	public var memberRemoved(get, never):FlxTypedSignal<T->Void>;
 
 	/**
+	 * Whether or not objects are allowed to have Z-Indexes in this group.
+	 * If this is disabled, objects will render in the order they are added to the group.
+	 * 
+	 * This is a flag since handling Z-Indexes can be expensive, depending
+	 * on how many objects are in the group.
+	 */
+	public var zIndexesAllowed:Bool = true;
+
+	/**
 	 * Internal variables for lazily creating `memberAdded` and `memberRemoved` signals when needed.
 	 */
 	@:noCompletion
@@ -104,6 +113,12 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	var _marker:Int = 0;
 
 	/**
+	 * Internal helper variable for rendering objects with Z-Indexes.
+	 */
+	@:noCompletion
+	var _drawQueue:Array<Int>;
+
+	/**
 	 * @param   MaxSize   Maximum amount of members allowed.
 	 */
 	public function new(MaxSize:Int = 0)
@@ -111,6 +126,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		super();
 
 		members = [];
+		_drawQueue = [];
+
 		maxSize = Std.int(Math.abs(MaxSize));
 		flixelType = GROUP;
 	}
@@ -174,10 +191,34 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 			FlxCamera._defaultCameras = _cameras;
 		}
 
-		for (basic in members)
+		if (zIndexesAllowed)
 		{
-			if (basic != null && basic.exists && basic.visible)
-				basic.draw();
+			if (_drawQueue.length != 0)
+				_drawQueue.resize(0);
+				
+			var basic:FlxBasic = null;
+			for (i in 0...members.length)
+			{
+				basic = members[i];
+				if (basic != null && basic.exists && basic.visible)
+					_drawQueue.push(i);
+			}
+			_drawQueue.sort(_drawQueueSort);
+			
+			for (i in 0..._drawQueue.length)
+			{
+				basic = members[_drawQueue[i]];
+				if (basic != null && basic.exists && basic.visible)
+					basic.draw();
+			}
+		}
+		else
+		{
+			for (basic in members)
+			{
+				if (basic != null && basic.exists && basic.visible)
+					basic.draw();
+			}
 		}
 
 		FlxCamera._defaultCameras = oldDefaultCameras;
@@ -923,6 +964,17 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 			_memberRemoved = new FlxTypedSignal<T->Void>();
 
 		return _memberRemoved;
+	}
+
+	@:noCompletion
+	function _drawQueueSort(a:Int, b:Int):Int
+	{
+		if (members[a].zIndex < members[b].zIndex)
+			return -1;
+		else if (members[a].zIndex > members[b].zIndex)
+			return 1;
+			
+		return 0;
 	}
 }
 

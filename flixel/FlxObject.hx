@@ -47,7 +47,6 @@ import flixel.util.FlxStringUtil;
  * FlxG.overlap(playerGroup, medKitGroup
  *     function onOverlap(player, medKit)
  *     {
- *         player.health = 100;
  *         medKit.kill();
  *     }
  * );
@@ -117,7 +116,6 @@ class FlxObject extends FlxBasic
 	  	 * @return  The result of whichever separator was used
 	  	 * @since 5.9.0
 	 */
-	@:haxe.warning("-WDeprecated")
 	static function processCheckTilemap(object1:FlxObject, object2:FlxObject, func:(FlxObject, FlxObject) -> Bool, ?position:FlxPoint, isCollision = true):Bool
 	{
 		// two immovable objects cannot collide
@@ -134,7 +132,7 @@ class FlxObject extends FlxBasic
 				// Keep tile as first arg
 				return processCheckTilemap(tile, object2, func, position, isCollision);
 			}
-			return tilemap.overlapsWithCallback(object2, recurseProcess, false, position);
+			return tilemap.objectOverlapsTiles(object2, recurseProcess, position);
 		}
 		else if (object2.flixelType == TILEMAP)
 		{
@@ -145,7 +143,7 @@ class FlxObject extends FlxBasic
 				// Keep tile as second arg
 				return processCheckTilemap(object1, tile, func, position, isCollision);
 			}
-			return tilemap.overlapsWithCallback(object1, recurseProcess, false, position);
+			return tilemap.objectOverlapsTiles(object1, recurseProcess, position);
 		}
 		
 		return func(object1, object2);
@@ -159,8 +157,16 @@ class FlxObject extends FlxBasic
  	 */
 	public static function separate(object1:FlxObject, object2:FlxObject):Bool
 	{
+		var tmp1 = object1.last.copyTo();
+		var tmp2 = object2.last.copyTo();
 		final separatedX = separateX(object1, object2);
+		object1.last.x = object1.x;
+		object2.last.x = object2.x;
 		final separatedY = separateY(object1, object2);
+		object1.last.copyFrom(tmp1);
+		object2.last.copyFrom(tmp2);
+		tmp1.put();
+		tmp2.put();
 		return separatedX || separatedY;
 		
 		/*
@@ -662,14 +668,6 @@ class FlxObject extends FlxBasic
 	 */
 	public var maxAngular:Float = 10000;
 
-	#if FLX_HEALTH
-	/**
-	 * Handy for storing health percentage or armor points or whatever.
-	 */
-	@:deprecated("object.health is being removed in version 6.0.0")
-	public var health:Float = 1;
-	#end
-
 	/**
 	 * Bit field of flags (use with UP, DOWN, LEFT, RIGHT, etc) indicating surface contacts. Use bitwise operators to check the values
 	 * stored here, or use isTouching(), justTouched(), etc. You can even use them broadly as boolean values if you're feeling saucy!
@@ -737,6 +735,15 @@ class FlxObject extends FlxBasic
 	 */
 	public var ignoreDrawDebug:Bool = false;
 	#end
+
+	/**
+	 * Whether or not to force `isOnScreen()` to return true.
+	 * 
+	 * This is a dirty hack for certain cases where `isOnScreen()`
+	 * doesn't work correctly but flixel sucks to modify and i'm too
+	 * lazy to give a shit to properly fix it
+	 */
+	public var forceIsOnScreen:Bool = false;
 
 	/**
 	 * The path this object follows. Not initialized by default.
@@ -835,7 +842,7 @@ class FlxObject extends FlxBasic
 		if (path != null && path.active)
 			path.update(elapsed);
 
-		if (moves)
+		if (moves && (velocity.x != 0 || velocity.y != 0))
 			updateMotion(elapsed);
 
 		wasTouching = touching;
@@ -1046,6 +1053,68 @@ class FlxObject extends FlxBasic
 	}
 
 	/**
+	 * Returns the view position of this object
+	 *
+	 * @param   result  Optional arg for the returning poin
+	 * @param   camera  The desired "view" coordinate space. If `null`, `getDefaultCamera()` is used
+	 * @return  The view position of this objects
+	 * @since 6.2.0
+	 */
+	public function getViewPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint
+	{
+		if (result == null)
+			result = FlxPoint.get();
+			
+		if (camera == null)
+			camera = getDefaultCamera();
+			
+		return result.set(getViewXHelper(camera), getViewYHelper(camera));
+	}
+	
+	/**
+	 * Returns the view position of this object
+	 *
+	 * @param   camera  The desired "view" coordinate space. If `null`, `getDefaultCamera()` is used
+	 * @return  The view position of this object
+	 * @since 6.2.0
+	 */
+	public function getViewX(?camera:FlxCamera)
+	{
+		if (camera == null)
+			camera = getDefaultCamera();
+			
+		return getViewXHelper(camera);
+	}
+	
+	inline function getViewXHelper(camera:FlxCamera)
+	{
+		final x = pixelPerfectPosition ? Math.floor(this.x) : this.x;
+		return (x - (camera.scroll.x * scrollFactor.x) - camera.viewMarginX) * camera.zoom;
+	}
+	
+	/**
+	 * Returns the view position of this object
+	 *
+	 * @param   camera  The desired "view" coordinate space. If `null`, `getDefaultCamera()` is used
+	 * @return  The view position of this object
+	 * @since 6.2.0
+	 */
+	public function getViewY(?camera:FlxCamera)
+	{
+		if (camera == null)
+			camera = getDefaultCamera();
+			
+		return getViewYHelper(camera);
+	}
+	
+	inline function getViewYHelper(camera:FlxCamera)
+	{
+		final y = pixelPerfectPosition ? Math.floor(this.y) : this.y;
+		return (y - (camera.scroll.y * scrollFactor.y) - camera.viewMarginY) * camera.zoom;
+	}
+	
+
+	/**
 	 * Returns the world position of this object.
 	 * 
 	 * @param   result  Optional arg for the returning point.
@@ -1097,8 +1166,6 @@ class FlxObject extends FlxBasic
 		revive();
 	}
 
-	public var forceIsOnScreen:Bool = false;
-
 	/**
 	 * Check and see if this object is currently on screen.
 	 *
@@ -1147,34 +1214,6 @@ class FlxObject extends FlxBasic
 	public inline function justTouched(direction:FlxDirectionFlags):Bool
 	{
 		return touching.hasAny(direction) && !wasTouching.hasAny(direction);
-	}
-
-	#if FLX_HEALTH
-	/**
-	 * Reduces the `health` variable of this object by the amount specified in `Damage`.
-	 * Calls `kill()` if health drops to or below zero.
-	 *
-	 * @param   Damage   How much health to take away (use a negative number to give a health bonus).
-	 */
-	@:deprecated("object.health is being removed in version 6.0.0")
-	public function hurt(damage:Float):Void
-	{
-		health = health - damage;
-		if (health <= 0)
-			kill();
-	}
-	#end
-
-	/**
-	 * Centers this `FlxObject` on the screen, either by the x axis, y axis, or both.
-	 *
-	 * @param   axes   On what axes to center the object (e.g. `X`, `Y`, `XY`) - default is both. 
-	 * @return  This FlxObject for chaining
-	 */
-	@:deprecated("screenCenter is deprecated, use FlxG.centerHitbox instead")
-	public inline function screenCenter(axes:FlxAxes = XY):FlxObject
-	{
-		return FlxG.centerHitbox(this, axes);
 	}
 
 	/**
@@ -1389,7 +1428,7 @@ class FlxObject extends FlxBasic
 	@:noCompletion
 	inline function get_solid():Bool
 	{
-		return (allowCollisions & FlxDirectionFlags.ANY) > FlxDirectionFlags.NONE;
+		return allowCollisions != FlxDirectionFlags.NONE;
 	}
 
 	@:noCompletion
