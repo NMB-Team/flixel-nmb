@@ -623,9 +623,8 @@ class FlxTween implements IFlxDestroyable
 
 	function update(elapsed:Float):Void
 	{
-		_secondsSinceStart += elapsed;
 		var preTick:Float = _secondsSinceStart;
-		_secondsSinceStart += elapsed
+		_secondsSinceStart += elapsed;
 		var postTick:Float = _secondsSinceStart;
 		var delay:Float = (executions > 0) ? loopDelay : startDelay;
 		if (_secondsSinceStart < delay)
