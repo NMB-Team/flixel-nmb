@@ -187,7 +187,7 @@ class FlxRandom
 	 * @param length          The length of the resulting string.
 	 * @param includeUpper    If true, includes uppercase letters (A-Z).
 	 * @param includeNumbers  If true, includes digits (0-9).
-	 * @param includeSymbols  If true, includes common symbols (!@# etc.).
+	 * @param includeSymbols  If true, includes common symbols (!()-_ etc.).
 	 * @param customAlphabet  Optional custom alphabet (overrides all other options).
 	 * @return A random string of specified length.
 	 */
