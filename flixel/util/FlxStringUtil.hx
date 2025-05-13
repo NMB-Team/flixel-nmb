@@ -172,6 +172,22 @@ class FlxStringUtil
 		return '${FlxMath.roundDecimal(bytes, precision)} ${units[curUnit]}';
 	}
 
+	/**
+	 * Converts large numbers to a human-readable format.
+	 * Example: 1500 -> "1.5K", 1200000 -> "1.2M"
+	 */
+	public static function humanizeNumber(n:Float, decimals:Int = 1):String
+	{
+		final suffixes = ["", "K", "M", "B", "T"];
+		var i = 0;
+		while (n >= 1000 && i < suffixes.length - 1) {
+			n /= 1000;
+			i++;
+		}
+		return FlxMath.roundDecimal(n, decimals) + suffixes[i];
+	}
+
+
 	/** 
 	 * Takes a string and filters out everything but the digits.
 	 *
@@ -229,6 +245,20 @@ class FlxStringUtil
 		return prefix + Text + suffix;
 	}
 
+	/**
+	 * Converts a string to a URL-safe, lowercase, hyphenated format.
+	 * Example: "Hello World!" -> "hello-world"
+	 */
+	public static function slugify(str:String):String
+	{
+		var s = str.toLowerCase().trim();
+		
+		s = ~/[^a-z0-9]+/gi.replace(s, "-");
+		s = ~/^-+|-+$/g.replace(s, "");
+
+		return s;
+	}
+	
 	/**
 	 * Get the string name of any class or class instance. Wraps `Type.getClassName()`.
 	 *
@@ -317,6 +347,21 @@ class FlxStringUtil
 		}
 
 		return "";
+	}
+
+	/**
+	 * Generates a short visual hash of a string, useful for debug tags or identifiers.
+	 */
+	public static function shortHash(str:String, length:Int = 6):String
+	{
+		var hash = 0;
+		for (i in 0...str.length)
+		{
+			hash = (hash << 5) - hash + str.charCodeAt(i);
+			hash = hash & hash; // convert to 32bit int
+		}
+		final hex = StringTools.hex(hash >>> 0, 8);
+		return hex.substr(0, length);
 	}
 
 	/**
@@ -625,6 +670,32 @@ class FlxStringUtil
 			return 0;
 		});
 		return list;
+	}
+
+	/**
+	 * Repeats a string `count` times.
+	 * Example: repeatString("ha", 3) -> "hahaha"
+	 */
+	public static function repeatString(s:String, count:Int):String
+	{
+		final out = new StringBuf();
+		for (i in 0...count) out.add(s);
+		return out.toString();
+	}
+
+
+	/**
+	 * Truncates a long string in the middle and replaces the removed part with an ellipsis.
+	 * Useful for displaying file paths, usernames, or any long identifiers.
+	 *
+	 * Example: "C:/Users/Very/Long/Path/File.txt" -> "C:/Users/.../File.txt"
+	 */
+	public static function truncateMiddle(str:String, maxLength:Int):String
+	{
+		if (str == null || str.length <= maxLength) return str;
+		if (maxLength < 5) return str.substr(0, maxLength); // too small for ellipsis
+		final half = Std.int((maxLength - 3) * .5);
+		return str.substr(0, half) + "..." + str.substr(str.length - half);
 	}
 
 	/**
