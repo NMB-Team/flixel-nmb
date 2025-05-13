@@ -191,7 +191,7 @@ class FlxRandom
 	 * @param customAlphabet  Optional custom alphabet (overrides all other options).
 	 * @return A random string of specified length.
 	 */
-	public static function string(length:Int, includeUpper:Bool = false, includeNumbers:Bool = false, includeSymbols:Bool = false, ?customAlphabet:String):String
+	public function stringCombination(length:Int, includeUpper:Bool = false, includeNumbers:Bool = false, includeSymbols:Bool = false, ?customAlphabet:String):String
 	{
 		var alphabet = customAlphabet;
 		
