@@ -182,6 +182,40 @@ class FlxRandom
 	}
 
 	/**
+	 * Generates a random string of characters from a given alphabet.
+	 *
+	 * @param length          The length of the resulting string.
+	 * @param includeUpper    If true, includes uppercase letters (A-Z).
+	 * @param includeNumbers  If true, includes digits (0-9).
+	 * @param includeSymbols  If true, includes common symbols (!@# etc.).
+	 * @param customAlphabet  Optional custom alphabet (overrides all other options).
+	 * @return A random string of specified length.
+	 */
+	public static function string(length:Int, includeUpper:Bool = false, includeNumbers:Bool = false, includeSymbols:Bool = false, ?customAlphabet:String):String
+	{
+		var alphabet = customAlphabet;
+		
+		if (alphabet == null) {
+			alphabet = "abcdefghijklmnopqrstuvwxyz";
+			
+			if (includeUpper)
+				alphabet += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			if (includeNumbers)
+				alphabet += "0123456789";
+			if (includeSymbols)
+				alphabet += "!@#$%^&*()-_=+[]{}|;:,.<>?";
+		}
+		
+		final result = new StringBuf();
+		for (i in 0...length) {
+			final index = FlxG.random.int(0, alphabet.length - 1);
+			result.add(alphabet.charAt(index));
+		}
+		
+		return result.toString();
+	}
+
+	/**
 	 * Returns either a 1 or -1.
 	 *
 	 * @param   Chance   The chance of receiving a positive value.
