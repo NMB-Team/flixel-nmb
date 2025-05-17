@@ -314,6 +314,194 @@ import openfl.geom.Point;
 		return this;
 	}
 
+	inline function get_x():Float
+		return this.x;
+		
+	inline function set_x(x:Float):Float
+		return this.x = x;
+		
+	inline function get_y():Float
+		return this.y;
+		
+	inline function set_y(y:Float):Float
+		return this.y = y;
+		
+	inline function get_dx():Float
+		return this.dx;
+		
+	inline function get_dy():Float
+		return this.dy;
+		
+	inline function get_length():Float
+		return this.length;
+		
+	inline function set_length(l:Float):Float
+		return this.length = l;
+		
+	inline function get_lengthSquared():Float
+		return this.lengthSquared;
+		
+	inline function get_degrees():Float
+		return this.degrees;
+		
+	inline function set_degrees(degs:Float):Float
+		return this.degrees = degs;
+		
+	inline function get_radians():Float
+		return this.radians;
+		
+	inline function set_radians(rads:Float):Float
+		return this.radians = rads;
+		
+	inline function get_rx():Float
+		return this.rx;
+		
+	inline function get_ry():Float
+		return this.ry;
+		
+	inline function get_lx():Float
+		return this.lx;
+		
+	inline function get_ly():Float
+		return this.ly;
+}
+
+/**
+ * The base class of FlxPoint, just use FlxPoint instead.
+ *
+ * Note to contributors: don't worry about adding functionality to the base class.
+ * it's all mostly inlined anyway so there's no runtime definitions for
+ * reflection or anything.
+ */
+@:noCompletion
+@:noDoc
+@:allow(flixel.math.FlxPoint)
+class FlxBasePoint implements IFlxPooled
+{
+	public static inline final EPSILON:Float = 0.0000001;
+	public static inline final EPSILON_SQUARED:Float = EPSILON * EPSILON;
+	
+	#if FLX_POINT_POOL
+	static var pool:FlxPool<FlxBasePoint> = new FlxPool(FlxBasePoint.new.bind(0, 0));
+	#end
+	
+	static var _point1 = new FlxPoint();
+	static var _point2 = new FlxPoint();
+	static var _point3 = new FlxPoint();
+	
+	/**
+	 * Recycle or create a new FlxBasePoint.
+	 * Be sure to put() them back into the pool after you're done with them!
+	 *
+	 * @param   x  The X-coordinate of the point in space.
+	 * @param   y  The Y-coordinate of the point in space.
+	 * @return  This point.
+	 */
+	public static inline function get(x:Float = 0, y:Float = 0):FlxBasePoint
+	{
+		#if FLX_POINT_POOL
+		var point = pool.get().set(x, y);
+		point._inPool = false;
+		return point;
+		#else
+		return new FlxBasePoint(x, y);
+		#end
+	}
+	
+	/**
+	 * Recycle or create a new FlxBasePoint which will automatically be released
+	 * to the pool when passed into a flixel function.
+	 *
+	 * @param   x  The X-coordinate of the point in space.
+	 * @param   y  The Y-coordinate of the point in space.
+	 * @return  This point.
+	 */
+	public static inline function weak(x:Float = 0, y:Float = 0):FlxBasePoint
+	{
+		var point = get(x, y);
+		#if FLX_POINT_POOL
+		point._weak = true;
+		#end
+		return point;
+	}
+	
+	public var x(default, set):Float = 0;
+	public var y(default, set):Float = 0;
+	
+	/**
+	 * The horizontal component of the unit point
+	 */
+	public var dx(get, never):Float;
+	
+	/**
+	 * The vertical component of the unit point
+	 */
+	public var dy(get, never):Float;
+	
+	/**
+	 * Length of the point
+	 */
+	public var length(get, set):Float;
+	
+	/**
+	 * length of the point squared
+	 */
+	public var lengthSquared(get, never):Float;
+	
+	/**
+	 * The angle formed by the point with the horizontal axis (in degrees)
+	 */
+	public var degrees(get, set):Float;
+	
+	/**
+	 * The angle formed by the point with the horizontal axis (in radians)
+	 */
+	public var radians(get, set):Float;
+	
+	/**
+	 * The horizontal component of the right normal of the point
+	 */
+	public var rx(get, never):Float;
+	
+	/**
+	 * The vertical component of the right normal of the point
+	 */
+	public var ry(get, never):Float;
+	
+	/**
+	 * The horizontal component of the left normal of the point
+	 */
+	public var lx(get, never):Float;
+	
+	/**
+	 * The vertical component of the left normal of the point
+	 */
+	public var ly(get, never):Float;
+	
+	#if FLX_POINT_POOL
+	var _weak:Bool = false;
+	var _inPool:Bool = false;
+	#end
+	
+	@:keep
+	public inline function new(x:Float = 0, y:Float = 0)
+	{
+		set(x, y);
+	}
+	
+	/**
+	 * Set the coordinates of this point object.
+	 *
+	 * @param   x  The X-coordinate of the point in space.
+	 * @param   y  The Y-coordinate of the point in space.
+	 */
+	public function set(x:Float = 0, y:Float = 0):FlxPoint
+	{
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+
 	/**
 	 * Adds to the coordinates of this point.
 	 *
@@ -1378,26 +1566,6 @@ import openfl.geom.Point;
 		return copyTo(p);
 	}
 
-	inline function get_x():Float
-	{
-		return this.x;
-	}
-
-	inline function set_x(x:Float):Float
-	{
-		return this.x = x;
-	}
-
-	inline function get_y():Float
-	{
-		return this.y;
-	}
-
-	inline function set_y(y:Float):Float
-	{
-		return this.y = y;
-	}
-
 	inline function get_dx():Float
 	{
 		if (isZero())
@@ -1478,86 +1646,6 @@ import openfl.geom.Point;
 	inline function get_ly():Float
 	{
 		return -x;
-	}
-}
-
-/**
- * The base class of FlxPoint, just use FlxPoint instead.
- * 
- * Note to contributors: don't worry about adding functionality to the base class.
- * it's all mostly inlined anyway so there's no runtime definitions for
- * reflection or anything.
- */
-@:noCompletion
-@:noDoc
-@:allow(flixel.math.FlxPoint)
-class FlxBasePoint implements IFlxPooled
-{
-	#if FLX_POINT_POOL
-	static var pool:FlxPool<FlxBasePoint> = new FlxPool(FlxBasePoint.new.bind(0, 0));
-	#end
-
-	/**
-	 * Recycle or create a new FlxBasePoint.
-	 * Be sure to put() them back into the pool after you're done with them!
-	 *
-	 * @param   x  The X-coordinate of the point in space.
-	 * @param   y  The Y-coordinate of the point in space.
-	 * @return  This point.
-	 */
-	public static inline function get(x:Float = 0, y:Float = 0):FlxBasePoint
-	{
-		#if FLX_POINT_POOL
-		final point = pool.get().set(x, y);
-		point._inPool = false;
-		return point;
-		#else
-		return new FlxBasePoint(x, y);
-		#end
-	}
-
-	/**
-	 * Recycle or create a new FlxBasePoint which will automatically be released
-	 * to the pool when passed into a flixel function.
-	 *
-	 * @param   x  The X-coordinate of the point in space.
-	 * @param   y  The Y-coordinate of the point in space.
-	 * @return  This point.
-	 */
-	public static inline function weak(x:Float = 0, y:Float = 0):FlxBasePoint
-	{
-		final point = get(x, y);
-		#if FLX_POINT_POOL
-		point._weak = true;
-		#end
-		return point;
-	}
-
-	public var x(default, set):Float = 0;
-	public var y(default, set):Float = 0;
-
-	#if FLX_POINT_POOL
-	var _weak:Bool = false;
-	var _inPool:Bool = false;
-	#end
-
-	@:keep
-	public inline function new(x:Float = 0, y:Float = 0)
-	{
-		set(x, y);
-	}
-
-	/**
-	 * Set the coordinates of this point object.
-	 *
-	 * @param   x  The X-coordinate of the point in space.
-	 * @param   y  The Y-coordinate of the point in space.
-	 */
-	public function set(x:Float = 0, y:Float = 0):FlxBasePoint
-	{
-		this.x = x;
-		this.y = y;
-		return this;
 	}
 
 	/**
