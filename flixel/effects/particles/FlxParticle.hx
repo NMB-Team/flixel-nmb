@@ -14,29 +14,28 @@ import flixel.util.helpers.FlxRange;
  * used to work with just any old sprite, it now requires a
  * `FlxParticle` based class.
  */
-class FlxParticle extends FlxSprite implements IFlxParticle
-{
+class FlxParticle extends FlxSprite implements IFlxParticle {
 	/**
 	 * How long this particle lives before it disappears. Set to `0` to never `kill()` the particle automatically.
 	 * NOTE: this is a maximum, not a minimum; the object could get recycled before its `lifespan` is up.
 	 */
-	public var lifespan:Float = 0;
+	public var lifespan = .0;
 
 	/**
 	 * How long this particle has lived so far.
 	 */
-	public var age(default, null):Float = 0;
+	public var age(default, null) = .0;
 
 	/**
 	 * What percentage progress this particle has made of its total life.
 	 * Essentially just `(age / lifespan)` on a scale from `0` to `1`.
 	 */
-	public var percent(default, null):Float = 0;
+	public var percent(default, null) = .0;
 
 	/**
 	 * Whether or not the hitbox should be updated each frame when scaling.
 	 */
-	public var autoUpdateHitbox:Bool = false;
+	public var autoUpdateHitbox = false;
 
 	/**
 	 * The range of values for `velocity` over this particle's `lifespan`.
@@ -81,15 +80,13 @@ class FlxParticle extends FlxSprite implements IFlxParticle
 	/**
 	 * The amount of change from the previous frame.
 	 */
-	var _delta:Float = 0;
+	var _delta = .0;
 
 	/**
 	 * Instantiate a new particle. Like `FlxSprite`, all meaningful creation
 	 * happens during `loadGraphic()` or `makeGraphic()` or whatever.
 	 */
-	@:keep
-	public function new()
-	{
+	@:keep public function new() {
 		super();
 
 		velocityRange = new FlxRange<FlxPoint>(FlxPoint.get(), FlxPoint.get());
@@ -107,28 +104,26 @@ class FlxParticle extends FlxSprite implements IFlxParticle
 	/**
 	 * Clean up memory.
 	 */
-	override public function destroy():Void
-	{
-		if (velocityRange != null)
-		{
+	override public function destroy():Void {
+		if (velocityRange != null) {
 			velocityRange.start = FlxDestroyUtil.put(velocityRange.start);
 			velocityRange.end = FlxDestroyUtil.put(velocityRange.end);
 			velocityRange = null;
 		}
-		if (scaleRange != null)
-		{
+
+		if (scaleRange != null) {
 			scaleRange.start = FlxDestroyUtil.put(scaleRange.start);
 			scaleRange.end = FlxDestroyUtil.put(scaleRange.end);
 			scaleRange = null;
 		}
-		if (dragRange != null)
-		{
+
+		if (dragRange != null) {
 			dragRange.start = FlxDestroyUtil.put(dragRange.start);
 			dragRange.end = FlxDestroyUtil.put(dragRange.end);
 			dragRange = null;
 		}
-		if (accelerationRange != null)
-		{
+		
+		if (accelerationRange != null) {
 			accelerationRange.start = FlxDestroyUtil.put(accelerationRange.start);
 			accelerationRange.end = FlxDestroyUtil.put(accelerationRange.end);
 			angularVelocityRange = null;
@@ -145,73 +140,46 @@ class FlxParticle extends FlxSprite implements IFlxParticle
 	/**
 	 * The particle's main update logic. Basically updates properties if alive, based on ranged properties.
 	 */
-	override public function update(elapsed:Float):Void
-	{
-		if (age < lifespan)
-			age += elapsed;
+	override public function update(elapsed:Float):Void {
+		if (age < lifespan) age += elapsed;
 
-		if (age >= lifespan && lifespan != 0)
-		{
-			kill();
-		}
-		else
-		{
+		if (age >= lifespan && lifespan != 0) kill();
+		else {
 			_delta = elapsed / lifespan;
 			percent = age / lifespan;
 
 			if (velocityRange.active)
-			{
-				velocity.x += (velocityRange.end.x - velocityRange.start.x) * _delta;
-				velocity.y += (velocityRange.end.y - velocityRange.start.y) * _delta;
-			}
+				velocity.add((velocityRange.end.x - velocityRange.start.x) * _delta, (velocityRange.end.y - velocityRange.start.y) * _delta);
 
 			if (angularVelocityRange.active)
-			{
 				angularVelocity += (angularVelocityRange.end - angularVelocityRange.start) * _delta;
-			}
 
-			if (scaleRange.active)
-			{
-				scale.x += (scaleRange.end.x - scaleRange.start.x) * _delta;
-				scale.y += (scaleRange.end.y - scaleRange.start.y) * _delta;
-				if (autoUpdateHitbox)
-					updateHitbox();
+			if (scaleRange.active) {
+				scale.add((scaleRange.end.x - scaleRange.start.x) * _delta, (scaleRange.end.y - scaleRange.start.y) * _delta);
+				if (autoUpdateHitbox) updateHitbox();
 			}
 
 			if (alphaRange.active)
-			{
 				alpha += (alphaRange.end - alphaRange.start) * _delta;
-			}
 
 			if (colorRange.active)
-			{
 				color = FlxColor.interpolate(colorRange.start, colorRange.end, percent);
-			}
 
 			if (dragRange.active)
-			{
-				drag.x += (dragRange.end.x - dragRange.start.x) * _delta;
-				drag.y += (dragRange.end.y - dragRange.start.y) * _delta;
-			}
+				drag.add((dragRange.end.x - dragRange.start.x) * _delta, (dragRange.end.y - dragRange.start.y) * _delta);
 
 			if (accelerationRange.active)
-			{
-				acceleration.x += (accelerationRange.end.x - accelerationRange.start.x) * _delta;
-				acceleration.y += (accelerationRange.end.y - accelerationRange.start.y) * _delta;
-			}
+				acceleration.add((accelerationRange.end.x - accelerationRange.start.x) * _delta, (accelerationRange.end.y - accelerationRange.start.y) * _delta);
 
 			if (elasticityRange.active)
-			{
 				elasticity += (elasticityRange.end - elasticityRange.start) * _delta;
-			}
 		}
 
 		super.update(elapsed);
 	}
 
-	override public function reset(X:Float, Y:Float):Void
-	{
-		super.reset(X, Y);
+	override public function reset(x:Float, y:Float):Void {
+		super.reset(x, y);
 		age = 0;
 		visible = true;
 	}
@@ -223,8 +191,7 @@ class FlxParticle extends FlxSprite implements IFlxParticle
 	public function onEmit():Void {}
 }
 
-interface IFlxParticle extends IFlxSprite
-{
+interface IFlxParticle extends IFlxSprite {
 	var lifespan:Float;
 	var age(default, null):Float;
 	var percent(default, null):Float;
