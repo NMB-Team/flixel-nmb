@@ -115,6 +115,29 @@ class FlxMath
 	}
 
 	/**
+	 * Adjusts the lerp value to be frame rate independent.
+	 * Multiplies the provided lerp value by the elapsed time adjusted to a 60 FPS base.
+	 * 
+	 * @param lerp The original lerp value.
+	 */
+	public static inline function cameraLerp(lerp:Float):Float
+	{
+		// multiply the lerp value by the elapsed time scaled to 60 FPS
+		return lerp * (FlxG.elapsed * 60); // 1 / 60
+	}
+
+	/**
+	 * Calculates the difference between two values based on a ratio.
+	 * @param base The base value.
+	 * @param target The target value.
+	 * @param ratio The ratio to use for the calculation.
+	 */
+	public static inline function lerpDelta(base:Float, target:Float, ratio:Float):Float
+	{
+		return base + cameraLerp(ratio) * (target - base);
+	}
+
+	/**
 	 * Adjusts the given lerp to account for the time that has passed
 	 * 
 	 * @param   lerp     The ratio to lerp in 1/60th of a second

@@ -168,8 +168,8 @@ class FlxSoundTray extends Sprite
 	 */
 	public function update(MS:Float):Void
 	{
-		y = Utils.lerpDelta(y, lerpYPos, .15);
-		alpha = Utils.lerpDelta(alpha, alphaTarget, .3);
+		y = FlxMath.lerpDelta(y, lerpYPos, .15);
+		alpha = FlxMath.lerpDelta(alpha, alphaTarget, .3);
 
 		if (_timer > 0) {
 			_timer -= MS * .001;
