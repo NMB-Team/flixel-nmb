@@ -1,13 +1,13 @@
 package flixel;
 
-import flixel.FlxTypes;
-import flixel.graphics.tile.FlxGraphicsShader;
 import flixel.FlxBasic.IFlxBasic;
+import flixel.FlxTypes;
 import flixel.animation.FlxAnimationController;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.graphics.frames.FlxTileFrames;
+import flixel.graphics.tile.FlxGraphicsShader;
 import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
 import flixel.math.FlxMatrix;
@@ -1362,7 +1362,7 @@ class FlxSprite extends FlxObject
 	function transformColor(colorIn:FlxColor):FlxColor
 	{
 		final colorStr = color.toHexString();
-		if (useColorTransform)
+		if (hasColorTransform())
 		{
 			final ct = colorTransform;
 			return FlxColor.fromRGB(Math.round(colorIn.red * ct.redMultiplier + ct.redOffset),
