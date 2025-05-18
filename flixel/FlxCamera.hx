@@ -511,7 +511,7 @@ class FlxCamera extends FlxBasic
 	/**
 	 * The filters array to be applied to the camera.
 	 */
-	public var filters:Null<Array<BitmapFilter>> = null;
+	public var filters(default, set):Null<Array<BitmapFilter>> = null;
 
 	/**
 	 * Camera's initial zoom value. Used for camera's scale handling.
@@ -2218,8 +2218,42 @@ class FlxCamera extends FlxBasic
 		return y;
 	}
 
+	@:noCompletion function set_filters(newFilters:Null<Array<BitmapFilter>>):Null<Array<BitmapFilter>> {
+		filters = newFilters;
+		
+		if (flashSprite != null) fixSpriteShaderSize(flashSprite);
+		fixSpriteShaderSize(FlxG.game);
+		
+		return filters;
+	}
+
+	static function fixSpriteShaderSize(sprite:Sprite):Void {
+		if (sprite == null)	return;
+			
+		@:privateAccess {
+			for (cache in [sprite.__cacheBitmapData, sprite.__cacheBitmapData2, sprite.__cacheBitmapData3]) {
+				if (cache != null) {
+					if (cache.__texture != null) cache.__texture.dispose();
+					cache.disposeImage();
+					cache.dispose();
+				}
+			}
+			sprite.__cacheBitmap = null;
+			sprite.__cacheBitmapData = null;
+			sprite.__cacheBitmapData2 = null;
+			sprite.__cacheBitmapData3 = null;
+			sprite.__cacheBitmapColorTransform = null;
+		}
+	}
+
 	@:noCompletion override function set_visible(visible:Bool):Bool {
-		if (flashSprite != null) flashSprite.visible = visible;
+		if (flashSprite != null) {
+			flashSprite.visible = visible;
+			if (filters != null && filters.length != 0)
+				fixSpriteShaderSize(flashSprite);
+		}
+		fixSpriteShaderSize(FlxG.game);
+		
 		return this.visible = visible;
 	}
 
