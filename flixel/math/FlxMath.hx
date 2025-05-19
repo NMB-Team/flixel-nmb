@@ -603,6 +603,14 @@ class FlxMath
 	}
 
 	/**
+	 * Clamps an integer value to ensure it stays within the specified minimum and maximum bounds.
+	 */
+	public static inline function clamp(v:Int, min:Int, max:Int):Int
+	{
+		return v < min ? min : (v > max ? max : v);
+	}
+
+	/**
 	 * Performs a modulo operation to calculate the remainder of `a` divided by `b`.
 	 * 
 	 * The definition of "remainder" varies by implementation;
