@@ -1126,25 +1126,6 @@ class FlxCamera extends FlxBasic
 			flashSprite.x += lastShakeX;
 			flashSprite.y += lastShakeY;
 		}
-
-		if (filtersEnabled && flashSprite.filters != null && _scrollRect != null)
-		{
-			var w = width * initialZoom * FlxG.scaleMode.scale.x * FlxG.stage.window.scale;
-			var h = height * initialZoom * FlxG.scaleMode.scale.y * FlxG.stage.window.scale;
-
-			for (f in flashSprite.filters)
-			{
-				if (f is ShaderFilter)
-				{
-					var f:ShaderFilter = cast f;
-					if (f.shader is FlxGraphicsShader)
-					{
-						var shader:FlxGraphicsShader = cast f.shader;
-						shader.setCamSize(0, 0, w, h);
-					}
-				}
-			}
-		}
 	}
 
 	/**
