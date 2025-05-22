@@ -1050,9 +1050,6 @@ class FlxSprite extends FlxObject
 		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY)
 			return;
 
-		if (shader != null && shader is FlxGraphicsShader)
-			shader.setCamSize(_frame.frame.x, _frame.frame.y, _frame.frame.width, _frame.frame.height);
-
 		if (dirty) // rarely
 			calcFrame(useFramePixels);
 

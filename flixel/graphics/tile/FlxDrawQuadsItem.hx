@@ -125,11 +125,11 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 	{
 		if (rects.length == 0)
 			return;
-
+		
 		// TODO: catch this error when the dev actually messes up, not in the draw phase
 		if (shader == null && graphics.isDestroyed)
 			throw 'Attempted to render an invalid FlxDrawItem, did you destroy a cached sprite?';
-			
+		
 		final shader = shader != null ? shader : graphics.shader;
 		shader.bitmap.input = graphics.bitmap;
 		shader.bitmap.filter = (FlxG.enableAntialiasing && (camera.antialiasing || antialiasing)) ? LINEAR : NEAREST;
@@ -147,38 +147,6 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 		camera.canvas.graphics.overrideBlendMode(blend);
 		camera.canvas.graphics.beginShaderFill(shader);
 		camera.canvas.graphics.drawQuads(rects, null, transforms);
-
-
-		#if ANTIALIASING_DEBUG
-		if (!antialiasing)
-		{
-			#if debug
-			#if (openfl > "8.7.0")
-			camera.canvas.graphics.overrideBlendMode(blend);
-			#end
-			camera.canvas.graphics.beginBitmapFill(ALPHA_ERROR_BITMAP);
-			camera.canvas.graphics.drawQuads(rects, null, transforms);
-			camera.canvas.graphics.endFill();
-			#end
-		}
-		#end
-
-		#if DRAW_CALLS_DEBUG
-		var drawCalls = FlxDrawBaseItem.drawCalls;
-
-		while (randColors[drawCalls] == null)
-		{
-			var color = FlxColor.fromRGB(Std.int(Math.random() * 255), Std.int(Math.random() * 255), Std.int(Math.random() * 255), 0x40);
-			randColors.push(new openfl.display.BitmapData(1, 1, true, color));
-		}
-
-		#if (openfl > "8.7.0")
-		camera.canvas.graphics.overrideBlendMode(blend);
-		#end
-		camera.canvas.graphics.beginBitmapFill(randColors[drawCalls]);
-		camera.canvas.graphics.drawQuads(rects, null, transforms);
-		camera.canvas.graphics.endFill();
-		#end
 		super.render(camera);
 	}
 
