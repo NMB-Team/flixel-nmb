@@ -7,7 +7,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxBitmapDataUtil;
-import flixel.util.FlxDestroyUtil;
 import openfl.display.BitmapData;
 
 /**

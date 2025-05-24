@@ -14,7 +14,7 @@ import flixel.system.debug.stats.Stats;
 import flixel.system.debug.watch.Tracker;
 import flixel.system.debug.watch.Watch;
 import flixel.system.ui.FlxSystemButton;
-import flixel.util.FlxHorizontalAlign;
+import flixel.util.FlxAlign;
 import openfl.display.DisplayObject;
 import openfl.events.MouseEvent;
 import openfl.geom.Point;

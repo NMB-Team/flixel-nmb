@@ -29,27 +29,30 @@ class FlxGraphicsShader extends GraphicsShader
 		gl_Position = openfl_Matrix * openfl_Position;
 	", true)
 	@:glFragmentHeader("
+		// Note: this is being set to false somewhere!
 		uniform bool hasTransform;
 		uniform bool hasColorTransform;
 		uniform vec4 _camSize;
 
+		vec4 transform(vec4 color, vec4 mult, vec4 offset, float alpha)
+		{
+			color = clamp(offset + (color * mult), 0.0, 1.0);
+			return vec4 (color.rgb, 1.0) * color.a * alpha;
+		}
+		
+		vec4 transformIf(bool hasTransform, vec4 color, vec4 mult, vec4 offset, float alpha)
+		{
+			return mix(color * alpha, transform(color, mult, offset, alpha), float(hasTransform));
+		}
+
 		vec4 applyFlixelEffects(vec4 color) {
-			if (!hasTransform)
+			if (!hasTransform && !openfl_HasColorTransform)
 				return color;
 
-			if (color.a == 0.0)
-				return vec4(0.0, 0.0, 0.0, 0.0);
+			color = mix(color, vec4(0.0), float(color.a == 0.0));
 
-			if (!hasColorTransform) 
-				return color * openfl_Alphav;
-
-			color.rgb = color.rgb / color.a;
-			color = clamp(openfl_ColorOffsetv + (color * openfl_ColorMultiplierv), 0.0, 1.0);
-
-			if (color.a > 0.0)
-				return vec4(color.rgb * color.a * openfl_Alphav, color.a * openfl_Alphav);
-
-			return vec4(0.0, 0.0, 0.0, 0.0);
+			bool _hasTransform = openfl_HasColorTransform || hasColorTransform;
+			return transformIf(_hasTransform, color, openfl_ColorMultiplierv, openfl_ColorOffsetv, openfl_Alphav);
 		}
 
 		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord) {

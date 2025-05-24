@@ -26,7 +26,7 @@ class FlxVersion
 		{
 			sha = "@" + sha.substring(0, 7);
 		}
-		s = 'HaxeFlixel $major.$minor.$patch$sha [CUSTOM]';
+		s = 'HaxeFlixel $major.$minor.$patch$sha [dtwotwo]';
 	}
 
 	/**

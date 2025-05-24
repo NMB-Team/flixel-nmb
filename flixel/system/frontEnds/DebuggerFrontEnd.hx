@@ -9,7 +9,7 @@ import flixel.system.debug.interaction.tools.Tool;
 import flixel.system.debug.Window;
 import flixel.system.debug.watch.Tracker;
 import flixel.system.ui.FlxSystemButton;
-import flixel.util.FlxHorizontalAlign;
+import flixel.util.FlxAlign;
 import flixel.util.FlxSignal;
 
 using flixel.util.FlxStringUtil;

@@ -2,6 +2,7 @@ package flixel;
 
 import flixel.FlxTypes;
 import openfl.display.Graphics;
+import flixel.system.debug.FlxDebugDrawGraphic;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
@@ -1297,11 +1298,10 @@ class FlxObject extends FlxBasic
 		return debugBoundingBoxColorPartial;
 	}
 	
-	function drawDebugBoundingBoxColor(gfx:Graphics, rect:FlxRect, color:FlxColor)
+	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor)
 	{
-		// fill static graphics object with square shape
-		gfx.lineStyle(1, color, 0.75);
-		gfx.drawRect(rect.x + 0.5, rect.y + 0.5, rect.width - 1.0, rect.height - 1.0);
+		color.alphaFloat = 0.75;
+		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1.0);
 	}
 
 	inline function beginDrawDebug(camera:FlxCamera):Graphics

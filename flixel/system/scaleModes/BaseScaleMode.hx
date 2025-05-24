@@ -2,8 +2,7 @@ package flixel.system.scaleModes;
 
 import flixel.FlxG;
 import flixel.math.FlxPoint;
-import flixel.util.FlxHorizontalAlign;
-import flixel.util.FlxVerticalAlign;
+import flixel.util.FlxAlign;
 
 /**
  * The base class from which all other scale modes extend from.

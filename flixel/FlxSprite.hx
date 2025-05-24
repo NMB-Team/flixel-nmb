@@ -276,7 +276,7 @@ class FlxSprite extends FlxObject
 	public var color(default, set):FlxColor = FlxColor.WHITE;
 
 	/**
-	 * The color effects of this sprite, changes to `color` or `alplha` will be reflected here
+	 * The color effects of this sprite, changes to `color` or `alpha` will be reflected here
 	 */
 	public var colorTransform(default, null) = new ColorTransform();
 
@@ -1120,9 +1120,9 @@ class FlxSprite extends FlxObject
 
 		if (frameOffsetAngle != null && frameOffsetAngle != angle)
 		{
-			var angleOff = (frameOffsetAngle - angle) * FlxAngle.TO_RAD;
-			var cos = Math.cos(angleOff);
-			var sin = Math.sin(angleOff);
+			final angleOff = (frameOffsetAngle - angle) * FlxAngle.TO_RAD;
+			final cos = FlxMath.fastCos(angleOff);
+			final sin = FlxMath.fastSin(angleOff);
 			// cos doesnt need to be negated
 			_matrix.rotateWithTrig(cos, -sin);
 			_matrix.translate(-frameOffset.x, -frameOffset.y);

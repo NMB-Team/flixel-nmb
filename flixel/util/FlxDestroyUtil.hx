@@ -29,7 +29,7 @@ import openfl.display.DisplayObjectContainer;
 	{
 		if (array == null) return null;
 		for (e in array) destroy(e);
-		array.splice(0, array.length);
+		array.resize(0);
 		return null;
 	}
 
@@ -70,7 +70,7 @@ import openfl.display.DisplayObjectContainer;
 	{
 		if (array == null) return null;
 		for (e in array) put(e);
-		array.splice(0, array.length);
+		array.resize(0);
 		return null;
 	}
 
