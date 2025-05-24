@@ -37,7 +37,7 @@ class FlxGraphicsShader extends GraphicsShader
 		vec4 transform(vec4 color, vec4 mult, vec4 offset, float alpha)
 		{
 			color = clamp(offset + (color * mult), 0.0, 1.0);
-			return vec4 (color.rgb, 1.0) * color.a * alpha;
+			return vec4(color.rgb, 1.0) * color.a * alpha;
 		}
 		
 		vec4 transformIf(bool hasTransform, vec4 color, vec4 mult, vec4 offset, float alpha)
