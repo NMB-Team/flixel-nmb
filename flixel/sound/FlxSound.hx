@@ -763,7 +763,7 @@ class FlxSound extends FlxBasic
 		_muted = Muted;
 		updateTransform();
 		return Muted;
-		}
+	}
 	
 	#if FLX_PITCH
 	inline function get_pitch():Float
