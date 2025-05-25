@@ -296,7 +296,7 @@ class Field extends TextField
 							x += __cacheWidth - __textEngine.width;
 							
 						case CENTER:
-							x += (__cacheWidth - __textEngine.width) / 2;
+							x += (__cacheWidth - __textEngine.width) * .5;
 							
 						default:
 					}
