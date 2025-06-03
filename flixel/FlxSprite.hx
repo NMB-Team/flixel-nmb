@@ -672,7 +672,7 @@ class FlxSprite extends FlxObject
 		else
 			key += ":" + frame.frame.toString();
 
-		final graphic:FlxGraphic = FlxG.bitmap.get(key);
+		var graphic:FlxGraphic = FlxG.bitmap.get(key);
 		if (graphic == null)
 			graphic = FlxGraphic.fromBitmapData(frame.paint(), false, key);
 
