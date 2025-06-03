@@ -67,7 +67,7 @@ class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
 			default: super.getRawID(ID);
 		}
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		return switch (id)
@@ -84,12 +84,12 @@ class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
 			case _: super.getInputLabel(id);
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.PS_VITA(getRawID(id));
 	}
-	
+
 	override function isAxisFlipped(axisID:Int):Bool
 	{
 		return axisID == PSVitaID.LEFT_ANALOG_STICK.y || axisID == PSVitaID.RIGHT_ANALOG_STICK.y;

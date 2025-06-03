@@ -14,7 +14,7 @@ import flixel.graphics.FlxGraphic;
 import openfl.display.DisplayObjectContainer;
 
 /**
- * FlxLabel is a text class that can be used to display fonts and labels 
+ * FlxLabel is a text class that can be used to display fonts and labels
  * Much like `FlxText` however text renders without software bitmaps
  * In many cases FlxLabel out performs FlxText in rendering speed and
  * memory efficiency
@@ -25,42 +25,42 @@ class FlxLabel extends FlxSprite
 	 * The `TextField` of this label provides the text engine for display
 	 */
 	public var field:Field;
-	
+
 	public var align:Convert;
-	
+
 	/**
 	 * useful for rendering text behind or infront of all objects on a `FlxCamera`
 	 */
 	public var inFront:Bool = true;
-	
+
 	/**
 	 * The current font expressed as String
 	 */
 	public var font(get, set):String;
-	
+
 	/**
 	 * The text you want to display.
 	 */
 	public var text(get, set):String;
-	
+
 	/**
 	 * enables cached label width which prevents jittery text updates.
 	 * also can improve text engine speed.
-	 * 
+	 *
 	 * can cause alignment problems if updated less frequent.
 	 */
 	public var stabilize:Bool = false;
-	
+
 	/**
 	 * Tells wether or not if the label should load a pixelated font.
 	 */
 	public var isPixel(default, set):Bool;
-	
+
 	/**
 	 * The text alignment of this label done in Float values 1.0-0.0
 	 */
 	public var alignment(default, set):Float = 0.0;
-	
+
 	var _size:Int;
 	var _align:Float;
 	var _width:Float;
@@ -70,14 +70,14 @@ class FlxLabel extends FlxSprite
 	var ADDED_TO_SCENE:Bool = false;
 	var _color:UInt = flixel.util.FlxColor.BLACK; // 0xFFFFFF;
 	var _wrapAlign:TextFormatAlign = JUSTIFY;
-	
+
 	/**
 	 * Creates a new label you can specify font justify and more!
 	 *
 	 * @param x:Float the x coord of the label
 	 * @param y:Float the y coord of the label
 	 * @param Text:String the text to display
-	 * @param fnt:String the font to load 
+	 * @param fnt:String the font to load
 	 * @param size:Int the size of the txt
 	 * @param justify:TextFieldAutoSize alignment
 	 * @param add:Bool wether or not to add this label to the display
@@ -88,19 +88,19 @@ class FlxLabel extends FlxSprite
 		setField(Text, Justify);
 		setFormat(Size);
 		active = false;
-		
+
 		super(x, y);
-		
+
 		if (fnt != '')
 			font = fnt;
-			
+
 		if (add)
 			FlxG.state.add(this);
-			
+
 		width = field.textWidth;
 		height = field.textHeight;
 	}
-	
+
 	public function setField(text:String, options:TextFieldAutoSize)
 	{
 		alignment = align > options; // i freaking love Abstracts.
@@ -113,10 +113,10 @@ class FlxLabel extends FlxSprite
 		field.sharpness = 50;
 		field.text = text;
 	}
-	
+
 	/**
 	 * Draws the text on a graphic of your choice useful for manipulation
-	 * @param graphic 
+	 * @param graphic
 	 */
 	public function drawGraphic(?graphic:FlxGraphic)
 	{
@@ -127,7 +127,7 @@ class FlxLabel extends FlxSprite
 		graphic.bitmap.draw(field);
 		return graphic;
 	}
-	
+
 	override public function draw()
 	{
 		if (!ADDED_TO_SCENE)
@@ -160,20 +160,20 @@ class FlxLabel extends FlxSprite
 			field.cacheAsBitmapMatrix = _matrix;
 		}
 	}
-	
+
 	function addToCamera()
 	{
 		final display:DisplayObjectContainer = camera.canvas;
 		camera.canvas.addChildAt(field, display.numChildren);
 	}
-	
+
 	function get_font():String
 		return _FORMAT.font;
-		
+
 	function set_font(str:String):String
 	{
 		var newFontName:String = str;
-		
+
 		if (str != null)
 		{
 			if (Assets.exists(str, FONT))
@@ -182,11 +182,11 @@ class FlxLabel extends FlxSprite
 		}
 		else
 			_FORMAT.font = _pixel ? FlxAssets.FONT_DEFAULT : FlxAssets.FONT_DEBUGGER;
-			
+
 		field.defaultTextFormat = _FORMAT = new TextFormat(newFontName, _size, _color, _wrapAlign);
 		return _FORMAT.font;
 	}
-	
+
 	function set_alignment(val:Float)
 	{
 		switch (val)
@@ -202,24 +202,24 @@ class FlxLabel extends FlxSprite
 		}
 		return _align = val;
 	}
-	
+
 	function set_isPixel(val:Bool)
 	{
 		_pixel = val;
 		setFormat(_size);
 		return val;
 	}
-	
+
 	function get_text():String
 		return field.text;
-		
+
 	function set_text(str:String):String
 	{
 		field.text = str;
 		updateAlign();
 		return text;
 	}
-	
+
 	@:access(openfl.text.TextField)
 	public inline function updateAlign()
 	{
@@ -242,7 +242,7 @@ class FlxLabel extends FlxSprite
 				}
 		}
 	}
-	
+
 	function setFormat(size:Int)
 	{
 		_FORMAT = new TextFormat(_pixel ? FlxAssets.FONT_DEFAULT : FlxAssets.FONT_DEBUGGER, size, _color, JUSTIFY);
@@ -253,17 +253,17 @@ class FlxLabel extends FlxSprite
 		_height = height;
 		_size = size;
 	}
-	
+
 	override public function gameCenter(axes:FlxAxes = XY)
 	{
 		if (axes.x)
 			x = FlxG.width * 0.5;
 		if (axes.y)
 			y = (FlxG.height - height) * 0.5;
-			
+
 		return this;
 	}
-	
+
 	override function destroy():Void
 	{
 		camera.canvas.removeChild(field);
@@ -277,7 +277,7 @@ class FlxLabel extends FlxSprite
 class Field extends TextField
 {
 	public var __cacheWidth:Float;
-	
+
 	@:access(openfl.text._internal.TextEngine)
 	override function __updateLayout()
 	{
@@ -285,7 +285,7 @@ class Field extends TextField
 		{
 			__cacheWidth = __textEngine.width;
 			__textEngine.update();
-			
+
 			if (__textEngine.autoSize != NONE)
 			{
 				if (__textEngine.width != __cacheWidth)
@@ -294,19 +294,19 @@ class Field extends TextField
 					{
 						case RIGHT:
 							x += __cacheWidth - __textEngine.width;
-							
+
 						case CENTER:
 							x += (__cacheWidth - __textEngine.width) * .5;
-							
+
 						default:
 					}
 				}
-				
+
 				__textEngine.getBounds();
 			}
-			
+
 			__layoutDirty = false;
-			
+
 			setSelection(__selectionIndex, __caretIndex);
 		}
 	}

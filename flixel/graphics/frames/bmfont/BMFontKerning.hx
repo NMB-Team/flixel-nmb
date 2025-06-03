@@ -5,7 +5,7 @@ import haxe.io.BytesInput;
 /**
  * Kerning data used internally via `FlxBitmapFont.fromAngelCode` to serialize text, xml or binary
  * files exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -16,14 +16,14 @@ class BMFontKerning
 	public var first:Int;
 	public var second:Int;
 	public var amount:Int;
-	
+
 	public inline function new(first = -1, second = -1, amount = 0)
 	{
 		this.first = first;
 		this.second = second;
 		this.amount = amount;
 	}
-	
+
 	static function fromXml(kerningNode:BMFontXml):BMFontKerning
 	{
 		return
@@ -33,19 +33,19 @@ class BMFontKerning
 			amount: kerningNode.att.int("amount")
 		}
 	}
-	
+
 	static function listFromXml(kerningsNode:BMFontXml):Array<BMFontKerning>
 	{
 		final kernings = kerningsNode.nodes("kerning");
 		return [ for (pair in kernings) fromXml(pair) ];
 	}
-	
+
 	static function fromText(kerningText:String):BMFontKerning
 	{
 		var first:Int = -1;
 		var second:Int = -1;
 		var amount:Int = -1;
-		BMFontUtil.forEachAttribute(kerningText, 
+		BMFontUtil.forEachAttribute(kerningText,
 			function(key:String, value:UnicodeString)
 			{
 				switch key
@@ -59,7 +59,7 @@ class BMFontKerning
 		);
 		return new BMFontKerning(first, second, amount);
 	}
-	
+
 	static function listFromBytes(bytes:BytesInput)
 	{
 		var blockSize = bytes.readInt32();

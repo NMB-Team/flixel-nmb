@@ -194,10 +194,10 @@ class FlxRandom
 	public function stringCombination(length:Int, includeUpper:Bool = false, includeNumbers:Bool = false, includeSymbols:Bool = false, ?customAlphabet:String):String
 	{
 		var alphabet = customAlphabet;
-		
+
 		if (alphabet == null) {
 			alphabet = "abcdefghijklmnopqrstuvwxyz";
-			
+
 			if (includeUpper)
 				alphabet += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			if (includeNumbers)
@@ -205,13 +205,13 @@ class FlxRandom
 			if (includeSymbols)
 				alphabet += "!@#$%^&*()-_=+[]{}|;:,.<>?";
 		}
-		
+
 		final result = new StringBuf();
 		for (i in 0...length) {
 			final index = FlxG.random.int(0, alphabet.length - 1);
 			result.add(alphabet.charAt(index));
 		}
-		
+
 		return result.toString();
 	}
 

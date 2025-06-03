@@ -18,16 +18,16 @@ class TrackObject extends Tool
 	override function init(brain:Interaction):Tool
 	{
 		super.init(brain);
-		
+
 		_name = "Track object";
 		setButton(Icon.watch);
 		button.toggleMode = true;
-		
+
 		setCursor(Icon.watch, -5, -5);
-		
+
 		return this;
 	}
-	
+
 	#if FLX_DEBUG
 	override function update():Void
 	{

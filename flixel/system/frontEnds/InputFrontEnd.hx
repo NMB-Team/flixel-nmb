@@ -30,7 +30,7 @@ class InputFrontEnd
 	{
 		if (!list.contains(input))
 			list.push(input);
-			
+
 		return input;
 	}
 
@@ -85,10 +85,10 @@ class InputFrontEnd
 		final index = list.indexOf(oldInput);
 		if (index == -1)
 			return null;
-			
+
 		if (destroyOld)
 			oldInput.destroy();
-			
+
 		list[index] = newInput;
 		return newInput;
 	}

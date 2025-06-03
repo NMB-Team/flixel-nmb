@@ -79,7 +79,7 @@ class FlxG
 	 * How fast or slow time should pass in the game; default is `1.0`.
 	 */
 	public static var timeScale:Float = 1.0;
-	
+
 	/**
 	 * How fast or slow animations should pass in the game; default is `1.0`.
 	 * @since 5.5.0
@@ -153,10 +153,10 @@ class FlxG
 
 	/**
 	 * Whether or not antialiasing is allowed.
-	 * 
+	 *
 	 * If this is disabled, sprites or cameras will not have
 	 * any antialiasing, regardless of their individual antialiasing values.
-	 * 
+	 *
 	 * This could come in handy for an antialiasing option in your game!
 	 */
 	public static var allowAntialiasing:Bool = true;
@@ -201,7 +201,7 @@ class FlxG
 	public static var scaleMode(default, set):BaseScaleMode = new RatioScaleMode();
 
 	/**
-	 * Use this to toggle between fullscreen and normal mode. Works on CPP, Neko and Flash.
+	 * Use this to toggle between fullscreen and normal mode. Works on CPP and Flash.
 	 * You can easily toggle fullscreen with e.g.: `FlxG.fullscreen = !FlxG.fullscreen;`
 	 */
 	public static var fullscreen(get, set):Bool;
@@ -370,7 +370,7 @@ class FlxG
 	}
 
 	/**
-	 * Resizes the window. Only works on desktop targets (Neko, Windows, Linux, Mac).
+	 * Resizes the window. Only works on desktop targets (Windows, Linux, Mac).
 	 */
 	public static function resizeWindow(width:Int, height:Int):Void
 	{
@@ -503,10 +503,10 @@ class FlxG
 		return overlap(objectOrGroup1, objectOrGroup2, notifyCallback, FlxObject.separate);
 	}
 
-		
+
 	/**
  	 * Centers `FlxSprite` by graphic size in game space, either by the x axis, y axis, or both.
- 	 * 
+ 	 *
  	 * @param   sprite       The sprite to center.
  	 * @param   axes         On what axes to center the sprite (e.g. `X`, `Y`, `XY`) - default is both.
  	 * @return  Centered sprite for chaining.
@@ -521,7 +521,7 @@ class FlxG
 			final offset = sprite.x - graphicBounds.x;
 			sprite.x = (FlxG.width - graphicBounds.width) * .5 + offset;
 		}
-		
+
 		if (axes.y)
 		{
 			final offset = sprite.y - graphicBounds.y;
@@ -534,7 +534,7 @@ class FlxG
 
 	/**
 	 * Centers `FlxObject` by hitbox size in game space, either by the x axis, y axis, or both.
-	 * 
+	 *
 	 * @param   sprite  The object to center.
 	 * @param   axes    On what axes to center the object (e.g. `X`, `Y`, `XY`) - default is both.
 	 * @return  Centered object for chaining.
@@ -612,7 +612,7 @@ class FlxG
 			width = -width;
 		if (height < 0)
 			height = -height;
-		
+
 		FlxG.game = game;
 		FlxG.width = width;
 		FlxG.height = height;

@@ -11,7 +11,7 @@ import flixel.util.FlxDestroyUtil;
  * `FlxSpriteContainer` is a special `FlxSprite` that can be treated like a single sprite even
  * if it's made up of several member sprites. It shares the `FlxGroup` API, but it doesn't inherit
  * from it. Note that `FlxSpriteContainer` is a `FlxSpriteGroup` but the group is a `FlxContainer`.
- * 
+ *
  * ## When to use a group or container
  * `FlxGroups` are better for organising arbitrary groups for things like iterating or collision.
  * `FlxContainers` are recommended when you are adding them to the current `FlxState`, or a
@@ -36,7 +36,7 @@ class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
 		@:bypassAccessor
 		group = new SpriteContainer<T>(this, maxSize);
 	}
-	
+
 	@:access(flixel.FlxCamera)
 	override function draw():Void
 	{
@@ -45,25 +45,25 @@ class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
 		{
 			FlxCamera._defaultCameras = _cameras;
 		}
-		
+
 		super.draw();
-		
+
 		FlxCamera._defaultCameras = oldDefaultCameras;
 	}
-	
+
 	@:deprecated("FlxSpriteContainer.group can not be set")
 	override function set_group(value:FlxTypedGroup<T>):FlxTypedGroup<T>
 	{
 		throw "FlxSpriteContainer.group cannot be set in FlxSpriteContainers";
 	}
-	
+
 	override function set_camera(value:FlxCamera):FlxCamera
 	{
 		// Do not set children's cameras, this in no longer needed
 		_cameras = value == null ? null : [value];
 		return value;
 	}
-	
+
 	override function set_cameras(value:Array<FlxCamera>):Array<FlxCamera>
 	{
 		// Do not set children's cameras, this in no longer needed
@@ -79,23 +79,23 @@ class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
 private class SpriteContainer<T:FlxSprite> extends FlxTypedContainer<T>
 {
 	var parentSprite:FlxTypedSpriteContainer<T>;
-	
+
 	public function new (parent:FlxTypedSpriteContainer<T>, maxSize:Int)
 	{
 		parentSprite = parent;
 		super(maxSize);
 	}
-	
+
 	override function get_container()
 	{
 		return parentSprite.container;
 	}
-	
+
 	override function getCamerasLegacy()
 	{
 		return (_cameras != null ? _cameras : parentSprite.getCamerasLegacy());
 	}
-	
+
 	override function getCameras()
 	{
 		return (_cameras != null ? _cameras : parentSprite.getCameras());

@@ -125,26 +125,26 @@ class FlxAssets
 	/**
 	 * Reads files from a directory relative to this project and generates `public static inline`
 	 * variables containing the string paths to the files in it.
-	 * 
+	 *
 	 * **Example usage:**
-	 * 
+	 *
 	 * ```haxe
 	 * @:build(flixel.system.FlxAssets.buildFileReferences("assets/images/"))
 	 * class Images {}
 	 * ```
-	 * 
+	 *
 	 * **Renaming Duplicates**
-	 * 
-	 * If you have files with the same names, whichever file is nested deeper or found later 
-	 * will be ignored. You can provide `rename` function to deal with this case. The function takes a filepath 
-	 * (a relative filepath from the `Project.xml`) and returns a field name used to access that path. 
+	 *
+	 * If you have files with the same names, whichever file is nested deeper or found later
+	 * will be ignored. You can provide `rename` function to deal with this case. The function takes a filepath
+	 * (a relative filepath from the `Project.xml`) and returns a field name used to access that path.
 	 * Returning `null` means "ignore the file".
-	 * 
+	 *
 	 * ```haxe
 	 * // assets structure:
 	 * // assets/music/hero.ogg
 	 * // assets/sounds/hero.ogg
-	 * 
+	 *
 	 * // AssetPaths.hx
 	 * @:build(flixel.system.FlxAssets.buildFileReferences("assets", true, null, null,
 	 * 	function renameFileName(name:String):Null<String>
@@ -157,12 +157,12 @@ class FlxAssets
 	 * 	}
 	 * ))
 	 * class AssetPaths {}
-	 * 
+	 *
 	 * // somewhere in your code
 	 * FlxG.sound.play(AssetPaths.assets_music_hero__ogg);
 	 * FlxG.sound.play(AssetPaths.assets_sounds_hero__ogg);
 	 * ```
-	 * 
+	 *
 	 * @param   directory       The directory to scan for files
 	 * @param   subDirectories  Whether to include subdirectories
 	 * @param   include         A string or `EReg` of files to include
@@ -172,7 +172,7 @@ class FlxAssets
 	 * @param   rename          A function that takes the file path and returns a valid haxe field name
 	 * @param   listField       If not an empty string, it adds static public field with the given
 	 *                          name with an array of every file in the directory
-	 * 
+	 *
 	 * @see [Flixel 5.0.0 Migration guide - AssetPaths has less caveats](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide#assetpaths-has-less-caveats-2575)
 	 * @see [Haxe Macros: Code completion for everything](http://blog.stroep.nl/2014/01/haxe-macros/)
 	**/
@@ -268,7 +268,7 @@ class FlxAssets
 		graph.lineTo(100, 100);
 		graph.endFill();
 	}
-	
+
 	/**
 	 * Gets an instance of a bitmap, logs when the asset is not found.
 	 * @param   id  The ID or asset path for the bitmap
@@ -333,7 +333,7 @@ class FlxAssets
 	{
 		if (key != null)
 			return key;
-		
+
 		if ((graphic is BitmapData))
 		{
 			return key;
@@ -346,17 +346,17 @@ class FlxAssets
 		{
 			return cast graphic;
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
-	 * Loads an OpenFL sound asset from the given asset id. If an extension not provided the 
+	 * Loads an OpenFL sound asset from the given asset id. If an extension not provided the
 	 * `defaultSoundExtension` is used (defaults to "ogg" on non-flash targets).
-	 * 
+	 *
 	 * @param   id  The asset id of the local sound file.
 	 * @return  The sound file.
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public static function getSoundAddExtension(id:String, useCache = true):Sound

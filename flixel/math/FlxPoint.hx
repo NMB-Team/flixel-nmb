@@ -7,31 +7,31 @@ import openfl.geom.Point;
 
 /**
  * 2-dimensional point class
- * 
+ *
  * ## Pooling
  * To avoid creating new instances, unnecessarily, used points can be
  * for later use. Rather than creating a new instance directly, call
  * `FlxPoint.get(x, y)` and it will retrieve a point from the pool, if
  * one exists, otherwise it will create a new instance. Similarly, when
  * you're done using a point, call `myPoint.put()` to place it back.
- * 
+ *
  * You can disable point pooling entirely with `FLX_NO_POINT_POOL`.
- * 
+ *
  * ## Weak points
  * Weak points are points meant for a singular use, rather than calling
  * `put` on every point you `get`, you can create a weak point, and have
  * it placed back once used. All `FlxPoint` methods and Flixel utilities
  * automatically call `putWeak()` on every point passed in.
- * 
+ *
  * In the following example, a weak point is created, and passed into
  * `p.degreesTo` where `putWeak` is called on it, putting it back in the pool.
  *
  * ```haxe
  * var angle = p.degreesTo(FlxPoint.weak(FlxG.mouse.x, FlxG.mouse.y));
  * ```
- * 
+ *
  * ## Overloaded Operators
- * 
+ *
  * - `A += B` adds the value of `B` to `A`
  * - `A -= B` subtracts the value of `B` from `A`
  * - `A *= k` scales `A` by float `k` in both x and y components
@@ -43,7 +43,7 @@ import openfl.geom.Point;
  *
  * Note: that these operators get points from the pool, but do not put
  * points back in the pool, unless they are weak.
- * 
+ *
  * Example: 4 total points are created, but only 3 are put into the pool
  * ```haxe
  * var a = FlxPoint.get(1, 1);
@@ -53,7 +53,7 @@ import openfl.geom.Point;
  * b.put();
  * c.put();
  * ```
- * 
+ *
  * To put all 4 back, it should look like this:
  * ```haxe
  * var a = FlxPoint.get(1, 1);
@@ -65,11 +65,11 @@ import openfl.geom.Point;
  * c.put();
  * d.put();
  * ```
- * 
+ *
  * Otherwise, the remainging points will become garbage, adding to the
  * heap, potentially triggering a garbage collection when you don't want.
  */
-@:forward abstract FlxPoint(FlxBasePoint) to FlxBasePoint from FlxBasePoint 
+@:forward abstract FlxPoint(FlxBasePoint) to FlxBasePoint from FlxBasePoint
 {
 	public static inline final EPSILON:Float = 0.0000001;
 	public static inline final EPSILON_SQUARED:Float = EPSILON * EPSILON;
@@ -142,7 +142,7 @@ import openfl.geom.Point;
 		return result;
 	}
 
-	
+
 	/**
 	 * Operator that divides a point by float, returning a new point.
 	 */
@@ -316,52 +316,52 @@ import openfl.geom.Point;
 
 	inline function get_x():Float
 		return this.x;
-		
+
 	inline function set_x(x:Float):Float
 		return this.x = x;
-		
+
 	inline function get_y():Float
 		return this.y;
-		
+
 	inline function set_y(y:Float):Float
 		return this.y = y;
-		
+
 	inline function get_dx():Float
 		return this.dx;
-		
+
 	inline function get_dy():Float
 		return this.dy;
-		
+
 	inline function get_length():Float
 		return this.length;
-		
+
 	inline function set_length(l:Float):Float
 		return this.length = l;
-		
+
 	inline function get_lengthSquared():Float
 		return this.lengthSquared;
-		
+
 	inline function get_degrees():Float
 		return this.degrees;
-		
+
 	inline function set_degrees(degs:Float):Float
 		return this.degrees = degs;
-		
+
 	inline function get_radians():Float
 		return this.radians;
-		
+
 	inline function set_radians(rads:Float):Float
 		return this.radians = rads;
-		
+
 	inline function get_rx():Float
 		return this.rx;
-		
+
 	inline function get_ry():Float
 		return this.ry;
-		
+
 	inline function get_lx():Float
 		return this.lx;
-		
+
 	inline function get_ly():Float
 		return this.ly;
 }
@@ -380,15 +380,15 @@ class FlxBasePoint implements IFlxPooled
 {
 	public static inline final EPSILON:Float = 0.0000001;
 	public static inline final EPSILON_SQUARED:Float = EPSILON * EPSILON;
-	
+
 	#if FLX_POINT_POOL
 	static var pool:FlxPool<FlxBasePoint> = new FlxPool(FlxBasePoint.new.bind(0, 0));
 	#end
-	
+
 	static var _point1 = new FlxPoint();
 	static var _point2 = new FlxPoint();
 	static var _point3 = new FlxPoint();
-	
+
 	/**
 	 * Recycle or create a new FlxBasePoint.
 	 * Be sure to put() them back into the pool after you're done with them!
@@ -407,7 +407,7 @@ class FlxBasePoint implements IFlxPooled
 		return new FlxBasePoint(x, y);
 		#end
 	}
-	
+
 	/**
 	 * Recycle or create a new FlxBasePoint which will automatically be released
 	 * to the pool when passed into a flixel function.
@@ -424,71 +424,71 @@ class FlxBasePoint implements IFlxPooled
 		#end
 		return point;
 	}
-	
+
 	public var x(default, set):Float = 0;
 	public var y(default, set):Float = 0;
-	
+
 	/**
 	 * The horizontal component of the unit point
 	 */
 	public var dx(get, never):Float;
-	
+
 	/**
 	 * The vertical component of the unit point
 	 */
 	public var dy(get, never):Float;
-	
+
 	/**
 	 * Length of the point
 	 */
 	public var length(get, set):Float;
-	
+
 	/**
 	 * length of the point squared
 	 */
 	public var lengthSquared(get, never):Float;
-	
+
 	/**
 	 * The angle formed by the point with the horizontal axis (in degrees)
 	 */
 	public var degrees(get, set):Float;
-	
+
 	/**
 	 * The angle formed by the point with the horizontal axis (in radians)
 	 */
 	public var radians(get, set):Float;
-	
+
 	/**
 	 * The horizontal component of the right normal of the point
 	 */
 	public var rx(get, never):Float;
-	
+
 	/**
 	 * The vertical component of the right normal of the point
 	 */
 	public var ry(get, never):Float;
-	
+
 	/**
 	 * The horizontal component of the left normal of the point
 	 */
 	public var lx(get, never):Float;
-	
+
 	/**
 	 * The vertical component of the left normal of the point
 	 */
 	public var ly(get, never):Float;
-	
+
 	#if FLX_POINT_POOL
 	var _weak:Bool = false;
 	var _inPool:Bool = false;
 	#end
-	
+
 	@:keep
 	public inline function new(x:Float = 0, y:Float = 0)
 	{
 		set(x, y);
 	}
-	
+
 	/**
 	 * Set the coordinates of this point object.
 	 *
@@ -529,7 +529,7 @@ class FlxBasePoint implements IFlxPooled
 		point.putWeak();
 		return this;
 	}
-	
+
 	/**
 	 * Adds the coordinates of another point to the coordinates of this point.
 	 * @since 6.0.0
@@ -541,10 +541,10 @@ class FlxBasePoint implements IFlxPooled
 	{
 		x = x + p.x;
 		y = y + p.y;
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Adds the coordinates of another point to the coordinates of this point.
 	 *
@@ -625,7 +625,7 @@ class FlxBasePoint implements IFlxPooled
 		this.y = this.y * y;
 		return this;
 	}
-	
+
 	/**
 	 * Scale this point.
 	 * @since 6.0.0
@@ -639,7 +639,7 @@ class FlxBasePoint implements IFlxPooled
 		this.y = this.y * amount;
 		return this;
 	}
-	
+
 	/**
 	 * Scale this point by another point.
 	 * @since 6.0.0
@@ -902,7 +902,7 @@ class FlxBasePoint implements IFlxPooled
 		point.putWeak();
 		return result;
 	}
-	
+
 	/**
 	 * Calculate the distance to another position
 	 * @since 6.0.0
@@ -913,7 +913,7 @@ class FlxBasePoint implements IFlxPooled
 	{
 		return Math.sqrt(distanceSquaredTo(x, y));
 	}
-	
+
 	/**
 	 * Calculate the squared distance to another point.
 	 * @since 6.0.0
@@ -927,7 +927,7 @@ class FlxBasePoint implements IFlxPooled
 		point.putWeak();
 		return result;
 	}
-	
+
 	/**
 	 * Calculate the distance to another position
 	 * @since 6.0.0
@@ -1203,7 +1203,7 @@ class FlxBasePoint implements IFlxPooled
 	 * @param   length   The length to set the point
 	 * @param   radians  The angle to set the point, in radians
 	 * @return  The rotated point
-	 * 
+	 *
 	 * @since 4.10.0
 	 */
 	public function setPolarRadians(length:Float, radians:Float):FlxPoint
@@ -1219,7 +1219,7 @@ class FlxBasePoint implements IFlxPooled
 	 * @param   length  The length to set the point
 	 * @param   degrees The angle to set the point, in degrees
 	 * @return  The rotated point
-	 * 
+	 *
 	 * @since 4.10.0
 	 */
 	public inline function setPolarDegrees(length:Float, degrees:Float):FlxPoint
@@ -1489,7 +1489,7 @@ class FlxBasePoint implements IFlxPooled
 	{
 		return distanceTo(p);
 	}
-	
+
 	/**
 	 * The squared distance between points
 	 */
@@ -1497,7 +1497,7 @@ class FlxBasePoint implements IFlxPooled
 	{
 		return distanceSquaredTo(p);
 	}
-	
+
 	/**
 	 * The squared distance between positions
 	 * @since 6.0.0
@@ -1727,22 +1727,22 @@ abstract FlxReadOnlyPoint(FlxPoint) from FlxPoint
 {
 	public var x(get, never):Float;
 	public var y(get, never):Float;
-	
+
 	/** Length of the point */
 	public var length(get, never):Float;
-	
+
 	/** The angle formed by the point with the horizontal axis (in degrees) */
 	public var degrees(get, never):Float;
 
 	/** The angle formed by the point with the horizontal axis (in radians) */
 	public var radians(get, never):Float;
-	
+
 	inline function get_x():Float return this.x;
 	inline function get_y():Float return this.y;
 	inline function get_length():Float return this.length;
 	inline function get_radians():Float return this.radians;
 	inline function get_degrees():Float return this.degrees;
-	
+
 	// hide underlying mutators
 	inline function set(x = 0, y = 0):FlxReadOnlyPoint return this.set(x, y);
 	inline function add(x = 0, y = 0):FlxReadOnlyPoint return this.add(x, y);

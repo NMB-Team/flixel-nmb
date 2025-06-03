@@ -8,7 +8,7 @@ using StringTools;
 /**
  * Bitmap font character data used internally via `FlxBitmapFont.fromAngelCode` to serialize text,
  * xml or binary files exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -27,7 +27,7 @@ class BMFontChar
 	public var page:Int;
 	public var chnl:Int;
 	public var letter:Null<String> = null;
-	
+
 	static inline function fromXml(charNode:BMFontXml):BMFontChar
 	{
 		return {
@@ -44,13 +44,13 @@ class BMFontChar
 			letter: charNode.att.stringSafe("letter")
 		};
 	}
-	
+
 	static function listFromXml(charsNode:BMFontXml):Array<BMFontChar>
 	{
 		final chars = charsNode.nodes("char");
 		return [ for (char in chars) fromXml(char) ];
 	}
-	
+
 	static function fromText(kerningText:String):BMFontChar
 	{
 		var id:Int = -1;
@@ -64,8 +64,8 @@ class BMFontChar
 		var page:Int = -1;
 		var chnl:Int = -1;
 		var letter:String = null;
-		
-		BMFontUtil.forEachAttribute(kerningText, 
+
+		BMFontUtil.forEachAttribute(kerningText,
 			function(key:String, value:UnicodeString)
 			{
 				switch key
@@ -85,7 +85,7 @@ class BMFontChar
 				}
 			}
 		);
-		
+
 		return
 		{
 			id: id,
@@ -101,7 +101,7 @@ class BMFontChar
 			letter: letter
 		};
 	}
-	
+
 	static function listFromBytes(bytes:BytesInput):Array<BMFontChar>
 	{
 		var blockSize = bytes.readInt32();

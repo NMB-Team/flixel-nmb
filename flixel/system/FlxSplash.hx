@@ -20,11 +20,11 @@ class FlxSplash extends FlxState
 	 * @since 4.8.0
 	 */
 	public static var muted:Bool = #if html5 true #else false #end;
-	
+
 	var _sprite:Sprite;
 	var _gfx:Graphics;
 	var _text:TextField;
-	
+
 	var _times:Array<Float>;
 	var _colors:Array<Int>;
 	var _functions:Array<Void->Void>;
@@ -32,15 +32,15 @@ class FlxSplash extends FlxState
 	var _cachedBgColor:FlxColor;
 	var _cachedTimestep:Bool;
 	var _cachedAutoPause:Bool;
-	
+
 	var nextState:NextState;
-	
+
 	public function new(nextState:NextState)
 	{
 		super();
 		this.nextState = nextState;
 	}
-	
+
 	override public function create():Void
 	{
 		_cachedBgColor = FlxG.cameras.bgColor;
@@ -102,12 +102,12 @@ class FlxSplash extends FlxState
 		_functions = null;
 		super.destroy();
 	}
-	
+
 	function complete()
 	{
 		FlxG.switchState(nextState);
 	}
-	
+
 	override public function onResize(Width:Int, Height:Int):Void
 	{
 		super.onResize(Width, Height);
@@ -211,7 +211,7 @@ class FlxSplash extends FlxState
 		#end
 		FlxG.stage.removeChild(_sprite);
 		FlxG.stage.removeChild(_text);
-		
+
 		super.startOutro(onOutroComplete);
 	}
 }

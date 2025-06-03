@@ -14,7 +14,7 @@ import flixel.input.touch.FlxTouch;
 /**
  * A set of functions related to angle calculations.
  * In degrees: (down = 90, right = 0, up = -90)
- * 
+ *
  * Note: in Flixel 5.0.0 all angle-related tools were changed so that 0 degrees points right, instead of up
  * @see [Flixel 5.0.0 Migration guide](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide)
  */
@@ -24,7 +24,7 @@ class FlxAngle
 	 * Convert radians to degrees by multiplying it with this value.
 	 */
 	public static inline final TO_DEG:Float = 57.29577951308232; // 180 / Math.PI;
-	
+
 	/**
 	 * Convert degrees to radians by multiplying it with this value.
 	 */

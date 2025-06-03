@@ -11,7 +11,7 @@ abstract FlxDebugDrawGraphic(Graphics) from Graphics to Graphics
 	{
 		return FlxG.renderTile && sizeSquared > 100 * 100;
 	}
-	
+
 	public function drawBoundingBox(x:Float, y:Float, width:Float, height:Float, color:FlxColor, thickness = 1.0)
 	{
 		if (useHardware(width * height))
@@ -27,19 +27,19 @@ abstract FlxDebugDrawGraphic(Graphics) from Graphics to Graphics
 		{
 			this.lineStyle(thickness, color.rgb, color.alphaFloat);
 			final half = thickness * 0.5;
-			
+
 			this.drawRect(x + half, y + half, width - thickness, height - thickness);
 		}
 	}
-	
+
 	public function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, color:FlxColor, thickness = 1.0)
 	{
 		this.lineStyle(thickness, color.rgb, color.alphaFloat);
-		
+
 		this.moveTo(x1, y1);
 		this.lineTo(x2, y2);
 	}
-	
+
 	public function drawRect(x:Float, y:Float, width:Float, height:Float, color:FlxColor)
 	{
 		this.beginFill(color.rgb, color.alphaFloat);

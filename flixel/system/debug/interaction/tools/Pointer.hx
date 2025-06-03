@@ -20,31 +20,31 @@ using flixel.util.FlxArrayUtil;
 class Pointer extends Tool
 {
 	var state = IDLE;
-	
+
 	override public function init(brain:Interaction):Tool
 	{
 		super.init(brain);
-		
+
 		_name = "Pointer";
 		setButton(Icon.cross);
 		setCursor(Icon.cross, -5, -5);
-		
+
 		return this;
 	}
-	
+
 	override public function update():Void
 	{
 		// If the tool is active, update the custom cursor cursor
 		if (!isActive())
 			return;
-		
+
 		switch state
 		{
 			case IDLE:
-				
+
 				if (_brain.pointerJustPressed)
 					state = PRESS(_brain.flixelPointer.x, _brain.flixelPointer.y);
-			
+
 			case PRESS(startX, startY):
 				if (_brain.pointerJustReleased)
 				{
@@ -52,12 +52,12 @@ class Pointer extends Tool
 					final topItem = _brain.getTopItemWithinState(FlxG.state, selection);
 					updateSelected(TOP(topItem));
 					selection.put();
-					
+
 					state = IDLE;
 				}
 				else if (_brain.flixelPointer.x != startX || _brain.flixelPointer.y != startY)
 					state = DRAG(startX, startY);
-				
+
 			case DRAG(startX, startY):
 				if (_brain.pointerJustReleased)
 				{
@@ -66,21 +66,21 @@ class Pointer extends Tool
 					final items = _brain.getItemsWithinState(FlxG.state, selection);
 					updateSelected(ALL(items));
 					selection.put();
-					
+
 					state = IDLE;
 				}
 		}
 	}
-	
+
 	function updateSelected(selection:Selection)
 	{
 		// We add things to the selection list if the user is pressing the "add-new-item" key
 		final alt = _brain.keyPressed(Keyboard.ALTERNATE);
 		final shift = _brain.keyPressed(Keyboard.SHIFT);
-		
+
 		final selected = _brain.selectedItems;
 		inline function wasSelected(o) return _brain.selectedItems.members.contains(o);
-		
+
 		switch selection
 		{
 			case TOP(null) | ALL([]) if (alt || shift):
@@ -122,21 +122,21 @@ class Pointer extends Tool
 				for (item in items)
 					selected.add(item);
 		}
-		
+
 		FlxG.console.registerObject("selection", _brain.selectedItems.members);
 	}
-	
+
 	public function cancelSelection()
 	{
 		state = IDLE;
 	}
-	
+
 	override public function draw():Void
 	{
 		var gfx:Graphics = _brain.getDebugGraphics();
 		if (gfx == null)
 			return;
-		
+
 		switch state
 		{
 			case IDLE | PRESS(_, _):
@@ -148,12 +148,12 @@ class Pointer extends Tool
 				gfx.drawRect(FlxG.camera.scroll.x + rect.x, FlxG.camera.scroll.y + rect.y, rect.width, rect.height);
 				rect.put();
 		}
-		
+
 		// Render everything into the camera buffer
 		if (FlxG.renderBlit)
 			FlxG.camera.buffer.draw(FlxSpriteUtil.flashGfxSprite);
 	}
-	
+
 	static function setAbsRect(rect:FlxRect, x1:Float, y1:Float, x2:Float, y2:Float)
 	{
 		rect.x = x1 < x2 ? x1 : x2;

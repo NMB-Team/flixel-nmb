@@ -98,14 +98,14 @@ class FlxImageFrame extends FlxFramesCollection
 		final checkRegion = FlxRect.get(0, 0, graphic.width, graphic.height);
 		if (region != null)
 			region.copyTo(checkRegion);
-		
+
 		final imageFrame:FlxImageFrame = FlxImageFrame.findFrame(graphic, checkRegion);
 		checkRegion.put();
 		if (imageFrame != null)
 		{
 			if (region != null)
 				region.putWeak();
-			
+
 			return imageFrame;
 		}
 
@@ -197,14 +197,14 @@ class FlxImageFrame extends FlxFramesCollection
 	{
 		if (frameBorder == null)
 			frameBorder = FlxPoint.weak();
-		
+
 		var imageFrames:Array<FlxImageFrame> = cast graphic.getFramesCollections(FlxFrameCollectionType.IMAGE);
 		for (imageFrame in imageFrames)
 		{
 			if (imageFrame.equals(frameRect, frameBorder) && imageFrame.frame.type != FlxFrameType.EMPTY)
 				return imageFrame;
 		}
-		
+
 		frameBorder.putWeak();
 		frameRect.putWeak();
 		return null;

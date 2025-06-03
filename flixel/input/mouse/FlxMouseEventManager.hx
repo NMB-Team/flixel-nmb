@@ -14,13 +14,13 @@ import openfl.errors.Error;
 /**
  * Provides mouse event detection for `FlxObject` and `FlxSprite` (pixel-perfect for those).
  * Normally you would use `FlxMouseEvent` static properties for this.
- * 
- * You can make a new `FlxMouseEventManager` instance for private usage, 
+ *
+ * You can make a new `FlxMouseEventManager` instance for private usage,
  * but you should know what you are doing.
- * 
+ *
  * @see [FlxMouseEvent](https://api.haxeflixel.com/flixel/input/mouse/FlxMouseEvent.html)
  * @see [FlxMouseEvent Demo](https://haxeflixel.com/demos/FlxMouseEvent/)
- * 
+ *
  * @author TiagoLr (~~~ ProG4mr ~~~)
  */
 class FlxMouseEventManager extends FlxBasic
@@ -40,7 +40,7 @@ class FlxMouseEventManager extends FlxBasic
 	 * @since 4.4.0
 	 */
 	public var maxDoubleClickDelay:Int = 500;
-	
+
 	public function new()
 	{
 		super();
@@ -260,7 +260,7 @@ class FlxMouseEventManager extends FlxBasic
 
 			_list.insert(index, cast event);
 		}
-		
+
 		return event;
 	}
 

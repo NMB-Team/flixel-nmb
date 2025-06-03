@@ -2,9 +2,7 @@ package flixel.math;
 
 import openfl.geom.Rectangle;
 #if !macro
-#if FLX_MOUSE
 import flixel.FlxG;
-#end
 import flixel.FlxSprite;
 #if FLX_TOUCH
 import flixel.input.touch.FlxTouch;
@@ -117,7 +115,7 @@ class FlxMath
 	/**
 	 * Adjusts the lerp value to be frame rate independent.
 	 * Multiplies the provided lerp value by the elapsed time adjusted to a 60 FPS base.
-	 * 
+	 *
 	 * @param lerp The original lerp value.
 	 */
 	public static inline function cameraLerp(lerp:Float):Float
@@ -139,7 +137,7 @@ class FlxMath
 
 	/**
 	 * Adjusts the given lerp to account for the time that has passed
-	 * 
+	 *
 	 * @param   lerp     The ratio to lerp in 1/60th of a second
 	 * @param   elapsed  The amount of time that has actually passed
 	 * @since 6.0.0
@@ -152,9 +150,9 @@ class FlxMath
 	/**
 	 * Converts a per-frame linear interpolation factor to an exponential decay factor
 	 * based on the actual elapsed time.
-	 * 
+	 *
 	 * Use this to apply consistent smoothing regardless of frame rate.
-	 * 
+	 *
 	 * @param   lerp     The "strength" of the interpolation (larger = faster convergence)
 	 * @param   elapsed  The actual time that has passed, in seconds
 	 * @since 6.2.0
@@ -164,6 +162,129 @@ class FlxMath
 		return Math.exp(-elapsed * lerp * 60);
 	}
 
+		/**
+	 * Returns the linear interpolation/extrapolation of two points.
+	 * Works the same way as this expression:
+	 *
+	 * ```haxe
+	 * var result = FlxPoint.get(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio))
+	 * ```
+	 * 
+	 * @see				FlxMath.lerp()
+	 * @param result	Optional arg for the returning point
+	 */
+	public static inline function lerpPoint(a:FlxPoint, b:FlxPoint, ratio:Float, ?result:FlxPoint):FlxPoint
+	{
+		if (result == null)
+			result = FlxPoint.get();
+
+		result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
+		a.putWeak();
+		b.putWeak();
+		return result;
+	}
+
+	/**
+	 * Returns the linear interpolation of two colors.
+	 * Works the same way as `FlxColor.interpolate` method.
+	 * 
+	 * @see FlxMath.lerp
+	 * @see FlxColor.interpolate
+	 */
+	public static inline function lerpColor(a:FlxColor, b:FlxColor, ratio:Float):FlxColor
+	{
+		final TO_PERCENT = 1 / 255;
+		return FlxColor.fromRGBFloat(
+			lerp(a.red,   b.red,   ratio) * TO_PERCENT,
+			lerp(a.green, b.green, ratio) * TO_PERCENT,
+			lerp(a.blue,  b.blue,  ratio) * TO_PERCENT,
+			lerp(a.alpha, b.alpha, ratio) * TO_PERCENT
+		);
+	}
+
+	#if !macro
+	/**
+	 * Linearly interpolates between two values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting value.
+	 * @param b The ending value.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated value.
+	 */
+	public static inline function lerpElapsed(a:Float, b:Float, ratio:Float, ?elapsed:Float):Float
+	{
+		if (FlxMath.equal(a, b))
+			return b;
+		
+		return FlxMath.lerp(a, b, FlxMath.elapsedLerpRatio(ratio, elapsed));
+	}
+
+	/**
+	 * Linearly interpolates between two `FlxPoint` values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting point.
+	 * @param b The ending point.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param result The `FlxPoint` to store the interpolated result. If null, a new `FlxPoint` is created.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated point.
+	 */
+	public static inline function lerpPointElapsed(a:FlxPoint, b:FlxPoint, ratio:Float, ?result:FlxPoint, ?elapsed:Float):FlxPoint
+	{
+		if (result == null)
+			result = FlxPoint.get();
+
+		if (FlxMath.equal(a.x, b.x) && FlxMath.equal(a.y, b.y))
+		{
+			result.copyFrom(b);
+		}
+		else
+		{
+			ratio = FlxMath.elapsedLerpRatio(ratio, elapsed);
+			result.set(FlxMath.lerp(a.x, b.x, ratio), FlxMath.lerp(a.y, b.y, ratio));
+		}
+		a.putWeak();
+		b.putWeak();
+		return result;
+	}
+
+	/**
+	 * Linearly interpolates between two `FlxColor` values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting color.
+	 * @param b The ending color.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated color.
+	 */
+	public static inline function lerpColorElapsed(a:FlxColor, b:FlxColor, ratio:Float, ?elapsed:Float):FlxColor
+	{
+		if (a == b) return b;
+
+		return FlxMath.lerpColor(a, b, FlxMath.elapsedLerpRatio(ratio, elapsed));
+	}
+
+	/**
+	 * Adjusts lerp ratio based on how much time has passed since the last frame
+	 * so lerp is less framerate dependant.
+	 */
+	public static inline function elapsedLerpRatio(ratio:Float, ?elapsed:Float):Float
+	{
+		if (elapsed == null)
+			elapsed = FlxG.elapsed;
+
+		var adjustedRatio = 0.0;
+
+		if (ratio >= 1.0)
+			adjustedRatio = 1.0;
+		else if (ratio > 0.0 && elapsed > 0.0)
+			adjustedRatio = 1.0 - Math.pow(1.0 - ratio, elapsed * 60);
+
+		return adjustedRatio;
+	}
+	#end
+
 	/**
 	 * Checks if number is in defined range. A null bound means that side is unbounded.
 	 *
@@ -172,7 +293,7 @@ class FlxMath
 	 * @param Max 		Higher bound of range.
 	 * @return Returns true if Value is in range.
 	 */
-	public static inline function inBounds(Value:Float, Min:Null<Float>, Max:Null<Float>):Bool
+	public static inline function inBounds(Value:Float, ?Min:Float, ?Max:Float):Bool
 	{
 		return (Min == null || Value >= Min) && (Max == null || Value <= Max);
 	}
@@ -612,13 +733,13 @@ class FlxMath
 
 	/**
 	 * Performs a modulo operation to calculate the remainder of `a` divided by `b`.
-	 * 
+	 *
 	 * The definition of "remainder" varies by implementation;
 	 * this one is similar to GLSL or Python in that it uses Euclidean division, which always returns positive,
 	 * while Haxe's `%` operator uses signed truncated division.
-	 * 
+	 *
 	 * For example, `-5 % 3` returns `-2` while `FlxMath.mod(-5, 3)` returns `1`.
-	 * 
+	 *
 	 * @param a The dividend.
 	 * @param b The divisor.
 	 * @return `a mod b`.

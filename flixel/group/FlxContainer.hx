@@ -30,17 +30,17 @@ class FlxTypedContainer<T:FlxBasic> extends FlxTypedGroup<T>
 	{
 		super(maxSize);
 	}
-	
+
 	override function onMemberAdd(member:T)
 	{
 		// remove from previous container
 		if (member.container != null)
 			member.container.remove(member);
-		
+
 		member.container = (cast this:FlxContainer);
 		super.onMemberAdd(member);
 	}
-	
+
 	override function onMemberRemove(member:T)
 	{
 		member.container = null;

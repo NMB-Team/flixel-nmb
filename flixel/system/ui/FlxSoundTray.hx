@@ -116,7 +116,7 @@ class FlxSoundTray extends Sprite
 		visible = false;
 	}
 
-	function _reloadBars() {
+	private function _reloadBars() {
 		if (_bars == null) _bars = new Array();
 
 		while (_bars.length <= countOfBars) {
@@ -126,19 +126,21 @@ class FlxSoundTray extends Sprite
 		}
 
 		for (i in _bars) i.visible = false;
-		
+
 		var bx = 10.;
 		var by = 14.;
-		var maxy = 24.;
+		final maxy = 24.;
+
 		var _totalWidth = _width - bx * 2;
 		var _barWidth = FlxMath.roundDecimal(_width * .5 / countOfBars, 1);
 		_totalWidth -= _barWidth * .5;
 		bx += _barWidth * .5;
-		var _deltaX = Math.round(_totalWidth / countOfBars);
-		var _deltaHeight = maxy - by;
-		var _deltaY = _deltaHeight / countOfBars;
-		var bar:Bitmap;
 
+		final _deltaX = Math.round(_totalWidth / countOfBars);
+		final _deltaHeight = maxy - by;
+		final _deltaY = _deltaHeight / countOfBars;
+
+		var bar:Bitmap;
 		for (i in 0...countOfBars) {
 			bar = _bars[i];
 			bar.visible = true;
@@ -150,10 +152,11 @@ class FlxSoundTray extends Sprite
 			bx += _deltaX;
 			by -= _deltaY;
 		}
+
 		_updateBars();
 	}
 
-	function _updateBars() {
+	private function _updateBars() {
 		final globalVolume:Int = FlxG.sound.muted ? 0 : Math.round(FlxG.sound.volume * countOfBars);
 		final alpha:Float = FlxMath.lerp(.35, 1, Math.pow(FlxG.sound.volume, .5));
 		var bar:Bitmap;
@@ -225,7 +228,7 @@ class FlxSoundTray extends Sprite
 
 	/**
 	 * Removes all event listeners from the given `TextField`.
-	 * 
+	 *
 	 * This includes all keyboard and mouse events that are used to edit the text.
 	 */
 	@:access(openfl.text.TextField)

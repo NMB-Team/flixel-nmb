@@ -100,7 +100,7 @@ class FlxBasic implements IFlxDestroyable
 	{
 		if (container != null)
 			container.remove(this);
-		
+
 		container = null;
 		exists = false;
 		_cameras = null;
@@ -199,7 +199,7 @@ class FlxBasic implements IFlxDestroyable
 			_cameras[0] = Value;
 		return Value;
 	}
-	
+
 	/**
 	 * The main camera that will draw this. Use `this.cameras` to set specific cameras for this
 	 * object, otherwise the container's camera is used, or the container's container and so on.
@@ -213,7 +213,7 @@ class FlxBasic implements IFlxDestroyable
 		// should never be null, unless people do something stupid, but just in case
 		return cameras == null || cameras.length == 0 ? FlxG.camera : cameras[0];
 	}
-	
+
 	/**
 	 * The cameras that will draw this. Use `this.cameras` to set specific cameras for this object,
 	 * otherwise the container's cameras are used, or the container's container and so on. If there
@@ -230,7 +230,7 @@ class FlxBasic implements IFlxDestroyable
 			else
 				@:privateAccess FlxCamera._defaultCameras;
 	}
-	
+
 	/**
 	 * Helper while moving away from `get_cameras`. Should only be used in the draw phase
 	 */
@@ -240,7 +240,7 @@ class FlxBasic implements IFlxDestroyable
 		@:privateAccess
 		return (_cameras == null) ? FlxCamera._defaultCameras : _cameras;
 	}
-	
+
 	@:noCompletion
 	function get_cameras():Array<FlxCamera>
 	{

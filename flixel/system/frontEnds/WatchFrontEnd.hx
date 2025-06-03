@@ -14,9 +14,9 @@ class WatchFrontEnd
 	public var window(get, never):flixel.system.debug.watch.Watch;
 	inline function get_window() return FlxG.game.debugger.watch;
 	#end
-	
+
 	public function new() {}
-	
+
 	/**
 	 * Add a variable to the watch list in the debugger.
 	 * This lets you see the value of the variable all the time.
@@ -103,14 +103,14 @@ class WatchFrontEnd
 		window.remove(displayName, null);
 		#end
 	}
-	
+
 	public function addFunction(displayName:String, func:()->Dynamic):Void
 	{
 		#if FLX_DEBUG
 		window.add(displayName, FUNCTION(func));
 		#end
 	}
-	
+
 	public function removeFunction(displayName:String):Void
 	{
 		#if FLX_DEBUG

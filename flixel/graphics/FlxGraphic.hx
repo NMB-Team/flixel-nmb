@@ -408,16 +408,16 @@ class FlxGraphic implements IFlxDestroyable
 	 * If possible, frees the software image buffer for this graphic's `BitmapData`.
 	 * This can significantly reduce RAM usage at the cost of not being able to draw on the graphic.
 	 * Call `FlxGraphic.refresh()` to refresh this graphic's `BitmapData` and restore drawing functionality.
-	 * 
+	 *
 	 * Note that the buffer may not be cleaned up immediately.
-	 * 
+	 *
 	 * @see `openfl.display.BitmapData.disposeImage()`
 	 */
 	public function freeImageBuffer():Void
 	{
 		if (bitmap != null)
 			bitmap.disposeImage();
-	}	
+	}
 
 	/**
 	 * Asset reload callback for this graphic object.
@@ -441,7 +441,7 @@ class FlxGraphic implements IFlxDestroyable
 		{
 			if (bitmap.__texture != null)
 				bitmap.__texture.dispose();
-				
+
 			bitmap.disposeImage();
 		}
 		bitmap = FlxDestroyUtil.dispose(bitmap);
@@ -546,12 +546,12 @@ class FlxGraphic implements IFlxDestroyable
 
 		return null;
 	}
-	
+
 	inline function get_isLoaded()
 	{
 		return bitmap != null && !bitmap.rect.isEmpty();
 	}
-	
+
 	inline function get_isDestroyed()
 	{
 		return shader == null;
@@ -561,7 +561,7 @@ class FlxGraphic implements IFlxDestroyable
 	{
 		return assetsClass != null || assetsKey != null;
 	}
-	
+
 	public function incrementUseCount()
 	{
 		useCount++;
@@ -577,26 +577,26 @@ class FlxGraphic implements IFlxDestroyable
 		useCount -= count;
 		checkUseCount();
 	}
-	
+
 	public function decrementUseCount()
 	{
 		useCount--;
-		
+
 		checkUseCount();
 	}
-	
+
 	function checkUseCount()
 	{
-		if (!FlxG.bitmap.__doNotDelete && useCount <= 0 && destroyOnNoUse && !persist)
+		if (FlxG.bitmap.autoClearCache && !FlxG.bitmap.__doNotDelete && useCount <= 0 && destroyOnNoUse && !persist)
 			FlxG.bitmap.remove(this);
 	}
 
 	function set_destroyOnNoUse(value:Bool):Bool
 	{
 		this.destroyOnNoUse = value;
-		
+
 		checkUseCount();
-		
+
 		return value;
 	}
 

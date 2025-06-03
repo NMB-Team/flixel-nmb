@@ -14,7 +14,7 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  * LINUX: untested
  *
  * MAC: Worked out of box for me when connected via microUSB cable or Bluetooth
- * 
+ *
  * @since 4.8.0
  */
 enum abstract SwitchProID(Int) to Int
@@ -38,17 +38,16 @@ enum abstract SwitchProID(Int) to Int
 	var CAPTURE = 21;
 	var LEFT_STICK_CLICK = 22;
 	var RIGHT_STICK_CLICK = 23;
-	
+
 	var LEFT_STICK_UP = 24;
 	var LEFT_STICK_DOWN = 25;
 	var LEFT_STICK_LEFT = 26;
 	var LEFT_STICK_RIGHT = 27;
-	
+
 	var RIGHT_STICK_UP = 28;
 	var RIGHT_STICK_DOWN = 29;
 	var RIGHT_STICK_LEFT = 30;
 	var RIGHT_STICK_RIGHT = 31;
-	
 	#else
 	var ZL = 4;
 	var ZR = 5;
@@ -68,29 +67,29 @@ enum abstract SwitchProID(Int) to Int
 	var DPAD_LEFT = 19;
 	var DPAD_RIGHT = 20;
 	var CAPTURE = 21;
-	
+
 	var LEFT_STICK_UP = 22;
 	var LEFT_STICK_DOWN = 23;
 	var LEFT_STICK_LEFT = 24;
 	var LEFT_STICK_RIGHT = 25;
-	
+
 	var RIGHT_STICK_UP = 26;
 	var RIGHT_STICK_DOWN = 27;
 	var RIGHT_STICK_LEFT = 28;
 	var RIGHT_STICK_RIGHT = 29;
 	#end
-	
+
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<SwitchProID>(0, 1, {
 		up: LEFT_STICK_UP,
 		down: LEFT_STICK_DOWN,
 		left: LEFT_STICK_LEFT,
 		right: LEFT_STICK_RIGHT
 	});
+
 	public static final RIGHT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<SwitchProID>(2, 3, {
 		up: RIGHT_STICK_UP,
 		down: RIGHT_STICK_DOWN,
 		left: RIGHT_STICK_LEFT,
 		right: RIGHT_STICK_RIGHT
 	});
-	
 }

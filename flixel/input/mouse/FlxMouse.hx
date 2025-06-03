@@ -51,7 +51,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * sits at the right "height". Not used on flash with the native cursor API.
 	 */
 	public var cursorContainer(default, null):Sprite;
-	
+
 	/**
 	 * The current cursor bitmap, if there is one. To set, use the `load` function.
 	 */
@@ -83,7 +83,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * Distance in pixels the mouse has moved since the last frame in the Y direction.
 	 */
 	public var deltaY(get, never):Int;
-	
+
 	/**
 	 * Distance in pixels the mouse has moved in view space since the last frame in the X direction.
 	 * @since 5.9.0
@@ -133,7 +133,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * Check to see if the right mouse button has just been pressed.
 	 */
 	public var justPressedRight(get, never):Bool;
-	
+
 	/**
 	 * Check to see if the right mouse button is currently not pressed.
 	 * @since 5.0.0
@@ -602,7 +602,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 
 	inline function get_deltaViewX():Int
 		return viewX - _prevViewX;
-	
+
 	inline function get_deltaViewY():Int
 		return viewY - _prevViewY;
 

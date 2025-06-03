@@ -46,7 +46,7 @@ private enum UserDefines
 	/**
 	 * Loads from the specified relative or absolute directory. Unlike other boolean flags,
 	 * this flag should contain a string value.
-	 * 
+	 *
 	 * **Note:** When using assets entirely from outside the build directory, it is wise to disable
 	 * any `</asset>` tags in your project.xml, to reduce your total memory
 	 */
@@ -86,7 +86,6 @@ private enum HelperDefines
 	FLX_NATIVE_CURSOR;
 	FLX_SOUND_TRAY;
 	FLX_POINTER_INPUT;
-	FLX_POST_PROCESS;
 	FLX_JOYSTICK_API;
 	FLX_GAMEINPUT_API;
 	FLX_ACCELEROMETER;
@@ -127,10 +126,10 @@ class FlxDefines
 		if (defined("flash"))
 			checkSwfVersion();
 		#end
-		
+
 		defineInversions();
 		defineHelperDefines();
-		
+
 		#if (flixel_addons >= "3.2.2")
 		flixel.addons.system.macros.FlxAddonDefines.run();
 		#end
@@ -149,7 +148,7 @@ class FlxDefines
 		#if !nme
 		checkOpenFLVersions();
 		#end
-		
+
 		#if (flixel_addons < version("3.3.0"))
 		abortVersion("Flixel Addons", "3.3.0 or newer", "flixel-addons", (macro null).pos);
 		#end
@@ -188,7 +187,7 @@ class FlxDefines
 			}
 		}
 	}
-	
+
 	static var userDefinable = UserDefines.getConstructors();
 	static function isValidUserDefine(define:String)
 	{
@@ -227,7 +226,7 @@ class FlxDefines
 			define(FLX_CI);
 		else
 			define(FLX_NO_CI);
-		
+
 		if (!defined(FLX_NO_MOUSE) && !defined(FLX_NO_MOUSE_ADVANCED) && (!defined("flash") || defined("flash11_2")))
 			define(FLX_MOUSE_ADVANCED);
 
@@ -246,16 +245,16 @@ class FlxDefines
 
 		if (!defined(FLX_NO_PITCH))
 			define(FLX_PITCH);
-		
+
 		if (!defined(FLX_NO_SAVE))
 			define(FLX_SAVE);
 
 		if (!defined(FLX_NO_VALIDATE_CUSTOM_ASSETS_DIRECTORY))
 			define(FLX_VALIDATE_CUSTOM_ASSETS_DIRECTORY);
-		
+
 		if (!defined("flash") || defined("flash11_8"))
 			define(FLX_GAMEINPUT_API);
-		else if (!defined("openfl_next") && (defined("cpp") || defined("neko")))
+		else if (!defined("openfl_next") && defined("cpp"))
 			define(FLX_JOYSTICK_API);
 
 		#if nme
@@ -264,11 +263,6 @@ class FlxDefines
 
 		if (!defined(FLX_NO_TOUCH) || !defined(FLX_NO_MOUSE))
 			define(FLX_POINTER_INPUT);
-
-		#if (openfl < "4.0.0")
-		if (defined("cpp") || defined("neko"))
-			define(FLX_POST_PROCESS);
-		#end
 
 		if (defined("cpp") && defined("steamwrap"))
 			define(FLX_STEAMWRAP);
@@ -292,7 +286,7 @@ class FlxDefines
 		if (defined(FLX_NO_UNIT_TEST))
 			define(FLX_OPENGL_AVAILABLE);
 		#end
-		
+
 		defineInversion(FLX_TRACK_GRAPHICS, FLX_NO_TRACK_GRAPHICS);
 
 		if (defined(FLX_CUSTOM_ASSETS_DIRECTORY))

@@ -13,13 +13,13 @@ class FlxVersion
 
 	@:noCompletion
 	var s:String;
-	
+
 	public function new(major:Int, minor:Int, patch:Int)
 	{
 		this.major = major;
 		this.minor = minor;
 		this.patch = patch;
-		
+
 		// build string representation of this version
 		var sha = FlxVersion.sha;
 		if (sha != "")

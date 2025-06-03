@@ -50,7 +50,7 @@ class FlxReplay implements IFlxDestroyable
 	 * Instantiate a new replay object.  Doesn't actually do much until you call create() or load().
 	 */
 	public function new() {}
-	
+
 	/**
 	 * Common initialization terms used by both create() and load() to set up the replay object.
 	 */
@@ -94,7 +94,7 @@ class FlxReplay implements IFlxDestroyable
 		final parsedSeed:Null<Int> = seedStr == null ? null : Std.parseInt(seedStr);
 		if (parsedSeed == null)
 			throw 'Invalid replay: $fileContents';
-			
+
 		seed = parsedSeed;
 		for (line in lines)
 		{
@@ -198,7 +198,7 @@ class FlxReplay implements IFlxDestroyable
 	/**
 	 * The duration of this replay, in frames. **Note:** this is different from `frameCount`, which
 	 * is the number of unique records, which doesn't count frames with no input
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public function getDuration()
@@ -208,7 +208,7 @@ class FlxReplay implements IFlxDestroyable
 			// Add 1 to the last frame index, because they are zero-based
 			return _frames[_frames.length - 1].frame + 1;
 		}
-		
+
 		return 0;
 	}
 }

@@ -7,7 +7,7 @@ import flixel.util.FlxAlign;
 /**
  * The base class from which all other scale modes extend from.
  * You can implement your own scale mode by extending this class and overriding the appropriate methods.
- * 
+ *
  * The default behavior of `BaseScaleMode` matches that of `FillScaleMode`.
  */
 class BaseScaleMode

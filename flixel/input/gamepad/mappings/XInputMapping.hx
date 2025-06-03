@@ -119,7 +119,7 @@ class XInputMapping extends FlxTypedGamepadMapping<XInputID>
 	{
 		return FlxGamepadMappedInput.X_INPUT(getRawID(id));
 	}
-	
+
 	#if FLX_JOYSTICK_API
 	override function axisIndexToRawID(axisID:XInputID):Int
 	{

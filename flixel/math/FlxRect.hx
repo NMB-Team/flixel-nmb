@@ -138,7 +138,7 @@ class FlxRect implements IFlxPooled
 		this.height = height;
 		return this;
 	}
-	
+
 	/**
 	 * Fill this rectangle from the two given corner locations
 	 *
@@ -169,16 +169,16 @@ class FlxRect implements IFlxPooled
 			x += width;
 			width = -width;
 		}
-		
+
 		if (height < 0)
 		{
 			y += height;
 			height = -height;
 		}
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Fills the rectangle so that it has always has a positive width and height. For example:
 	 * ```haxe
@@ -186,7 +186,7 @@ class FlxRect implements IFlxPooled
 	 * // Is the same as
 	 * rect.set(50, 50, 50, 50);
 	 * ```
-	 * 
+	 *
 	 * @param x       The X-coordinate of the point in space
 	 * @param y       The Y-coordinate of the point in space
 	 * @param width   Desired width of the rectangle
@@ -197,7 +197,7 @@ class FlxRect implements IFlxPooled
 	{
 		return this.set(x, y, width, height).abs();
 	}
-	
+
 	/**
 	 * Fills the rectangle so that it has always has a positive width and height. For example:
 	 * ```haxe
@@ -460,13 +460,13 @@ class FlxRect implements IFlxPooled
 	{
 		if (origin == null)
 			origin = FlxPoint.weak(0, 0);
-		
+
 		if (newRect == null)
 			newRect = FlxRect.get();
 
 		if (innerOffset == null)
 			innerOffset = FlxPoint.weak();
-		
+
 		degrees = degrees % 360;
 		if (degrees == 0)
 		{
@@ -475,14 +475,14 @@ class FlxRect implements IFlxPooled
 			innerOffset.putWeak();
 			return newRect;
 		}
-		
+
 		if (degrees < 0)
 			degrees += 360;
-		
+
 		var radians = FlxAngle.TO_RAD * degrees;
 		var cos = Math.cos(radians);
 		var sin = Math.sin(radians);
-		
+
 		var left = -origin.x - innerOffset.x;
 		var top = -origin.y - innerOffset.y;
 		var right = -origin.x + width - innerOffset.x;
@@ -511,7 +511,7 @@ class FlxRect implements IFlxPooled
 		var newHeight = Math.abs(cos * height) + Math.abs(sin * width );
 		newRect.width = Math.abs(cos * width ) + Math.abs(sin * height);
 		newRect.height = newHeight;
-		
+
 		origin.putWeak();
 		innerOffset.putWeak();
 		return newRect;
@@ -534,7 +534,7 @@ class FlxRect implements IFlxPooled
 		rect.putWeak();
 		return result;
 	}
-	
+
 	/**
 	 * Returns the area of intersection with specified rectangle.
 	 * If the rectangles do not intersect, this method returns an empty rectangle.
@@ -547,19 +547,19 @@ class FlxRect implements IFlxPooled
 	{
 		if (result == null)
 			result = FlxRect.get();
-		
+
 		final x0:Float = x < rect.x ? rect.x : x;
 		final x1:Float = right > rect.right ? rect.right : right;
 		final y0:Float = y < rect.y ? rect.y : y;
 		final y1:Float = bottom > rect.bottom ? rect.bottom : bottom;
 		rect.putWeak();
-		
+
 		if (x1 <= x0 || y1 <= y0)
 			return result.set(0, 0, 0, 0);
-		
+
 		return result.set(x0, y0, x1 - x0, y1 - y0);
 	}
-	
+
 	/**
 	 * Resizes `this` instance so that it fits within the intersection of the this and
 	 * the target rect. If there is no overlap between them, The result is an empty rect.
@@ -572,10 +572,10 @@ class FlxRect implements IFlxPooled
 	{
 		return rect.intersection(this, this);
 	}
-	
+
 	/**
 	 * The middle point of this rect
-	 * 
+	 *
 	 * @param   point  The point to hold the result, if `null` a new one is created
 	 * @since 5.9.0
 	 */
@@ -583,10 +583,10 @@ class FlxRect implements IFlxPooled
 	{
 		if (point == null)
 			point = FlxPoint.get();
-		
+
 		return point.set(x + 0.5 * width, y + 0.5 * height);
 	}
-	
+
 	/**
 	 * Convert object to readable string name. Useful for debugging, save games, etc.
 	 */
@@ -686,16 +686,16 @@ abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
 
 	public var x(get, never):Float;
 	inline function get_x() return this.x;
-	
+
 	public var y(get, never):Float;
 	inline function get_y() return this.y;
-	
+
 	public var width(get, never):Float;
 	inline function get_width() return this.width;
-	
+
 	public var height(get, never):Float;
 	inline function get_height() return this.height;
-	
+
 	/** The x coordinate of the left side of the rectangle */
 	public var left(get, never):Float;
 	inline function get_left() return this.left;
@@ -711,11 +711,11 @@ abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
 	/** The y coordinate of the bottom of the rectangle */
 	public var bottom(get, never):Float;
 	inline function get_bottom() return this.bottom;
-	
+
 	/** Whether width or height of this rectangle is equal to zero or not */
 	public var isEmpty(get, never):Bool;
 	inline function get_isEmpty() return this.isEmpty;
-	
+
 	// Hide functions that set fields, by making private versions
 	inline function destroy() return this.destroy();
 	inline function setSize(w, h) return this.setSize(w, h);

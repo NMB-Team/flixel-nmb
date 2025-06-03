@@ -19,13 +19,13 @@ class FlxTile extends FlxObject
 	 * Defaults to null, set through FlxTilemap.setTileProperties().
 	 */
 	public var callbackFunction:(FlxObject, FlxObject)->Void = null;
-	
+
 	/**
 	 * Dispatched whenever FlxG.collide resolves a collision with a tile of this type
 	 * @since 5.9.0
 	 */
 	public var onCollide = new FlxTypedSignal<(FlxTile, FlxObject)->Void>();
-	
+
 	/**
 	 * Each tile can store its own filter class for their callback functions.
 	 * That is, the callback will only be triggered if an object with a class
@@ -80,7 +80,7 @@ class FlxTile extends FlxObject
 		this.visible = visible;
 		this.allowCollisions = allowCollisions;
 	}
-	
+
 	/**
 	 * Clean up memory.
 	 */
@@ -93,11 +93,11 @@ class FlxTile extends FlxObject
 		frame = null;
 		onCollide.removeAll();
 	}
-	
+
 	/**
 	 * Whether this tile overlaps the object. this should be called directly after calling
 	 * `orient` to ensure this tile is in the correct world space.
-	 * 
+	 *
 	 * This method is dynamic, meaning you can set custom behavior per tile, without extension.
 	 * @since 5.9.0
 	 */
@@ -109,13 +109,13 @@ class FlxTile extends FlxObject
 			&& object.y < y + height
 			&& (filter == null || Std.isOfType(object, filter));
 	}
-	
+
 	/**
-	 * Places this tile in the world according to the desired map location. 
+	 * Places this tile in the world according to the desired map location.
 	 * often used before calling `overlapsObject`
-	 * 
+	 *
 	 * This method is dynamic, meaning you can set custom behavior per tile, without extension.
-	 * 
+	 *
 	 * @param   xPos    May be the true or a theoretical x of the map, based on what called this
 	 * @param   yPos    May be the true or a theoretical y of the map, based on what called this
 	 * @param   col     The tilemap column where this is being placed
@@ -132,13 +132,13 @@ class FlxTile extends FlxObject
 		last.x = x - (xPos - tilemap.last.x);
 		last.y = y - (yPos - tilemap.last.y);
 	}
-	
+
 	/**
-	 * Places this tile in the world according to the desired map location. 
+	 * Places this tile in the world according to the desired map location.
 	 * often used before calling `overlapsObject`
-	 * 
+	 *
 	 * Calls `orientAt` with the tilemap's current position
-	 * 
+	 *
 	 * @param   col     The tilemap column where this is being placed
 	 * @param   row     The tilemap row where this is being placed
 	 * @since 5.9.0
@@ -147,15 +147,15 @@ class FlxTile extends FlxObject
 	{
 		orientAt(tilemap.x, tilemap.y, col, row);
 	}
-	
+
 	/**
-	 * Places this tile in the world according to the desired map location. 
+	 * Places this tile in the world according to the desired map location.
 	 * often used before calling `overlapsObject`
-	 * 
+	 *
 	 * Calls `orientAt` with the tilemap's current position
-	 * 
+	 *
 	 * **Note:** A tile's mapIndex can be calculated via `row * widthInTiles + column`
-	 * 
+	 *
 	 * @param   mapIndex  The desired location in the map
 	 * @since 5.9.0
 	 */
@@ -163,15 +163,15 @@ class FlxTile extends FlxObject
 	{
 		orientAtByIndex(tilemap.x, tilemap.y, mapIndex);
 	}
-	
+
 	/**
-	 * Places this tile in the world according to the desired map location. 
+	 * Places this tile in the world according to the desired map location.
 	 * often used before calling `overlapsObject`
-	 * 
+	 *
 	 * Calls `orientAt` with the tilemap's current position
-	 * 
+	 *
 	 * **Note:** A tile's mapIndex can be calculated via `row * widthInTiles + column`
-	 * 
+	 *
 	 * @param   mapIndex  The desired location in the map
 	 * @since 5.9.0
 	 */

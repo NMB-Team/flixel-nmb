@@ -11,17 +11,17 @@ import flixel.util.FlxSort;
 /**
  * Contains a bunch of `FlxBasic`s for vaious organizational purposes, namely
  * collision, updating and drawing.
- * 
+ *
  * ## Collision
  * When used as an arg in `FlxG.collide` or `FlxG.overlap`, groups will use quadtrees to
  * greatly reduce the number of overlap checks, resulting in much better peformance compared
  * to having individual overlap checks on each pair of objects.
- * 
+ *
  * ## Drawing and Updating
  * Calling `update` or `draw` on a group will call `update` or `draw` on each member. Typically,
  * to update or draw a group you add it to the state, or to a group that was added to the state,
  * this way, the state will update and draw it's members based on the desired framerates.
- * 
+ *
  * ## FlxContainers
  * Though objects can be in various organizational groups, it's highly recommended that they only
  * get drawn or updated by one containing group. For this reason `FlxContainer` was made, objects
@@ -52,14 +52,14 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return null;
 	}
-	
+
 	@:noCompletion
 	@:allow(flixel.system.debug.interaction.Interaction)
 	static inline function resolveSelectionGroup(basic:FlxBasic)
 	{
 		return resolveGroup(basic);
 	}
-	
+
 	/**
 	 * `Array` of all the members in this group.
 	 */
@@ -91,7 +91,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	/**
 	 * Whether or not objects are allowed to have Z-Indexes in this group.
 	 * If this is disabled, objects will render in the order they are added to the group.
-	 * 
+	 *
 	 * This is a flag since handling Z-Indexes can be expensive, depending
 	 * on how many objects are in the group.
 	 */
@@ -145,10 +145,10 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	override public function destroy():Void
 	{
 		super.destroy();
-		
+
 		FlxDestroyUtil.destroy(_memberAdded);
 		FlxDestroyUtil.destroy(_memberRemoved);
-		
+
 		if (members != null)
 		{
 			/* Note: basic.destroy() will remove it from it's container, which may be this group.
@@ -161,7 +161,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 				if (basic != null)
 					basic.destroy();
 			}
-			
+
 			members = null;
 		}
 	}
@@ -195,7 +195,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		{
 			if (_drawQueue.length != 0)
 				_drawQueue.resize(0);
-				
+
 			var basic:FlxBasic = null;
 			for (i in 0...members.length)
 			{
@@ -204,7 +204,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 					_drawQueue.push(i);
 			}
 			_drawQueue.sort(_drawQueueSort);
-			
+
 			for (i in 0..._drawQueue.length)
 			{
 				basic = members[_drawQueue[i]];
@@ -256,9 +256,9 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 			{
 				length = index + 1;
 			}
-			
+
 			onMemberAdd(basic);
-			
+
 			return basic;
 		}
 
@@ -270,7 +270,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		members.push(basic);
 		length++;
 		onMemberAdd(basic);
-		
+
 		return basic;
 	}
 
@@ -303,7 +303,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		{
 			members[position] = object;
 			onMemberAdd(object);
-			
+
 			return object;
 		}
 
@@ -350,20 +350,20 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		{
 			if (objectFactory != null)
 				return add(objectFactory());
-			
+
 			if (objectClass != null)
 				return add(Type.createInstance(objectClass, []));
-			
+
 			return null;
 		}
-		
+
 		// rotated recycling
 		if (maxSize > 0)
 		{
 			// create new instance
 			if (length < maxSize)
 				return createObject();
-			
+
 			// get the next member if at capacity
 			final basic = members[_marker++];
 
@@ -375,7 +375,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 
 			return cast basic;
 		}
-		
+
 		// grow-style recycling - grab a basic with exists == false or create a new one
 		final basic = getFirstAvailable(objectClass, force);
 
@@ -413,9 +413,9 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		else
 			members[index] = null;
-		
+
 		onMemberRemove(basic);
-		
+
 		return basic;
 	}
 
@@ -456,7 +456,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		members.sort(func.bind(order));
 	}
-	
+
 	/**
 	 * Searches for, and returns the first member that satisfies the function.
 	 * @param   func  The function that tests the members
@@ -466,7 +466,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		return getFirstHelper(func);
 	}
-	
+
 	inline function getFirstHelper(func:T->Bool):Null<T>
 	{
 		var result:T = null;
@@ -480,7 +480,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Searches for, and returns the last member that satisfies the function.
 	 * @param   func  The function that tests the members
@@ -501,7 +501,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Searches for, and returns the index of the first member that satisfies the function.
 	 * @param   func  The function that tests the members
@@ -520,7 +520,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Searches for, and returns the index of the last member that satisfies the function.
 	 * @param   func  The function that tests the members
@@ -541,7 +541,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Tests whether any member satisfies the function.
 	 * @param   func  The function that tests the members
@@ -556,7 +556,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Tests whether every member satisfies the function.
 	 * @param   func  The function that tests the members
@@ -571,7 +571,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Call this function to retrieve the first object with `exists == false` in the group.
 	 * This is handy for recycling in general, e.g. respawning enemies.
@@ -641,7 +641,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		return getFirstHelper((basic)->!basic.alive);
 	}
-	
+
 	/**
 	 * Call this function to find out how many members of the group are not dead.
 	 *
@@ -673,7 +673,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	public function countDead():Int
 	{
 		var count:Int = -1;
-		
+
 		for (basic in members)
 		{
 			if (basic != null)
@@ -687,7 +687,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 
 		return count;
 	}
-	
+
 	/**
 	 * Returns a member at random from the group.
 	 *
@@ -935,13 +935,13 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 
 		return maxSize;
 	}
-	
+
 	function onMemberAdd(member:T)
 	{
 		if (_memberAdded != null)
 			_memberAdded.dispatch(cast member);
 	}
-	
+
 	function onMemberRemove(member:T)
 	{
 		if (_memberRemoved != null)
@@ -973,7 +973,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 			return -1;
 		else if (members[a].zIndex > members[b].zIndex)
 			return 1;
-			
+
 		return 0;
 	}
 }
@@ -991,7 +991,7 @@ class FlxTypedGroupIterator<T>
 	var _length:Int;
 
 	// NOTE: these methods are inlined to ensure there are no allocation when iterating through a group
-	
+
 	public inline function new(groupMembers:Array<T>, ?filter:T->Bool)
 	{
 		_groupMembers = groupMembers;

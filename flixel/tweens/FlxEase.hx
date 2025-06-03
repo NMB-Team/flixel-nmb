@@ -270,12 +270,12 @@ class FlxEase
 	{
 		return Math.pow(t, 3);
 	}
-	
+
 	public static inline function powOut(t:Float):Float
 	{
 		return 1 - Math.pow(1 - t, 3);
 	}
-	
+
 	public static inline function powInOut(t:Float):Float
 	{
 		t *= 2;

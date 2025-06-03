@@ -136,7 +136,7 @@ class VarTween extends FlxTween
 	{
 		if (object == _object && field == null)
 			return true;
-		
+
 		for (property in _propertyInfos)
 		{
 			if (object == property.object && (field == null || field == property.field))
@@ -154,7 +154,7 @@ class VarTweenProperty
 	public var field:OneOfTwo<String, Int>;
 	public var startValue:Float;
 	public var range:Float;
-	
+
 	public function getField():Dynamic
 	{
 		if (Type.typeof(field) == TInt)
@@ -168,7 +168,7 @@ class VarTweenProperty
 			return Reflect.getProperty(object, field);
 		}
 	}
-	
+
 	public function setField(value:Dynamic):Void
 	{
 		if (Type.typeof(field) == TInt)

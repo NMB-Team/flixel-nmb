@@ -24,7 +24,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * Number of frames in this collection.
 	 */
 	public var numFrames(get, never):Int;
-	
+
 	/**
 	 * Hash of frames, by name, for this frame collection.
 	 */
@@ -69,7 +69,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	{
 		return framesByName.get(name);
 	}
-	
+
 	/**
 	 * Whether the collection has frame with the specified name.
 	 *
@@ -199,7 +199,7 @@ class FlxFramesCollection implements IFlxDestroyable
 
 	/**
 	 * Retrieves all frames with names starting with the specified prefix in an Array.
-	 * 
+	 *
 	 * @param   prefix  The name prefix to look for.
 	 * @since 5.3.0
 	 */
@@ -209,14 +209,14 @@ class FlxFramesCollection implements IFlxDestroyable
 		forEachByPrefix(prefix, (frame)->list.push(frame), false);
 		return list;
 	}
-	
+
 	/**
 	 * Calls the given function on each frame whose name matches the specified prefix.
-	 * 
+	 *
 	 * Note: This method is inlined so that optimizations are made when a literal anonymous
 	 * functions or inlined functions are passed in, or when literal `false` is used for
 	 * `warnIfEmpty`. Meaning, this is often more performant than `getAllByPrefix`.
-	 * 
+	 *
 	 * @param   prefix  The name prefix to look for.
 	 * @since 5.3.0
 	 */
@@ -231,20 +231,20 @@ class FlxFramesCollection implements IFlxDestroyable
 				func(frame);
 			}
 		}
-		
+
 		if (warn)
 			FlxG.log.warn(warningMsg != null ? warningMsg : 'no frames found with the prefix "$prefix"');
 	}
-	
+
 	/**
 	 * Sets the target frame's offset to the specified values. This mainly exists because certain
 	 * atlas exporters don't give the correct offset. If no frame with the specified name exists,
 	 * a warning is logged.
-	 * 
+	 *
 	 * @param   name     The name of the frame.
 	 * @param   offsetX  The new horizontal offset of the frame.
 	 * @param   offsetY  The new vertical offset of the frame.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function setFrameOffset(name:String, offsetX:Float, offsetY:Float)
@@ -259,11 +259,11 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * Adjusts the target frame's offset by the specified values. This mainly exists because certain
 	 * atlas exporters don't give the correct offset. If no frame with the specified name exists,
 	 * a warning is logged.
-	 * 
+	 *
 	 * @param   name     The name of the frame.
 	 * @param   offsetX  The horizontal adjustment added to the frame's current offset.
 	 * @param   offsetY  The vertical adjustment added to the frame's current offset.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function addFrameOffset(name:String, offsetX:Float, offsetY:Float)
@@ -277,12 +277,12 @@ class FlxFramesCollection implements IFlxDestroyable
 	/**
 	 * Sets all frames with the specified name prefix to the specified offset. This mainly
 	 * exists because certain atlas exporters don't give the correct offset.
-	 * 
+	 *
 	 * @param   prefix       The prefix used to determine which frames are affected.
 	 * @param   offsetX      The new horizontal offset of the frame.
 	 * @param   offsetY      The new vertical offset of the frame.
 	 * @param   warnIfEmpty  Whether to log a warning if no frames with the prefix are found.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function setFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true)
@@ -293,12 +293,12 @@ class FlxFramesCollection implements IFlxDestroyable
 	/**
 	 * Adjusts all frames with the specified name prefix by the specified offset. This mainly
 	 * exists because certain atlas exporters don't give the correct offset.
-	 * 
+	 *
 	 * @param   prefix       The prefix used to determine which frames are affected.
 	 * @param   offsetX      The horizontal adjustment added to the frame's current offset.
 	 * @param   offsetY      The vertical adjustment added to the frame's current offset.
 	 * @param   warnIfEmpty  Whether to log a warning if no frames with the prefix are found.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function addFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true)
@@ -310,10 +310,10 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * Sets the target frame's offset to the specified values. This mainly exists because certain
 	 * atlas exporters don't give the correct offset. If no frame with the specified name exists,
 	 * a warning is logged.
-	 * 
+	 *
 	 * @param   name      The name of the frame.
 	 * @param   duration  The new duration of the frame.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function setFrameDuration(name:String, duration:Float)
@@ -323,7 +323,7 @@ class FlxFramesCollection implements IFlxDestroyable
 		else
 			FlxG.log.warn('No frame called $name');
 	}
-	
+
 	/**
 	 * Checks if frame's area fits into atlas image, and trims if it's out of atlas image bounds.
 	 *

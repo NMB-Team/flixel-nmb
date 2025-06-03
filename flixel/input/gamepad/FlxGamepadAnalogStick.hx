@@ -48,19 +48,19 @@ class FlxTypedGamepadAnalogStick<TInputID:Int>
 		{
 			if (settings.mode != null)
 				mode = settings.mode;
-			
+
 			if (settings.up != null)
 				rawUp = settings.up;
-			
+
 			if (settings.down != null)
 				rawDown = settings.down;
-			
+
 			if (settings.left != null)
 				rawLeft = settings.left;
-			
+
 			if (settings.right != null)
 				rawRight = settings.right;
-			
+
 			if (settings.threshold != null)
 				digitalThreshold = settings.threshold;
 		}

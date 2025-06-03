@@ -11,67 +11,67 @@ import haxe.PosInfos;
 abstract BMFontXml(Xml) from Xml
 {
 	public var xml(get, never):Xml;
-	
+
 	inline function get_xml()
 	{
 		return this;
 	}
-	
+
 	/** The name of the current element. This is the same as `Xml.nodeName`. **/
 	public var name(get, never):String;
-	
+
 	inline function get_name()
 	{
 		return if (this.nodeType == Xml.Document) "Document" else this.nodeName;
 	}
-	
+
 	/** Access to the first sub element with the given name. */
 	public var node(get, never):NodeAccess;
-	
+
 	inline function get_node():NodeAccess
 	{
 		return xml;
 	}
-	
+
 	/** Access to a given attribute. **/
 	public var att(get, never):AttribAccess;
-	
+
 	inline function get_att():AttribAccess
 	{
 		return this;
 	}
-	
+
 	/** The list of all sub-elements which are the nodes with type `Xml.Element`. **/
 	public var elements(get, never):Iterator<BMFontXml>;
-	
+
 	inline function get_elements():Iterator<BMFontXml>
 	{
 		return cast this.elements();
 	}
-	
+
 	public inline function new(xml:Xml)
 	{
 		if (xml.nodeType != Xml.Document && xml.nodeType != Xml.Element)
 			throw 'Invalid nodeType ${xml.nodeType}';
-		
+
 		this = xml;
 	}
-	
+
 	/** Check the existence of an attribute with the given name. **/
 	public function has(name:String):Bool
 	{
 		if (this.nodeType == Xml.Document)
 			throw 'Cannot access document attribute $name';
-		
+
 		return this.nodeType != Xml.Document && this.exists(name);
 	}
-	
+
 	/** Check the existence of a sub node with the given name. **/
 	public function hasNode(name:String):Bool
 	{
 		return this.elementsNamed(name).hasNext();
 	}
-	
+
 	/** Access to the List of elements with the given name. */
 	public function nodes(name:String):Array<BMFontXml>
 	{
@@ -90,27 +90,27 @@ private abstract NodeAccess(Xml) from Xml to Xml
 		if (xml == null)
 		{
 			final xname = if (this.nodeType == Xml.Document) "Document" else this.nodeName;
-			
+
 			invalid('$xname is missing element $name');
 		}
 		return xml;
 	}
-	
+
 	public function getSafe(name:String):BMFontXml
 	{
 		return getHelper(name);
 	}
-	
+
 	public function get(name:String):BMFontXml
 	{
 		return getHelper(name, (msg, ?_)->throw msg);
 	}
-	
+
 	public function getWarn(name:String)
 	{
 		return getHelper(name, FlxG.log.warn);
 	}
-	
+
 	public function getError(name:String)
 	{
 		return getHelper(name, FlxG.log.error);
@@ -137,27 +137,27 @@ private abstract AttribAccess(Xml) from Xml to Xml
 		}
 		return value;
 	}
-	
+
 	public function stringSafe(name:String, ?backup:String)
 	{
 		return stringHelper(name, null, backup);
 	}
-	
+
 	public function string(name:String)
 	{
 		return stringHelper(name, (msg, ?_)->throw msg);
 	}
-	
+
 	public function stringWarn(name:String, ?backup:String)
 	{
 		return stringHelper(name, FlxG.log.warn, backup);
 	}
-	
+
 	public function stringError(name:String, ?backup:String)
 	{
 		return stringHelper(name, FlxG.log.error, backup);
 	}
-	
+
 	inline function intHelper(name:String, ?invalid:(String, ?PosInfos)->Void, backup:Int):Int
 	{
 		var value = backup;
@@ -176,27 +176,27 @@ private abstract AttribAccess(Xml) from Xml to Xml
 		}
 		return value;
 	}
-	
+
 	public function intSafe(name:String, backup:Int)
 	{
 		return intHelper(name, null, backup);
 	}
-	
+
 	public function int(name:String)
 	{
 		return intHelper(name, (msg, ?_)->throw msg, 0);
 	}
-	
+
 	public function intWarn(name:String, backup:Int)
 	{
 		return intHelper(name, FlxG.log.warn, backup);
 	}
-	
+
 	public function intError(name:String, backup:Int)
 	{
 		return intHelper(name, FlxG.log.error, backup);
 	}
-	
+
 	inline function boolHelper(name:String, ?invalid:(String, ?PosInfos)->Void, backup:Bool):Bool
 	{
 		var value = backup;
@@ -215,22 +215,22 @@ private abstract AttribAccess(Xml) from Xml to Xml
 		}
 		return value;
 	}
-	
+
 	public function boolSafe(name:String, backup:Bool)
 	{
 		return boolHelper(name, null, backup);
 	}
-	
+
 	public function bool(name:String)
 	{
 		return boolHelper(name, (msg, ?_)->throw msg, false);
 	}
-	
+
 	public function boolWarn(name:String, backup:Bool)
 	{
 		return boolHelper(name, FlxG.log.warn, backup);
 	}
-	
+
 	public function boolError(name:String, backup:Bool)
 	{
 		return boolHelper(name, FlxG.log.error, backup);

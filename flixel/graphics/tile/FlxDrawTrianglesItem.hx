@@ -162,7 +162,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 
 		if (size == null)
 			scale = size.set(1, 1);
-			
+
 		if (originPoint == null)
 			originPoint = origin.set();
 
@@ -193,16 +193,16 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 		{
 			var vertX = (vertices[i] * scale.x) - originPoint.x;
 			var vertY = (vertices[i + 1] * scale.y) - originPoint.y;
-			
+
 			if (angle != 0)
 			{
 				final vx = vertX;
 				final vy = vertY;
-				
+
 				vertX = (vx * cos) + (vy * -sin);
 				vertY = (vx * sin) + (vy * cos);
 			}
-			
+
 			tempX = position.x + vertX;
 			tempY = position.y + vertY;
 
@@ -288,7 +288,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 					colorMultipliers.push(1);
 					colorMultipliers.push(1);
 					colorMultipliers.push(1);
-	
+
 					colorOffsets.push(0);
 					colorOffsets.push(0);
 					colorOffsets.push(0);
@@ -306,10 +306,10 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 	{
 		if (position == null)
 			position = point.set();
-			
+
 		if (cameraBounds == null)
 			cameraBounds = rect.set(0, 0, FlxG.width, FlxG.height);
-			
+
 		var verticesLength:Int = vertices.length;
 		var prevVerticesLength:Int = this.vertices.length;
 		var numberOfVertices:Int = Std.int(verticesLength * .5);
@@ -318,40 +318,40 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 		var prevUVTDataLength:Int = this.uvtData.length;
 		var prevColorsLength:Int = this.colors.length;
 		var prevNumberOfVertices:Int = this.numVertices;
-		
+
 		var tempX:Float, tempY:Float;
 		var i:Int = 0;
 		var currentVertexPosition:Int = prevVerticesLength;
-		
+
 		while (i < verticesLength)
 		{
 			tempX = position.x + vertices[i];
 			tempY = position.y + vertices[i + 1];
-			
+
 			this.vertices[currentVertexPosition++] = tempX;
 			this.vertices[currentVertexPosition++] = tempY;
-			
+
 			i += 2;
 		}
-		
+
 		var uvtDataLength:Int = uvtData.length;
 		for (i in 0...uvtDataLength)
 		{
 			this.uvtData[prevUVTDataLength + i] = uvtData[i];
 		}
-		
+
 		var indicesLength:Int = indices.length;
 		for (i in 0...indicesLength)
 		{
 			this.indices[prevIndicesLength + i] = indices[i] + prevNumberOfVertices;
 		}
-		
+
 		verticesPosition += verticesLength;
 		indicesPosition += indicesLength;
-		
+
 		position.putWeak();
 		cameraBounds.putWeak();
-		
+
 		for (_ in 0...numberOfTriangles)
 		{
 			var transform = transforms[_];
@@ -359,15 +359,15 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 			alphas.push(transform != null ? transform.alphaMultiplier : 1.0);
 			alphas.push(transform != null ? transform.alphaMultiplier : 1.0);
 		}
-		
+
 		if (colored || hasColorOffsets)
 		{
 			if (colorMultipliers == null)
 				colorMultipliers = [];
-				
+
 			if (colorOffsets == null)
 				colorOffsets = [];
-				
+
 			for (_ in 0...numberOfTriangles)
 			{
 				var transform = transforms[_];
@@ -378,7 +378,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 						colorMultipliers.push(transform.redMultiplier);
 						colorMultipliers.push(transform.greenMultiplier);
 						colorMultipliers.push(transform.blueMultiplier);
-						
+
 						colorOffsets.push(transform.redOffset);
 						colorOffsets.push(transform.greenOffset);
 						colorOffsets.push(transform.blueOffset);
@@ -389,13 +389,13 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 						colorMultipliers.push(1);
 						colorMultipliers.push(1);
 						colorMultipliers.push(1);
-						
+
 						colorOffsets.push(0);
 						colorOffsets.push(0);
 						colorOffsets.push(0);
 						colorOffsets.push(0);
 					}
-					
+
 					colorMultipliers.push(1);
 				}
 			}
@@ -438,12 +438,12 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 
 	override public function addQuad(frame:FlxFrame, matrix:FlxMatrix, ?transform:ColorTransform):Void
 	{
-		var prevVerticesPos:Int = verticesPosition;
-		var prevIndicesPos:Int = indicesPosition;
-		var prevColorsPos:Int = colorsPosition;
-		var prevNumberOfVertices:Int = numVertices;
+		final prevVerticesPos:Int = verticesPosition;
+		final prevIndicesPos:Int = indicesPosition;
+		final prevColorsPos:Int = colorsPosition;
+		final prevNumberOfVertices:Int = numVertices;
 
-		var point = FlxPoint.get();
+		final point = FlxPoint.get();
 		point.transform(matrix);
 
 		vertices[prevVerticesPos] = point.x;
@@ -501,12 +501,10 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 				green = transform.greenMultiplier;
 				blue = transform.blueMultiplier;
 
-				#if !neko
 				alpha = transform.alphaMultiplier;
-				#end
 			}
 
-			var color = FlxColor.fromRGBFloat(red, green, blue, alpha);
+			final color = FlxColor.fromRGBFloat(red, green, blue, alpha);
 
 			colors[prevColorsPos] = color;
 			colors[prevColorsPos + 1] = color;

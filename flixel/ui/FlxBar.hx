@@ -63,7 +63,7 @@ class FlxBar extends FlxSprite
 	 * The current value - must always be between min and max
 	 */
 	@:isVar
-	public var value(get, set):Float;
+	public var value(default, set):Float;
 
 	/**
 	 * The minimum value the bar can be (can never be >= max)
@@ -88,10 +88,10 @@ class FlxBar extends FlxSprite
 	/**
 	 * Number of frames FlxBar will have. Default value is 100.
 	 * The bigger value you set then visual will change smoother.
-	 * 
+	 *
 	 * If the value is set to 0, the bar will smoothly change
 	 * to any value given, instead of looking blocky.
-	 * 
+	 *
 	 * @since 4.1.0
 	 */
 	public var numDivisions(default, set):Int = 100;
@@ -866,13 +866,13 @@ class FlxBar extends FlxSprite
 	override public function draw():Void
 	{
 		super.draw();
-		
+
 		if (!FlxG.renderTile)
 			return;
-		
+
 		if (alpha == 0)
 			return;
-		
+
 		if (percent > 0 && _frontFrame.type != FlxFrameType.EMPTY)
 		{
 			for (camera in getCamerasLegacy())
@@ -881,30 +881,30 @@ class FlxBar extends FlxSprite
 				{
 					continue;
 				}
-				
+
 				_frontFrame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
 				_matrix.translate(-origin.x, -origin.y);
 				_matrix.scale(scale.x, scale.y);
-				
+
 				// rotate matrix if sprite's graphic isn't prerotated
 				if (bakedRotationAngle <= 0)
 				{
 					updateTrig();
-					
+
 					if (angle != 0)
 						_matrix.rotateWithTrig(_cosAngle, _sinAngle);
 				}
-				
+
 				getScreenPosition(_point, camera).subtract(offset);
 				_point.add(origin.x, origin.y);
 				_matrix.translate(_point.x, _point.y);
-				
+
 				if (isPixelPerfectRender(camera))
 				{
 					_matrix.tx = Math.floor(_matrix.tx);
 					_matrix.ty = Math.floor(_matrix.ty);
 				}
-				
+
 				camera.drawPixels(_frontFrame, _matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 			}
 		}
@@ -943,7 +943,7 @@ class FlxBar extends FlxSprite
 
 		return ((value - min) / range) * _maxPercent;
 	}
-	
+
 	function get_floorPercent():Int
 	{
 		if (value > max)
@@ -986,18 +986,6 @@ class FlxBar extends FlxSprite
 		return newValue;
 	}
 
-	function get_value():Float
-	{
-		#if neko
-		if (value == null)
-		{
-			value = min;
-		}
-		#end
-
-		return value;
-	}
-
 	function set_numDivisions(newValue:Int):Int
 	{
 		numDivisions = (newValue > 0) ? newValue : 100;
@@ -1020,7 +1008,7 @@ class FlxBar extends FlxSprite
 		{
 			/*if (value != null)
 				value.parent.incrementUseCount();
-				
+
 			if (frontFrames != null)
 				frontFrames.parent.decrementUseCount();*/
 
@@ -1062,10 +1050,10 @@ class FlxBar extends FlxSprite
 	}
 
 	@:noCompletion public var unbounded(get, set):Bool;
-	
+
 	@:noCompletion inline function get_unbounded()
 		return continuous;
-		
+
 	@:noCompletion inline function set_unbounded(value:Bool):Bool
 		return continuous = value;
 }

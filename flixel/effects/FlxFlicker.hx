@@ -151,10 +151,10 @@ class FlxFlicker implements IFlxDestroyable
 	{
 		if (timer == null)
 			return;
-			
+
 		timer.active = false;
 	}
-	
+
 	/**
 	 * Resume the flickering after it has been temporarily paused.
 	 */
@@ -162,7 +162,7 @@ class FlxFlicker implements IFlxDestroyable
 	{
 		if (timer == null)
 			return;
-			
+
 		timer.active = true;
 	}
 

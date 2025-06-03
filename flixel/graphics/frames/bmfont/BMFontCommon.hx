@@ -5,7 +5,7 @@ import haxe.io.BytesInput;
 /**
  * Common data used internally via `FlxBitmapFont.fromAngelCode` to serialize text, xml or binary
  * files exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -23,7 +23,7 @@ class BMFontCommon
 	public var redChnl:Int;
 	public var greenChnl:Int;
 	public var blueChnl:Int;
-	
+
 	static function fromXml(commonNode:BMFontXml):BMFontCommon
 	{
 		return
@@ -40,7 +40,7 @@ class BMFontCommon
 			blueChnl: commonNode.att.intSafe("blueChnl", 0)
 		};
 	}
-	
+
 	static function fromText(commonText:String):BMFontCommon
 	{
 		var lineHeight:Int = -1;
@@ -53,7 +53,7 @@ class BMFontCommon
 		var redChnl:Int = 0;
 		var greenChnl:Int = 0;
 		var blueChnl:Int = 0;
-		
+
 		BMFontUtil.forEachAttribute(commonText,
 			function(key:String, value:String)
 			{
@@ -72,7 +72,7 @@ class BMFontCommon
 				}
 			}
 		);
-		
+
 		return
 		{
 			lineHeight : lineHeight,
@@ -87,13 +87,13 @@ class BMFontCommon
 			blueChnl : blueChnl
 		};
 	}
-	
+
 	static function fromBytes(bytes:BytesInput):BMFontCommon
 	{
 		final blockSize = bytes.readInt32();
 		if (blockSize != 15)
 			throw 'Invalid block size for common block. Expected 15 got $blockSize';
-		
+
 		return {
 			lineHeight: bytes.readInt16(),
 			base: bytes.readInt16(),

@@ -20,7 +20,7 @@ class FlxGraphicsShader extends GraphicsShader
 		}
 
 		openfl_Alphav = openfl_Alpha * alpha;
-		
+
 		if (hasColorTransform) {
 			openfl_ColorOffsetv = colorOffset / 255.0;
 			openfl_ColorMultiplierv = colorMultiplier;
@@ -39,7 +39,7 @@ class FlxGraphicsShader extends GraphicsShader
 			color = clamp(offset + (color * mult), 0.0, 1.0);
 			return vec4(color.rgb, 1.0) * color.a * alpha;
 		}
-		
+
 		vec4 transformIf(bool hasTransform, vec4 color, vec4 mult, vec4 offset, float alpha)
 		{
 			return mix(color * alpha, transform(color, mult, offset, alpha), float(hasTransform));

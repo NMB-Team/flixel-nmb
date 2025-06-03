@@ -28,7 +28,7 @@ class SoundFrontEnd
 	 * Whether or not the game sounds are muted.
 	 */
 	public var muted:Bool = false;
-	
+
 	/**
 	 * A signal that gets dispatched whenever the volume changes.
 	 */
@@ -62,7 +62,7 @@ class SoundFrontEnd
 	 * volumeUp-, volumeDown- or muteKeys is pressed.
 	 */
 	public var soundTrayEnabled:Bool = true;
-	
+
 	#if FLX_SOUND_TRAY
 	/**
 	 * The sound tray display container.
@@ -76,7 +76,7 @@ class SoundFrontEnd
 		volume = Math.round(FlxMath.bound(volume, 0, 1) * val) / val;
 		return countToChange = val;
 	}
-	
+
 	inline function get_soundTray()
 	{
 		return FlxG.game.soundTray;
@@ -105,7 +105,7 @@ class SoundFrontEnd
 
 	/**
 	 * Set up and play a looping background soundtrack.
-	 * 
+	 *
 	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedMusic  The sound file you want to loop in the background.
@@ -129,7 +129,7 @@ class SoundFrontEnd
 
 	/**
 	 * Creates a new FlxSound object.
-	 * 
+	 *
 	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedSound   The embedded sound resource you want to play.  To stream, use the optional URL parameter instead.
@@ -229,7 +229,7 @@ class SoundFrontEnd
 
 	/**
 	 * Plays a sound from an embedded sound. Tries to recycle a cached sound first.
-	 * 
+	 *
 	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
 	 *
 	 * @param   embeddedSound  The embedded sound resource you want to play.
@@ -370,7 +370,7 @@ class SoundFrontEnd
 	/**
 	 * Takes the volume scale used by Flixel fields and gives the final transformed volume that is
 	 * actually used to play the sound. To reverse this operation, use `reverseSoundCurve`. This
-	 * field is `dynamic` and can be overwritten. 
+	 * field is `dynamic` and can be overwritten.
 	 */
 	public dynamic function applySoundCurve(volume:Float)
 	{
@@ -438,7 +438,7 @@ class SoundFrontEnd
 				final checkLastHold = Math.round((holdTime - helper) * 10);
 				@:privateAccess holdTime += FlxG.game._elapsedMS * .001;
 				final checkNewHold = Math.round((holdTime - helper) * 10);
-			
+
 				if (holdTime > helper && checkNewHold - checkLastHold > 0)
 					changeVolume((checkNewHold - checkLastHold) * (pressedUp ? volumeMult : -volumeMult) / countToChange, false);
 			}

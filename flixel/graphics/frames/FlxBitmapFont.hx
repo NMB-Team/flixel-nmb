@@ -71,7 +71,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	 * Helper map where character's xAdvance are stored by char codes.
 	 */
 	var charAdvance:Map<Int, Int>;
-	
+
 	var kerning:Map<Int, Map<Int, Int>>;
 
 	/**
@@ -442,13 +442,13 @@ class FlxBitmapFont extends FlxFramesCollection
 		var charName:String = String.fromCharCode(charCode);
 		if (frame.width == 0 || frame.height == 0 || getByName(charName) != null)
 			return;
-		
+
 		setCharFrame(charCode, frame, xAdvance, offset);
 	}
-	
+
 	/**
 	 * Sets the frame for the specified char
-	 * 
+	 *
 	 * @param charCode  The char code
 	 * @param frame     The desired frame of the char
 	 * @param xAdvance  How far right the next character should be
@@ -459,7 +459,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		final charName:UnicodeString = String.fromCharCode(charCode);
 		if (frame.width == 0 || frame.height == 0)
 			FlxG.log.error('Invalid frame size: $frame for char "$charName" in font "$fontName"');
-		
+
 		final charFrame:FlxFrame = this.frame.subFrameTo(frame);
 
 		final w:Float = charFrame.sourceSize.x + (offset != null && offset.x > 0 ? offset.x : 0);
@@ -496,7 +496,7 @@ class FlxBitmapFont extends FlxFramesCollection
 	{
 		return charAdvance.exists(charCode) ? charAdvance.get(charCode) : 0;
 	}
-	
+
 	public function getKerning(prevCode:Int, nextCode:Int):Int
 	{
 		if (kerning.exists(prevCode) && kerning[prevCode].exists(nextCode))
@@ -504,12 +504,12 @@ class FlxBitmapFont extends FlxFramesCollection
 		else
 			return 0;
 	}
-	
+
 	public function addKerningPair(prevCode:Int, nextCode:Int, amount:Int)
 	{
 		if (!kerning.exists(prevCode))
 			kerning.set(prevCode, new Map<Int, Int>());
-		
+
 		kerning[prevCode][nextCode] = amount;
 	}
 

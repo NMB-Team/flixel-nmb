@@ -39,7 +39,7 @@ class Interaction extends Window
 	static inline var BUTTONS_PER_LINE = 2;
 	static inline var SPACING = 25;
 	static inline var PADDING = 10;
-	
+
 	public var activeTool(default, null):Tool;
 	public var selectedItems(default, null):FlxTypedGroup<FlxObject> = new FlxTypedGroup();
 
@@ -54,7 +54,7 @@ class Interaction extends Window
 	 * selection marks, for instance.
 	 */
 	public var shouldDrawItemsSelection:Bool = true;
-	
+
 	/**
 	 * Whether or not the user is using a mac keyboard, determines whether to use command or ctrl
 	 */
@@ -66,7 +66,7 @@ class Interaction extends Window
 		#else
 		false;
 		#end
-	
+
 	var _container:Sprite;
 	var _customCursor:Sprite;
 	var _tools:Array<Tool> = [];
@@ -118,38 +118,38 @@ class Interaction extends Window
 		else
 			restoreSystemCursor();
 	}
-	
+
 	function updateMouse(event:MouseEvent):Void
 	{
-		#if (neko || js) // openfl/openfl#1305
+		#if js // openfl/openfl#1305
 		if (event.stageX == null || event.stageY == null)
 			return;
 		#end
-		
+
 		_customCursor.x = event.stageX;
 		_customCursor.y = event.stageY;
-		
+
 		#if FLX_MOUSE
 		// Calculate in-game coordinates based on mouse position and camera.
 		_flixelPointer.setRawPositionUnsafe(Std.int(FlxG.game.mouseX), Std.int(FlxG.game.mouseY));
-		
+
 		// Store Flixel mouse coordinates to speed up all
 		// internal calculations (overlap, etc)
 		flixelPointer.x = _flixelPointer.x;
 		flixelPointer.y = _flixelPointer.y;
 		#end
 	}
-	
+
 	function handleMouseClick(event:MouseEvent):Void
 	{
 		// Did the user click a debugger UI element instead of performing
 		// a click related to a tool?
 		if (event.type == MouseEvent.MOUSE_DOWN && objectBelongsToDebugger(event.target))
 			return;
-		
+
 		pointerJustPressed = event.type == MouseEvent.MOUSE_DOWN;
 		pointerJustReleased = event.type == MouseEvent.MOUSE_UP;
-		
+
 		if (pointerJustPressed)
 			pointerPressed = true;
 		else if (pointerJustReleased)
@@ -160,7 +160,7 @@ class Interaction extends Window
 	{
 		return object is DisplayObject && belongsToDebugger(cast object);
 	}
-	
+
 	function belongsToDebugger(object:DisplayObject):Bool
 	{
 		if (object == null)
@@ -237,11 +237,11 @@ class Interaction extends Window
 		addChild(button);
 		resizeByTotal(buttons);
 	}
-	
+
 	/**
 	 * Removes the tool, if possible. If the tool has a button, all other buttons will be moved and
 	 * the containing window will be resized, if needed.
-	 * 
+	 *
 	 * @param   tool  The tool to be removed
 	 * @since 5.4.0
 	 */
@@ -249,22 +249,22 @@ class Interaction extends Window
 	{
 		if (!_tools.contains(tool))
 			return;
-		
+
 		// If there's no button just remove it
 		if (tool.button == null)
 		{
 			_tools.remove(tool);
 			return;
 		}
-		
+
 		// if there is a button move all the following buttons
 		var index = _tools.indexOf(tool);
 		var prevX = tool.button.x;
 		var prevY = tool.button.y;
-		
+
 		_tools.remove(tool);
 		removeChild(tool.button);
-		
+
 		while (index < _tools.length)
 		{
 			final tool = _tools[index];
@@ -282,15 +282,15 @@ class Interaction extends Window
 			}
 			index++;
 		}
-		
+
 		autoResize();
 	}
-	
+
 	inline function autoResize()
 	{
 		resizeByTotal(countToolsWithUIButton());
 	}
-	
+
 	inline function resizeByTotal(total:Int)
 	{
 		final spacing = 25;
@@ -607,7 +607,7 @@ class Interaction extends Window
 
 	/**
 	 * Returns a list all items in the state and substate that are within the given area
-	 * 
+	 *
 	 * @param   state  The state to search
 	 * @param   area   The rectangular area to search
 	 * @since 5.6.0
@@ -615,18 +615,18 @@ class Interaction extends Window
 	public function getItemsWithinState(state:FlxState, area:FlxRect):Array<FlxObject>
 	{
 		final items = new Array<FlxObject>();
-		
+
 		addItemsWithinArea(items, state.members, area);
 		if (state.subState != null)
 			addItemsWithinState(items, state.subState, area);
-		
+
 		return items;
 	}
-	
+
 	/**
 	 * finds all items in the state and substate that are within the given area and
 	 * adds them to the given list.
-	 * 
+	 *
 	 * @param   items  The list to add the items
 	 * @param   state  The state to search
 	 * @param   area   The rectangular area to search
@@ -638,10 +638,10 @@ class Interaction extends Window
 		if (state.subState != null)
 			addItemsWithinState(items, state.subState, area);
 	}
-	
+
 	/**
 	 * Finds and returns top-most item in the state and substate within the given area
-	 * 
+	 *
 	 * @param   state  The state to search
 	 * @param   area   The rectangular area to search
 	 * @since 5.6.0
@@ -650,15 +650,15 @@ class Interaction extends Window
 	{
 		if (state.subState != null)
 			return getTopItemWithinState(state.subState, area);
-		
+
 		return getTopItemWithinArea(state.members, area);
 	}
-	
+
 	function isOverObject(object:FlxObject, area:FlxRect):Bool
 	{
 		return area.overlaps(object.getHitbox(FlxRect.weak()));
 	}
-	
+
 	function isOverSprite(sprite:FlxSprite, area:FlxRect):Bool
 	{
 		// Ignore sprites' alpha when clicking a point
@@ -666,7 +666,7 @@ class Interaction extends Window
 			? isOverObject(sprite, area)
 			: sprite.pixelsOverlapPoint(flixelPointer, 0x10);
 	}
-	
+
 	/**
 	 * Find all items within an area. In order to improve performance and reduce temporary allocations,
 	 * the method has no return, you must pass an array where items will be placed. The method decides
@@ -688,7 +688,7 @@ class Interaction extends Window
 			// Ignore invisible or non-existent entities
 			if (member == null || !member.visible || !member.exists)
 				continue;
-			
+
 			final group = FlxTypedGroup.resolveSelectionGroup(member);
 			if (group != null)
 			{
@@ -708,10 +708,10 @@ class Interaction extends Window
 			}
 		}
 	}
-	
+
 	/**
 	 * Searches the members for the top-most object inside the given rectangle
-	 * 
+	 *
 	 * @param   members  The list of FlxObjects or FlxGroups
 	 * @param   area     The rectangular area to search
 	 * @return  The top-most item
@@ -728,7 +728,7 @@ class Interaction extends Window
 			// Ignore invisible or non-existent entities
 			if (member == null || !member.visible || !member.exists)
 				continue;
-			
+
 			final group = FlxTypedGroup.resolveGroup(member);
 			if (group != null)
 			{
@@ -736,7 +736,7 @@ class Interaction extends Window
 				if (result != null)
 					return result;
 			}
-			
+
 			if (member is FlxSprite)
 			{
 				final sprite:FlxSprite = cast member;
@@ -752,7 +752,7 @@ class Interaction extends Window
 		}
 		return null;
 	}
-	
+
 	public function toDebugX(worldX:Float, camera:FlxCamera)
 	{
 		if (FlxG.renderTile)
@@ -761,7 +761,7 @@ class Interaction extends Window
 			@:privateAccess
 			return camera._flashBitmap.localToGlobal(new Point(worldX, 0)).x;
 	}
-	
+
 	public function toDebugY(worldY:Float, camera:FlxCamera)
 	{
 		if (FlxG.renderTile)

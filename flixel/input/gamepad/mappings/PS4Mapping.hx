@@ -100,7 +100,7 @@ class PS4Mapping extends FlxTypedGamepadMapping<PS4ID>
 			default: super.getRawID(ID);
 		}
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		return switch (id)
@@ -119,12 +119,12 @@ class PS4Mapping extends FlxTypedGamepadMapping<PS4ID>
 			case _: super.getInputLabel(id);
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.PS4(getRawID(id));
 	}
-	
+
 	#if FLX_JOYSTICK_API
 	override function axisIndexToRawID(axisID:PS4ID):Int
 	{

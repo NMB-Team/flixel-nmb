@@ -208,10 +208,10 @@ class QuadPath extends Motion
 		// otherwise the final equation will have a division by zero
 		if (safeControl.equals(start))
 			safeControl.add(FlxMath.EPSILON, FlxMath.EPSILON);
-			
+
 		if (safeControl.equals(finish))
 			safeControl.add(FlxMath.EPSILON, FlxMath.EPSILON);
-			
+
 		p1.x = start.x - 2 * safeControl.x + finish.x;
 		p1.y = start.y - 2 * safeControl.y + finish.y;
 		p2.x = 2 * safeControl.x - 2 * start.x;

@@ -79,7 +79,7 @@ class FlxSoundGroup {
 		members.remove(sound);
 		@:privateAccess sound.updateTransform();
 		FlxG.sound.list.remove(sound);
-		
+
 		return sound;
 	}
 
@@ -166,7 +166,7 @@ class FlxSoundGroup {
 			if (sound == null) continue;
 			sound.pitch = value;
 		}
-		
+
 		return pitch = value;
 	}
 
@@ -175,7 +175,7 @@ class FlxSoundGroup {
 			if (sound == null) continue;
 			sound.time = value;
 		}
-		
+
 		return time = value;
 	}
 
@@ -184,7 +184,7 @@ class FlxSoundGroup {
 			if (sound == null) continue;
 			sound.pan = value;
 		}
-		
+
 		return pan = value;
 	}
 

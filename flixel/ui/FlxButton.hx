@@ -22,21 +22,21 @@ enum abstract FlxButtonState(Int) to Int
 {
 	/** The button is not highlighted or pressed */
 	final NORMAL = 0;
-	
+
 	/** The button is selected, usually meaning the mouse is hovering over it */
 	final HIGHLIGHT = 1;
-	
+
 	/** The button is being pressed usually by a mouse */
 	final PRESSED = 2;
-	
+
 	/** The button is not interactible */
 	final DISABLED = 3;
-	
+
 	public function toInt()
 	{
 		return this;
 	}
-	
+
 	public function toString()
 	{
 		return switch (cast this:FlxButtonState)
@@ -202,7 +202,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	 */
 	var _spriteLabel:FlxSprite;
 
-	/** 
+	/**
 	 * We don't need an ID here, so let's just use `Int` as the type.
 	 */
 	var input:FlxInput<Int>;
@@ -642,7 +642,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	}
 }
 
-/** 
+/**
  * Helper function for `FlxButton` which handles its events.
  */
 private class FlxButtonEvent implements IFlxDestroyable

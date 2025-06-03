@@ -5,7 +5,7 @@ import haxe.io.BytesInput;
 /**
  * Info data used internally via `FlxBitmapFont.fromAngelCode` to serialize text, xml or binary
  * files exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -27,7 +27,7 @@ class BMFontInfo
 	public var spacing:BMFontSpacing = {};
 	public var outline:Int = 0;
 	public var fixedHeight:Bool = false;
-	
+
 	static function fromXml(infoNode:BMFontXml):BMFontInfo
 	{
 		final info:BMFontInfo =
@@ -44,15 +44,15 @@ class BMFontInfo
 			outline: infoNode.att.intSafe("outline", 0),
 			fixedHeight: infoNode.att.boolSafe("fixedHeight", false)
 		}
-		
+
 		if (infoNode.has("padding"))
 			info.padding = BMFontPadding.fromString(infoNode.att.string("padding"));
 		if (infoNode.has("spacing"))
 			info.spacing = BMFontSpacing.fromString(infoNode.att.string("spacing"));
-			
+
 		return info;
 	}
-	
+
 	static function fromText(infoText:String):BMFontInfo
 	{
 		var face:String = null;
@@ -68,7 +68,7 @@ class BMFontInfo
 		var spacing = new BMFontSpacing();
 		var outline = 0;
 		var fixedHeight = false;
-		
+
 		BMFontUtil.forEachAttribute(infoText,
 			function(key:String, value:String)
 			{
@@ -90,7 +90,7 @@ class BMFontInfo
 				}
 			}
 		);
-		
+
 		return
 		{
 			face: face,
@@ -108,7 +108,7 @@ class BMFontInfo
 			fixedHeight: fixedHeight
 		};
 	}
-	
+
 	static function fromBytes(bytes:BytesInput)
 	{
 		final blockSize = bytes.readInt32();
@@ -143,7 +143,7 @@ class BMFontPadding
 	public var right:Int = 0;
 	public var down:Int = 0;
 	public var left:Int = 0;
-	
+
 	public inline function new(up = 0, right = 0, down = 0, left = 0)
 	{
 		this.up = up;
@@ -151,7 +151,7 @@ class BMFontPadding
 		this.down = down;
 		this.left = left;
 	}
-	
+
 	public static inline function fromString(data:String):BMFontPadding
 	{
 		final values = data.split(',');
@@ -163,7 +163,7 @@ class BMFontPadding
 			left: Std.parseInt(values[3])
 		};
 	}
-	
+
 	public static inline function fromBytes(bytes:BytesInput):BMFontPadding
 	{
 		return
@@ -181,19 +181,19 @@ class BMFontSpacing
 {
 	public var x:Int = 0;
 	public var y:Int = 0;
-	
+
 	public inline function new(x = 0, y = 0)
 	{
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public static function fromString(data:String):BMFontSpacing
 	{
 		final values = data.split(',');
 		return { x: Std.parseInt(values[0]), y: Std.parseInt(values[1]) };
 	}
-	
+
 	public static inline function fromBytes(bytes:BytesInput):BMFontSpacing
 	{
 		return { x: bytes.readByte(), y: bytes.readByte() };

@@ -257,18 +257,18 @@ class MayflashWiiRemoteMapping extends FlxTypedGamepadMapping<MayflashWiiRemoteI
 
 		return super.set_attachment(attachment);
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.MAYFLASH_WII(getRawID(id));
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		var label = WiiRemoteMapping.getWiiInputLabel(id, attachment);
 		if (label == null)
 			return super.getInputLabel(id);
-		
+
 		return label;
 	}
 }

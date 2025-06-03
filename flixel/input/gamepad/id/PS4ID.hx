@@ -35,22 +35,22 @@ enum abstract PS4ID(Int) to Int
 	var RIGHT_STICK_CLICK = 21;
 	var PS = 22;
 	var TOUCHPAD_CLICK = 23;
-	
+
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 5;
-	
+
 	var LEFT_STICK_UP = 24;
 	var LEFT_STICK_DOWN = 25;
 	var LEFT_STICK_LEFT = 26;
 	var LEFT_STICK_RIGHT = 27;
-	
+
 	var RIGHT_STICK_UP = 28;
 	var RIGHT_STICK_DOWN = 29;
 	var RIGHT_STICK_LEFT = 30;
 	var RIGHT_STICK_RIGHT = 31;
-	
+
 	var DPAD_UP = 6;
 	var DPAD_DOWN = 7;
 	var DPAD_LEFT = 8;
@@ -70,22 +70,22 @@ enum abstract PS4ID(Int) to Int
 
 	#if ps4
 	var TOUCHPAD_CLICK = 10; // On an actual PS4, share is reserved by the system, and the touchpad click can serve more or less as a replacement for the "back/select" button
-	
+
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 3;
-	
+
 	var LEFT_STICK_UP = 32;
 	var LEFT_STICK_DOWN = 33;
 	var LEFT_STICK_LEFT = 34;
 	var LEFT_STICK_RIGHT = 35;
-	
+
 	var RIGHT_STICK_UP = 36;
 	var RIGHT_STICK_DOWN = 37;
 	var RIGHT_STICK_LEFT = 38;
 	var RIGHT_STICK_RIGHT = 39;
-	
+
 	var SHARE = 40; // Not accessible on an actual PS4, just setting it to a dummy value
 	#else
 	var SHARE = 10; // This is only accessible when not using an actual Playstation 4, otherwise it's reserved by the system
@@ -94,17 +94,17 @@ enum abstract PS4ID(Int) to Int
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 3;
-	
+
 	var LEFT_STICK_UP = 22;
 	var LEFT_STICK_DOWN = 23;
 	var LEFT_STICK_LEFT = 24;
 	var LEFT_STICK_RIGHT = 25;
-	
+
 	var RIGHT_STICK_UP = 26;
 	var RIGHT_STICK_DOWN = 27;
 	var RIGHT_STICK_LEFT = 28;
 	var RIGHT_STICK_RIGHT = 29;
-	
+
 	var TOUCHPAD_CLICK = 30; // I don't believe this is normally accessible on PC, just setting it to a dummy value
 	#end
 	var L2 = 4;
@@ -140,30 +140,31 @@ enum abstract PS4ID(Int) to Int
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 5;
-	
+
 	var LEFT_STICK_UP = 27;
 	var LEFT_STICK_DOWN = 28;
 	var LEFT_STICK_LEFT = 29;
 	var LEFT_STICK_RIGHT = 30;
-	
+
 	var RIGHT_STICK_UP = 31;
 	var RIGHT_STICK_DOWN = 32;
 	var RIGHT_STICK_LEFT = 33;
 	var RIGHT_STICK_RIGHT = 34;
-	
+
 	// "fake" IDs, we manually watch for hat axis changes and then send events using these otherwise unused joystick button codes
 	var DPAD_LEFT = 15;
 	var DPAD_RIGHT = 16;
 	var DPAD_DOWN = 17;
 	var DPAD_UP = 18;
 	#end
-	
+
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<PS4ID>(LEFT_X, LEFT_Y, {
 		up: LEFT_STICK_UP,
 		down: LEFT_STICK_DOWN,
 		left: LEFT_STICK_LEFT,
 		right: LEFT_STICK_RIGHT
 	});
+
 	public static final RIGHT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<PS4ID>(RIGHT_X, RIGHT_Y, {
 		up: RIGHT_STICK_UP,
 		down: RIGHT_STICK_DOWN,

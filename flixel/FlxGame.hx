@@ -222,16 +222,16 @@ class FlxGame extends Sprite
 
 	/**
 	 * Instantiate a new game object.
-	 * 
+	 *
 	 * @param initialState     A constructor for the initial state, ex: `PlayState.new` or `()->new PlayState()`.
 	 *                         Note: Before Flixel 6, this took a `Class<FlxState>`, this has been
 	 *                         deprecated, but is still available, for backwards compatibility.
 	 * @param gameWidth        The width of your game in pixels. If `0`, the `Project.xml` width is used.
-	 *                         If the demensions don't match the `Project.xml`, 
+	 *                         If the demensions don't match the `Project.xml`,
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 *                         will determine the actual display size of the game.
 	 * @param gameHeight       The height of your game in pixels. If `0`, the `Project.xml` height is used.
-	 *                         If the demensions don't match the `Project.xml`, 
+	 *                         If the demensions don't match the `Project.xml`,
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 *                         will determine the actual display size of the game.
 	 * @param framerate   	 	Sets the actual display framerate for the game. Default is 60 fps.
@@ -574,7 +574,7 @@ class FlxGame extends Sprite
 		#if FLX_DEBUG
 		_skipSplash = true;
 		#end
-		
+
 		if (_skipSplash)
 		{
 			_nextState = _initialState;
@@ -765,7 +765,7 @@ class FlxGame extends Sprite
 	{
 		if (FlxG.fixedTimestep)
 		{
-			FlxG.elapsed = FlxG.timeScale * _stepSeconds; // fixed timestep
+			FlxG.elapsed = Math.max(FlxG.timeScale * _stepSeconds, 0); // fixed timestep
 			FlxG.rawElapsed = _stepSeconds;
 		}
 		else
@@ -774,7 +774,7 @@ class FlxGame extends Sprite
 			if (FlxG.rawElapsed > FlxG.maxElapsed)
 				FlxG.rawElapsed = FlxG.maxElapsed;
 
-			FlxG.elapsed = FlxG.timeScale * FlxG.rawElapsed;
+			FlxG.elapsed = Math.max(FlxG.timeScale * FlxG.rawElapsed, 0);
 		}
 	}
 
@@ -918,7 +918,7 @@ class FlxGame extends Sprite
 		setFilters(value);
 		return value;
 	}
-	
+
 	function setFiltersSuper(value:Array<BitmapFilter>):Array<BitmapFilter>
 	{
 		return super.set_filters(value);

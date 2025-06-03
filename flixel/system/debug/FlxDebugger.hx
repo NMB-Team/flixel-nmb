@@ -33,8 +33,7 @@ using flixel.util.FlxArrayUtil;
 class FlxDebugger extends openfl.display.Sprite
 {
 	#if FLX_DEBUG
-	
-	
+
 	/**
 	 * The scale of the debug windows must be set before the `FlxGame` is made.
 	 * Can also use the compile flag `-DFLX_DEBUGGER_SCALE=2`
@@ -45,8 +44,7 @@ class FlxDebugger extends openfl.display.Sprite
 	#else
 	= 1;
 	#end
-	
-	
+
 	/**
 	 * Internal, used to space out windows from the edges.
 	 */
@@ -500,12 +498,12 @@ class FlxDebugger extends openfl.display.Sprite
 
 	inline function openHomepage():Void
 	{
-		FlxG.openURL("http://haxeflixel.com");
+		FlxG.openURL("https://haxeflixel.com");
 	}
 
 	inline function openGitHub():Void
 	{
-		var url = "https://github.com/dtwotwo/flixel-dtwotwo-custom";
+		var url = "https://github.com/dtwotwo/flixel-dtwotwo";
 		if (FlxVersion.sha != "")
 		{
 			url += '/commit/${FlxVersion.sha}';

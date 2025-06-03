@@ -879,7 +879,7 @@ class FlxGamepad implements IFlxDestroyable
 	{
 		return _deadZone = deadZone;
 	}
-	
+
 	/**
 	 * A string representing the label of the target input. For instance, on a PS4 gamepad
 	 * `A` is "x", while Xbox is "a" and the Switch pro controller is "B"
@@ -889,8 +889,8 @@ class FlxGamepad implements IFlxDestroyable
 	{
 		return mapping.getInputLabel(id);
 	}
-	
-	/** 
+
+	/**
 	 * The value of the target gamepad input. For instance, on a PS4 gamepad `A` is `PS4(PS4ID.X)`,
 	 * while Xbox is `X_INPUT(XInputID.A)` and the Switch pro controller is `SWITCH_PRO(SwitchProID.B)`
 	 * @since 5.9.0
@@ -937,17 +937,17 @@ enum FlxGamepadModel
 	WII_REMOTE;
 	MFI;
 
-	/** 
+	/**
 	 * @since 4.8.0
 	 */
 	SWITCH_PRO; // also dual joycons
 
-	/** 
+	/**
 	 * @since 4.8.0
 	 */
 	SWITCH_JOYCON_LEFT;
 
-	/** 
+	/**
 	 * @since 4.8.0
 	 */
 	SWITCH_JOYCON_RIGHT;

@@ -55,7 +55,7 @@ class ConsoleHistory
 		if (isEmpty || getPreviousCommand() != command)
 		{
 			commands.push(command);
-			
+
 			#if FLX_SAVE
 			if (FlxG.save.isBound)
 				FlxG.save.flush();
@@ -71,7 +71,7 @@ class ConsoleHistory
 	public function clear()
 	{
 		commands.splice(0, commands.length);
-		
+
 		#if FLX_SAVE
 		FlxG.save.flush();
 		#end
