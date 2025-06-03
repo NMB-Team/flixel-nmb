@@ -1,6 +1,7 @@
 package flixel.math;
 
 import openfl.geom.Rectangle;
+import flixel.util.FlxColor;
 #if !macro
 import flixel.FlxG;
 import flixel.FlxSprite;
