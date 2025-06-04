@@ -141,8 +141,8 @@ class FlxDefines
 
 	static function checkCompatibility()
 	{
-		#if (haxe < version("4.2.5"))
-		abortVersion("Haxe", "4.2.5 or newer", "haxe_ver", (macro null).pos);
+		#if (haxe < version("4.3.0"))
+		abortVersion("Haxe", "4.3.0 or newer", "haxe_ver", (macro null).pos);
 		#end
 
 		#if !nme
@@ -160,12 +160,12 @@ class FlxDefines
 
 	static function checkOpenFLVersions()
 	{
-		#if (lime < version("8.0.2"))
-		abortVersion("Lime", "8.0.2 or newer", "lime", (macro null).pos);
+		#if (lime < version("8.1.2"))
+		abortVersion("Lime", "8.1.2 or newer", "lime", (macro null).pos);
 		#end
 
-		#if (openfl < version("9.2.2"))
-		abortVersion("OpenFL", "9.2.2 or newer", "openfl", (macro null).pos);
+		#if (openfl < version("9.3.3"))
+		abortVersion("OpenFL", "9.3.3 or newer", "openfl", (macro null).pos);
 		#end
 	}
 
