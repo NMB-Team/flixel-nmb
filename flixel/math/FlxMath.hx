@@ -145,6 +145,7 @@ class FlxMath
 	 */
 	public static function getElapsedLerp(lerp:Float, elapsed:Float):Float
 	{
+		if (elapsed == null) elapsed = FlxG.elapsed;
 		return 1.0 - Math.pow(1.0 - lerp, elapsed * 60);
 	}
 
@@ -218,7 +219,7 @@ class FlxMath
 		if (FlxMath.equal(a, b))
 			return b;
 		
-		return FlxMath.lerp(a, b, FlxMath.elapsedLerpRatio(ratio, elapsed));
+		return FlxMath.lerp(a, b, getElapsedLerp(ratio, elapsed));
 	}
 
 	/**
@@ -236,14 +237,14 @@ class FlxMath
 		if (result == null)
 			result = FlxPoint.get();
 
-		if (FlxMath.equal(a.x, b.x) && FlxMath.equal(a.y, b.y))
+		if (equal(a.x, b.x) && equal(a.y, b.y))
 		{
 			result.copyFrom(b);
 		}
 		else
 		{
-			ratio = FlxMath.elapsedLerpRatio(ratio, elapsed);
-			result.set(FlxMath.lerp(a.x, b.x, ratio), FlxMath.lerp(a.y, b.y, ratio));
+			ratio = getElapsedLerp(ratio, elapsed);
+			result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
 		}
 		a.putWeak();
 		b.putWeak();
@@ -263,26 +264,7 @@ class FlxMath
 	{
 		if (a == b) return b;
 
-		return FlxMath.lerpColor(a, b, FlxMath.elapsedLerpRatio(ratio, elapsed));
-	}
-
-	/**
-	 * Adjusts lerp ratio based on how much time has passed since the last frame
-	 * so lerp is less framerate dependant.
-	 */
-	public static inline function elapsedLerpRatio(ratio:Float, ?elapsed:Float):Float
-	{
-		if (elapsed == null)
-			elapsed = FlxG.elapsed;
-
-		var adjustedRatio = 0.0;
-
-		if (ratio >= 1.0)
-			adjustedRatio = 1.0;
-		else if (ratio > 0.0 && elapsed > 0.0)
-			adjustedRatio = 1.0 - Math.pow(1.0 - ratio, elapsed * 60);
-
-		return adjustedRatio;
+		return lerpColor(a, b, elapsedLerpRatio(ratio, elapsed));
 	}
 	#end
 
