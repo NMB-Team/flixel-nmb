@@ -45,6 +45,17 @@ class FlxMath
 	 */
 	public static inline final EPSILON:Float = 0.0000001;
 
+		/**
+	 * Quantizes a float value to the nearest multiple of the given snap value.
+	 * 
+	 * @param f The float value to quantize.
+	 * @param snap The snap value to quantize to.
+	 */
+	inline static function quantize(f:Float, snap:Float) {
+		#if FLX_DEBUG FlxG.log.notice('Quantized snap: $snap'); #end
+		return ((Math.fround(f * snap)) / snap);
+	}
+
 	/**
 	 * Round a decimal number to have reduced precision (less decimal numbers).
 	 *
@@ -61,6 +72,24 @@ class FlxMath
 		var mult = 1.;
 		for (i in 0...Precision) mult *= 10;
 		return Math.fround(Value * mult) / mult;
+	}
+
+	/**
+	 * Floor a decimal number to a fixed number of decimal places.
+	 *
+	 * ```haxe
+	 * floorDecimal(3.14159, 2) = 3.14
+	 * floorDecimal(5.987, 0) = 5
+	 * ```
+	 *
+	 * @param	value		The number to be floored.
+	 * @param	decimals	Number of decimal places to keep.
+	 * @return	The floored value with specified precision.
+	 */
+	public static function floorDecimal(value:Float, decimals:Int):Float
+	{
+		if (decimals < 1) return Math.floor(value);
+		return Math.floor(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	}
 
 	/**
@@ -93,6 +122,19 @@ class FlxMath
 	{
 		final lowerBound:Int = (Min != null && Value < Min) ? Min : Value;
 		return (Max != null && lowerBound > Max) ? Max : lowerBound;
+	}
+
+	/**
+	 * Truncates a float value to the specified number of decimal places.
+	 * 
+	 * @param x The float value to be truncated.
+	 * @param precision The number of decimal places to truncate to (default is 2).
+	 * @param round If true, the value will be rounded to the nearest whole number at the specified precision before being truncated.
+	 */
+	public static inline function truncateFloat(x:Float, precision = 2, round = false):Float
+	{
+		final p = Math.pow(10, precision);
+		return (round ? Math.round : Math.floor)(precision > 0 ? p * x : x) / (precision > 0 ? p : 1);
 	}
 
 	/**
@@ -151,6 +193,16 @@ class FlxMath
 	}
 
 	/**
+	 * Calculates the linear interpolation ratio based on the elapsed time.
+	 */
+	public static function getLerpRatio(factor:Float, ?elapsed:Float):Float
+	{
+		elapsed ??= FlxG.elapsed;
+		// scale the time factor by elapsed time and frame rate, then bound the result between 0 and 1
+		return FlxMath.bound(factor * 60 * elapsed, 0, 1);
+	}
+
+	/**
 	 * Converts a per-frame linear interpolation factor to an exponential decay factor
 	 * based on the actual elapsed time.
 	 *
@@ -178,8 +230,7 @@ class FlxMath
 	 */
 	public static inline function lerpPoint(a:FlxPoint, b:FlxPoint, ratio:Float, ?result:FlxPoint):FlxPoint
 	{
-		if (result == null)
-			result = FlxPoint.get();
+		result ??= FlxPoint.get();
 
 		result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
 		a.putWeak();
@@ -299,6 +350,17 @@ class FlxMath
 	}
 
 	/**
+	 * Checks if the given integer is a power of two.
+	 * 
+	 * @param n The number to check.
+	 * @return True if the number is a power of two, false otherwise.
+	 */
+	public static inline function isPowerOfTwo(n:Int)
+	{
+		return n > 0 && (n & (n - 1)) == 0;
+	}
+
+	/**
 	 * Returns `-1` if `a` is smaller, `1` if `b` is bigger and `0` if both numbers are equal.
 	 */
 	public static inline function numericComparison(a:Float, b:Float):Int
@@ -393,6 +455,20 @@ class FlxMath
 	}
 
 	/**
+	 * Calculates the greatest common divisor of two numbers using the Euclidean algorithm.
+	 * The Euclidean algorithm is an efficient method for computing the greatest common divisor of two numbers.
+	 * It works by repeatedly dividing the larger number by the smaller number until the remainder is 0.
+	 * The GCD is then the last non-zero remainder.
+	 * 
+	 * @param a The first number to compute the GCD for.
+	 * @param b The second number to compute the GCD for.
+	 */
+	public static inline function GCD(a, b)
+	{
+		return b == 0 ? absInt(a) : GCD(b, a % b);
+	}
+
+	/**
 	 * Makes sure that value always stays between 0 and max,
 	 * by wrapping the value around.
 	 *
@@ -409,6 +485,29 @@ class FlxMath
 			value += range * Std.int((min - value) / range + 1);
 
 		return min + (value - min) % range;
+	}
+
+	/**
+	 * Wraps an integer value between a minimum and maximum range.
+	 */
+	public static inline function wrapInt(value:Int, min:Int, max:Int):Int
+	{
+		final range = max - min + 1;
+		return min + ((value - min) % range + range) % range;
+	}
+
+	/**
+	 * Wraps a float value between two values.
+	 * If the value is larger than the maximum, it subtracts the range from the value.
+	 * If the value is smaller than the minimum, it adds the range to the value.
+	 * @param value The value to wrap.
+	 * @param min The minimum of the range.
+	 * @param max The maximum of the range.
+	 */
+	public static inline function fwrap(value:Float, min:Float, max:Float):Float
+	{
+		final range = max - min;
+		return min + ((value < min ? value + range : value) - min) % (range + FlxPoint.EPSILON_SQUARED);
 	}
 
 	public static inline function wrapMax(value:Int, max:Int):Int
@@ -713,6 +812,14 @@ class FlxMath
 	public static inline function clamp(v:Int, min:Int, max:Int):Int
 	{
 		return v < min ? min : (v > max ? max : v);
+	}
+
+	/**
+	 * Clamps a float value between 0 and 1.
+	 */
+	public static inline function clamp01(value:Float):Float
+	{
+		return value < 0 ? 0 : (value > 1 ? 1 : value);
 	}
 
 	/**

@@ -111,6 +111,24 @@ class FlxAngle
 	}
 
 	/**
+	 * Clamps an angle to the range [0, 360).
+	 * Useful for wrapping rotations.
+	 */
+	public static inline function clampAngle(angle:Float)
+	{
+		return (angle % 360 + 360) % 360;
+	}
+
+	/**
+	 * Calculates the shortest angular difference (in degrees) between two angles.
+	 */
+	public static inline function angleDifference(a:Float, b:Float):Float
+	{
+		final diff = (b - a + 180) % 360 - 180;
+		return diff < -180 ? diff + 360 : diff;
+	}
+
+	/**
 	 * Converts a Radian value into a Degree
 	 * Converts the radians value into degrees and returns
 	 *

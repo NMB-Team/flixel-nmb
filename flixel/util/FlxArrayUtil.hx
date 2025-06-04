@@ -112,6 +112,14 @@ class FlxArrayUtil
 	}
 
 	/**
+	 * Converts a string of newline-separated values into an array of strings.
+	 */
+	public static function listFromString(text:String):Array<String>
+	{
+		return text.isNullOrEmpty() ? [] :text.split('\n').map(str -> str.trim());
+	}
+
+	/**
 	 * Clears an array structure, but leaves the object data untouched
 	 * Useful for cleaning up temporary references to data you want to preserve.
 	 * WARNING: Does not attempt to properly destroy the contents.
