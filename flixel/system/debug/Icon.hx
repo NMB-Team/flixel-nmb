@@ -90,7 +90,7 @@ private class Step extends IconBitmapData {}
 private class Stop extends IconBitmapData {}
 
 class Icon {
-	private static final DEFAULT_POS = 11.;
+	private static final DEFAULT_POS = 11;
 
 	public static final flixel = new Flixel(DEFAULT_POS, DEFAULT_POS);
 	public static final cross = new Cross(DEFAULT_POS, DEFAULT_POS);

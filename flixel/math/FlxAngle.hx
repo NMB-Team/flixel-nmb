@@ -120,6 +120,22 @@ class FlxAngle
 	}
 
 	/**
+	 * Performs exponential interpolation between two angles (a and b) over time.
+	 * This is similar to `lerpElapsed`, but takes into account the circular nature of angles.
+	 * 
+	 * @param a The starting angle.
+	 * @param b The target angle.
+	 * @param t The interpolation factor (usually in the range [0, 1]).
+	 * @param e The elapsed time.
+	 */
+	public static inline function lerpAngle(a:Float, b:Float, t:Float, e:Float):Float
+	{
+		final delta = clampAngle((b - a + 180)) - 180;
+		final factor = Math.exp(-e * t);
+		return a + delta * (1 - factor);
+	}
+
+	/**
 	 * Calculates the shortest angular difference (in degrees) between two angles.
 	 */
 	public static inline function angleDifference(a:Float, b:Float):Float

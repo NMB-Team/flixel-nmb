@@ -34,4 +34,36 @@ class FlxSort {
 	public static inline function byValues(order:Int, value1:Float, value2:Float):Int {
 		return (value1 < value2) ? order : ((value1 > value2) ? -order : 0);
 	}
+
+	/**
+	 * Sorts two objects with a `order` property by their `order` properties.
+	 * 
+	 * @param index The index to use for sorting (usually either 1 or -1).
+	 * @param obj1 The first object to compare.
+	 * @param obj2 The second object to compare.
+	 */
+	public static inline function sortByOrder(index:Int, obj1:ISortable, obj2:ISortable):Int {
+		return obj1.order > obj2.order ? -index : obj2.order > obj1.order ? index : 0;
+	}
+
+	/**
+	 * Sorts two objects by their `ID` properties.
+	 * 
+	 * @param index The index to use for sorting (usually either 1 or -1).
+	 * @param basic1 The first object to compare.
+	 * @param basic2 The second object to compare.
+	 */
+	public static inline function sortByID(index:Int, basic1:FlxBasic, basic2:FlxBasic):Int {
+		return basic1.ID > basic2.ID ? -index : basic2.ID > basic1.ID ? index : 0;
+	}
+}
+
+/**
+ * An interface for objects that can be sorted.
+ * 
+ * The `ISortable` interface contains a single property, `order`, which is used to determine the order of the object in a list.
+ * The `order` property is required to be an integer.
+ */
+interface ISortable {
+	var order:Int;
 }

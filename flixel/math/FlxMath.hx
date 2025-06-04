@@ -45,7 +45,7 @@ class FlxMath
 	 */
 	public static inline final EPSILON:Float = 0.0000001;
 
-		/**
+	/**
 	 * Quantizes a float value to the nearest multiple of the given snap value.
 	 * 
 	 * @param f The float value to quantize.
@@ -63,15 +63,15 @@ class FlxMath
 	 * roundDecimal(1.2485, 2) = 1.25
 	 * ```
 	 *
-	 * @param	Value		Any number.
-	 * @param	Precision	Number of decimals the result should have.
+	 * @param	value		Any number.
+	 * @param	precision	Number of decimals the result should have.
 	 * @return	The rounded value of that number.
 	 */
-	public static function roundDecimal(Value:Float, Precision:Int):Float
+	public static function roundDecimal(value:Float, precision:Int):Float
 	{
 		var mult = 1.;
-		for (i in 0...Precision) mult *= 10;
-		return Math.fround(Value * mult) / mult;
+		for (i in 0...precision) mult *= 10;
+		return Math.fround(value * mult) / mult;
 	}
 
 	/**
@@ -239,6 +239,20 @@ class FlxMath
 	}
 
 	/**
+	 * Interpolates between two float values using a weighted average.
+	 * This is a simple linear interpolation function.
+	 * 
+	 * @param from The starting value.
+	 * @param to The target value.
+	 * @param weight The weight of the target value, clamped to the range [0, 1].
+	 */
+	public static inline function ilerp(from:Float, to:Float, weight:Float, ?elapsed:Float):Float
+	{
+		elapsed ??= FlxG.elapsed;
+		return from + FlxMath.bound(weight * 60 * elapsed, 0, 1) * (to - from);
+    }
+
+	/**
 	 * Returns the linear interpolation of two colors.
 	 * Works the same way as `FlxColor.interpolate` method.
 	 * 
@@ -268,10 +282,25 @@ class FlxMath
 	 */
 	public static inline function lerpElapsed(a:Float, b:Float, ratio:Float, ?elapsed:Float):Float
 	{
-		if (FlxMath.equal(a, b))
+		if (equal(a, b))
 			return b;
 		
-		return FlxMath.lerp(a, b, getElapsedLerp(ratio, elapsed));
+		return lerp(a, b, getElapsedLerp(ratio, elapsed));
+	}
+
+	/**
+	 * Performs exponential interpolation between two values (a and b) over time.
+	 * 
+	 * @param a The starting value.
+	 * @param b The target value.
+	 * @param t The interpolation factor (usually in the range [0, 1]).
+	 * @param e The elapsed time.
+	 */
+	public static inline function lerpExpoElapsed(a:Float, b:Float, t:Float, e:Float):Float {
+		if (equal(a, b)) return b;
+
+		final decayFactor = getExponentialDecayLerp(t, e);
+		return lerp(b, a, decayFactor);
 	}
 
 	/**
@@ -316,7 +345,7 @@ class FlxMath
 	{
 		if (a == b) return b;
 
-		return lerpColor(a, b, elapsedLerpRatio(ratio, elapsed));
+		return lerpColor(a, b, getLerpRatio(ratio, elapsed));
 	}
 	#end
 
@@ -366,6 +395,36 @@ class FlxMath
 	public static inline function numericComparison(a:Float, b:Float):Int
 	{
 		return (b > a ? -1 : (a > b ? 1 : 0));
+	}
+
+	/**
+	 * Converts a normalized percent (0–1) to a value in a given range.
+	 */
+	inline static function percentToRange(percent:Float, min:Float, max:Float):Float {
+		return min + percent * (max - min);
+	}
+
+	/**
+	 * Calculates the mean of an array of float values.
+	 * 
+	 * The mean is the average value of the array, calculated by summing all the values and dividing by the number of elements.
+	 * 
+	 * @param values The array of float values to calculate the mean of.
+	 * @return The mean of the array.
+	 */
+	inline static function mean(values:Array<Float>):Float {
+		final amount = values.length;
+
+		var result = .0;
+		var value = .0;
+
+		for (i in 0...amount) {
+			value = values[i];
+			if (value == 0) continue;
+			result += value;
+		}
+
+		return result / amount;
 	}
 
 	/**
@@ -463,9 +522,9 @@ class FlxMath
 	 * @param a The first number to compute the GCD for.
 	 * @param b The second number to compute the GCD for.
 	 */
-	public static inline function GCD(a, b)
+	public static inline function gcd(a, b)
 	{
-		return b == 0 ? absInt(a) : GCD(b, a % b);
+		return b == 0 ? absInt(a) : gcd(b, a % b);
 	}
 
 	/**
@@ -815,11 +874,70 @@ class FlxMath
 	}
 
 	/**
+	 * Clamps a value between a minimum and maximum value.
+	 * 
+	 * @param val The value to clamp.
+	 * @param min The minimum value.
+	 * @param max The maximum value.
+	 * @return The clamped value.
+	 */
+	public static inline function fclamp(val:Float, min:Float, max:Float):Float
+	{
+		return Math.max(min, Math.min(max, val));
+	}
+
+	/**
 	 * Clamps a float value between 0 and 1.
 	 */
 	public static inline function clamp01(value:Float):Float
 	{
 		return value < 0 ? 0 : (value > 1 ? 1 : value);
+	}
+
+	/**
+	 * Gets the number of digits in a number.
+	 */
+	public static inline function getDigits(n:Float):Int
+	{
+		return Std.string(Std.int(Math.abs(n))).length;
+	}
+
+	/**
+	 * Converts a time in the format `h:m:s` to seconds.
+	 * @param h The hours component.
+	 * @param m The minutes component.
+	 * @param s The seconds component.
+	 */
+	public static inline function timeToSeconds(h:Float, m:Float, s:Float):Float
+	{
+		return h * 3600 + m * 60 + s;
+	}
+
+	/**
+	 * Converts a time in the format `h:m:s` to milliseconds.
+	 * 
+	 * @param h The hours component.
+	 * @param m The minutes component.
+	 * @param s The seconds component.
+	 */
+	public static inline function timeToMiliseconds(h:Float, m:Float, s:Float):Float
+	{
+		return timeToSeconds(h, m, s) * 1000;
+	}
+
+	public static inline function normalize(value:Float, min:Float, max:Float)
+	{
+        final val = (value - min) / (max - min);
+        return FlxMath.bound(val, 0, 1);
+    }
+
+	/**
+	 * Returns null if the given number is NaN, otherwise returns the number itself.
+	 * Useful for avoiding NaN values in calculations.
+	 */
+	public static inline function nullifyNaN(num:Null<Float>):Null<Float>
+	{
+		return Math.isNaN(num) ? null : num;
 	}
 
 	/**

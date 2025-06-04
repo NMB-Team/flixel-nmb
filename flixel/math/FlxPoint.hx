@@ -865,7 +865,7 @@ class FlxBasePoint implements IFlxPooled
 	 * @param gridSize The size of the grid to snap to.
 	 * @return The snapped value.
 	 */
-	public inline function snapToGrid(value:Float, gridSize:Float)
+	public inline function snapToGrid(value:Float, gridSize:Float):Float
 	{
 		return Math.fround(Math.round(value / gridSize) * gridSize);
 	}
@@ -1770,7 +1770,6 @@ abstract FlxReadOnlyPoint(FlxPoint) from FlxPoint
 	inline function round():FlxReadOnlyPoint return this.round();
 	inline function rotate(pivot, degrees):FlxReadOnlyPoint return this.pivotDegrees(pivot, degrees);
 	inline function pivotRadians(pivot, radians):FlxReadOnlyPoint return this.pivotRadians(pivot, radians);
-	inline function snapToGrid(value, gridSize):FlxReadOnlyPoint return this.snapToGrid(value, gridSize);
 	inline function pivotDegrees(pivot, degrees):FlxReadOnlyPoint return this.pivotDegrees(pivot, degrees);
 	inline function transform(matrix):FlxReadOnlyPoint return this.transform(matrix);
 	inline function zero():FlxReadOnlyPoint return this.zero();
