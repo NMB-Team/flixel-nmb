@@ -5,35 +5,33 @@ import flixel.FlxObject;
 /**
  * Helper class for sort() in FlxTypedGroup, but could theoretically be used on regular arrays as well.
  */
-class FlxSort
-{
-	public static inline var ASCENDING:Int = -1;
-	public static inline var DESCENDING:Int = 1;
+class FlxSort {
+	/** Sort order constant for ascending (smallest to largest) sorting. */
+	public static inline final ASCENDING = -1;
+	/** Sort order constant for descending (largest to smallest) sorting. */
+	public static inline final DESCENDING = 1;
 
 	/**
 	 * You can use this function in FlxTypedGroup.sort() to sort FlxObjects by their y values.
+	 *
+	 * @param order The sorting order; use FlxSort.ASCENDING or FlxSort.DESCENDING.
+	 * @param obj1 First object to compare.
+	 * @param obj2 Second object to compare.
+	 * @return Sorting value: -1, 0, or 1.
 	 */
-	public static inline function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
-	{
-		return byValues(Order, Obj1.y, Obj2.y);
+	public static inline function byY(order:Int, obj1:FlxObject, obj2:FlxObject):Int {
+		return byValues(order, obj1.y, obj2.y);
 	}
 
 	/**
 	 * You can use this function as a backend to write a custom sorting function (see byY() for an example).
+	 *
+	 * @param order The sorting order; use FlxSort.ASCENDING or FlxSort.DESCENDING.
+	 * @param value1 First value to compare.
+	 * @param value2 Second value to compare.
+	 * @return Sorting value: -1, 0, or 1.
 	 */
-	public static inline function byValues(Order:Int, Value1:Float, Value2:Float):Int
-	{
-		var result:Int = 0;
-
-		if (Value1 < Value2)
-		{
-			result = Order;
-		}
-		else if (Value1 > Value2)
-		{
-			result = -Order;
-		}
-
-		return result;
+	public static inline function byValues(order:Int, value1:Float, value2:Float):Int {
+		return (value1 < value2) ? order : ((value1 > value2) ? -order : 0);
 	}
 }

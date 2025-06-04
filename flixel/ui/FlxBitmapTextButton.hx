@@ -7,51 +7,36 @@ import flixel.ui.FlxButton.FlxTypedButton;
 /**
  * A button with `FlxBitmapText` field as a `label`.
  */
-class FlxBitmapTextButton extends FlxTypedButton<FlxBitmapText>
-{
-	public function new(X:Float = 0, Y:Float = 0, ?Label:String, ?OnClick:Void->Void)
-	{
-		super(X, Y, OnClick);
+class FlxBitmapTextButton extends FlxTypedButton<FlxBitmapText> {
+	public function new(x = .0, y = .0, ?label:String, ?onClick:Void -> Void) {
+		super(x, y, onClick);
 
-		if (Label != null)
-		{
-			label = new FlxBitmapText();
-			label.width = 80;
-			label.text = Label;
-			label.color = 0xFF333333;
-			label.useTextColor = true;
-			label.alignment = FlxTextAlign.CENTER;
+		if (label != null) {
+			this.label = new FlxBitmapText();
+			this.label.width = 80;
+			this.label.text = label;
+			this.label.color = 0xFF333333;
+			this.label.useTextColor = true;
+			this.label.alignment = FlxTextAlign.CENTER;
 
-			for (offset in labelOffsets)
-			{
-				offset.set(0, 5);
-			}
+			for (offset in labelOffsets) offset.set(0, 5);
 
-			label.x = X + labelOffsets[status].x;
-			label.y = Y + labelOffsets[status].y;
+			this.label.set(x + labelOffsets[status].x, y + labelOffsets[status].y);
 		}
 	}
 
 	/**
 	 * Updates the size of the text field to match the button.
 	 */
-	override function resetHelpers():Void
-	{
+	override function resetHelpers() {
 		super.resetHelpers();
 
-		if (label != null)
-		{
-			label.width = width;
-		}
+		if (label != null) label.width = width;
 	}
 
-	override public function update(elapsed:Float):Void
-	{
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (label != null)
-		{
-			label.update(elapsed);
-		}
+		if (label != null) label.update(elapsed);
 	}
 }

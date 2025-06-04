@@ -582,7 +582,7 @@ class FlxGame extends Sprite
 		}
 		else
 		{
-			_nextState = ()->new FlxIntroSplash(_initialState);
+			_nextState = () -> new FlxIntroSplash(_initialState);
 			_skipSplash = true; // only play it once
 		}
 
@@ -925,10 +925,8 @@ class FlxGame extends Sprite
 	}
 }
 
-private class FlxIntroSplash extends FlxSplash
-{
-	override function startOutro(onOutroComplete:() -> Void)
-	{
+private class FlxIntroSplash extends FlxSplash {
+	override function startOutro(onOutroComplete:() -> Void) {
 		FlxG.game._gameJustStarted = true;
 		super.startOutro(onOutroComplete);
 	}
