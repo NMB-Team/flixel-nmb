@@ -137,16 +137,17 @@ class FlxMath
 	}
 
 	/**
-	 * Adjusts the given lerp to account for the time that has passed
+	 * Calculates frame rate-independent lerp ratio based on time delta.
 	 *
-	 * @param   lerp     The ratio to lerp in 1/60th of a second
-	 * @param   elapsed  The amount of time that has actually passed
+	 * @param lerp The interpolation ratio (usually between 0 and 1).
+	 * @param elapsed Time elapsed since last frame; defaults to FlxG.elapsed.
+	 * @return Adjusted interpolation ratio based on elapsed time.
 	 * @since 6.0.0
 	 */
-	public static function getElapsedLerp(lerp:Float, elapsed:Float):Float
+	public static function getElapsedLerp(lerp:Float, ?elapsed:Float):Float
 	{
-		if (elapsed == null) elapsed = FlxG.elapsed;
-		return 1.0 - Math.pow(1.0 - lerp, elapsed * 60);
+		elapsed ??= FlxG.elapsed;
+		return (lerp >= 1) ? 1 : (lerp > 0 && elapsed > 0) ? 1 - Math.pow(1 - lerp, elapsed * 60) : 0;
 	}
 
 	/**
