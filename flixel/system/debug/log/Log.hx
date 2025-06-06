@@ -52,7 +52,7 @@ class Log extends Window
 
 	/**
 	 * Adds a new line to the log window.
-	 * 
+	 *
 	 * @param   data      The data being logged
 	 * @param   style     The LogStyle to be used
 	 * @param   fireOnce  If true, the log history is checked for matching logs
@@ -63,14 +63,14 @@ class Log extends Window
 		{
 			return false;
 		}
-		
+
 		// Apply text formatting
 		#if (!js && !lime_console)
 		final text = style.toHtmlString(data);
 		#else
 		final text = style.toLogString(data);
 		#end
-		
+
 		// Check if the text has been added yet already
 		if (fireOnce)
 		{

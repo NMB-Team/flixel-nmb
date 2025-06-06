@@ -21,17 +21,17 @@ class FlxVirtualPad extends FlxSpriteContainer
 	 * Group of directions buttons.
 	 */
 	public final dPad:Null<FlxVirtualDPadButtons>;
-	
+
 	/**
 	 * Group of action buttons.
 	 */
 	public final actions:FlxVirtualActionButtons;
-	
+
 	/**
 	 * An Analog directional input
 	 */
 	public final stick:Null<FlxVirtualStick>;
-	
+
 	/**
 	 * Create a gamepad which contains 4 directional buttons and 4 action buttons.
 	 *
@@ -42,10 +42,10 @@ class FlxVirtualPad extends FlxSpriteContainer
 	{
 		super();
 		scrollFactor.set();
-		
+
 		add(actions = new FlxVirtualActionButtons(0, 0, actionMode));
 		actions.x = FlxG.width - actions.width;
-		
+
 		switch dPadMode
 		{
 			case ANALOG:
@@ -56,14 +56,14 @@ class FlxVirtualPad extends FlxSpriteContainer
 				dPad.y = height - dPad.height;
 		}
 		actions.y = height - actions.height;
-		
+
 		y = FlxG.height - height;
-		
+
 		#if FLX_DEBUG
 		this.ignoreDrawDebug = true;
 		#end
 	}
-	
+
 	public function getButton(id:FlxVirtualInputID)
 	{
 		return switch id
@@ -79,29 +79,29 @@ class FlxVirtualPad extends FlxSpriteContainer
 class FlxVirtualPadButtons extends FlxTypedSpriteContainer<FlxVirtualPadButton>
 {
 	final buttons = new Map<FlxVirtualInputID, FlxVirtualPadButton>();
-	
+
 	public function new (x = 0.0, y = 0.0)
 	{
 		super(x, y);
 		scrollFactor.set();
-		
+
 		#if FLX_DEBUG
 		this.ignoreDrawDebug = true;
 		#end
 	}
-	
+
 	override public function destroy():Void
 	{
 		super.destroy();
-		
+
 		buttons.clear();
 	}
-	
+
 	public function addButton(x = 0.0, y = 0.0, id, ?onClick)
 	{
 		return buttons[id] = add(new FlxVirtualPadButton(x, y, id, onClick));
 	}
-	
+
 	public function getButton(id)
 	{
 		return buttons[id];
@@ -200,16 +200,16 @@ enum FlxActionMode
 @:using(flixel.ui.FlxVirtualPad.FlxVirtualInputIDTools)
 enum FlxVirtualInputID
 {
-    UP;
-    DOWN;
-    LEFT;
-    RIGHT;
-    A;
-    B;
-    C;
-    X;
-    Y;
-    STICK;
+	UP;
+	DOWN;
+	LEFT;
+	RIGHT;
+	A;
+	B;
+	C;
+	X;
+	Y;
+	STICK;
 }
 
 private class FlxVirtualInputIDTools
@@ -229,7 +229,7 @@ private class FlxVirtualInputIDTools
 			case Y: "y";
 			case STICK: "stick";
 		}
-		
+
 		final frame = FlxAssets.getVirtualInputFrames().getByName(name);
 		return FlxTileFrames.fromFrame(frame, FlxPoint.get(44, 45));
 	}

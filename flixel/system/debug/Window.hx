@@ -293,18 +293,18 @@ class Window extends Sprite
 		}
 		visible = FlxG.save.data.windowSettings[_id];
 	}
-	
+
 	function initWindowsSave()
 	{
 		var maxWindows = 10; // arbitrary
 		FlxG.save.data.windowSettings = [for (_ in 0...maxWindows) true];
 	}
-	
+
 	function saveWindowVisibility()
 	{
 		if (FlxG.save.data.windowSettings == null)
 			initWindowsSave();
-		
+
 		FlxG.save.data.windowSettings[_id] = visible;
 		FlxG.save.flush();
 	}

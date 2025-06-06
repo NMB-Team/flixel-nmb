@@ -101,7 +101,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 	{
 		resize(tileWidth, tileHeight, widthInTiles, heightInTiles, camera, scaleX, scaleY);
 	}
-	
+
 	/**
 	 * Creates a bitmapData buffer from the tilemap's info.
 	 *
@@ -121,7 +121,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 		{
 			final newWidth = Std.int(columns * tileWidth);
 			final newHeight = Std.int(rows * tileHeight);
-			
+
 			if (pixels == null)
 			{
 				pixels = new BitmapData(newWidth, newHeight, true, 0);
@@ -138,7 +138,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			}
 		}
 	}
-	
+
 	/**
 	 * Clean up memory.
 	 */
@@ -152,7 +152,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			_flashRect = null;
 		}
 	}
-	
+
 	/**
 	 * Fill the buffer with the specified color.
 	 * Default value is transparent.
@@ -166,7 +166,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			pixels.fillRect(_flashRect, color);
 		}
 	}
-	
+
 	/**
 	 * Just stamps this buffer onto the specified camera at the specified location.
 	 *
@@ -180,7 +180,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			flashPoint.x = Math.floor(flashPoint.x);
 			flashPoint.y = Math.floor(flashPoint.y);
 		}
-		
+
 		if (isPixelPerfectRender(camera) && (scaleX == 1.0 && scaleY == 1.0) && blend == null)
 		{
 			camera.copyPixels(pixels, _flashRect, flashPoint, null, null, true);
@@ -193,50 +193,50 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			camera.drawPixels(pixels, _matrix, null, blend, antialiasing);
 		}
 	}
-	
+
 	public function colorTransform(transform:ColorTransform):Void
 	{
 		pixels.colorTransform(_flashRect, transform);
 	}
-	
+
 	@:access(flixel.FlxCamera.viewWidth)
 	public function updateColumns(tileWidth:Int, widthInTiles:Int, scaleX = 1.0, ?camera:FlxCamera):Void
 	{
 		if (widthInTiles < 0)
 			widthInTiles = 0;
-		
+
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		columns = Math.ceil(camera.viewWidth / (tileWidth * scaleX)) + 1;
-		
+
 		if (columns > widthInTiles)
 			columns = widthInTiles;
-		
+
 		width = Std.int(columns * tileWidth * scaleX);
-		
+
 		dirty = true;
 	}
-	
+
 	@:access(flixel.FlxCamera.viewHeight)
 	public function updateRows(tileHeight:Int, heightInTiles:Int, scaleY = 1.0, ?camera:FlxCamera):Void
 	{
 		if (heightInTiles < 0)
 			heightInTiles = 0;
-		
+
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		rows = Math.ceil(camera.viewHeight / (tileHeight * scaleY)) + 1;
-		
+
 		if (rows > heightInTiles)
 			rows = heightInTiles;
-		
+
 		height = Std.int(rows * tileHeight * scaleY);
-		
+
 		dirty = true;
 	}
-	
+
 	/**
 	 * Check if object is rendered pixel perfect on a specific camera.
 	 */
@@ -244,10 +244,10 @@ class FlxTilemapBuffer implements IFlxDestroyable
 	{
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		return pixelPerfectRender == null ? camera.pixelPerfectRender : pixelPerfectRender;
 	}
-	
+
 	/**
 	 * Check if tilemap or camera has changed (scrolled, moved, resized or scaled) since the previous frame.
 	 * If so, then it means that we need to redraw this buffer.
@@ -270,7 +270,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			|| (camera.scaleY != _prevCameraScaleY)
 			|| (camera.width != _prevCameraWidth)
 			|| (camera.height != _prevCameraHeight);
-		
+
 		if (dirty)
 		{
 			_prevTilemapX = tilemap.x;
@@ -286,7 +286,7 @@ class FlxTilemapBuffer implements IFlxDestroyable
 			_prevCameraWidth = camera.width;
 			_prevCameraHeight = camera.height;
 		}
-		
+
 		return dirty;
 	}
 }

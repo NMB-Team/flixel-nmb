@@ -89,35 +89,36 @@ private class Step extends IconBitmapData {}
 #if FLX_DEBUG @:bitmap("assets/images/debugger/buttons/stop.png") #end
 private class Stop extends IconBitmapData {}
 
-class Icon
-{
-	public static final flixel = new Flixel(11, 11);
-	public static final cross = new Cross(11, 11);
-	public static final mover = new Mover(11, 11);
-	public static final eraser = new Eraser(11, 11);
-	public static final bitmapLog = new BitmapLog(11, 11);
-	public static final transform = new Transform(11, 11);
-	public static final scaleX = new ScaleX(11, 11);
-	public static final scaleY = new ScaleY(11, 11);
-	public static final scaleXY = new ScaleXY(11, 11);
-	public static final rotate = new Rotate(11, 11);
-	public static final drawDebug = new DrawDebug(11, 11);
-	public static final log = new Log(11, 11);
-	public static final stats = new Stats(11, 11);
-	public static final watch = new Watch(11, 11);
-	public static final console = new Console(11, 11);
-	public static final arrowLeft = new ArrowLeft(11, 11);
-	public static final arrowRight = new ArrowRight(11, 11);
-	public static final close = new Close(11, 11);
-	public static final interactive = new Interactive(11, 11);
-	public static final windowHandle = new WindowHandle(11, 11);
-	public static final minimize = new Minimize(11, 11);
-	public static final maximize = new Maximize(11, 11);
-	public static final open = new Open(11, 11);
-	public static final pause = new Pause(11, 11);
-	public static final recordOff = new RecordOff(11, 11);
-	public static final recordOn = new RecordOn(11, 11);
-	public static final restart = new Restart(11, 11);
-	public static final step = new Step(11, 11);
-	public static final stop = new Stop(11, 11);
+class Icon {
+	private static final DEFAULT_POS = 11;
+
+	public static final flixel = new Flixel(DEFAULT_POS, DEFAULT_POS);
+	public static final cross = new Cross(DEFAULT_POS, DEFAULT_POS);
+	public static final mover = new Mover(DEFAULT_POS, DEFAULT_POS);
+	public static final eraser = new Eraser(DEFAULT_POS, DEFAULT_POS);
+	public static final bitmapLog = new BitmapLog(DEFAULT_POS, DEFAULT_POS);
+	public static final transform = new Transform(DEFAULT_POS, DEFAULT_POS);
+	public static final scaleX = new ScaleX(DEFAULT_POS, DEFAULT_POS);
+	public static final scaleY = new ScaleY(DEFAULT_POS, DEFAULT_POS);
+	public static final scaleXY = new ScaleXY(DEFAULT_POS, DEFAULT_POS);
+	public static final rotate = new Rotate(DEFAULT_POS, DEFAULT_POS);
+	public static final drawDebug = new DrawDebug(DEFAULT_POS, DEFAULT_POS);
+	public static final log = new Log(DEFAULT_POS, DEFAULT_POS);
+	public static final stats = new Stats(DEFAULT_POS, DEFAULT_POS);
+	public static final watch = new Watch(DEFAULT_POS, DEFAULT_POS);
+	public static final console = new Console(DEFAULT_POS, DEFAULT_POS);
+	public static final arrowLeft = new ArrowLeft(DEFAULT_POS, DEFAULT_POS);
+	public static final arrowRight = new ArrowRight(DEFAULT_POS, DEFAULT_POS);
+	public static final close = new Close(DEFAULT_POS, DEFAULT_POS);
+	public static final interactive = new Interactive(DEFAULT_POS, DEFAULT_POS);
+	public static final windowHandle = new WindowHandle(DEFAULT_POS, DEFAULT_POS);
+	public static final minimize = new Minimize(DEFAULT_POS, DEFAULT_POS);
+	public static final maximize = new Maximize(DEFAULT_POS, DEFAULT_POS);
+	public static final open = new Open(DEFAULT_POS, DEFAULT_POS);
+	public static final pause = new Pause(DEFAULT_POS, DEFAULT_POS);
+	public static final recordOff = new RecordOff(DEFAULT_POS, DEFAULT_POS);
+	public static final recordOn = new RecordOn(DEFAULT_POS, DEFAULT_POS);
+	public static final restart = new Restart(DEFAULT_POS, DEFAULT_POS);
+	public static final step = new Step(DEFAULT_POS, DEFAULT_POS);
+	public static final stop = new Stop(DEFAULT_POS, DEFAULT_POS);
 }

@@ -22,17 +22,17 @@ using StringTools;
  * Asset system is used, which uses relative path strings to retrive assets, though you can completely
  * avoid Openfl's asset system by setting custom methods to the following dynamic fields: `getAssetUnsafe`,
  * `loadAsset`, `exists`, `isLocal` and `list`.
- * 
+ *
  * ## Common Uses
  * The initial reason for making customizable asset system
  * was to allow for "hot-reloading", or testing new assets in your game without recompiling, with
  * each change. Say, if you would like a debug feature where you load assets from source assets,
  * rather than the assets copied over to your export folder, you could overwrite this system to do
  * just that.
- * 
+ *
  * Other potential uses for this are modding, bypassing the manifest and loading resources from
  * a remote location.
- * 
+ *
  * ### Quick Setup for "Hot-Reloading"
  * To simplify the process mentioned above, the `FLX_CUSTOM_ASSETS_DIRECTORY` flag was created.
  * By adding `-DFLX_CUSTOM_ASSETS_DIRECTORY="assets"` to your lime build command
@@ -40,7 +40,7 @@ using StringTools;
  * default "export/hl/bin/assets". This will only work with a single asset root folder with one
  * asset library and will use the openfl asset system if the asset id starts with "flixel/" or
  * tries to references a specific library using the format: "libName:asset/path/file.ext".
- * 
+ *
  * @since 5.9.0
  */
 class AssetFrontEnd
@@ -50,12 +50,12 @@ class AssetFrontEnd
 	 * The target directory
 	 */
 	final directory:String;
-	
+
 	/**
 	 * The parent of the target directory, is prepended to any `id` passed in
 	 */
 	final parentDirectory:String;
-	
+
 	public function new ()
 	{
 		final rawPath = '${haxe.macro.Compiler.getDefine("FLX_CUSTOM_ASSETS_DIRECTORY")}';
@@ -72,12 +72,12 @@ class AssetFrontEnd
 		split.pop();
 		parentDirectory = split.join("/");
 	}
-	
+
 	function getPath(id:String)
 	{
 		return Path.normalize('$parentDirectory/$id');
 	}
-	
+
 	/**
 	 * True for assets packaged with all HaxeFlixel build, and any non-default libraries
 	 */
@@ -88,18 +88,18 @@ class AssetFrontEnd
 	#else
 	public function new () {}
 	#end
-	
+
 	#if (FLX_DEFAULT_SOUND_EXT == "1" || FLX_NO_DEFAULT_SOUND_EXT)
 	public final defaultSoundExtension:String = #if flash ".mp3" #else ".ogg" #end;
 	#else
 	public final defaultSoundExtension:String = '.${haxe.macro.Compiler.getDefine("FLX_DEFAULT_SOUND_EXT")}';
 	#end
-	
+
 	/**
 	 * Used by methods like `getAsset`, `getBitmapData`, `getText`, their "unsafe" counterparts and
 	 * the like to get assets synchronously. Can be set to a custom function to avoid the existing
 	 * asset system. Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * @param   id        The id of the asset, usually a path
 	 * @param   type      The type of asset to look for, determines the type
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
@@ -110,12 +110,12 @@ class AssetFrontEnd
 		#if FLX_STANDARD_ASSETS_DIRECTORY
 		return getOpenflAssetUnsafe(id, type, useCache);
 		#else
-		
+
 		if (useOpenflAssets(id))
 			return getOpenflAssetUnsafe(id, type, useCache);
 		// load from custom assets directory
 		final canUseCache = useCache && Assets.cache.enabled;
-		
+
 		final asset:Any = switch type
 		{
 			// No caching
@@ -123,7 +123,7 @@ class AssetFrontEnd
 				sys.io.File.getContent(getPath(id));
 			case BINARY:
 				sys.io.File.getBytes(getPath(id));
-			
+
 			// Check cache
 			case IMAGE if (canUseCache && Assets.cache.hasBitmapData(id)):
 				Assets.cache.getBitmapData(id);
@@ -131,7 +131,7 @@ class AssetFrontEnd
 				Assets.cache.getSound(id);
 			case FONT if (canUseCache && Assets.cache.hasFont(id)):
 				Assets.cache.getFont(id);
-			
+
 			// Get asset and set cache
 			case IMAGE:
 				final bitmap = BitmapData.fromFile(getPath(id));
@@ -149,11 +149,11 @@ class AssetFrontEnd
 					Assets.cache.setFont(id, font);
 				font;
 		}
-		
+
 		return asset;
 		#end
 	}
-	
+
 	function getOpenflAssetUnsafe(id:String, type:FlxAssetType, useCache = true):Null<Any>
 	{
 		// Use openfl assets
@@ -166,10 +166,10 @@ class AssetFrontEnd
 			case FONT: Assets.getFont(id, useCache);
 		}
 	}
-	
+
 	/**
 	 * Calls `getAssetUnsafe` if the asset exists, otherwise logs that the asset is missing, via `FlxG.log`
-	 * 
+	 *
 	 * @param   id        The id of the asset, usually a path
 	 * @param   type      The type of asset to look for, determines the type
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
@@ -183,24 +183,24 @@ class AssetFrontEnd
 				logStyle = LogStyle.ERROR;
 			FlxG.log.advanced(message, logStyle);
 		}
-		
+
 		if (exists(id, type))
 		{
 			if (isLocal(id, type))
 				return getAssetUnsafe(id, type, useCache);
-			
+
 			log('$type asset "$id" exists, but only asynchronously');
 			return null;
 		}
-		
+
 		log('Could not find a $type asset with ID \'$id\'.');
 		return null;
 	}
-	
+
 	/**
 	 * Used by methods like `loadBitmapData`, `loadText` and the like to get assets asynchronously.
 	 * Can be set to a custom function to avoid the existing asset system.
-	 * 
+	 *
 	 * @param   id        The id of the asset, usually a path
 	 * @param   type      The type of asset to look for, determines the type
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
@@ -210,16 +210,16 @@ class AssetFrontEnd
 		#if FLX_STANDARD_ASSETS_DIRECTORY
 		return loadOpenflAsset(id, type, useCache);
 		#else
-		
+
 		if (useOpenflAssets(id))
 			return loadOpenflAsset(id, type, useCache);
-		
+
 		// get the asset synchronously and wrap it in a future
 		return Future.withValue(getAsset(id, type, useCache));
 		// TODO: html?
 		#end
 	}
-	
+
 	function loadOpenflAsset(id:String, type:FlxAssetType, useCache = true):Future<Any>
 	{
 		return switch(type)
@@ -231,11 +231,11 @@ class AssetFrontEnd
 			case FONT: Assets.loadFont(id, useCache);
 		}
 	}
-	
+
 	/**
 	 * Whether a specific asset ID and type exists.
 	 * Can be set to a custom function to avoid the existing asset system.
-	 * 
+	 *
 	 * @param   id    The ID or asset path for the asset
 	 * @param   type  The asset type to match, or null to match any type
 	 */
@@ -246,7 +246,7 @@ class AssetFrontEnd
 		if (type == SOUND)
 			id = addSoundExt(id);
 		#end
-		
+
 		#if FLX_STANDARD_ASSETS_DIRECTORY
 		return Assets.exists(id, type.toOpenFlType());
 		#else
@@ -256,12 +256,12 @@ class AssetFrontEnd
 		return sys.FileSystem.exists(getPath(id));
 		#end
 	}
-	
+
 	/**
 	 * Returns whether an asset is "local", and therefore can be loaded synchronously, or with the
 	 * `getAsset` method, otherwise the `loadAsset` method should be used.
 	 * Can be set to a custom function to avoid the existing asset system.
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   type      The asset type to match, or null to match any type
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
@@ -274,22 +274,22 @@ class AssetFrontEnd
 		if (type == SOUND)
 			id = addSoundExt(id);
 		#end
-		
+
 		#if FLX_STANDARD_ASSETS_DIRECTORY
 		return Assets.isLocal(id, type.toOpenFlType(), useCache);
 		#else
-		
+
 		if (useOpenflAssets(id))
 			Assets.isLocal(id, type.toOpenFlType(), useCache);
-		
+
 		return true;
 		#end
 	}
-	
+
 	/**
 	 * Returns a list of all assets (by type).
 	 * Can be set to a custom function to avoid the existing asset system.
-	 * 
+	 *
 	 * @param   type  The asset type to match, or null to match any type
 	 * @return  An array of asset ID values
 	 */
@@ -315,10 +315,10 @@ class AssetFrontEnd
 		return list;
 		#end
 	}
-	
+
 	/**
 	 * Gets an instance of a bitmap. Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the bitmap
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  A new BitmapData object
@@ -327,10 +327,10 @@ class AssetFrontEnd
 	{
 		return cast getAssetUnsafe(id, IMAGE, useCache);
 	}
-	
+
 	/**
 	 * Gets an instance of a bitmap, logs when the asset is not found
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the bitmap
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  A new BitmapData object
@@ -339,10 +339,10 @@ class AssetFrontEnd
 	{
 		return cast getAsset(id, IMAGE, useCache, logStyle);
 	}
-	
+
 	/**
 	 * Gets an instance of a sound. Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the sound
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  A new `Sound` object Note: Dos not return a `FlxSound`
@@ -351,12 +351,12 @@ class AssetFrontEnd
 	{
 		return cast getAssetUnsafe(addSoundExtIf(id), SOUND, useCache);
 	}
-	
+
 	/**
 	 * Gets an instance of a sound, logs when the asset is not found.
-	 * 
+	 *
 	 * **Note:** If the `FLX_DEFAULT_SOUND_EXT` flag is enabled, you may omit the file extension
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the sound
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -366,10 +366,10 @@ class AssetFrontEnd
 	{
 		return cast getAsset(addSoundExtIf(id), SOUND, useCache, logStyle);
 	}
-	
+
 	/**
 	 * Gets an instance of a sound, logs when the asset is not found
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the sound
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -379,7 +379,7 @@ class AssetFrontEnd
 	{
 		return getSound(addSoundExt(id), useCache, logStyle);
 	}
-	
+
 	inline function addSoundExtIf(id:String)
 	{
 		#if FLX_DEFAULT_SOUND_EXT
@@ -388,21 +388,21 @@ class AssetFrontEnd
 		return id;
 		#end
 	}
-	
+
 	inline function addSoundExt(id:String)
 	{
 		if (!id.endsWith(".mp3") && !id.endsWith(".ogg") && !id.endsWith(".wav"))
 			return id + defaultSoundExtension;
-			
+
 		return id;
 	}
-	
+
 	/**
 	 * Gets the contents of a text-based asset. Unlike its "safe" counterpart, there is no log
 	 * on missing assets
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache text assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 */
@@ -410,12 +410,12 @@ class AssetFrontEnd
 	{
 		return cast getAssetUnsafe(id, TEXT, useCache);
 	}
-	
+
 	/**
 	 * Gets the contents of a text-based asset, logs when the asset is not found
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache text assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -424,13 +424,13 @@ class AssetFrontEnd
 	{
 		return cast getAsset(id, TEXT, useCache, logStyle);
 	}
-	
+
 	/**
 	 * Parses the contents of an xml-based asset into an `Xml` object.
 	 * Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache xml assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 */
@@ -439,12 +439,12 @@ class AssetFrontEnd
 		final text = getTextUnsafe(id, useCache);
 		return text != null ? parseXml(text) : null;
 	}
-	
+
 	/**
 	 * Parses the contents of an xml-based asset into an `Xml` object, logs when the asset is not found
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache xml assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -454,13 +454,13 @@ class AssetFrontEnd
 		final text = getText(id, useCache, logStyle);
 		return text != null ? parseXml(text) : null;
 	}
-	
+
 	/**
 	 * Gets the contents of a json-based asset.
 	 * Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache json assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 */
@@ -469,12 +469,12 @@ class AssetFrontEnd
 		final text = getTextUnsafe(id, useCache);
 		return text != null ? parseJson(text) : null;
 	}
-	
+
 	/**
 	 * Gets the contents of a json-based asset, logs when the asset is not found
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache json assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -484,13 +484,13 @@ class AssetFrontEnd
 		final text = getText(id, useCache, logStyle);
 		return text != null ? parseJson(text) : null;
 	}
-	
+
 	/**
 	 * Gets the contents of a binary asset.
 	 * Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache binary assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 */
@@ -498,12 +498,12 @@ class AssetFrontEnd
 	{
 		return cast getAssetUnsafe(id, BINARY, useCache);
 	}
-	
+
 	/**
 	 * Gets the contents of a binary asset, logs when the asset is not found
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache binary assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -512,11 +512,11 @@ class AssetFrontEnd
 	{
 		return cast getAsset(id, BINARY, useCache);
 	}
-	
+
 	/**
 	 * Gets the contents of a font asset.
 	 * Unlike its "safe" counterpart, there is no log on missing assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache
 	 */
@@ -524,10 +524,10 @@ class AssetFrontEnd
 	{
 		return cast getAssetUnsafe(id, FONT, useCache);
 	}
-	
+
 	/**
 	 * Gets the contents of a font asset, logs when the asset is not found
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
@@ -536,10 +536,10 @@ class AssetFrontEnd
 	{
 		return cast getAsset(id, FONT, useCache, logStyle);
 	}
-	
+
 	/**
 	 * Loads a bitmap asset asynchronously
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -548,10 +548,10 @@ class AssetFrontEnd
 	{
 		return cast loadAsset(id, IMAGE, useCache);
 	}
-	
+
 	/**
 	 * Loads a sound asset asynchronously
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -560,12 +560,12 @@ class AssetFrontEnd
 	{
 		return cast loadAsset(id, SOUND, useCache);
 	}
-	
+
 	/**
 	 * Loads a text asset asynchronously
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache text assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -574,12 +574,12 @@ class AssetFrontEnd
 	{
 		return cast loadAsset(id, TEXT, useCache);
 	}
-	
+
 	/**
 	 * Loads an xml asset asynchronously
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache xml assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -588,12 +588,12 @@ class AssetFrontEnd
 	{
 		return wrapFuture(loadText(id, useCache), parseXml);
 	}
-	
+
 	/**
 	 * Loads a json asset asynchronously
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache json assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -602,12 +602,12 @@ class AssetFrontEnd
 	{
 		return wrapFuture(loadText(id, useCache), parseJson);
 	}
-	
+
 	/**
 	 * Loads a binary asset asynchronously
-	 * 
+	 *
 	 * **Note:** The default asset system does not cache binary assets
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -616,10 +616,10 @@ class AssetFrontEnd
 	{
 		return cast loadAsset(id, BINARY, useCache);
 	}
-	
+
 	/**
 	 * Loads a font asset asynchronously
-	 * 
+	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @return  Returns a `Future` which allows listeners to be added via methods like `onComplete`
@@ -628,7 +628,7 @@ class AssetFrontEnd
 	{
 		return cast loadAsset(id, FONT, useCache);
 	}
-	
+
 	/**
 	 * Parses a json string, creates and returns a struct
 	 */
@@ -636,7 +636,7 @@ class AssetFrontEnd
 	{
 		return Json.parse(jsonText);
 	}
-	
+
 	/**
 	 * Parses an xml string, creates and returns an `Xml` object
 	 */
@@ -644,15 +644,15 @@ class AssetFrontEnd
 	{
 		return Xml.parse(xmlText);
 	}
-	
+
 	inline function wrapFuture<T1, T2>(future:Future<T1>, converter:(T1)->T2):Future<T2>
 	{
 		final promise = new lime.app.Promise<T2>();
-		
+
 		future.onComplete((data)->promise.complete(converter(data)));
 		future.onError((error)->promise.error(error));
 		future.onProgress((progress, total)->promise.progress(progress, total));
-		
+
 		return promise.future;
 	}
 }
@@ -666,19 +666,19 @@ enum abstract FlxAssetType(String)
 {
 	/** Binary assets (data that is not readable as text) */
 	var BINARY = "binary";
-	
+
 	/** Font assets, such as *.ttf or *.otf files */
 	var FONT = "font";
-	
+
 	/** Image assets, such as *.png or *.jpg files */
 	var IMAGE ="image";
-	
+
 	/** Audio assets, such as *.ogg or *.wav files */
 	var SOUND = "sound";
-	
+
 	/** Text assets */
 	var TEXT = "text";
-	
+
 	public function toOpenFlType()
 	{
 		return switch((cast this:FlxAssetType))

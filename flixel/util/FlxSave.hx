@@ -28,8 +28,8 @@ import haxe.Exception;
  * instantiating your own instance.
  * 
  * ## Default Paths
- * - Windows: ```"C:\Users\<username>\AppData\Roaming\<localPath>\<name>.sol"```
- * - Mac: ```"/Users/<username>/Library/Application Support/<localPath>/<name>.sol"```
+ * - Windows: ```"C:\ProgramData\<localPath>\saves\<name>.save"```
+ * - Mac: ```"/Users/<username>/Library/Application Support/<localPath>/saves/<name>.save"```
  * - Chrome: In the developer tools, go to the Application tab, and under
  *     `Storage->Local Storage->https://<url>.com` with the key:`<localPath>:<name>"`
  * 

@@ -75,7 +75,7 @@ class ConsoleFrontEnd
 		FlxG.game.debugger.console.removeFunction(func);
 		#end
 	}
-	
+
 	/**
 	 * Removes an alias from the command registry.
 	 *

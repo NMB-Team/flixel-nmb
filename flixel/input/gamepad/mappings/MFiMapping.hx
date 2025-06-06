@@ -84,7 +84,7 @@ class MFiMapping extends FlxTypedGamepadMapping<MFiID>
 	{
 		return FlxGamepadMappedInput.MFI(getRawID(id));
 	}
-	
+
 	#if FLX_JOYSTICK_API
 	override function axisIndexToRawID(axisID:MFiID):Int
 	{

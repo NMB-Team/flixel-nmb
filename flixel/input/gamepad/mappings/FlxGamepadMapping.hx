@@ -21,7 +21,7 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	var attachment(default, set):FlxGamepadAttachment = NONE;
 
 	var manufacturer:Manufacturer;
-	
+
 	/**
 	 * Whether to treat `A` or `B` as `ACCEPT` or `CANCEL`, when `FlxG.gamepads.acceptMode` is `ADAPTIVE`
 	 * @since 5.9.0
@@ -82,7 +82,7 @@ class FlxTypedGamepadMapping<TInputID:Int>
 			default: cast -1;// TODO: Throw error
 		}
 	}
-	
+
 	function getGlobalBottomIsAccept()
 	{
 		#if FLX_GAMEPAD
@@ -96,7 +96,7 @@ class FlxTypedGamepadMapping<TInputID:Int>
 			}
 		}
 		#end
-		
+
 		return bottomIsAccept;
 	}
 
@@ -133,17 +133,17 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	{
 		return this.attachment = attachment;
 	}
-	
+
 	public function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.UNKNOWN(id);
 	}
-	
+
 	public function getInputLabel(id:FlxGamepadInputID):Null<String>
 	{
 		if (getRawID(id) == -1)
 			return null;// return empty string, "unknown" or enum maybe?
-		
+
 		return switch (id)
 		{
 			case A: "a";

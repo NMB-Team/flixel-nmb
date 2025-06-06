@@ -155,7 +155,7 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 		hashlink on linux. This should use ifs, until it is fixed.
 		See: https://github.com/HaxeFlixel/flixel/issues/2318
 		*/
-		
+
 		if (KeyCode == FlxKey.ANY)
 		{
 			return switch (Status)
@@ -166,7 +166,7 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 				case JUST_RELEASED: justReleased.ANY;
 			}
 		}
-		
+
 		if (KeyCode == FlxKey.NONE)
 		{
 			return switch (Status)
@@ -177,12 +177,12 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 				case JUST_RELEASED: justReleased.NONE;
 			}
 		}
-		
+
 		if (_keyListMap.exists(KeyCode))
 		{
 			return checkStatusUnsafe(KeyCode, Status);
 		}
-		
+
 		#if debug
 		FlxG.log.warn('Invalid key code: $KeyCode.');
 		#end
@@ -193,7 +193,7 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 	 * Check the status of a single of key.
 	 * Throws errors on ANY, NONE or invalid keys.
 	 * Use `checkStatus`, for most cases.
-	 * 
+	 *
 	 * @param KeyCode KeyCode to be checked.
 	 * @param Status  The key state to check for.
 	 * @return Whether the provided key has the specified status.

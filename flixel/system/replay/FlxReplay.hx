@@ -2,6 +2,7 @@ package flixel.system.replay;
 
 import flixel.FlxG;
 import flixel.util.FlxArrayUtil;
+import flixel.util.FlxDestroyUtil;
 
 /**
  * The replay object both records and replays game recordings,
@@ -10,56 +11,52 @@ import flixel.util.FlxArrayUtil;
  * but since Flixel is fairly deterministic, we can use these to play back
  * recordings of gameplay with a decent amount of fidelity.
  */
-class FlxReplay
+@:nullSafety(Strict)
+class FlxReplay implements IFlxDestroyable
 {
 	/**
 	 * The random number generator seed value for this recording.
 	 */
-	public var seed:Int;
+	public var seed(default, null):Int = 0;
 
 	/**
 	 * The current frame for this recording.
 	 */
-	public var frame:Int;
+	public var frame(default, null):Int = 0;
 
 	/**
 	 * The number of frames in this recording.
 	 * **Note:** This doesn't include empty records, unlike `getDuration()`
 	 */
-	public var frameCount:Int;
+	public var frameCount(get, never):Int;
+	inline function get_frameCount() return _frames.length;
 
 	/**
 	 * Whether the replay has finished playing or not.
 	 */
-	public var finished:Bool;
+	public var finished(default, null):Bool = false;
 
 	/**
 	 * Internal container for all the frames in this replay.
 	 */
-	var _frames:Array<FrameRecord>;
-
-	/**
-	 * Internal tracker for max number of frames we can fit before growing the _frames again.
-	 */
-	var _capacity:Int;
+	final _frames = new Array<FrameRecord>();
 
 	/**
 	 * Internal helper variable for keeping track of where we are in _frames during recording or replay.
 	 */
-	var _marker:Int;
+	var _marker:Int = 0;
 
 	/**
 	 * Instantiate a new replay object.  Doesn't actually do much until you call create() or load().
 	 */
-	public function new()
+	public function new() {}
+
+	/**
+	 * Common initialization terms used by both create() and load() to set up the replay object.
+	 */
+	function init():Void
 	{
-		seed = 0;
-		frame = 0;
-		frameCount = 0;
-		finished = false;
-		_frames = null;
-		_capacity = 0;
-		_marker = 0;
+		destroy();
 	}
 
 	/**
@@ -67,28 +64,18 @@ class FlxReplay
 	 */
 	public function destroy():Void
 	{
-		if (_frames == null)
-		{
-			return;
-		}
-		var i:Int = frameCount - 1;
-		while (i >= 0)
-		{
-			_frames[i--].destroy();
-		}
-		_frames = null;
+		FlxDestroyUtil.destroyArray(_frames);
 	}
 
 	/**
 	 * Create a new gameplay recording.  Requires the current random number generator seed.
 	 *
-	 * @param	Seed	The current seed from the random number generator.
+	 * @param	seed	The current seed from the random number generator.
 	 */
-	public function create(Seed:Int):Void
+	public function create(seed:Int):Void
 	{
-		destroy();
 		init();
-		seed = Seed;
+		this.seed = seed;
 		rewind();
 	}
 
@@ -96,31 +83,23 @@ class FlxReplay
 	 * Load replay data from a String object.
 	 * Strings can come from embedded assets or external
 	 * files loaded through the debugger overlay.
-	 * @param	FileContents	A String object containing a gameplay recording.
+	 * @param	fileContents	A String object containing a gameplay recording.
 	 */
-	public function load(FileContents:String):Void
+	public function load(fileContents:String):Void
 	{
 		init();
 
-		var lines:Array<String> = FileContents.split("\n");
+		final lines = fileContents.split("\n");
+		final seedStr = lines.shift();
+		final parsedSeed:Null<Int> = seedStr == null ? null : Std.parseInt(seedStr);
+		if (parsedSeed == null)
+			throw 'Invalid replay: $fileContents';
 
-		seed = Std.parseInt(lines[0]);
-
-		var line:String;
-		var i:Int = 1;
-		var l:Int = lines.length;
-		while (i < l)
+		seed = parsedSeed;
+		for (line in lines)
 		{
-			line = lines[i++];
 			if (line.length > 3)
-			{
-				_frames[frameCount++] = new FrameRecord().load(line);
-				if (frameCount >= _capacity)
-				{
-					_capacity *= 2;
-					_frames.resize(_capacity);
-				}
-			}
+				_frames.push(new FrameRecord().load(line));
 		}
 
 		rewind();
@@ -131,19 +110,9 @@ class FlxReplay
 	 * Basically goes through and calls FrameRecord.save() on each frame in the replay.
 	 * return	The gameplay recording in simple ASCII format.
 	 */
-	public function save():String
+	public function save():Null<String>
 	{
-		if (frameCount <= 0)
-		{
-			return null;
-		}
-		var output:String = seed + "\n";
-		var i:Int = 0;
-		while (i < frameCount)
-		{
-			output += _frames[i++].save() + "\n";
-		}
-		return output;
+		return Lambda.fold(_frames, (frame, result) -> '${result}${frame.save()}\n', '$seed\n');
 	}
 
 	/**
@@ -179,13 +148,7 @@ class FlxReplay
 		frameRecorded.keys = keysRecord;
 		#end
 
-		_frames[frameCount++] = frameRecorded;
-
-		if (frameCount >= _capacity)
-		{
-			_capacity *= 2;
-			_frames.resize(_capacity);
-		}
+		_frames.push(frameRecorded);
 	}
 
 	/**
@@ -195,7 +158,7 @@ class FlxReplay
 	{
 		FlxG.inputs.reset();
 
-		if (_marker >= frameCount)
+		if (_marker >= _frames.length)
 		{
 			finished = true;
 			return;
@@ -233,19 +196,9 @@ class FlxReplay
 	}
 
 	/**
-	 * Common initialization terms used by both create() and load() to set up the replay object.
-	 */
-	function init():Void
-	{
-		_capacity = 100;
-		_frames = new Array<FrameRecord>();
-		frameCount = 0;
-	}
-
-	/**
 	 * The duration of this replay, in frames. **Note:** this is different from `frameCount`, which
 	 * is the number of unique records, which doesn't count frames with no input
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public function getDuration()
@@ -255,7 +208,7 @@ class FlxReplay
 			// Add 1 to the last frame index, because they are zero-based
 			return _frames[_frames.length - 1].frame + 1;
 		}
-		
+
 		return 0;
 	}
 }

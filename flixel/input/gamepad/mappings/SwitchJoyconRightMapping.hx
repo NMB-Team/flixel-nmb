@@ -95,12 +95,12 @@ class SwitchJoyconRightMapping extends FlxTypedGamepadMapping<SwitchJoyconRightI
 			case _: super.getInputLabel(id);
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.SWITCH_JOYCON_RIGHT(getRawID(id));
 	}
-	
+
 	#if FLX_JOYSTICK_API
 	override function axisIndexToRawID(axisID:SwitchJoyconRightID):Int
 	{

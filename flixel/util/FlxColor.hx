@@ -611,18 +611,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	inline function getThis():Int
 	{
-		#if neko
-		return Std.int(this);
-		#else
 		return this;
-		#end
-	}
-
-	inline function validate():Void
-	{
-		#if neko
-		this = Std.int(this);
-		#end
 	}
 
 	inline function get_red():Int
@@ -687,72 +676,48 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	inline function set_red(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFF00FFFF) | (boundChannel(Value)) << 16;
 		return Value;
 	}
 
 	inline function set_green(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFFFF00FF) | (boundChannel(Value)) << 8;
 		return Value;
 	}
 
 	inline function set_blue(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFFFFFF00) | (boundChannel(Value));
 		return Value;
 	}
 
 	inline function set_alpha(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0x00FFFFFF) | (boundChannel(Value)) << 24;
 		return Value;
 	}
 
 	inline function set_redFast(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFF00FFFF) | ((Value & 0xFF)) << 16;
 		return Value;
 	}
 
 	inline function set_greenFast(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFFFF00FF) | ((Value & 0xFF) << 8);
 		return Value;
 	}
 
 	inline function set_blueFast(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFFFFFF00) | ((Value & 0xFF));
 		return Value;
 	}
 
 	inline function set_alphaFast(Value:Int):Int
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xFF000000) | ((Value & 0xFF) << 24);
 		return Value;
 	}
@@ -942,9 +907,6 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	inline function set_rgb(value:FlxColor):FlxColor
 	{
-		#if neko
-		validate();
-		#end
 		this = (this & 0xff000000) | (value & 0x00ffffff);
 		return value;
 	}

@@ -68,7 +68,7 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T> {
 	public var height = .0;
 
 	/**
-	 * Whether particles spawned by this emitter should be antialiased. 
+	 * Whether particles spawned by this emitter should be antialiased.
 	 * Defaults to `FlxSprite.defaultAntialiasing`. This only affects rendering.
 	 */
 	public var antialiasing = FlxSprite.defaultAntialiasing;
@@ -416,7 +416,7 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T> {
 
 		_counter = 0;
 		_timer = 0;
-		
+
 		_waitForKill = false;
 
 		return this;

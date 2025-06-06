@@ -58,7 +58,7 @@ class FlxPreloader extends FlxBasePreloader
 		var logoLight = createBitmap(GraphicLogoLight, function(logoLight:Bitmap)
 		{
 			logoLight.width = logoLight.height = _height;
-			logoLight.x = (_width - logoLight.width) / 2;
+			logoLight.x = (_width - logoLight.width) * .5;
 		});
 		logoLight.smoothing = true;
 		_buffer.addChild(logoLight);

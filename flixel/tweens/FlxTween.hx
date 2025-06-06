@@ -58,50 +58,50 @@ enum abstract FlxTweenType(ByteUInt) from ByteUInt to ByteUInt
  * Allows you to create smooth interpolations and animations easily. "Tweening" is short
  * for inbetweening: you only have to specify start and end values and `FlxTween` will
  * generate all values between those two.
- * 
+ *
  * ## Resources
  * - [Handbook - FlxTween](https://haxeflixel.com/documentation/flxtween/)
  * - [Demo - FlxTween](https://haxeflixel.com/demos/FlxTween/)
  * - [Snippets - FlxTween](https://snippets.haxeflixel.com/tweens/tween/)
- * 
+ *
  * ## Example
  * If you want to move a `FlxSprite` across the screen:
  * ```haxe
  * sprite.x = 200;
  * sprite.y = 200;
- * 
+ *
  * FlxTween.tween(sprite, { x: 600, y: 800 }, 2.0);
  * ```
  * The first two lines specify the start position of the sprite, because the `tween()` method
  * assumes the current position is the starting position.
- * 
+ *
  * ## Cancelling a Tween
  * If you start a tween using the code above, it will run until the desired values are reached,
  * then stop. As the `tween()` method returns an object of type `FlxTween`, keeping this object
  * in a variable allows you to access the current tween running if you wish to control it.
- * 
+ *
  * This code stops the translation of the sprite if the player presses the spacebar of their keyboard:
  * ```haxe
  * var tween:FlxTween;
- * 
+ *
  * public function new()
  * {
  *     super();
  *     // set up sprite
  *     tween = FlxTween.tween(sprite, { x:600, y:800 }, 2);
  * }
- * 
+ *
  * override public function update(elapsed:Float)
  * {
  *     super.update(elapsed);
- *     
+ *
  *     if (FlxG.keys.justPressed.SPACE)
  *         tween.cancel();
  * }
  * ```
  * ## Tweening Options
  * The `tween()` method takes an optional fourth parameter which is a map of options.
- * 
+ *
  * Possible values are:
  * - `type`:
  *     - *ONESHOT*: Stops and removes itself from its core container when it finishes
@@ -114,7 +114,7 @@ enum abstract FlxTweenType(ByteUInt) from ByteUInt to ByteUInt
  *           end of the tween smoother. `FlxEase` has various easing methods to choose from.
  * - `startDelay`: Time to wait before starting this tween, in seconds.
  * - `loopDelay`: Time to wait before this tween is repeated, in seconds
- * 
+ *
  * Example:
  * ```haxe
  * public function new()
@@ -123,8 +123,8 @@ enum abstract FlxTweenType(ByteUInt) from ByteUInt to ByteUInt
  *     // set up sprite
  *     sprite.x = 200;
  *     sprite.y = 200;
- *     FlxTween.tween(sprite, { x: 600, y: 800 }, 2, 
- *         { 
+ *     FlxTween.tween(sprite, { x: 600, y: 800 }, 2,
+ *         {
  *             type:       PINGPONG,
  *             ease:       FlxEase.quadInOut,
  *             onComplete: changeColor,
@@ -133,44 +133,44 @@ enum abstract FlxTweenType(ByteUInt) from ByteUInt to ByteUInt
  *         }
  *     );
  * }
- * 
+ *
  * function changeColor(tween:FlxTween):Void
  * {
  *     sprite.color = tween.executions % 2 == 0 ? FlxColor.RED : FlxColor.BLUE;
  * }
  * ```
- * 
+ *
  * This code moves the sprite constantly between the two points (200|200) and (600|800), smoothly
  * accelerating and decelerating. Each time the sprite arrives at one of those two points, its color
  * changes. The animation starts after 1 second and then the sprite pauses at each point for 2 seconds.
- * 
+ *
  * ## Special Tweens
  * There are many more tweening methods in `FlxTween`, which are used for special cases:
- * 
+ *
  * ### Color
  * Tweens the rgb components of a color independently, where normal tweening would screw up the colors.
- * 
+ *
  * ```haxe
  * FlxTween.color(sprite, 3.0, FlxColor.RED, FlxColor.GREEN, { onComplete:onTweenComplete } );
  * ```
- * 
+ *
  * ### Angle
  * Tweens the angle of a sprite, normal tweening would have trouble going from negative to positive angles.
- * 
+ *
  * ```haxe
  * FlxTween.angle(sprite, -90, 180, 3.0, { onComplete:onTweenComplete } );
  * ```
  * ### Num
  * Calls a function with the tweened value over time, no parent object involved.
- * 
+ *
  * ```haxe
  * FlxTween.num(0, totalWinnings, 3.0, function(num) { field.text = addCommas(num); });
  * ```
- * 
+ *
  * ### Motion
  * The FlxTween class also contains the methods `linearMotion()`, `quadMotion()`, `cubicMotion()` and `circularMotion()`,
  * which make objects follow straight lines, smooth paths or circles.
- * 
+ *
  * ### Paths
  * The methods `linearPath()` and `quadPath()` can be used for longer paths defined through an array of points,
  * instead of a fixed number of points.
@@ -239,7 +239,7 @@ class FlxTween implements IFlxDestroyable
 	{
 		return globalManager.flicker(basic, duration, period, options);
 	}
-	
+
 	/**
 	 * Whether the object is flickering via the global tween manager
 	 * @since 5.7.0
@@ -248,7 +248,7 @@ class FlxTween implements IFlxDestroyable
 	{
 		return globalManager.isFlickering(basic);
 	}
-	
+
 	/**
 	 * Cancels all flicker tweens on the object in the global tween manager
 	 * @since 5.7.0
@@ -264,7 +264,7 @@ class FlxTween implements IFlxDestroyable
 	 * ```haxe
 	 * FlxTween.shake(Sprite, 0.1, 2, FlxAxes.XY, { ease: easeFunction, onStart: onStart, onUpdate: onUpdate, onComplete: onComplete, type: ONESHOT });
 	 * ```
-	 * 
+	 *
 	 * @param	Sprite       Sprite to shake.
 	 * @param   Intensity    Percentage representing the maximum distance
 	 *                       that the sprite can move while shaking.
@@ -460,11 +460,11 @@ class FlxTween implements IFlxDestroyable
 	 *
 	 * Note: Any tweens with the specified fields are cancelled, if the tween has other properties they
 	 * will also be cancelled.
-	 * 
+	 *
 	 * @param Object The object with tweens to cancel.
 	 * @param FieldPaths Optional list of the tween field paths to search for. If null or empty, all tweens on the specified
 	 * object are canceled. Allows dot paths to check child properties.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	public static function cancelTweensOf(Object:Dynamic, ?FieldPaths:Array<String>):Void
@@ -490,7 +490,7 @@ class FlxTween implements IFlxDestroyable
 	 * @param Object The object with tweens to complete.
 	 * @param FieldPaths Optional list of the tween field paths to search for. If null or empty, all tweens on
 	 * the specified object are completed. Allows dot paths to check child properties.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	public static function completeTweensOf(Object:Dynamic, ?FieldPaths:Array<String>):Void
@@ -637,7 +637,7 @@ class FlxTween implements IFlxDestroyable
 			preTick = Math.fround(preTick * framerate) / framerate;
 			postTick = Math.fround(postTick * framerate) / framerate;
 		}
-		
+
 		scale = Math.max((postTick - delay), 0) / duration;
 		if (ease != null)
 		{
@@ -832,17 +832,17 @@ class FlxTween implements IFlxDestroyable
 
 	/**
 	 * Returns true if this is tweening the specified field on the specified object.
-	 * 
+	 *
 	 * @param Object The object.
 	 * @param Field Optional tween field. Ignored if null.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	function isTweenOf(Object:Dynamic, ?Field:OneOfTwo<String, Int>):Bool
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Set both type of delays for this tween.
 	 *
@@ -1090,7 +1090,7 @@ class FlxTweenManager extends FlxBasic
 		tween.tween(basic, duration, period);
 		return add(tween);
 	}
-	
+
 	/**
 	 * Whether the object is flickering via this manager
 	 * @since 5.7.0
@@ -1099,7 +1099,7 @@ class FlxTweenManager extends FlxBasic
 	{
 		return containsTweensOf(basic, ["flicker"]);
 	}
-	
+
 	/**
 	 * Cancels all flicker tweens on the object
 	 * @since 5.7.0
@@ -1143,7 +1143,7 @@ class FlxTweenManager extends FlxBasic
 	 * ```haxe
 	 * FlxTween.shake(Sprite, 0.1, 2, FlxAxes.XY, { ease: easeFunction, onStart: onStart, onUpdate: onUpdate, onComplete: onComplete, type: ONESHOT });
 	 * ```
-	 * 
+	 *
 	 * @param	Sprite       Sprite to shake.
 	 * @param   Intensity    Percentage representing the maximum distance
 	 *                       that the sprite can move while shaking.
@@ -1484,11 +1484,11 @@ class FlxTweenManager extends FlxBasic
 	 *
 	 * Note: Any tweens with the specified fields are cancelled, if the tween has other properties they
 	 * will also be cancelled.
-	 * 
+	 *
 	 * @param Object The object with tweens to cancel.
 	 * @param FieldPaths Optional list of the tween field paths to search for. If null or empty, all tweens on the specified
 	 * object are canceled. Allows dot paths to check child properties.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	public function cancelTweensOf(Object:Dynamic, ?FieldPaths:Array<String>):Void
@@ -1514,7 +1514,7 @@ class FlxTweenManager extends FlxBasic
 	 * @param Object The object with tweens to complete.
 	 * @param FieldPaths Optional list of the tween field paths to search for. If null or empty, all tweens on
 	 * the specified object are completed. Allows dot paths to check child properties.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	public function completeTweensOf(Object:Dynamic, ?FieldPaths:Array<String>):Void
@@ -1537,14 +1537,14 @@ class FlxTweenManager extends FlxBasic
  	 * @param   fieldPaths  List of the tween field paths to check. If `null` or empty, any tween of
  	 *                      the specified object will match. Allows dot paths to check child properties.
  	 * @param   func        The function to call on each matching tween.
-	 * 
+	 *
 	 * @since 4.9.0
 	 */
 	function forEachTweensOf(object:Dynamic, ?fieldPaths:Array<String>, func:FlxTween->Void)
 	{
 		if (object == null)
 			throw "Cannot cancel tween variables of an object that is null.";
-		
+
 		if (fieldPaths == null || fieldPaths.length == 0)
 		{
 			var i = _tweens.length;
@@ -1583,7 +1583,7 @@ class FlxTweenManager extends FlxBasic
 					if (!Reflect.isObject(target) && !(target is Array))
 						break;
 				}
-				
+
 				if (Type.typeof(field) == TInt)
 				{
 					if ((target is Array))
@@ -1595,7 +1595,7 @@ class FlxTweenManager extends FlxBasic
 						propertyInfos.push({object: target, field: field});
 				}
 			}
-			
+
 			var i = _tweens.length;
 			while (i-- > 0)
 			{
@@ -1607,14 +1607,14 @@ class FlxTweenManager extends FlxBasic
 						func(tween);
 						break;
 					}
-				} 
+				}
 			}
 		}
 	}
 
 	/**
 	 * Crude helper to search for any tweens with the desired properties
-	 * 
+	 *
 	 * @since 5.7.0
 	 */
 	function containsTweensOf(object:Dynamic, ?fieldPaths:Array<String>):Bool

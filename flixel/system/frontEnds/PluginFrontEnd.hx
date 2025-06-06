@@ -23,7 +23,7 @@ class PluginFrontEnd
 	 * @since 5.7.0
 	 */
 	public var drawOnTop:Bool = false;
-	
+
 	/**
 	 * Adds a new plugin to the global plugin array, does not check for existing instances of this type.
 	 * **Note:** This is a temporary function. Eventually `add` will allow duplicates
@@ -37,7 +37,7 @@ class PluginFrontEnd
 		list.push(plugin);
 		return plugin;
 	}
-	
+
 	/**
 	 * Adds a new plugin to the global plugin array.
 	 * **Note:** If there is already a plugin of this type, it will not be added
@@ -53,7 +53,7 @@ class PluginFrontEnd
 			if (FlxStringUtil.sameClassName(plugin, p))
 				return plugin;
 		}
-		
+
 		// No repeats found
 		list.push(plugin);
 		return plugin;
@@ -90,7 +90,7 @@ class PluginFrontEnd
 		list.remove(plugin);
 		return plugin;
 	}
-	
+
 	public function removeAllByType(type:Class<FlxBasic>):Bool
 	{
 		var results:Bool = false;

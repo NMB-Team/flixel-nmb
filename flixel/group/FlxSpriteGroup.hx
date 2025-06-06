@@ -20,7 +20,7 @@ import flixel.util.FlxSort;
  * `FlxSpriteGroup` is a special `FlxSprite` that can be treated like a single sprite even if it's
  * made up of several member sprites. It shares the `FlxGroup` API, but it doesn't inherit from it.
  * Note that `FlxSpriteContainer` also exists.
- * 
+ *
  * ## When to use a group or container
  * `FlxGroups` are better for organising arbitrary groups for things like iterating or collision.
  * `FlxContainers` are recommended when you are adding them to the current `FlxState`, or a
@@ -62,6 +62,21 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	public var directAlpha:Bool = false;
 
 	/**
+	 * Whether getters like findMinX, width and height will only count sprites with exist = true.
+	 * Defaults to false for backwards compatibility.
+	 *
+	 * @since 6.4.0
+	 */
+	public var checkExistsInBounds:Bool = false;
+
+	/**
+	 * Whether getters like findMinX, width and height will only count visible sprites.
+	 *
+	 * @since 6.4.0
+	 */
+	public var checkVisibleInBounds:Bool = false;
+
+	/**
 	 * The maximum capacity of this group. Default is `0`, meaning no max capacity, and the group can just grow.
 	 */
 	public var maxSize(get, set):Int;
@@ -81,12 +96,12 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		initGroup(maxSize);
 		super(x, y);
 	}
-	
+
 	function initGroup(maxSize:Int):Void
 	{
 		group = new FlxTypedGroup<T>(maxSize);
 	}
-	
+
 	/**
 	 * This method is used for initialization of variables of complex types.
 	 * Don't forget to call `super.initVars()` if you'll override this method,
@@ -581,10 +596,10 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 			if (sprite != null)
 				sprite.reset(sprite.x + X - x, sprite.y + Y - y);
 		}
-		
+
 		// prevent any transformations on children, mainly from setter overrides
 		_skipTransformChildren = true;
-		
+
 		// recreate super.reset() but call super.revive instead of revive
 		touching = NONE;
 		wasTouching = NONE;
@@ -593,7 +608,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		// last.set(x, y); // null on sprite groups
 		velocity.set();
 		super.revive();
-		
+
 		_skipTransformChildren = false;
 	}
 
@@ -830,72 +845,77 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	{
 		if (length == 0)
 			return 0;
-		
+
 		return findMaxXHelper() - findMinXHelper();
+	}
+
+	inline function ignoreBounds(sprite:Null<FlxSprite>)
+	{
+		return sprite == null || (checkExistsInBounds && !sprite.exists) || (checkVisibleInBounds && !sprite.visible);
 	}
 
 	/**
 	 * Returns the left-most position of the left-most member.
 	 * If there are no members, x is returned.
-	 * 
+	 *
 	 * @since 5.0.0
 	 */
 	public function findMinX()
 	{
 		return length == 0 ? x : findMinXHelper();
 	}
-	
+
 	function findMinXHelper()
 	{
 		var value = Math.POSITIVE_INFINITY;
 		for (member in group.members)
 		{
-			if (member == null)
+			if (ignoreBounds(member))
 				continue;
-			
+
 			var minX:Float;
 			if (member.flixelType == SPRITEGROUP)
 				minX = (cast member:FlxSpriteGroup).findMinX();
 			else
 				minX = member.x;
-			
+
 			if (minX < value)
 				value = minX;
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Returns the right-most position of the right-most member.
 	 * If there are no members, x is returned.
-	 * 
+	 *
 	 * @since 5.0.0
 	 */
 	public function findMaxX()
 	{
 		return length == 0 ? x : findMaxXHelper();
 	}
-	
+
 	function findMaxXHelper()
 	{
 		var value = Math.NEGATIVE_INFINITY;
 		for (member in group.members)
 		{
-			if (member == null)
+			if (ignoreBounds(member))
 				continue;
-			
+
 			var maxX:Float;
 			if (member.flixelType == SPRITEGROUP)
 				maxX = (cast member:FlxSpriteGroup).findMaxX();
 			else
 				maxX = member.x + member.width;
-			
+
 			if (maxX > value)
 				value = maxX;
 		}
 		return value;
 	}
-	
+
 	/**
 	 * This functionality isn't supported in SpriteGroup
 	 */
@@ -908,66 +928,66 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	{
 		if (length == 0)
 			return 0;
-		
+
 		return findMaxYHelper() - findMinYHelper();
 	}
-	
+
 	/**
 	 * Returns the top-most position of the top-most member.
 	 * If there are no members, y is returned.
-	 * 
+	 *
 	 * @since 5.0.0
 	 */
 	public function findMinY()
 	{
 		return length == 0 ? y : findMinYHelper();
 	}
-	
+
 	function findMinYHelper()
 	{
 		var value = Math.POSITIVE_INFINITY;
 		for (member in group.members)
 		{
-			if (member == null)
+			if (ignoreBounds(member))
 				continue;
-			
+
 			var minY:Float;
 			if (member.flixelType == SPRITEGROUP)
 				minY = (cast member:FlxSpriteGroup).findMinY();
 			else
 				minY = member.y;
-			
+
 			if (minY < value)
 				value = minY;
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Returns the top-most position of the top-most member.
 	 * If there are no members, y is returned.
-	 * 
+	 *
 	 * @since 5.0.0
 	 */
 	public function findMaxY()
 	{
 		return length == 0 ? y : findMaxYHelper();
 	}
-	
+
 	function findMaxYHelper()
 	{
 		var value = Math.NEGATIVE_INFINITY;
 		for (member in group.members)
 		{
-			if (member == null)
+			if (ignoreBounds(member))
 				continue;
-			
+
 			var maxY:Float;
 			if (member.flixelType == SPRITEGROUP)
 				maxY = (cast member:FlxSpriteGroup).findMaxY();
 			else
 				maxY = member.y + member.height;
-			
+
 			if (maxY > value)
 				value = maxY;
 		}
@@ -1160,12 +1180,12 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	{
 		return null;
 	}
-	
+
 	function set_group(value:FlxTypedGroup<T>):FlxTypedGroup<T>
 	{
 		return this.group = value;
 	}
-	
+
 	/**
 	 * Internal function to update the current animation frame.
 	 *

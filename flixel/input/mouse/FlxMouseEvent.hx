@@ -8,7 +8,7 @@ import flixel.util.FlxDestroyUtil;
 /**
  * Provides mouse event detection for `FlxObject` and `FlxSprite` (pixel-perfect for those).
  * To use it, register objects / sprites with `FlxMouseEvent.add()`:
- * 
+ *
  * ```haxe
  * var object = new FlxObject();
  * FlxMouseEvent.add(object, onMouseDown, onMouseUp, onMouseOver, onMouseOut);
@@ -21,9 +21,9 @@ import flixel.util.FlxDestroyUtil;
  * function onMouseOver(object:FlxObject) {}
  * function onMouseOut(object:FlxObject) {}
  * ```
- * 
+ *
  * `FlxMouseEvent` is meant to be the access point to the global `FlxMouseEventManager` instance.
- * 
+ *
  * @see [FlxMouseEventManager](https://api.haxeflixel.com/flixel/input/mouse/FlxMouseEventManager.html)
  * @see [FlxMouseEvent Demo](https://haxeflixel.com/demos/FlxMouseEvent/)
  * @since 5.0.0

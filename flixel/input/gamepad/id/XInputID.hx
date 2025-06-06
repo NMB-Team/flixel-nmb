@@ -45,17 +45,16 @@ enum abstract XInputID(Int) to Int
 	var LEFT_TRIGGER = 10;
 	var RIGHT_TRIGGER = 11;
 
-	
 	static final LEFT_X = 0;
 	static final LEFT_Y = 1;
 	static final RIGHT_X = 2;
 	static final RIGHT_Y = 3;
-	
+
 	var LEFT_STICK_UP = 20;
 	var LEFT_STICK_DOWN = 21;
 	var LEFT_STICK_LEFT = 22;
 	var LEFT_STICK_RIGHT = 23;
-	
+
 	var RIGHT_STICK_UP = 24;
 	var RIGHT_STICK_DOWN = 25;
 	var RIGHT_STICK_LEFT = 26;
@@ -80,7 +79,7 @@ enum abstract XInputID(Int) to Int
 	var DPAD_DOWN = 18;
 	var DPAD_LEFT = 19;
 	var DPAD_RIGHT = 20;
-	
+
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
@@ -90,7 +89,7 @@ enum abstract XInputID(Int) to Int
 	var LEFT_STICK_DOWN = 22;
 	var LEFT_STICK_LEFT = 23;
 	var LEFT_STICK_RIGHT = 24;
-	
+
 	var RIGHT_STICK_UP = 25;
 	var RIGHT_STICK_DOWN = 26;
 	var RIGHT_STICK_LEFT = 27;
@@ -140,7 +139,7 @@ enum abstract XInputID(Int) to Int
 	var LEFT_STICK_DOWN = 22;
 	var LEFT_STICK_LEFT = 23;
 	var LEFT_STICK_RIGHT = 24;
-	
+
 	var RIGHT_STICK_UP = 25;
 	var RIGHT_STICK_DOWN = 26;
 	var RIGHT_STICK_LEFT = 27;
@@ -179,21 +178,21 @@ enum abstract XInputID(Int) to Int
 	var LEFT_STICK_DOWN = 22;
 	var LEFT_STICK_LEFT = 23;
 	var LEFT_STICK_RIGHT = 24;
-	
+
 	var RIGHT_STICK_UP = 25;
 	var RIGHT_STICK_DOWN = 26;
 	var RIGHT_STICK_LEFT = 27;
 	var RIGHT_STICK_RIGHT = 28;
 	#end
 	#end
-	
+
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<XInputID>(LEFT_X, LEFT_Y, {
 		up: LEFT_STICK_UP,
 		down: LEFT_STICK_DOWN,
 		left: LEFT_STICK_LEFT,
 		right: LEFT_STICK_RIGHT
 	});
-	
+
 	public static var RIGHT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<XInputID>(RIGHT_X, RIGHT_Y, {
 		up: RIGHT_STICK_UP,
 		down: RIGHT_STICK_DOWN,

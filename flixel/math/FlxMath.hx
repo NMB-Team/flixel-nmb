@@ -1,10 +1,9 @@
 package flixel.math;
 
 import openfl.geom.Rectangle;
+import flixel.util.FlxColor;
 #if !macro
-#if FLX_MOUSE
 import flixel.FlxG;
-#end
 import flixel.FlxSprite;
 #if FLX_TOUCH
 import flixel.input.touch.FlxTouch;
@@ -47,21 +46,50 @@ class FlxMath
 	public static inline final EPSILON:Float = 0.0000001;
 
 	/**
+	 * Quantizes a float value to the nearest multiple of the given snap value.
+	 * 
+	 * @param f The float value to quantize.
+	 * @param snap The snap value to quantize to.
+	 */
+	inline static function quantize(f:Float, snap:Float) {
+		#if FLX_DEBUG FlxG.log.notice('Quantized snap: $snap'); #end
+		return ((Math.fround(f * snap)) / snap);
+	}
+
+	/**
 	 * Round a decimal number to have reduced precision (less decimal numbers).
 	 *
 	 * ```haxe
 	 * roundDecimal(1.2485, 2) = 1.25
 	 * ```
 	 *
-	 * @param	Value		Any number.
-	 * @param	Precision	Number of decimals the result should have.
+	 * @param	value		Any number.
+	 * @param	precision	Number of decimals the result should have.
 	 * @return	The rounded value of that number.
 	 */
-	public static function roundDecimal(Value:Float, Precision:Int):Float
+	public static function roundDecimal(value:Float, precision:Int):Float
 	{
 		var mult = 1.;
-		for (i in 0...Precision) mult *= 10;
-		return Math.fround(Value * mult) / mult;
+		for (i in 0...precision) mult *= 10;
+		return Math.fround(value * mult) / mult;
+	}
+
+	/**
+	 * Floor a decimal number to a fixed number of decimal places.
+	 *
+	 * ```haxe
+	 * floorDecimal(3.14159, 2) = 3.14
+	 * floorDecimal(5.987, 0) = 5
+	 * ```
+	 *
+	 * @param	value		The number to be floored.
+	 * @param	decimals	Number of decimal places to keep.
+	 * @return	The floored value with specified precision.
+	 */
+	public static function floorDecimal(value:Float, decimals:Int):Float
+	{
+		if (decimals < 1) return Math.floor(value);
+		return Math.floor(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	}
 
 	/**
@@ -97,6 +125,19 @@ class FlxMath
 	}
 
 	/**
+	 * Truncates a float value to the specified number of decimal places.
+	 * 
+	 * @param x The float value to be truncated.
+	 * @param precision The number of decimal places to truncate to (default is 2).
+	 * @param round If true, the value will be rounded to the nearest whole number at the specified precision before being truncated.
+	 */
+	public static inline function truncateFloat(x:Float, precision = 2, round = false):Float
+	{
+		final p = Math.pow(10, precision);
+		return (round ? Math.round : Math.floor)(precision > 0 ? p * x : x) / (precision > 0 ? p : 1);
+	}
+
+	/**
 	 * Returns the linear interpolation of two numbers if `ratio`
 	 * is between 0 and 1, and the linear extrapolation otherwise.
 	 *
@@ -117,7 +158,7 @@ class FlxMath
 	/**
 	 * Adjusts the lerp value to be frame rate independent.
 	 * Multiplies the provided lerp value by the elapsed time adjusted to a 60 FPS base.
-	 * 
+	 *
 	 * @param lerp The original lerp value.
 	 */
 	public static inline function cameraLerp(lerp:Float):Float
@@ -138,23 +179,35 @@ class FlxMath
 	}
 
 	/**
-	 * Adjusts the given lerp to account for the time that has passed
-	 * 
-	 * @param   lerp     The ratio to lerp in 1/60th of a second
-	 * @param   elapsed  The amount of time that has actually passed
+	 * Calculates frame rate-independent lerp ratio based on time delta.
+	 *
+	 * @param lerp The interpolation ratio (usually between 0 and 1).
+	 * @param elapsed Time elapsed since last frame; defaults to FlxG.elapsed.
+	 * @return Adjusted interpolation ratio based on elapsed time.
 	 * @since 6.0.0
 	 */
-	public static function getElapsedLerp(lerp:Float, elapsed:Float):Float
+	public static function getElapsedLerp(lerp:Float, ?elapsed:Float):Float
 	{
-		return 1.0 - Math.pow(1.0 - lerp, elapsed * 60);
+		elapsed ??= FlxG.elapsed;
+		return (lerp >= 1) ? 1 : (lerp > 0 && elapsed > 0) ? 1 - Math.pow(1 - lerp, elapsed * 60) : 0;
+	}
+
+	/**
+	 * Calculates the linear interpolation ratio based on the elapsed time.
+	 */
+	public static function getLerpRatio(factor:Float, ?elapsed:Float):Float
+	{
+		elapsed ??= FlxG.elapsed;
+		// scale the time factor by elapsed time and frame rate, then bound the result between 0 and 1
+		return FlxMath.bound(factor * 60 * elapsed, 0, 1);
 	}
 
 	/**
 	 * Converts a per-frame linear interpolation factor to an exponential decay factor
 	 * based on the actual elapsed time.
-	 * 
+	 *
 	 * Use this to apply consistent smoothing regardless of frame rate.
-	 * 
+	 *
 	 * @param   lerp     The "strength" of the interpolation (larger = faster convergence)
 	 * @param   elapsed  The actual time that has passed, in seconds
 	 * @since 6.2.0
@@ -164,6 +217,138 @@ class FlxMath
 		return Math.exp(-elapsed * lerp * 60);
 	}
 
+		/**
+	 * Returns the linear interpolation/extrapolation of two points.
+	 * Works the same way as this expression:
+	 *
+	 * ```haxe
+	 * var result = FlxPoint.get(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio))
+	 * ```
+	 * 
+	 * @see				FlxMath.lerp()
+	 * @param result	Optional arg for the returning point
+	 */
+	public static inline function lerpPoint(a:FlxPoint, b:FlxPoint, ratio:Float, ?result:FlxPoint):FlxPoint
+	{
+		result ??= FlxPoint.get();
+
+		result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
+		a.putWeak();
+		b.putWeak();
+		return result;
+	}
+
+	/**
+	 * Interpolates between two float values using a weighted average.
+	 * This is a simple linear interpolation function.
+	 * 
+	 * @param from The starting value.
+	 * @param to The target value.
+	 * @param weight The weight of the target value, clamped to the range [0, 1].
+	 */
+	public static inline function ilerp(from:Float, to:Float, weight:Float, ?elapsed:Float):Float
+	{
+		elapsed ??= FlxG.elapsed;
+		return from + FlxMath.bound(weight * 60 * elapsed, 0, 1) * (to - from);
+    }
+
+	/**
+	 * Returns the linear interpolation of two colors.
+	 * Works the same way as `FlxColor.interpolate` method.
+	 * 
+	 * @see FlxMath.lerp
+	 * @see FlxColor.interpolate
+	 */
+	public static inline function lerpColor(a:FlxColor, b:FlxColor, ratio:Float):FlxColor
+	{
+		final TO_PERCENT = 1 / 255;
+		return FlxColor.fromRGBFloat(
+			lerp(a.red,   b.red,   ratio) * TO_PERCENT,
+			lerp(a.green, b.green, ratio) * TO_PERCENT,
+			lerp(a.blue,  b.blue,  ratio) * TO_PERCENT,
+			lerp(a.alpha, b.alpha, ratio) * TO_PERCENT
+		);
+	}
+
+	#if !macro
+	/**
+	 * Linearly interpolates between two values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting value.
+	 * @param b The ending value.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated value.
+	 */
+	public static inline function lerpElapsed(a:Float, b:Float, ratio:Float, ?elapsed:Float):Float
+	{
+		if (equal(a, b))
+			return b;
+		
+		return lerp(a, b, getElapsedLerp(ratio, elapsed));
+	}
+
+	/**
+	 * Performs exponential interpolation between two values (a and b) over time.
+	 * 
+	 * @param a The starting value.
+	 * @param b The target value.
+	 * @param t The interpolation factor (usually in the range [0, 1]).
+	 * @param e The elapsed time.
+	 */
+	public static inline function lerpExpoElapsed(a:Float, b:Float, t:Float, e:Float):Float {
+		if (equal(a, b)) return b;
+
+		final decayFactor = getExponentialDecayLerp(t, e);
+		return lerp(b, a, decayFactor);
+	}
+
+	/**
+	 * Linearly interpolates between two `FlxPoint` values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting point.
+	 * @param b The ending point.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param result The `FlxPoint` to store the interpolated result. If null, a new `FlxPoint` is created.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated point.
+	 */
+	public static inline function lerpPointElapsed(a:FlxPoint, b:FlxPoint, ratio:Float, ?result:FlxPoint, ?elapsed:Float):FlxPoint
+	{
+		if (result == null)
+			result = FlxPoint.get();
+
+		if (equal(a.x, b.x) && equal(a.y, b.y))
+		{
+			result.copyFrom(b);
+		}
+		else
+		{
+			ratio = getElapsedLerp(ratio, elapsed);
+			result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
+		}
+		a.putWeak();
+		b.putWeak();
+		return result;
+	}
+
+	/**
+	 * Linearly interpolates between two `FlxColor` values over time.
+	 * The rate of interpolation is frame rate independent.
+	 * @param a The starting color.
+	 * @param b The ending color.
+	 * @param ratio The ratio to interpolate towards the end value.
+	 * @param elapsed The time that has elapsed since the last frame.
+	 * @return The interpolated color.
+	 */
+	public static inline function lerpColorElapsed(a:FlxColor, b:FlxColor, ratio:Float, ?elapsed:Float):FlxColor
+	{
+		if (a == b) return b;
+
+		return lerpColor(a, b, getLerpRatio(ratio, elapsed));
+	}
+	#end
+
 	/**
 	 * Checks if number is in defined range. A null bound means that side is unbounded.
 	 *
@@ -172,7 +357,7 @@ class FlxMath
 	 * @param Max 		Higher bound of range.
 	 * @return Returns true if Value is in range.
 	 */
-	public static inline function inBounds(Value:Float, Min:Null<Float>, Max:Null<Float>):Bool
+	public static inline function inBounds(Value:Float, ?Min:Float, ?Max:Float):Bool
 	{
 		return (Min == null || Value >= Min) && (Max == null || Value <= Max);
 	}
@@ -194,11 +379,52 @@ class FlxMath
 	}
 
 	/**
+	 * Checks if the given integer is a power of two.
+	 * 
+	 * @param n The number to check.
+	 * @return True if the number is a power of two, false otherwise.
+	 */
+	public static inline function isPowerOfTwo(n:Int)
+	{
+		return n > 0 && (n & (n - 1)) == 0;
+	}
+
+	/**
 	 * Returns `-1` if `a` is smaller, `1` if `b` is bigger and `0` if both numbers are equal.
 	 */
 	public static inline function numericComparison(a:Float, b:Float):Int
 	{
 		return (b > a ? -1 : (a > b ? 1 : 0));
+	}
+
+	/**
+	 * Converts a normalized percent (0–1) to a value in a given range.
+	 */
+	inline static function percentToRange(percent:Float, min:Float, max:Float):Float {
+		return min + percent * (max - min);
+	}
+
+	/**
+	 * Calculates the mean of an array of float values.
+	 * 
+	 * The mean is the average value of the array, calculated by summing all the values and dividing by the number of elements.
+	 * 
+	 * @param values The array of float values to calculate the mean of.
+	 * @return The mean of the array.
+	 */
+	inline static function mean(values:Array<Float>):Float {
+		final amount = values.length;
+
+		var result = .0;
+		var value = .0;
+
+		for (i in 0...amount) {
+			value = values[i];
+			if (value == 0) continue;
+			result += value;
+		}
+
+		return result / amount;
 	}
 
 	/**
@@ -288,6 +514,20 @@ class FlxMath
 	}
 
 	/**
+	 * Calculates the greatest common divisor of two numbers using the Euclidean algorithm.
+	 * The Euclidean algorithm is an efficient method for computing the greatest common divisor of two numbers.
+	 * It works by repeatedly dividing the larger number by the smaller number until the remainder is 0.
+	 * The GCD is then the last non-zero remainder.
+	 * 
+	 * @param a The first number to compute the GCD for.
+	 * @param b The second number to compute the GCD for.
+	 */
+	public static inline function gcd(a, b)
+	{
+		return b == 0 ? absInt(a) : gcd(b, a % b);
+	}
+
+	/**
 	 * Makes sure that value always stays between 0 and max,
 	 * by wrapping the value around.
 	 *
@@ -304,6 +544,29 @@ class FlxMath
 			value += range * Std.int((min - value) / range + 1);
 
 		return min + (value - min) % range;
+	}
+
+	/**
+	 * Wraps an integer value between a minimum and maximum range.
+	 */
+	public static inline function wrapInt(value:Int, min:Int, max:Int):Int
+	{
+		final range = max - min + 1;
+		return min + ((value - min) % range + range) % range;
+	}
+
+	/**
+	 * Wraps a float value between two values.
+	 * If the value is larger than the maximum, it subtracts the range from the value.
+	 * If the value is smaller than the minimum, it adds the range to the value.
+	 * @param value The value to wrap.
+	 * @param min The minimum of the range.
+	 * @param max The maximum of the range.
+	 */
+	public static inline function fwrap(value:Float, min:Float, max:Float):Float
+	{
+		final range = max - min;
+		return min + ((value < min ? value + range : value) - min) % (range + FlxPoint.EPSILON_SQUARED);
 	}
 
 	public static inline function wrapMax(value:Int, max:Int):Int
@@ -611,14 +874,81 @@ class FlxMath
 	}
 
 	/**
-	 * Performs a modulo operation to calculate the remainder of `a` divided by `b`.
+	 * Clamps a value between a minimum and maximum value.
 	 * 
+	 * @param val The value to clamp.
+	 * @param min The minimum value.
+	 * @param max The maximum value.
+	 * @return The clamped value.
+	 */
+	public static inline function fclamp(val:Float, min:Float, max:Float):Float
+	{
+		return Math.max(min, Math.min(max, val));
+	}
+
+	/**
+	 * Clamps a float value between 0 and 1.
+	 */
+	public static inline function clamp01(value:Float):Float
+	{
+		return value < 0 ? 0 : (value > 1 ? 1 : value);
+	}
+
+	/**
+	 * Gets the number of digits in a number.
+	 */
+	public static inline function getDigits(n:Float):Int
+	{
+		return Std.string(Std.int(Math.abs(n))).length;
+	}
+
+	/**
+	 * Converts a time in the format `h:m:s` to seconds.
+	 * @param h The hours component.
+	 * @param m The minutes component.
+	 * @param s The seconds component.
+	 */
+	public static inline function timeToSeconds(h:Float, m:Float, s:Float):Float
+	{
+		return h * 3600 + m * 60 + s;
+	}
+
+	/**
+	 * Converts a time in the format `h:m:s` to milliseconds.
+	 * 
+	 * @param h The hours component.
+	 * @param m The minutes component.
+	 * @param s The seconds component.
+	 */
+	public static inline function timeToMiliseconds(h:Float, m:Float, s:Float):Float
+	{
+		return timeToSeconds(h, m, s) * 1000;
+	}
+
+	public static inline function normalize(value:Float, min:Float, max:Float)
+	{
+        final val = (value - min) / (max - min);
+        return FlxMath.bound(val, 0, 1);
+    }
+
+	/**
+	 * Returns null if the given number is NaN, otherwise returns the number itself.
+	 * Useful for avoiding NaN values in calculations.
+	 */
+	public static inline function nullifyNaN(num:Null<Float>):Null<Float>
+	{
+		return Math.isNaN(num) ? null : num;
+	}
+
+	/**
+	 * Performs a modulo operation to calculate the remainder of `a` divided by `b`.
+	 *
 	 * The definition of "remainder" varies by implementation;
 	 * this one is similar to GLSL or Python in that it uses Euclidean division, which always returns positive,
 	 * while Haxe's `%` operator uses signed truncated division.
-	 * 
+	 *
 	 * For example, `-5 % 3` returns `-2` while `FlxMath.mod(-5, 3)` returns `1`.
-	 * 
+	 *
 	 * @param a The dividend.
 	 * @param b The divisor.
 	 * @return `a mod b`.

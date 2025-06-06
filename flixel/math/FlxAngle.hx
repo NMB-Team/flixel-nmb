@@ -14,7 +14,7 @@ import flixel.input.touch.FlxTouch;
 /**
  * A set of functions related to angle calculations.
  * In degrees: (down = 90, right = 0, up = -90)
- * 
+ *
  * Note: in Flixel 5.0.0 all angle-related tools were changed so that 0 degrees points right, instead of up
  * @see [Flixel 5.0.0 Migration guide](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide)
  */
@@ -24,7 +24,7 @@ class FlxAngle
 	 * Convert radians to degrees by multiplying it with this value.
 	 */
 	public static inline final TO_DEG:Float = 57.29577951308232; // 180 / Math.PI;
-	
+
 	/**
 	 * Convert degrees to radians by multiplying it with this value.
 	 */
@@ -108,6 +108,40 @@ class FlxAngle
 			angle = wrapAngle(angle + 360);
 
 		return angle;
+	}
+
+	/**
+	 * Clamps an angle to the range [0, 360).
+	 * Useful for wrapping rotations.
+	 */
+	public static inline function clampAngle(angle:Float)
+	{
+		return (angle % 360 + 360) % 360;
+	}
+
+	/**
+	 * Performs exponential interpolation between two angles (a and b) over time.
+	 * This is similar to `lerpElapsed`, but takes into account the circular nature of angles.
+	 * 
+	 * @param a The starting angle.
+	 * @param b The target angle.
+	 * @param t The interpolation factor (usually in the range [0, 1]).
+	 * @param e The elapsed time.
+	 */
+	public static inline function lerpAngle(a:Float, b:Float, t:Float, e:Float):Float
+	{
+		final delta = clampAngle((b - a + 180)) - 180;
+		final factor = Math.exp(-e * t);
+		return a + delta * (1 - factor);
+	}
+
+	/**
+	 * Calculates the shortest angular difference (in degrees) between two angles.
+	 */
+	public static inline function angleDifference(a:Float, b:Float):Float
+	{
+		final diff = (b - a + 180) % 360 - 180;
+		return diff < -180 ? diff + 360 : diff;
 	}
 
 	/**

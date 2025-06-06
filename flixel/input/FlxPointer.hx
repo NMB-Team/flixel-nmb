@@ -11,37 +11,37 @@ class FlxPointer
 	public var x(default, null):Int = 0;
 	/** The position in the world */
 	public var y(default, null):Int = 0;
-	
+
 	/**
 	 * The world position relative to the main camera's scroll position, `cam.viewMarginX` or
 	 * `cam.viewMarginLeft` is the left edge of the camera and `cam.viewMarginRight` is the right
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public var viewX(default, null):Int = 0;
 	/**
 	 * The world position relative to the main camera's scroll position, `cam.viewMarginY` or
 	 * `cam.viewMarginTop` is the top edge of the camera and `cam.viewMarginBottom` is the bottom
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public var viewY(default, null):Int = 0;
-	
+
 	/**
 	 * The position relative to the `FlxGame`'s position in the window,
 	 * where `0` is the left edge of the game and `FlxG.width` is the right
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public var gameX(default, null):Int = 0;
 	/**
 	 * The position relative to the `FlxGame`'s position in the window,
 	 * where `0` is the top edge of the game and `FlxG.height` is the bottom
-	 * 
+	 *
 	 * @since 5.9.0
 	 */
 	public var gameY(default, null):Int = 0;
-	
+
 	var _rawX(default, null):Float = 0;
 	var _rawY(default, null):Float = 0;
 
@@ -51,7 +51,7 @@ class FlxPointer
 
 	/**
 	 * Fetch the world position of the pointer on any given camera
-	 * 
+	 *
 	 * **Note:** Fields `x` and `y` also store this result
 	 *
 	 * @param   camera  If unspecified, `FlxG.camera` is used, instead
@@ -61,17 +61,17 @@ class FlxPointer
 	{
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		final p = getViewPosition(camera, FlxPoint.weak());
 		return camera.viewToWorldPosition(p, 1, 1, result);
 	}
-	
+
 	/**
 	 * The position relative to the game's position in the window, where `(0, 0)` is the
 	 * top-left edge of the game and `(FlxG.width, FlxG.height)` is the bottom-right
-	 * 
+	 *
 	 * **Note:** Fields `gameX` and `gameY` also store this result
-	 * 
+	 *
 	 * @param   result  An existing point to store the results, if unspecified, one is created
 	 * @since 5.9.0
 	 */
@@ -79,15 +79,15 @@ class FlxPointer
 	{
 		if (result == null)
 			return FlxPoint.get();
-		
+
 		return result.set(Std.int(_rawX), Std.int(_rawY));
 	}
-	
+
 	/**
 	 * Fetch the world position relative to the main camera's `scroll` position, where
 	 * `(cam.viewMarginLeft, cam.viewMarginTop)` is the top-left of the camera and
 	 * `(cam.viewMarginRight, cam.viewMarginBottom)` is the bottom right
-	 * 
+	 *
 	 * **Note:** Fields `viewX` and `viewY` also store this result
 	 *
 	 * @param   camera  If unspecified, `FlxG.camera` is used, instead
@@ -97,7 +97,7 @@ class FlxPointer
 	{
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		return camera.gameToViewPosition(gameX, gameY, result);
 	}
 
@@ -150,7 +150,7 @@ class FlxPointer
 	{
 		_rawX = x / FlxG.scaleMode.scale.x;
 		_rawY = y / FlxG.scaleMode.scale.y;
-		
+
 		updatePositions();
 	}
 
@@ -163,16 +163,16 @@ class FlxPointer
 		getGamePosition(_cachedPoint);
 		gameX = Std.int(_cachedPoint.x);
 		gameY = Std.int(_cachedPoint.y);
-		
+
 		getViewPosition(FlxG.camera, _cachedPoint);
 		viewX = Std.int(_cachedPoint.x);
 		viewY = Std.int(_cachedPoint.y);
-		
+
 		getWorldPosition(FlxG.camera, _cachedPoint);
 		x = Std.int(_cachedPoint.x);
 		y = Std.int(_cachedPoint.y);
 	}
-	
+
 	public function toString():String
 	{
 		return FlxStringUtil.getDebugString([LabelValuePair.weak("x", x), LabelValuePair.weak("y", y)]);

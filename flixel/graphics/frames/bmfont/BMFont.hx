@@ -12,7 +12,7 @@ using StringTools;
 /**
  * Used internally via `FlxBitmapFont.fromAngelCode` to serialize text, xml or binary files
  * exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -23,7 +23,7 @@ class BMFont
 	public var pages:Array<BMFontPage>;
 	public var chars:Array<BMFontChar>;
 	public var kernings:Null<Array<BMFontKerning>> = null;
-	
+
 	function new(?info, ?common, ?pages, ?chars, ?kernings)
 	{
 		this.info = info;
@@ -32,7 +32,7 @@ class BMFont
 		this.chars = chars;
 		this.kernings = kernings;
 	}
-	
+
 	public static function fromXml(xml:Xml)
 	{
 		final main = new BMFontXml(xml);
@@ -41,15 +41,15 @@ class BMFont
 		final pages = BMFontPage.listFromXml(main.node.get("pages"));
 		final chars = BMFontChar.listFromXml(main.node.get("chars"));
 		var kernings:Array<BMFontKerning> = null;
-		
+
 		if (main.hasNode("kernings"))
 		{
 			kernings = BMFontKerning.listFromXml(main.node.get("kernings"));
 		}
-		
+
 		return new BMFont(info, common, pages, chars, kernings);
 	}
-	
+
 	public static function fromText(text:String)
 	{
 		var info:BMFontInfo = null;
@@ -60,7 +60,7 @@ class BMFont
 		// we dont need these but they exists in the file
 		// var charCount = 0;
 		// var kerningCount = 0;
-		
+
 		final lines = text.replace('\r\n', '\n').split('\n').filter((line) -> line.length > 0);
 		for (line in lines)
 		{
@@ -77,10 +77,10 @@ class BMFont
 				case 'kerning': kernings.push(BMFontKerning.fromText(blockAttrs));
 			}
 		}
-		
+
 		return new BMFont(info, common, pages, chars, kernings.length > 0 ? kernings : null);
 	}
-	
+
 	/**
 	 * @see https://www.angelcode.com/products/bmfont/doc/file_format.html#bin
 	 */
@@ -99,13 +99,13 @@ class BMFont
 		{
 			FlxG.log.warn('The BMFont parser is made to work on files with version 3. Using earlier versions can cause issues!');
 		}
-		
+
 		var info:BMFontInfo = null;
 		var common:BMFontCommon = null;
 		var pages:Array<BMFontPage> = null;
 		var chars:Array<BMFontChar> = null;
 		var kerning:Array<BMFontKerning> = null;
-		
+
 		// parsing blocks
 		while (bytes.position < bytes.length)
 		{
@@ -121,7 +121,7 @@ class BMFont
 		}
 		return new BMFont(info, common, pages, chars, kerning);
 	}
-	
+
 	@:access(flixel.graphics.frames.FlxBitmapFont)
 	public function initBitmapFont(font:FlxBitmapFont):FlxBitmapFont
 	{
@@ -131,7 +131,7 @@ class BMFont
 		font.fontName = info.face;
 		font.bold = info.bold;
 		font.italic = info.italic;
-		
+
 		for (char in chars)
 		{
 			final frame = FlxRect.get();
@@ -139,16 +139,16 @@ class BMFont
 			frame.y = char.y; // Y position within the bitmap image file.
 			frame.width = char.width; // Width of the character in the image file.
 			frame.height = char.height; // Height of the character in the image file.
-			
+
 			font.minOffsetX = (font.minOffsetX < -char.xoffset) ? -char.xoffset : font.minOffsetX;
-			
+
 			if (char.id == -1)
 			{
 				throw 'Invalid font data!';
 			}
-			
+
 			font.addCharFrame(char.id, frame, FlxPoint.get(char.xoffset, char.yoffset), char.xadvance);
-			
+
 			if (char.id == FlxBitmapFont.SPACE_CODE)
 			{
 				font.spaceWidth = char.xadvance;
@@ -158,17 +158,17 @@ class BMFont
 				font.lineHeight = (font.lineHeight > char.height + char.yoffset) ? font.lineHeight : char.height + char.yoffset;
 			}
 		}
-		
+
 		if (kernings != null)
 		{
 			for (kerning in kernings)
 				font.addKerningPair(kerning.first, kerning.second, kerning.amount);
 		}
-		
+
 		font.updateSourceHeight();
 		return font;
 	}
-	
+
 	public static function parse(data:FlxAngelCodeAsset):BMFont
 	{
 		return switch guessType(data)
@@ -178,7 +178,7 @@ class BMFont
 			case BINARY(bytes): fromBytes(bytes);
 		};
 	}
-	
+
 	/**
 	 * A helper function that helps determine the type of BMFont descriptor from either the path or content of the file
 	 * @param data The file path or the file content
@@ -190,16 +190,16 @@ class BMFont
 		{
 			return XML(cast(data, Xml).firstElement());
 		}
-		
+
 		if (data is Bytes)
 		{
 			final bytes:Bytes = cast data;
 			if (isValidBytes(bytes))
 				return BINARY(bytes);
-			
+
 			return detectFromText(bytes.toString());
 		}
-		
+
 		if (data is String)
 		{
 			final dataStr:String = cast data;
@@ -209,10 +209,10 @@ class BMFont
 				final bytes = Assets.getBytes(dataStr);
 				if(bytes == null)
 					return detectFromText(Assets.getText(dataStr));
-				
+
 				if (isValidBytes(bytes))
 					return BINARY(bytes);
-				
+
 				return detectFromText(bytes.toString());
 			}
 			else
@@ -221,10 +221,10 @@ class BMFont
 				return detectFromText(dataStr);
 			}
 		}
-		
+
 		throw 'Invalid FlxAngelCodeAsset: $data';
 	}
-	
+
 	static function safeParseXML(str:String)
 	{
 		// for js, Xml.parse throws if str is not valid XML but on desktop it just returns null
@@ -249,7 +249,7 @@ class BMFont
 		}
 		return TEXT(text);
 	}
-	
+
 	static function isValidBytes(bytes:Bytes)
 	{
 		final expected = [66, 77, 70]; // 'B', 'M', 'F'
@@ -258,7 +258,7 @@ class BMFont
 			if (bytes.get(i) != expected[i])
 				return false;
 		}
-		
+
 		return true;
 	}
 }

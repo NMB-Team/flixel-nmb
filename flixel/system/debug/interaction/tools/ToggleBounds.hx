@@ -25,31 +25,31 @@ class ToggleBounds extends Tool
 	override function init(brain:Interaction):Tool
 	{
 		super.init(brain);
-		
+
 		_name = "Toggle Debug Draw";
 		setButton(Icon.drawDebug);
 		button.toggleMode = false;
-		
+
 		// _tooltip = Tooltip.add(null, "");
 		// _tooltip.textField.wordWrap = false;
-		
+
 		return this;
 	}
-	
+
 	override function update():Void
 	{
 		button.enabled = FlxG.debugger.drawDebug && _brain.selectedItems.countLiving() > 0;
-		button.mouseEnabled = button.enabled; 
+		button.mouseEnabled = button.enabled;
 		button.alpha = button.enabled ? 0.3 : 0.1;
 	}
-	
+
 	override function onButtonClicked()
 	{
 		#if FLX_DEBUG // needed for coverage tests
 		// super.onButtonClicked();
 		if (_brain.selectedItems.length == 0)
 			return;
-		
+
 		// get whether any selected object is being debug drawn
 		var anyEnabled = false;
 		for (member in _brain.selectedItems)
@@ -60,7 +60,7 @@ class ToggleBounds extends Tool
 				break;
 			}
 		}
-		
+
 		for (member in _brain.selectedItems)
 		{
 			if (member != null)

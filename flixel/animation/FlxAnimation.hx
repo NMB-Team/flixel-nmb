@@ -28,7 +28,7 @@ class FlxAnimation extends FlxBaseAnimation
 
 	/**
 	 * Seconds between frames (inverse of the framerate)
-	 * 
+	 *
 	 * Note: `FlxFrameCollections` and `FlxAtlasFrames` may have their own duration set per-frame,
 	 * those values will override this value.
 	 */
@@ -81,10 +81,10 @@ class FlxAnimation extends FlxBaseAnimation
 	 * @since 4.2.0
 	 */
 	public var frames:Array<Int>;
-	
+
 	/**
 	 * How fast or slow time should pass for this animation.
-	 * 
+	 *
 	 * Similar to `FlxAnimationController`'s `timeScale`, but won't effect other animations.
 	 * @since 5.4.1
 	 */
@@ -102,12 +102,12 @@ class FlxAnimation extends FlxBaseAnimation
 	public var offset(default, null) = FlxPoint.get();
 
 	public var usesIndices:Bool = false;
-	
+
 	@:noCompletion public var usesIndicies(get, set):Bool;
-	
+
 	inline function get_usesIndicies():Bool
 		return usesIndices;
-		
+
 	inline function set_usesIndicies(value:Bool):Bool
 		return usesIndices = value;
 
@@ -202,7 +202,7 @@ class FlxAnimation extends FlxBaseAnimation
 		{
 			_frameFinishedEndTimer = 0;
 		}
-		
+
 		if (parent != null)
 			parent.firePlayCallback(name, Force, Reversed, curFrame);
 		onPlay.dispatch(name, Force, Reversed, curFrame);
@@ -301,11 +301,11 @@ class FlxAnimation extends FlxBaseAnimation
 				else
 					curFrame++;
 			}
-			
+
 			// prevents null ref when the sprite is destroyed on finishCallback (#2782)
 			if (finished)
 				break;
-			
+
 			curFrameDuration = getCurrentFrameDuration();
 		}
 	}

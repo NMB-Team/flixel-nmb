@@ -18,17 +18,17 @@ import openfl.geom.Rectangle;
 class FlxAtlasFrames extends FlxFramesCollection
 {
 	var usedGraphics:Array<FlxGraphic> = [];
-	
+
 	public function new(parent:FlxGraphic, ?border:FlxPoint)
 	{
 		super(parent, FlxFrameCollectionType.ATLAS, border);
 	}
-	
+
 	override function destroy()
 	{
 		while (usedGraphics.length > 0)
 			usedGraphics.shift().decrementUseCount();
-		
+
 		super.destroy();
 	}
 
@@ -282,7 +282,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 			var rect = FlxRect.get(Std.parseFloat(texture.att.x), Std.parseFloat(texture.att.y), Std.parseFloat(texture.att.width),
 				Std.parseFloat(texture.att.height));
-			
+
 			var size = if (trimmed)
 			{
 				FlxRect.get(Std.parseInt(texture.att.frameX), Std.parseInt(texture.att.frameY), Std.parseInt(texture.att.frameWidth),
@@ -292,7 +292,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 			{
 				FlxRect.get(0, 0, rect.width, rect.height);
 			}
-			
+
 
 			var angle = rotated ? FlxFrameAngle.ANGLE_NEG_90 : FlxFrameAngle.ANGLE_0;
 
@@ -304,17 +304,17 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 			// Prevents issues caused by adding frames of size 0
 			if (rect.width == 0 || rect.height == 0)
-            {
-                if (!trimmed)
-                    size.setSize(1,1);
-                
-                var frame = frames.addEmptyFrame(size);
+			{
+				if (!trimmed)
+					size.setSize(1,1);
 
-                frame.name = name;
-                frame.offset.copyFrom(offset);
-                
-                continue;
-            }
+				var frame = frames.addEmptyFrame(size);
+
+				frame.name = name;
+				frame.offset.copyFrom(offset);
+
+				continue;
+			}
 
 			frames.addAtlasFrame(rect, sourceSize, offset, name, angle, flipX, flipY);
 		}
@@ -453,37 +453,37 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 		return atlasFrames;
 	}
-	
+
 	/**
 	 * Adds all ofthe frames from the specified collection
-	 * 
+	 *
 	 * @param   collection     The frames to add. Note: calling destroy() on this collection
 	 *                         after it has been added can cause crashes.
 	 * @param   overwriteHash  If true, any new frames with matching names will replace old ones.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function addAtlas(collection:FlxAtlasFrames, overwriteHash = false)
 	{
 		for (frame in collection.frames)
 			pushFrame(frame, overwriteHash);
-		
+
 		if (!usedGraphics.contains(collection.parent))
 		{
 			usedGraphics.push(collection.parent);
 			collection.parent.incrementUseCount();
 		}
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Creates a new `FlxAtlasFrames` instance with all the frames from this and the desired instance.
-	 * 
+	 *
 	 * Note: Calling `destroy` on either of these graphics after concatenating them may cause crashes
 	 * @param   collection     The other frames to add.
 	 * @param   overwriteHash  If true, any new frames with matching names will replace old ones.
-	 * 
+	 *
 	 * @since 5.3.0
 	 */
 	public function concat(collection:FlxAtlasFrames, overwriteHash = false)

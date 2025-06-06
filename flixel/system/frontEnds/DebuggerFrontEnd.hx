@@ -9,7 +9,7 @@ import flixel.system.debug.interaction.tools.Tool;
 import flixel.system.debug.Window;
 import flixel.system.debug.watch.Tracker;
 import flixel.system.ui.FlxSystemButton;
-import flixel.util.FlxHorizontalAlign;
+import flixel.util.FlxAlign;
 import flixel.util.FlxSignal;
 
 using flixel.util.FlxStringUtil;
@@ -50,15 +50,15 @@ class DebuggerFrontEnd
 	public var visibilityChanged(default, null):FlxSignal = new FlxSignal();
 
 	public var visible(default, set):Bool = false;
-	
+
 	#if FLX_DEBUG
 	/** Helper for adding and removing debug tools */
 	public var tools:DebugToolsFrontEnd;
-	
+
 	/** Helper for adding and removing debug windows */
 	public var windows:DebugWindowsFrontEnd;
 	#end
-	
+
 	@:allow(flixel.FlxG)
 	function new()
 	{
@@ -67,7 +67,7 @@ class DebuggerFrontEnd
 		windows = new DebugWindowsFrontEnd();
 		#end
 	}
-	
+
 	/**
 	 * Change the way the debugger's windows are laid out.
 	 *
@@ -159,7 +159,7 @@ class DebuggerFrontEnd
 		FlxG.game.debugger.removeButton(Button, UpdateLayout);
 		#end
 	}
-	
+
 	function set_drawDebug(Value:Bool):Bool
 	{
 		if (drawDebug == Value)
@@ -216,17 +216,17 @@ class DebugToolsFrontEnd
 {
 	public var activeTool(get, never):Tool;
 	inline function get_activeTool() return interaction.activeTool;
-	
+
 	var interaction(get, never):Interaction;
 	inline function get_interaction() return FlxG.game.debugger.interaction;
-	
+
 	function new() {}
-	
+
 	public function add(tool)
 	{
 		interaction.addTool(tool);
 	}
-	
+
 	public function remove(tool)
 	{
 		interaction.removeTool(tool);
@@ -238,15 +238,15 @@ class DebugWindowsFrontEnd
 {
 	var debugger(get, never):FlxDebugger;
 	inline function get_debugger() return FlxG.game.debugger;
-	
+
 	function new() {}
-	
+
 	public function add(window, ?button)
 	{
 		debugger.addWindow(window);
 		debugger.addWindowToggleButton(window, button);
 	}
-	
+
 	public function remove(window)
 	{
 		debugger.removeWindow(window);

@@ -180,13 +180,13 @@ class FlxEase
 	public static function bounceHardOut(t:Float):Float
 	{
 		t = 1 - t;
-		if (t < 1 / 2.75)
+		if (t < B1)
 			return 1 - (7.5625 * t * t);
-		if (t < 2 / 2.75)
-			return 1 - (7.5625 * (t -= 1.5 / 2.75) * t + 0.75);
-		if (t < 2.5 / 2.75)
-			return 1 - (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375);
-		return 1 - (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375);
+		if (t < B2)
+			return 1 - (7.5625 * (t -= B3) * t + 0.75);
+		if (t < B4)
+			return 1 - (7.5625 * (t -= B5) * t + 0.9375);
+		return 1 - (7.5625 * (t -= B6) * t + 0.984375);
 	}
 
 	public static inline function circIn(t:Float):Float
@@ -270,12 +270,12 @@ class FlxEase
 	{
 		return Math.pow(t, 3);
 	}
-	
+
 	public static inline function powOut(t:Float):Float
 	{
 		return 1 - Math.pow(1 - t, 3);
 	}
-	
+
 	public static inline function powInOut(t:Float):Float
 	{
 		t *= 2;

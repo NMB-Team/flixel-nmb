@@ -22,41 +22,41 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 	static inline var GUTTER = 4;
 	static inline var TEXT_HEIGHT = 20;
 	static inline var MAX_NAME_WIDTH = 125;
-	
+
 	public var data:WatchEntryData;
 	public var displayName(default, null):String;
 	public final onRemove = new FlxSignal();
-	
+
 	var nameText:TextField;
 	var valueText:EditableTextField;
 	var removeButton:FlxSystemButton;
 	var defaultFormat:TextFormat;
-	
+
 	public function new(displayName:String, data:WatchEntryData)
 	{
 		super();
-		
+
 		this.displayName = displayName;
 		this.data = data;
-		
+
 		defaultFormat = new TextFormat(FlxAssets.FONT_DEBUGGER, 12, getTextColor());
 		nameText = initTextField(DebuggerUtil.createTextField());
 		final expectedType = Type.typeof(getValue());
 		valueText = new EditableTextField(canEdit(data), defaultFormat, submitValue, expectedType);
 		initTextField(DebuggerUtil.initTextField(valueText));
-		
+
 		updateName();
-		
+
 		addChild(removeButton = new FlxSystemButton(Icon.close, ()->onRemove.dispatch()));
 		removeButton.y = (TEXT_HEIGHT - removeButton.height) * .5;
 		removeButton.alpha = 0.3;
 	}
-	
+
 	function canEdit(data:WatchEntryData)
 	{
 		return data.match(FIELD(_, _));
 	}
-	
+
 	function getTextColor():FlxColor
 	{
 		return switch (data)
@@ -67,7 +67,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 			case FUNCTION(_): 0xF1A5A5;
 		}
 	}
-	
+
 	function initTextField<T:TextField>(textField:T):T
 	{
 		textField.selectable = true;
@@ -87,7 +87,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		valueText.width = textWidth - nameWidth - GUTTER;
 		removeButton.x = textWidth;
 	}
-	
+
 	function updateName()
 	{
 		if (displayName == null)
@@ -102,10 +102,10 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 				case FUNCTION(_):
 			}
 		}
-		
+
 		setNameText(displayName);
 	}
-	
+
 	function setNameText(name:String)
 	{
 		nameText.text = name;

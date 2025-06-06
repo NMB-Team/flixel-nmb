@@ -15,7 +15,7 @@ class FlxAssetPaths
 {
 	/**
 	 * Searches through the specified directory and adds a static public field for every file found.
-	 * 
+	 *
 	 * @param   directory       The folder of assets to build fields for
 	 * @param   subDirectories  If true, all subfolders will be included
 	 * @param   include         Regular Expression used to allow files based by name
@@ -34,25 +34,25 @@ class FlxAssetPaths
 		Context.registerModuleDependency(Context.getLocalModule(), directory);
 
 		final fileReferences = getFileReferences(directory, subDirectories, include, exclude);
-		
+
 		// determine field names, remove nulls and warn on invalid names
 		nameFileReferences(fileReferences, rename);
-		
+
 		// create static list of all files
 		final allFiles = [];
 		for (fileRef in fileReferences)
 			allFiles.push(macro $i{fileRef.name});
-		
+
 		// warns on any duplicates
 		removeDuplicates(fileReferences);
-		
+
 		final fields = Context.getBuildFields();
 		var listConflictingPath:String = null;
 		for (fileRef in fileReferences)
 		{
 			// create new fields based on file references!
 			fields.push(fileRef.createField());
-			
+
 			// make sure no fields conflict with the list field name
 			if (listField != "" && listConflictingPath == null)
 			{
@@ -60,7 +60,7 @@ class FlxAssetPaths
 					listConflictingPath = fileRef.value;
 			}
 		}
-		
+
 		if (listField != "")
 		{
 			if (listConflictingPath != null)
@@ -79,10 +79,10 @@ class FlxAssetPaths
 				});
 			}
 		}
-		
+
 		return fields;
 	}
-	
+
 	/**
 	 * Returns all files in a directory that fit the include/exclude criteria.
 	 * @param   directory       The folder of assets to build fields for
@@ -94,11 +94,11 @@ class FlxAssetPaths
 	{
 		return addFileReferences([], directory, subDirectories, include, exclude);
 	}
-	
+
 	/**
 	 * Searches for all files in a directory that fit the include/exclude criteria and adds them to
 	 * the target array
-	 * 
+	 *
 	 * @param   fileReferences  The array to add the references to
 	 * @param   directory       The folder of assets to build fields for
 	 * @param   subDirectories  If true, all subfolders will be included
@@ -135,7 +135,7 @@ class FlxAssetPaths
 
 		return fileReferences;
 	}
-	
+
 	/**
 	 * Creates a name for each file, removes null and warns on invalid names
 	 */
@@ -145,16 +145,16 @@ class FlxAssetPaths
 		while (i-- > 0)
 		{
 			final fileRef = fileReferences[i];
-			
+
 			// create field name
 			fileRef.createName(rename);
-			
+
 			if (fileRef.name == null)
 				// remove if null name
 				fileReferences.splice(i, 1);
 		}
 	}
-	
+
 	/**
 	 * Searches for, removes and warns of all duplicate field names
 	 */
@@ -168,7 +168,7 @@ class FlxAssetPaths
 			else
 				ignoredFiles[file.name].push(file);
 		}
-		
+
 		// loop backward so we can delete duplicates
 		var i = fileReferences.length;
 		while (i-- > 0)
@@ -188,7 +188,7 @@ class FlxAssetPaths
 				}
 			}
 		}
-		
+
 		// Show warnings for ignored files, if were not doing unit tests
 		#if !FLX_UNIT_TEST
 		for (name=>files in ignoredFiles)
@@ -212,7 +212,7 @@ class FlxAssetPaths
 private class FileReference
 {
 	static var valid = ~/^[_A-Za-z]\w*$/;
-	
+
 	static function defaultNamer(path:String)
 	{
 		return path.split("/").pop();
@@ -227,7 +227,7 @@ private class FileReference
 		this.value = value;
 		this.documentation = "`\"" + value + "\"` (auto generated).";
 	}
-	
+
 	/**
 	 * Creates the name for this field using the supplied method and the path.
 	 * @param   namer  Function that takes a path and returns a haxe field name.
@@ -236,14 +236,14 @@ private class FileReference
 	{
 		if (namer == null)
 			namer = defaultNamer;
-		
+
 		name = namer(value);
 		if (name == null)
 			return;
-		
+
 		validateName();
 	}
-	
+
 	/**
 	 * Replaces hyphens, spaces and periods, and warns if the resulting name is not a valid haxe identifier.
 	 */
@@ -251,7 +251,7 @@ private class FileReference
 	{
 		// replace some forbidden names to underscores, since variables cannot have these symbols.
 		name = name.split("-").join("_").split(" ").join("_").split(".").join("__");
-		
+
 		// warn if the name is invalid
 		if (!valid.match(name)) // #1796
 		{
@@ -259,7 +259,7 @@ private class FileReference
 			name = null;
 		}
 	}
-	
+
 	public function createField():Field
 	{
 		return {
@@ -270,12 +270,12 @@ private class FileReference
 			pos: Context.currentPos()
 		};
 	}
-	
+
 	public inline function warn(msg:String)
 	{
 		warnAsset(msg, value);
 	}
-	
+
 	public static inline function warnAsset(msg:String, filePath:String)
 	{
 		Context.warning(msg, Context.makePosition({min: 0, max: 0, file: filePath}));

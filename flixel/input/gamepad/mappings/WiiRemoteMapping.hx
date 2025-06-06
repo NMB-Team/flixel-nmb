@@ -278,16 +278,16 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 
 		return super.set_attachment(attachment);
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		var label = WiiRemoteMapping.getWiiInputLabel(id, attachment);
 		if (label == null)
 			return super.getInputLabel(id);
-		
+
 		return label;
 	}
-	
+
 	public static function getWiiInputLabel(id:FlxGamepadInputID, attachment:FlxGamepadAttachment)
 	{
 		switch (id)
@@ -297,7 +297,7 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 			case START: return"plus";
 			default:
 		}
-		
+
 		return switch (attachment)
 		{
 			case WII_CLASSIC_CONTROLLER: getLabelClassicController(id);
@@ -348,7 +348,7 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 			default: null;
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.WII(getRawID(id));

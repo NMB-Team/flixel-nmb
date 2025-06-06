@@ -51,23 +51,24 @@ enum abstract LogitechID(Int) to Int
 	// TODO: Someone needs to look this up and define it! (NOTE: not all logitech controllers have this)
 	var LOGITECH = -5;
 	#end
-	
+
 	var LEFT_STICK_UP = 24;
 	var LEFT_STICK_DOWN = 25;
 	var LEFT_STICK_LEFT = 26;
 	var LEFT_STICK_RIGHT = 27;
-	
+
 	var RIGHT_STICK_UP = 28;
 	var RIGHT_STICK_DOWN = 29;
 	var RIGHT_STICK_LEFT = 30;
 	var RIGHT_STICK_RIGHT = 31;
-		
+
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<LogitechID>(0, 1, {
 		up: LEFT_STICK_UP,
 		down: LEFT_STICK_DOWN,
 		left: LEFT_STICK_LEFT,
 		right: LEFT_STICK_RIGHT
 	});
+
 	public static final RIGHT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<LogitechID>(2, 3, {
 		up: RIGHT_STICK_UP,
 		down: RIGHT_STICK_DOWN,

@@ -44,14 +44,14 @@ class LogStyle
 	 * even when logged with `once = true` and even in release mode.
 	 */
 	public final onLog = new FlxTypedSignal<(data:Any, ?pos:PosInfos) -> Void>();
-	
+
 	/**
 	 * Whether an exception is thrown when this LogStyle is used.
 	 * **Note**: Unlike other log style properties, this happens even in release mode.
 	 * @since 5.4.0
 	 */
 	public var throwException:Bool = false;
-	
+
 	/**
 	 * Create a new LogStyle to be used in conjunction with `FlxG.log.advanced()`
 	 *
@@ -82,10 +82,10 @@ class LogStyle
 			onLog.add(callback);
 		this.throwException = throwException;
 	}
-	
+
 	/**
 	 * Converts the data into a log message according to this style.
-	 * 
+	 *
 	 * @param   data  The data being logged
 	 */
 	public function toLogString(data:Array<Any>)
@@ -95,17 +95,17 @@ class LogStyle
 		for (i in 0...data.length)
 		{
 			final text = Std.string(data[i]);
-			
+
 			// Make sure you can't insert html tags
 			texts.push(StringTools.htmlEscape(text));
 		}
-		
+
 		return prefix + texts.join(" ");
 	}
-	
+
 	/**
 	 * Converts the data into an html log message according to this style.
-	 * 
+	 *
 	 * @param   data  The data being logged
 	 */
 	public inline function toHtmlString(data:Array<Any>)

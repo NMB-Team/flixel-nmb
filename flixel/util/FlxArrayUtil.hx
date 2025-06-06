@@ -1,5 +1,8 @@
 package flixel.util;
 
+using flixel.util.FlxStringUtil;
+using StringTools;
+
 /**
  * A set of functions for array manipulation.
  */
@@ -112,6 +115,40 @@ class FlxArrayUtil
 	}
 
 	/**
+	 * Converts a string of newline-separated values into an array of strings.
+	 */
+	public static function listFromString(text:String):Array<String>
+	{
+		return text.isNullOrEmpty() ? [] : text.split('\n').map(str -> str.trim());
+	}
+
+	/**
+	 * Randomly shuffles the elements of the given array using the Fisher-Yates algorithm.
+	 * 
+	 * @param array The array to shuffle.
+	 * @return The shuffled array (same reference).
+	 */
+	public static function shuffleArray<T>(array:Array<T>):Array<T>
+	{
+		for (i in array.length - 1...0) {
+			final j = FlxG.random.int(0, i);
+			final temp = array[i];
+			array[i] = array[j];
+			array[j] = temp;
+		}
+		return array;
+	}
+
+	/**
+	 * Clear the given map.
+	 */
+	public static inline function clear<K:Any, V:Any>(map:Map<K, V>):Map<K, V>
+	{
+		map?.clear();
+		return null;
+	}
+
+	/**
 	 * Clears an array structure, but leaves the object data untouched
 	 * Useful for cleaning up temporary references to data you want to preserve.
 	 * WARNING: Does not attempt to properly destroy the contents.
@@ -191,6 +228,16 @@ class FlxArrayUtil
 	}
 
 	/**
+	 * Creates an array of all integers from `min` to `max` (inclusive).
+	 * @param max The maximum value in the array.
+	 * @param min The minimum value in the array (default is 0).
+	 */
+	inline static function rangeArray(max:Int, min = 0):Array<Int> {
+		final result = [for (i in min...max) i];
+		return result;
+	}
+
+	/**
 	 * Pushes the element into the array (and if the array is null, creates it first) and returns the array.
 	 * @since 4.6.0
 	 */
@@ -205,11 +252,7 @@ class FlxArrayUtil
 
 	public static inline function contains<T>(array:Array<T>, element:T):Bool
 	{
-		#if (haxe >= "4.0.5")
 		return array.contains(element);
-		#else
-		return array.indexOf(element) != -1;
-		#end
 	}
 
 	/**

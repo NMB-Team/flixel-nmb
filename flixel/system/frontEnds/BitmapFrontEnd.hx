@@ -14,7 +14,7 @@ import lime.graphics.opengl.GL;
 
 /**
  * Internal storage system to prevent graphics from being used repeatedly in memory.
- * 
+ *
  * Accessed via `FlxG.bitmap`.
  */
 class BitmapFrontEnd
@@ -24,7 +24,7 @@ class BitmapFrontEnd
  	 * Returns the maximum allowed width and height (in pixels) for a texture.
  	 * This value is only available on hardware-accelerated targets that use OpenGL.
  	 * On unsupported targets, the returned value will always be -1.
- 	 * 
+ 	 *
  	 * @see https://opengl.gpuinfo.org/displaycapability.php?name=GL_MAX_TEXTURE_SIZE
 	 */
 	public var maxTextureSize(get, never):Int;
@@ -396,7 +396,7 @@ class BitmapFrontEnd
 	{
 		if (_maxTextureSize < 0 && FlxG.stage.window.context.attributes.hardware)
 			_maxTextureSize = cast GL.getParameter(GL.MAX_TEXTURE_SIZE);
-			
+
 		return _maxTextureSize;
 	}
 	#end

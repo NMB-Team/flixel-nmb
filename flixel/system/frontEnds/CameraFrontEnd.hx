@@ -158,7 +158,7 @@ class CameraFrontEnd
 		for (camera in list)
 		{
 			FlxG.game.removeChild(camera.flashSprite);
-			
+
 			if (!order.contains(camera))
 			{
 				if (destroy)
@@ -169,7 +169,7 @@ class CameraFrontEnd
 		var oldList = this.list.copy();
 		this.list.splice(0, this.list.length); // clear but keep references
 		this.defaults.splice(0, this.defaults.length);
-		
+
 		for (i => camera in order)
 		{
 			if (camera == null)
@@ -183,10 +183,10 @@ class CameraFrontEnd
 			if (!oldList.contains(camera))
 				cameraAdded.dispatch(camera);
 		}
-		
+
 		if (defaults == null && list.length > 0)
 			defaults = [list[0]];
-			
+
 		if (defaults != null)
 			for (camera in defaults)
 			{
@@ -210,13 +210,13 @@ class CameraFrontEnd
 			FlxG.log.warn("FlxG.cameras.removeAt(): The camera you attempted to remove is not a part of the game.");
 			return;
 		}
-		
+
 		var camera = list[index];
-		
+
 		FlxG.game.removeChild(camera.flashSprite);
 		list.splice(index, 1);
 		defaults.remove(camera);
-		
+
 		if (FlxG.renderTile)
 		{
 			for (i in 0...list.length)
@@ -224,7 +224,7 @@ class CameraFrontEnd
 				list[i].ID = i;
 			}
 		}
-		
+
 		if (destroy)
 			camera.destroy();
 
@@ -241,7 +241,7 @@ class CameraFrontEnd
 	{
 		return list.indexOf(camera);
 	}
-	
+
 	/**
 	 * Returns true if the specified camera is in the list.
 	 *

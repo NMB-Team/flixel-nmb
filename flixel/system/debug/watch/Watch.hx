@@ -25,38 +25,38 @@ class WatchBase<TEntry:WatchEntry> extends Window
 {
 	#if FLX_DEBUG
 	static inline var LINE_HEIGHT:Int = 15;
-	
+
 	public var alwaysOnTop(get, set):Bool;
 	inline function get_alwaysOnTop() return _alwaysOnTop;
 	inline function set_alwaysOnTop(value:Bool) return _alwaysOnTop = value;
-	
+
 	final entriesContainer:ScrollSprite;
 	final scrollbar:ScrollBar;
 	final entries:Array<TEntry> = [];
 	var create:(displayName:String, data:WatchEntryData)->TEntry;
-	
+
 	public function new(entryConstructor, title, ?icon, resizable = true, ?bounds, closable = false, alwaysOnTop = true)
 	{
 		create = entryConstructor;
 		super(title, icon, 0, 0, resizable, bounds, closable, alwaysOnTop);
-		
+
 		entriesContainer = new ScrollSprite();
 		entriesContainer.x = 2;
 		entriesContainer.y = 15;
 		addChild(entriesContainer);
-		
+
 		scrollbar = entriesContainer.createScrollBar();
 		scrollbar.y = entriesContainer.y;
 		addChild(scrollbar);
-		
+
 		FlxG.signals.preStateSwitch.add(clear);
 	}
-	
+
 	public function add(displayName:String, data:WatchEntryData):Void
 	{
 		if (isInvalid(displayName, data))
 			return;
-		
+
 		var existing = getExistingEntry(displayName, data);
 		if (existing != null)
 		{
@@ -136,7 +136,7 @@ class WatchBase<TEntry:WatchEntry> extends Window
 			entriesContainer.removeChild(entry);
 			entry.destroy();
 		}
-		
+
 		entries.resize(0);
 	}
 
@@ -159,24 +159,24 @@ class WatchBase<TEntry:WatchEntry> extends Window
 		final oldMinSize = minSize.x;
 		super.updateSize();
 		minSize.x = oldMinSize;
-		
+
 		scrollbar.x = _width - scrollbar.width - 2;
 		scrollbar.resize(getMarginHeight() - 10);
-		
+
 		entriesContainer.setScrollSize(getMarginWidth(), getMarginHeight());
 		resetEntries();
 	}
-	
+
 	function getMarginWidth()
 	{
 		return _width - entriesContainer.x - (_resizable ? 5 : 3) - scrollbar.width - 4;
 	}
-	
+
 	function getMarginHeight()
 	{
 		return _height - entriesContainer.y - 3;
 	}
-	
+
 	function resetEntries():Void
 	{
 		final width = getMarginWidth();

@@ -81,7 +81,7 @@ class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
 			default: super.getRawID(ID);
 		}
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		return switch (id)
@@ -94,12 +94,12 @@ class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
 			case _: super.getInputLabel(id);
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.OUYA(getRawID(id));
 	}
-	
+
 	#if FLX_JOYSTICK_API
 	override function axisIndexToRawID(axisID:OUYAID):Int
 	{

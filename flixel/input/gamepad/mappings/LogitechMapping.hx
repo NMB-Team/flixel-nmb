@@ -89,12 +89,12 @@ class LogitechMapping extends FlxTypedGamepadMapping<LogitechID>
 			default: super.getRawID(ID);
 		}
 	}
-	
+
 	override function getMappedInput(id:FlxGamepadInputID)
 	{
 		return FlxGamepadMappedInput.LOGITECH(getRawID(id));
 	}
-	
+
 	override function getInputLabel(id:FlxGamepadInputID)
 	{
 		return switch (id)

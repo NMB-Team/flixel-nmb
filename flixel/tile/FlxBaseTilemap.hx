@@ -40,7 +40,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		 0,   0, 0, 0,  0,   0, 0,   0, 0, 0, 0, 0,  0,   0, 0,   0,
 		 0, 199, 0, 0,  0, 202, 0, 203, 0, 0, 0, 0,  0, 208, 0, 209
 	];
-	
+
 	static var diagonalPathfinder = new FlxDiagonalPathfinder();
 
 	public var widthInTiles(default, null):Int = 0;
@@ -133,10 +133,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "computeDimensions must be implemented";
 	}
-	
+
 	/**
 	 * Finds the column number that overlaps the given X in world space
-	 * 
+	 *
 	 * @param   worldX  An X coordinate in the world
 	 * @param   bind    If true, it will prevent out of range values
 	 * @return  A column index, where 0 is the left-most column
@@ -146,10 +146,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "getColumnAt must be implemented";
 	}
-	
+
 	/**
 	 * Finds the row number that overlaps the given Y in world space
-	 * 
+	 *
 	 * @param   worldY  A Y coordinate in the world
 	 * @param   bind    If true, it will prevent out of range values
 	 * @return  A row index, where 0 is the top-most row
@@ -159,10 +159,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "getRowAt must be implemented";
 	}
-	
+
 	/**
 	 * Get the world position of the specified column
-	 * 
+	 *
 	 * @param   column    The grid X location, in tiles
 	 * @param   midpoint  Whether to use the tile's midpoint, or upper left corner
 	 * @since 5.9.0
@@ -174,7 +174,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 
 	/**
 	 * Get the world position of the specified row
-	 * 
+	 *
 	 * @param   row       The grid Y location, in tiles
 	 * @param   midpoint  Whether to use the tile's midpoint, or upper left corner
 	 * @since 5.9.0
@@ -187,7 +187,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	/**
 	 * Shoots a ray from the start point to the end point.
 	 * If/when it passes through a tile, it stores that point and returns false.
-	 * 
+	 *
 	 * **Note:** In flixel 5.0.0, this was redone, the old method is now `rayStep`
 	 *
 	 * @param   start   The world coordinates of the start of the ray.
@@ -247,11 +247,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return calcRayEntry(end, start, result);
 	}
-	
+
 	/**
 	 * Searches all tiles near the object for any that satisfy the given filter. Stops searching
 	 * when the first overlapping tile that satisfies the condition is found
-	 * 
+	 *
 	 * @param   object    The object
 	 * @param   filter    Function that takes a tile and returns whether is satisfies the
 	 *                    disired condition, if `null`, any overlapping tile will satisfy
@@ -263,10 +263,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "overlapsWithCallback must be implemented";
 	}
-	
+
 	/**
 	 * Calls the given function on ever tile that is overlapping the target object
-	 * 
+	 *
 	 * @param   object    The object
 	 * @param   filter    Function that takes a tile and returns whether is satisfies the
 	 *                    disired condition
@@ -278,7 +278,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "overlapsWithCallback must be implemented";
 	}
-	
+
 	/**
 	 * Checks if the Object overlaps any tiles with any collision flags set,
 	 * and calls the specified callback function (if there is one).
@@ -302,7 +302,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		throw "objectOverlapsTiles must be implemented";
 	}
-	
+
 	public function setDirty(dirty:Bool = true):Void
 	{
 		throw "setDirty must be implemented";
@@ -729,11 +729,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 			throw "You must provide valid 'randomChoices' if you wish to randomize tilemap indices, please read documentation of 'setCustomTileMappings' function.";
 		}
 	}
-	
+
 	/**
 	 * Calculates a `mapIndex` via `row * widthInTiles + column`,
 	 * if the column or row is not valid, the result is `-1`
-	 * 
+	 *
 	 * @param   column  The grid X location, in tiles
 	 * @param   row     The grid Y location, in tiles
 	 * @since 5.9.0
@@ -742,13 +742,13 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return tileExists(column, row) ? (row * widthInTiles + column) : -1;
 	}
-	
+
 	/**
 	 * Calculates a `mapIndex` of the given location, if the coordinate
 	 * does not overlap the tilemap, the result is `-1`
-	 * 
+	 *
 	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
-	 * 
+	 *
 	 * @param   worldPos  A location in the world
 	 * @since 5.9.0
 	 */
@@ -756,7 +756,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getMapIndexAt(worldPos.x, worldPos.y);
 	}
-	
+
 	/**
 	 * Calculates a `mapIndex` of the given location, if the coordinate
 	 * does not overlap the tilemap, the result is `-1`
@@ -773,7 +773,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	}
 	/**
 	 * Calculates the column from a map location
-	 * 
+	 *
 	 * @param   mapIndex  The location in the map where `mapIndex = row * widthInTiles + column`
 	 * @since 5.9.0
 	 */
@@ -781,10 +781,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return mapIndex % widthInTiles;
 	}
-	
+
 	/**
 	 * Calculates the column from a map location
-	 * 
+	 *
 	 * @param   mapIndex  The location in the map where `mapIndex = row * widthInTiles + column`
 	 * @since 5.9.0
 	 */
@@ -792,7 +792,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return Std.int(mapIndex / widthInTiles);
 	}
-	
+
 	/**
 	 * Whether a tile exists at the given map location
 	 *
@@ -804,7 +804,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return columnExists(column) && rowExists(row);
 	}
-	
+
 	/**
 	 * Whether a tile exists at the given map location
 	 *
@@ -817,7 +817,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return mapIndex >= 0 && mapIndex < _data.length;
 	}
-	
+
 	/**
 	 * Whether a tile exists at the given map location
 	 *
@@ -828,10 +828,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return tileExistsAt(worldPos.x, worldPos.y);
 	}
-	
+
 	/**
 	 * Whether a tile exists at the given map location
-	 * 
+	 *
 	 * @param   worldX  An X coordinate in the world
 	 * @param   worldY  A Y coordinate in the world
 	 * @since 5.9.0
@@ -840,7 +840,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return columnExistsAt(worldX) && rowExistsAt(worldY);
 	}
-	
+
 	/**
 	 * Whether a row exists at the given map location
 	 *
@@ -851,7 +851,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return column >= 0 && column < widthInTiles;
 	}
-	
+
 	/**
 	 * Whether a column exists at the given map location
 	 *
@@ -862,7 +862,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return columnExists(getColumnAt(worldX));
 	}
-	
+
 	/**
 	 * Whether a row exists at the given map location
 	 *
@@ -873,7 +873,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return row >= 0 && row < heightInTiles;
 	}
-	
+
 	/**
 	 * Whether a row exists at the given map location
 	 *
@@ -884,7 +884,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return rowExists(getRowAt(worldY));
 	}
-	
+
 	/**
 	 * Finds the tile instance at a particular column and row,
 	 * if the column or row is invalid, the result is `null`
@@ -897,13 +897,13 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileData(getMapIndex(column, row));
 	}
-	
+
 	/**
-	 * Finds the tile instance with the given `mapIndex`, 
+	 * Finds the tile instance with the given `mapIndex`,
 	 * if the `mapIndex` is invalid, the result is `null`
 	 *
 	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
-	 * 
+	 *
 	 * **Note:** The reulting tile's `x`, `y`, `width` and `height` will not be accurate.
 	 * You can call `tile.orient` or similar methods
 	 *
@@ -914,7 +914,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return _tileObjects[getTileIndex(mapIndex)];
 	}
-	
+
 	/**
 	 * Finds the tile instance with the given world location, if the
 	 * coordinate does not overlap the tilemap, the result is `null`
@@ -929,7 +929,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileDataAt(worldPos.x, worldPos.y);
 	}
-	
+
 	/**
 	 * Finds the tile instance with the given world location, if the
 	 * coordinate does not overlap the tilemap, the result is `null`
@@ -945,7 +945,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return _tileObjects[getTileIndexAt(worldX, worldY)];
 	}
-	
+
 	/**
 	 * Check the value of a particular tile, if the
 	 * column or row is invalid, the result is `-1`
@@ -959,11 +959,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileIndex(getMapIndex(column, row));
 	}
-	
+
 	/**
-	 * Get the `tileIndex` at the given map location, 
+	 * Get the `tileIndex` at the given map location,
 	 * if the `mapIndex` is invalid, the result is `-1`
-	 * 
+	 *
 	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
 	 *
 	 * @param   mapIndex  The desired location in the map
@@ -974,7 +974,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return tileExists(mapIndex) ? _data[mapIndex] : -1;
 	}
-	
+
 	/**
 	 * Get the `tileIndex` at the given location, if the coordinate
 	 * does not overlap the tilemap, the result is `-1`
@@ -987,7 +987,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileIndexAt(worldPos.x, worldPos.y);
 	}
-	
+
 	/**
 	 * Get the `tileIndex` at the given location, if the coordinate
 	 * does not overlap the tilemap, the result is `-1`
@@ -1001,11 +1001,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTileIndex(getColumnAt(worldX), getRowAt(worldY));
 	}
-	
+
 	/**
 	 * Get the world position of the specified tile, if the `mapIndex` is invalid,
 	 * the result is `null`
-	 * 
+	 *
 	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
 	 *
 	 * @param   mapIndex  The desired location in the map
@@ -1017,13 +1017,13 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return tileExists(mapIndex) ? getTilePos(getColumn(mapIndex), getRow(mapIndex), midpoint) : null;
 	}
-	
+
 	/**
 	 * Get the world position of the specified tile
-	 * 
+	 *
 	 * **Note:** The column or row does not need to be valid, to ensure a
 	 * valid tile, use `if (tileExists(column, row))`, first
-	 * 
+	 *
 	 * @param   column    The grid X location, in tiles
 	 * @param   row       The grid Y location, in tiles
 	 * @param   midpoint  Whether to use the tile's midpoint, or upper left corner
@@ -1034,10 +1034,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return FlxPoint.get(getColumnPos(column, midpoint), getRowPos(row, midpoint));
 	}
-	
+
 	/**
 	 * Get the world position of the tile overlapping the specified position
-	 * 
+	 *
 	 * **Note:** The location does not need to overlap the tilemap, to ensure a
 	 * valid tile, use `if (tileExists(worldPos))`, first
 	 *
@@ -1050,13 +1050,13 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTilePosAt(worldPos.x, worldPos.y, midpoint);
 	}
-	
+
 	/**
 	 * Get the world position of the tile overlapping the specified position
 	 *
 	 * **Note:** The location does not need to overlap the tilemap, to ensure a
 	 * valid tile, use `if (tileExistsAt(worldX, worldY))`, first
-	 * 
+	 *
 	 * @param   worldX    An X coordinate in the world
 	 * @param   worldY    A Y coordinate in the world
 	 * @param   midpoint  Whether to use the tile's midpoint, or upper left corner
@@ -1067,7 +1067,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return getTilePos(getColumnAt(worldX), getRowAt(worldY), midpoint);
 	}
-	
+
 	/**
 	 * Returns a new array full of every coordinate of the requested tile type.
 	 *
@@ -1079,7 +1079,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	public function getAllTilePos(tileIndex:Int, midpoint = false):Array<FlxPoint>
 	{
 		final result = [];
-		
+
 		final length = _data.length;
 		for (mapIndex in 0...length)
 		{
@@ -1093,12 +1093,12 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 
 	/**
 	 * Gets the collision flags of the tile at the given location
-	 * 
+	 *
 	 * **Note:** A tile's `mapIndex` can be calculated via `row * widthInTiles + column`
-	 * 
+	 *
 	 * ##Soft Deprecation
 	 * You should use `getTileData(mapIndex).allowCollisions`, instead
-	 * 
+	 *
 	 * @param   mapIndex  The desired location in the map
 	 * @return  The internal collision flag for the requested tile.
 	 */
@@ -1109,9 +1109,9 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 
 	/**
 	 * Returns a new array full of every map index of the requested tile type.
-	 * 
+	 *
 	 * **Note:** Unlike `getTileInstances` this will return `[]` if no tiles are found
-	 * 
+	 *
 	 * @param   index  The requested tile type.
 	 * @return  An Array with a list of all map indices of that tile type.
 	 * @since 5.9.0
@@ -1119,7 +1119,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	public function getAllMapIndices(tileIndex:Int):Array<Int>
 	{
 		final result:Array<Int> = [];
-		
+
 		final length = _data.length;
 		for (mapIndex in 0...length)
 		{
@@ -1133,7 +1133,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 
 	/**
 	 * Calls the desired function with every `mapIndex` that uses the given `tileIndex`
-	 * 
+	 *
 	 * @param   tileIndex  The desired tile type
 	 * @param   function   The function called with each mapIndex
 	 * @since 5.9.0
@@ -1149,7 +1149,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 			}
 		}
 	}
-	
+
 	/**
 	 * Change the data and graphic of a tile in the tilemap.
 	 *
@@ -1163,7 +1163,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return setTileHelper(mapIndex, tileIndex, redraw);
 	}
-	
+
 	/**
 	 * Change the data and graphic of a tile in the tilemap.
 	 *
@@ -1178,7 +1178,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return setTileHelper(getMapIndex(column, row), tileIndex, redraw);
 	}
-	
+
 	/**
 	 * Change the data and graphic of a tile in the tilemap.
 	 *
@@ -1192,7 +1192,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		return setTileIndexAt(worldPos.x, worldPos.y, tileIndex, redraw);
 	}
-	
+
 	/**
 	 * Change the data and graphic of a tile in the tilemap.
 	 *
@@ -1212,16 +1212,16 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		if (!tileExists(mapIndex))
 			return false;
-			
+
 		_data[mapIndex] = tileIndex;
-		
+
 		if (!redraw)
 		{
 			return true;
 		}
-		
+
 		setDirty();
-		
+
 		switch (auto)
 		{
 			case OFF:
@@ -1229,10 +1229,10 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 			default:
 				updateTileWithAutoTile(mapIndex);
 		}
-		
+
 		return true;
 	}
-	
+
 	function updateTileWithAutoTile(mapIndex:Int)
 	{
 		// If this map is auto-tiled and it changes, locally update the arrangement
@@ -1240,11 +1240,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		var column:Int = getColumn(mapIndex) - 1;
 		final rowLength:Int = row + 3;
 		final columnHeight:Int = column + 3;
-		
+
 		while (row < rowLength)
 		{
 			column = columnHeight - 3;
-			
+
 			while (column < columnHeight)
 			{
 				if (tileExists(column, row))
@@ -1275,7 +1275,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		{
 			range = 1;
 		}
-		
+
 		final maxIndex = _tileObjects.length;
 		final end = tile + range;
 		if (maxIndex == 0)
@@ -1313,7 +1313,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 	{
 		if (!simple)
 			return _data;
-		
+
 		return
 		[
 			for (i in 0..._data.length)
@@ -1379,11 +1379,11 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		var data = computePathData(startIndex, endIndex, diagonalPolicy, stopOnEnd);
 		if (data != null)
 			return data.distances;
-		
+
 		return null;
 	}
 
-	
+
 	/**
 	 * Pathfinding helper function, floods a grid with distance information until it finds the end point.
 	 * **Note:** Currently this process does NOT use any kind of fancy heuristic! It's pretty brute.
@@ -1422,7 +1422,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		final group = FlxTypedGroup.resolveGroup(objectOrGroup);
 		if (group != null) // if it is a group
 			return group.any(tilemapOverlapsCallback.bind(_, 0, 0, inScreenSpace, camera));
-		
+
 		return tilemapOverlapsCallback(objectOrGroup);
 	}
 
@@ -1456,7 +1456,7 @@ class FlxBaseTilemap<Tile:FlxObject> extends FlxObject
 		final group = FlxTypedGroup.resolveGroup(objectOrGroup);
 		if (group != null) // if it is a group
 			return group.any(tilemapOverlapsAtCallback.bind(_, x, y, inScreenSpace, camera));
-		
+
 		return tilemapOverlapsAtCallback(objectOrGroup, x, y, inScreenSpace, camera);
 	}
 

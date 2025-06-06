@@ -1,12 +1,10 @@
 package flixel.sound;
 
-package flixel.sound;
-
 import flixel.util.FlxStringUtil;
 import flixel.group.FlxContainer.FlxTypedContainer;
 import flixel.FlxG;
 
-class SoundGroup extends FlxTypedContainer<FlxSound> {
+class FlxSoundContainer extends FlxTypedContainer<FlxSound> {
 	/**
 	 * The volume of this group
 	 */

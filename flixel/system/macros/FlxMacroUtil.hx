@@ -53,7 +53,7 @@ class FlxMacroUtil
 
 		return macro $a{finalExpr};
 	}
-	
+
 	public static macro function deprecateOverride(fieldName:String, ?msg:String):Array<Field>
 	{
 		var fields = Context.getBuildFields();
@@ -66,12 +66,12 @@ class FlxMacroUtil
 				break;
 			}
 		}
-		
+
 		if (pos != null)
 		{
 			if (msg == null)
 				msg = '$fieldName is deprecated';
-			
+
 			Context.warning(msg, pos);
 		}
 		return null;

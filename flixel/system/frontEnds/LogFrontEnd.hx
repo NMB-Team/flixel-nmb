@@ -16,27 +16,27 @@ class LogFrontEnd
 	public var redirectTraces(default, set):Bool = false;
 
 	var _standardTraceFunction:(Dynamic, ?PosInfos)->Void;
-	
+
 	public inline function add(data:Dynamic, ?pos:PosInfos):Void
 	{
 		advanced(data, LogStyle.NORMAL, false, pos);
 	}
-	
+
 	public inline function warn(data:Dynamic, ?pos:PosInfos):Void
 	{
 		advanced(data, LogStyle.WARNING, true, pos);
 	}
-	
+
 	public inline function error(data:Dynamic, ?pos:PosInfos):Void
 	{
 		advanced(data, LogStyle.ERROR, true, pos);
 	}
-	
+
 	public inline function notice(data:Dynamic, ?pos:PosInfos):Void
 	{
 		advanced(data, LogStyle.NOTICE, false, pos);
 	}
-	
+
 	/**
 	 * Add an advanced log message to the debugger by also specifying a LogStyle. Backend to FlxG.log.add(), FlxG.log.warn(), FlxG.log.error() and FlxG.log.notice().
 	 *
@@ -48,9 +48,9 @@ class LogFrontEnd
 	{
 		if (style == null)
 			style = LogStyle.NORMAL;
-		
+
 		final arrayData = (!(data is Array) ? [data] : cast data);
-		
+
 		#if FLX_DEBUG
 		// Check null game since `FlxG.save.bind` may be called before `new FlxGame`
 		if (FlxG.game == null || FlxG.game.debugger == null)
@@ -67,14 +67,14 @@ class LogFrontEnd
 					FlxG.sound.load(sound).play();
 			}
 			#end
-			
+
 			if (style.openConsole)
 				FlxG.debugger.visible = true;
 		}
 		#end
-		
+
 		style.onLog.dispatch(data, pos);
-		
+
 		if (style.throwException)
 			throw style.toLogString(arrayData);
 	}

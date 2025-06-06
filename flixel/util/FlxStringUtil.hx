@@ -63,6 +63,43 @@ class FlxStringUtil
 	}
 
 	/**
+	 * Add leading zeros to a string until it reaches the specified length.
+	 * 
+	 * @param str The string to add zeros to.
+	 * @param num The desired length of the string.
+	 */
+	public static function addZeros(str:String, num:Int)
+	{
+		while (str.length < num)
+			str = '0${str}';
+		return str;
+	}
+	
+	/**
+	 * Add trailing zeros to a string until it reaches the specified length.
+	 * 
+	 * @param str The string to add zeros to.
+	 * @param num The desired length of the string.
+	 */
+	public static function addEndZeros(str:String, num:Int)
+	{
+		while (str.length < num)
+			str = '${str}0';
+		return str;
+	}
+
+	/**
+	 * Checks if a single-character string is a letter character.
+	 * The check is Unicode-aware, so it works with accented letters, etc.
+	 */
+	inline static function isLetter(c:String)
+	{
+		final ascii = StringTools.fastCodeAt(c, 0);
+		return (ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122) || (ascii >= 192 && ascii <= 214) || (ascii >= 216 && ascii <= 246)
+			|| (ascii >= 248 && ascii <= 255);
+	}
+
+	/**
 	 * Generate a comma-separated string from an array.
 	 * Especially useful for tracing or other debug output.
 	 *
@@ -755,6 +792,16 @@ class FlxStringUtil
 	public static function isRomanNumeral(str:String):Bool
 	{
 		return roman.match(str);
+	}
+
+	/**
+	 * Replaces spaces with dashes in a string, and converts the string to lowercase.
+	 * Useful for formatting strings to be used in file names, URLs, etc.
+	 * @param string The string to format.
+	 */
+	public static function toDashesCase(string:String):String
+	{
+		return string.toLowerCase().replace(' ', '-');
 	}
 }
 

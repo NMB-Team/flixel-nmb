@@ -6,7 +6,7 @@ import haxe.io.BytesBuffer;
 /**
  * Page data used internally via `FlxBitmapFont.fromAngelCode` to serialize text, xml or binary
  * files exported from [BMFont](https://www.angelcode.com/products/bmfont/)
- * 
+ *
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
@@ -16,13 +16,13 @@ class BMFontPage
 {
 	public var id:Int;
 	public var file:String;
-	
+
 	public inline function new(id, file)
 	{
 		this.id = id;
 		this.file = file;
 	}
-	
+
 	static function fromXml(pageNode:BMFontXml):BMFontPage
 	{
 		return
@@ -31,18 +31,18 @@ class BMFontPage
 			file: pageNode.att.string("file")
 		}
 	}
-	
+
 	static function listFromXml(pagesNode:BMFontXml):Array<BMFontPage>
 	{
 		final pages = pagesNode.nodes("page");
 		return [for (page in pages) fromXml(page) ];
 	}
-	
+
 	static function fromText(pageText:String)
 	{
 		var id = -1;
 		var file:String = null;
-		BMFontUtil.forEachAttribute(pageText, 
+		BMFontUtil.forEachAttribute(pageText,
 			function(key:String, value:String)
 			{
 				switch key
@@ -55,12 +55,12 @@ class BMFontPage
 		);
 		return new BMFontPage(id, file);
 	}
-	
+
 	static function listFromBytes(bytes:BytesInput)
 	{
 		var blockSize = bytes.readInt32();
 		final pages = new Array<BMFontPage>();
-		
+
 		var i = 0;
 		while (blockSize > 0)
 		{
@@ -76,7 +76,7 @@ class BMFontPage
 			blockSize -= pageName.length + 1;
 			i++;
 		}
-		
+
 		return pages;
 	}
 }

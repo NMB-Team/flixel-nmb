@@ -2,6 +2,7 @@ package flixel;
 
 import flixel.FlxTypes;
 import openfl.display.Graphics;
+import flixel.system.debug.FlxDebugDrawGraphic;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
@@ -19,7 +20,7 @@ import flixel.util.FlxStringUtil;
  * At their core `FlxObjects` are just boxes with positions that can move and collide with other
  * objects. Most games utilize `FlxObject's` features through [FlxSprite](https://api.haxeflixel.com/flixel/FlxSprite.html),
  * which extends `FlxObject` directly and adds graphical capabilities.
- * 
+ *
  * ## Motion
  * Whenever `update` is called, objects with `move` set to true will update their positions based
  * on the following properties:
@@ -31,17 +32,17 @@ import flixel.util.FlxStringUtil;
  * - `angle`: The orientation, in degrees, of this `object`. Does not affect collision, mainly
  *            used for `FlxSprite` graphics.
  * - `angularVelocity`: The rotational speed of the object in degrees per second.
- * 
+ *
  * ## Overlaps
  * If you're only checking an overlap between two objects you can use `player.overlaps(door)`
  * or `player.overlaps(spikeGroup)`. You can check if two objects or groups of object overlap
  * with [FlxG.overlap](https://api.haxeflixel.com/flixel/FlxG.html#overlap).
- * 
+ *
  * Example:
  * ```haxe
  * if (FlxG.overlap(playerGroup, spikeGroup)) trace("overlap!");
  * ```
- * 
+ *
  * You can also specify a callback to handle which specific objects collided:
  * ```haxe
  * FlxG.overlap(playerGroup, medKitGroup
@@ -51,11 +52,11 @@ import flixel.util.FlxStringUtil;
  *     }
  * );
  * ```
- * 
+ *
  * Additional resources:
  * - [Snippets - Simple Overlap](https://snippets.haxeflixel.com/overlap/simple-overlap/)
  * - [Snippets - Overlap Callbacks](https://snippets.haxeflixel.com/overlap/overlap-callbacks/)
- * 
+ *
  * ## Collision
  * `FlxG.collide` is similar to `FlxG.overlap` except it resolves the overlap by separating their
  * positions before calling the callback. Typically collide is called on an update loop like so:
@@ -65,7 +66,7 @@ import flixel.util.FlxStringUtil;
  * This takes the player's and crate's momentum and previous and current position in consideration
  * when resolving overlaps between them. Like `overlap` collide will return true if any objects
  * were overlapping, and you can specify a callback.
- * 
+ *
  * Additional resources:
  * - [Snippets - 1 to 1 Collision](https://snippets.haxeflixel.com/collision/1-to-1-collision/)
  * - [Demos - FlxCollisions](https://haxeflixel.com/demos/FlxCollisions/)
@@ -107,11 +108,11 @@ class FlxObject extends FlxBasic
 	/**
 	 * Internal elper that determines whether either object is a tilemap, determines
 	  	 * which tiles are overlapping and calls the appropriate separator
-	  	 * 
-	  	 * 
-	  	 * 
+	  	 *
+	  	 *
+	  	 *
 	  	 * @param   func         The process you wish to call with both objects, or between tiles,
-	  	 *                       
+	  	 *
 	  	 * @param   isCollision  Does nothing, if both objects are immovable
 	  	 * @return  The result of whichever separator was used
 	  	 * @since 5.9.0
@@ -121,7 +122,7 @@ class FlxObject extends FlxBasic
 		// two immovable objects cannot collide
 		if (isCollision && object1.immovable && object2.immovable)
 			return false;
-			
+
 		// If one of the objects is a tilemap, just pass it off.
 		if (object1.flixelType == TILEMAP)
 		{
@@ -145,14 +146,14 @@ class FlxObject extends FlxBasic
 			}
 			return tilemap.objectOverlapsTiles(object1, recurseProcess, position);
 		}
-		
+
 		return func(object1, object2);
 	}
 
 	/**
 	 * Separates 2 overlapping objects. If an object is a tilemap,
  	 * it will separate it from any tiles that overlap it.
- 	 * 
+ 	 *
  	 * @return  Whether the objects were overlapping and were separated
  	 */
 	public static function separate(object1:FlxObject, object2:FlxObject):Bool
@@ -168,7 +169,7 @@ class FlxObject extends FlxBasic
 		tmp1.put();
 		tmp2.put();
 		return separatedX || separatedY;
-		
+
 		/*
 			* Note: can't do the following, FlxTilemapExt works better when you separate all
 			* tiles in the x and then all tiles the y, rather than iterating all overlapping
@@ -187,25 +188,25 @@ class FlxObject extends FlxBasic
 	/**
  	 * Separates 2 overlapping objects along the X-axis. if an object is a tilemap,
  	 * it will separate it from any tiles that overlap it.
- 	 * 
+ 	 *
  	 * @return  Whether the objects were overlapping and were separated along the X-axis
 	 */
 	public static function separateX(object1:FlxObject, object2:FlxObject):Bool
 	{
 		return processCheckTilemap(object1, object2, separateXHelper);
 	}
-	
+
 	/**
 	 * Separates 2 overlapping objects along the Y-axis. if an object is a tilemap,
 	 * it will separate it from any tiles that overlap it.
-	 * 
+	 *
 	 * @return  Whether the objects were overlapping and were separated along the Y-axis
 	 */
 	public static function separateY(object1:FlxObject, object2:FlxObject):Bool
 	{
 		return processCheckTilemap(object1, object2, separateYHelper);
 	}
-	
+
 	/**
 	 * Same as `separateX` but assumes both are not immovable and not tilemaps
 	 */
@@ -219,7 +220,7 @@ class FlxObject extends FlxBasic
 			final delta2 = object2.x - object2.last.x;
 			final vel1 = object1.velocity.x;
 			final vel2 = object2.velocity.x;
-			
+
 			if (!object1.immovable && !object2.immovable)
 			{
 				#if FLX_4_LEGACY_COLLISION
@@ -227,7 +228,7 @@ class FlxObject extends FlxBasic
 				#else
 				object1.x -= overlap * 0.5;
 				object2.x += overlap * 0.5;
-				
+
 				final mass1 = object1.mass;
 				final mass2 = object2.mass;
 				final momentum = mass1 * vel1 + mass2 * vel2;
@@ -271,7 +272,7 @@ class FlxObject extends FlxBasic
 			final delta2 = object2.y - object2.last.y;
 			final vel1 = object1.velocity.y;
 			final vel2 = object2.velocity.y;
-			
+
 			if (!object1.immovable && !object2.immovable)
 			{
 				#if FLX_4_LEGACY_COLLISION
@@ -279,7 +280,7 @@ class FlxObject extends FlxBasic
 				#else
 				object1.y -= overlap * .5;
 				object2.y += overlap * .5;
-				
+
 				final mass1 = object1.mass;
 				final mass2 = object2.mass;
 				final momentum = mass1 * vel1 + mass2 * vel2;
@@ -299,18 +300,18 @@ class FlxObject extends FlxBasic
 				object2.y += overlap;
 				object2.velocity.y = vel1 - vel2 * object2.elasticity;
 			}
-			
+
 			// use collisionDrag properties to determine whether one object
 			if (allowCollisionDrag(object1.collisionXDrag, object1, object2) && delta1 > delta2)
 				object1.x += object2.x - object2.last.x;
 			else if (allowCollisionDrag(object2.collisionXDrag, object2, object1) && delta2 > delta1)
 				object2.x += object1.x - object1.last.x;
-				
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * The separateX that existed before HaxeFlixel 5.0, preserved for anyone who
 	 * needs to use it in an old project. Does not preserve momentum, avoid if possible
@@ -323,7 +324,7 @@ class FlxObject extends FlxBasic
 		final mass2 = object2.mass;
 		object1.x = object1.x - (overlap * 0.5);
 		object2.x += overlap * 0.5;
-		
+
 		var newVel1 = Math.sqrt((vel2 * vel2 * mass2) / mass1) * ((vel2 > 0) ? 1 : -1);
 		var newVel2 = Math.sqrt((vel1 * vel1 * mass1) / mass2) * ((vel1 > 0) ? 1 : -1);
 		final average = (newVel1 + newVel2) * 0.5;
@@ -332,7 +333,7 @@ class FlxObject extends FlxBasic
 		object1.velocity.x = average + (newVel1 * object1.elasticity);
 		object2.velocity.x = average + (newVel2 * object2.elasticity);
 	}
-	
+
 	/**
 	 * The separateY that existed before HaxeFlixel 5.0, preserved for anyone who
 	 * needs to use it in an old project. Does not preserve momentum, avoid if possible
@@ -345,7 +346,7 @@ class FlxObject extends FlxBasic
 		final mass2 = object2.mass;
 		object1.y = object1.y - (overlap * 0.5);
 		object2.y += overlap * 0.5;
-		
+
 		var newVel1 = Math.sqrt((vel2 * vel2 * mass2) / mass1) * ((vel2 > 0) ? 1 : -1);
 		var newVel2 = Math.sqrt((vel1 * vel1 * mass1) / mass2) * ((vel1 > 0) ? 1 : -1);
 		final average = (newVel1 + newVel2) * 0.5;
@@ -354,11 +355,11 @@ class FlxObject extends FlxBasic
 		object1.velocity.y = average + (newVel1 * object1.elasticity);
 		object2.velocity.y = average + (newVel2 * object2.elasticity);
 	}
-	
+
 	/**
 	 * Checks two objects for overlaps and sets their touching flags, accordingly.
 	 * If either object may be a tilemap, this will check the object against individual tiles
-	 * 
+	 *
 	 * @return  Whether the objects in fact touched
 	 */
 	public static function updateTouchingFlags(object1:FlxObject, object2:FlxObject):Bool
@@ -374,14 +375,14 @@ class FlxObject extends FlxBasic
 	/**
 	 * Checks two objects for overlaps in the X-axis and sets their touching flags, accordingly.
 	 * If either object may be a tilemap, this will check the object against individual tiles
-	 * 
+	 *
 	 * @return  Whether the objects are overlapping in the X-axis
 	 */
 	public static function updateTouchingFlagsX(object1:FlxObject, object2:FlxObject):Bool
 	{
 		return processCheckTilemap(object1, object2, updateTouchingFlagsXHelper, false);
 	}
-	
+
 	static function updateTouchingFlagsXHelper(object1:FlxObject, object2:FlxObject):Bool
 	{
 		// Since we are not separating, always return any amount of overlap => false as last parameter
@@ -398,13 +399,13 @@ class FlxObject extends FlxBasic
 	{
 		return processCheckTilemap(object1, object2, updateTouchingFlagsYHelper, false);
 	}
-	
+
 	static function updateTouchingFlagsYHelper(object1:FlxObject, object2:FlxObject):Bool
 	{
 		// Since we are not separating, always return any amount of overlap => false as last parameter
 		return computeOverlapY(object1, object2, false) != 0;
 	}
-	
+
 	/**
 	 * Internal function that computes overlap among two objects on the X axis. It also updates the `touching` variable.
 	 * `checkMaxOverlap` is used to determine whether we want to exclude (therefore check) overlaps which are
@@ -416,25 +417,25 @@ class FlxObject extends FlxBasic
 		// First, get the two object deltas
 		final delta1:Float = object1.x - object1.last.x;
 		final delta2:Float = object2.x - object2.last.x;
-		
+
 		if (delta1 != delta2)
 		{
 			// Check if the X hulls actually overlap
 			final delta1Abs:Float = (delta1 > 0) ? delta1 : -delta1;
 			final delta2Abs:Float = (delta2 > 0) ? delta2 : -delta2;
-			
+
 			final rect1 = FlxRect.get(object1.x - (delta1 > 0 ? delta1 : 0), object1.last.y, object1.width + delta1Abs, object1.height);
 			final rect2 = FlxRect.get(object2.x - (delta2 > 0 ? delta2 : 0), object2.last.y, object2.width + delta2Abs, object2.height);
-			
+
 			if (rect1.overlaps(rect2))
 			{
 				final maxOverlap:Float = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
-				
+
 				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags)
 				{
 					return obj.allowCollisions.has(dir);
 				}
-				
+
 				// If they do overlap (and can), figure out by how much and flip the corresponding flags
 				if (delta1 > delta2)
 				{
@@ -467,11 +468,11 @@ class FlxObject extends FlxBasic
 					}
 				}
 			}
-			
+
 			rect1.put();
 			rect2.put();
 		}
-		
+
 		return overlap;
 	}
 
@@ -492,19 +493,19 @@ class FlxObject extends FlxBasic
 			// Check if the Y hulls actually overlap
 			final delta1Abs:Float = (delta1 > 0) ? delta1 : -delta1;
 			final delta2Abs:Float = (delta2 > 0) ? delta2 : -delta2;
-			
+
 			final rect1 = FlxRect.get(object1.last.x, object1.y - (delta1 > 0 ? delta1 : 0), object1.width, object1.height + delta1Abs);
 			final rect2 = FlxRect.get(object2.last.x, object2.y - (delta2 > 0 ? delta2 : 0), object2.width, object2.height + delta2Abs);
 
 			if (rect1.overlaps(rect2))
 			{
 				final maxOverlap:Float = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
-				
+
 				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags)
 				{
 					return obj.allowCollisions.has(dir);
 				}
-				
+
 				// If they did overlap (and can), figure out by how much and flip the corresponding flags
 				if (delta1 > delta2)
 				{
@@ -738,7 +739,7 @@ class FlxObject extends FlxBasic
 
 	/**
 	 * Whether or not to force `isOnScreen()` to return true.
-	 * 
+	 *
 	 * This is a dirty hack for certain cases where `isOnScreen()`
 	 * doesn't work correctly but flixel sucks to modify and i'm too
 	 * lazy to give a shit to properly fix it
@@ -1011,7 +1012,7 @@ class FlxObject extends FlxBasic
 		}
 
 		if (camera == null) camera = getDefaultCamera();
-			
+
 		final xPos:Float = point.x - camera.scroll.x;
 		final yPos:Float = point.y - camera.scroll.y;
 		getScreenPosition(_point, camera);
@@ -1064,13 +1065,13 @@ class FlxObject extends FlxBasic
 	{
 		if (result == null)
 			result = FlxPoint.get();
-			
+
 		if (camera == null)
 			camera = getDefaultCamera();
-			
+
 		return result.set(getViewXHelper(camera), getViewYHelper(camera));
 	}
-	
+
 	/**
 	 * Returns the view position of this object
 	 *
@@ -1082,16 +1083,16 @@ class FlxObject extends FlxBasic
 	{
 		if (camera == null)
 			camera = getDefaultCamera();
-			
+
 		return getViewXHelper(camera);
 	}
-	
+
 	inline function getViewXHelper(camera:FlxCamera)
 	{
 		final x = pixelPerfectPosition ? Math.floor(this.x) : this.x;
 		return (x - (camera.scroll.x * scrollFactor.x) - camera.viewMarginX) * camera.zoom;
 	}
-	
+
 	/**
 	 * Returns the view position of this object
 	 *
@@ -1103,20 +1104,20 @@ class FlxObject extends FlxBasic
 	{
 		if (camera == null)
 			camera = getDefaultCamera();
-			
+
 		return getViewYHelper(camera);
 	}
-	
+
 	inline function getViewYHelper(camera:FlxCamera)
 	{
 		final y = pixelPerfectPosition ? Math.floor(this.y) : this.y;
 		return (y - (camera.scroll.y * scrollFactor.y) - camera.viewMarginY) * camera.zoom;
 	}
-	
+
 
 	/**
 	 * Returns the world position of this object.
-	 * 
+	 *
 	 * @param   result  Optional arg for the returning point.
 	 * @return  The world position of this object.
 	 */
@@ -1124,7 +1125,7 @@ class FlxObject extends FlxBasic
 	{
 		if (result == null)
 			result = FlxPoint.get();
-		
+
 		return result.set(x, y);
 	}
 
@@ -1282,26 +1283,25 @@ class FlxObject extends FlxBasic
 		final color = getDebugBoundingBoxColor(allowCollisions);
 		drawDebugBoundingBoxColor(gfx, rect, color);
 	}
-	
+
 	function getDebugBoundingBoxColor(allowCollisions:FlxDirectionFlags)
 	{
 		if (debugBoundingBoxColor != null)
 			return debugBoundingBoxColor;
-			
+
 		if (allowCollisions == FlxDirectionFlags.NONE)
 			return debugBoundingBoxColorNotSolid;
-			
+
 		if (allowCollisions == FlxDirectionFlags.ANY)
 			return debugBoundingBoxColorSolid;
-			
+
 		return debugBoundingBoxColorPartial;
 	}
-	
-	function drawDebugBoundingBoxColor(gfx:Graphics, rect:FlxRect, color:FlxColor)
+
+	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor)
 	{
-		// fill static graphics object with square shape
-		gfx.lineStyle(1, color, 0.75);
-		gfx.drawRect(rect.x + 0.5, rect.y + 0.5, rect.width - 1.0, rect.height - 1.0);
+		color.alphaFloat = 0.75;
+		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1.0);
 	}
 
 	inline function beginDrawDebug(camera:FlxCamera):Graphics
@@ -1339,7 +1339,7 @@ class FlxObject extends FlxBasic
 
 		return _rect;
 	}
-	
+
 	/**
 	 * Calculates the smallest globally aligned bounding box that encompasses this
 	 * object's width and height, at its current rotation.
@@ -1353,7 +1353,7 @@ class FlxObject extends FlxBasic
 	{
 		if (newRect == null)
 			newRect = FlxRect.get();
-		
+
 		newRect.set(x, y, width, height);
 		return newRect.getRotatedBounds(angle, null, newRect);
 	}

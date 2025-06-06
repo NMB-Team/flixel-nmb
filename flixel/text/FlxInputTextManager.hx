@@ -16,27 +16,27 @@ class FlxInputTextManager extends FlxBasic
 	 * The input text object that's currently in focus, or `null` if there isn't any.
 	 */
 	public var focus(default, null):IFlxInputText;
-	
+
 	/**
 	 * Returns whether or not there's currently an editable input text in focus.
 	 */
 	public var isTyping(get, never):Bool;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public final onTypingAction = new FlxTypedSignal<(action:TypingAction)->Void>();
-	
+
 	/**
 	 * Contains all of the currently registered input text objects.
 	 */
 	final _registeredInputTexts = new Array<IFlxInputText>();
-	
+
 	/**
 	 * Whether we should use mac modifer keys or not. Behavior in linux is currently unknown
 	 */
 	final _mac:Bool = false;
-	
+
 	public function new ()
 	{
 		#if mac
@@ -46,25 +46,25 @@ class FlxInputTextManager extends FlxBasic
 		final platform = js.Browser.navigator.platform.toUpperCase();
 		_mac = userAgent.indexOf("APPLEWEBKIT") != -1 || platform.indexOf("MAC") != -1;
 		#end
-		
+
 		super();
 	}
-	
+
 	/**
 	 * Clean up memory.
 	 */
 	override public function destroy():Void
 	{
 		super.destroy();
-		
+
 		focus = null;
 		_registeredInputTexts.resize(0);
 		removeEvents();
 	}
-	
+
 	function addEvents()
 	{
-		
+
 		FlxG.stage.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 		// Higher priority is needed here because FlxKeyboard will cancel
 		// the event for key codes in `preventDefaultKeys`.
@@ -77,7 +77,7 @@ class FlxInputTextManager extends FlxBasic
 		FlxG.stage.window.onKeyUp.add(onKeyUp, false, 1000);
 		#end
 	}
-	
+
 	function removeEvents()
 	{
 		FlxG.stage.removeEventListener(TextEvent.TEXT_INPUT, onTextInput);
@@ -100,14 +100,14 @@ class FlxInputTextManager extends FlxBasic
 		if (!_registeredInputTexts.contains(input))
 		{
 			_registeredInputTexts.push(input);
-			
+
 			if (!FlxG.stage.window.onKeyDown.has(onKeyDown))
 			{
 				addEvents();
 			}
 		}
 	}
-	
+
 	/**
 	 * Unregisters an input text object, and removes the event listeners if there
 	 * aren't any more left.
@@ -117,14 +117,14 @@ class FlxInputTextManager extends FlxBasic
 		if (_registeredInputTexts.contains(input))
 		{
 			_registeredInputTexts.remove(input);
-			
+
 			if (_registeredInputTexts.length == 0 && FlxG.stage.window.onKeyDown.has(onKeyDown))
 			{
 				removeEvents();
 			}
 		}
 	}
-	
+
 	public function setFocus(value:IFlxInputText)
 	{
 		if (focus != value)
@@ -133,18 +133,18 @@ class FlxInputTextManager extends FlxBasic
 			{
 				focus.endFocus();
 			}
-			
+
 			focus = value;
-			
+
 			if (focus != null)
 			{
 				focus.startFocus();
 			}
-			
+
 			FlxG.stage.window.textInputEnabled = (focus != null);
 		}
 	}
-	
+
 	/**
 	 * Called when a `TEXT_INPUT` event is received.
 	 */
@@ -159,13 +159,13 @@ class FlxInputTextManager extends FlxBasic
 			dispatchTypingAction(ADD_TEXT(event.text));
 		}
 	}
-	
+
 	function dispatchTypingAction(action:TypingAction)
 	{
 		focus.dispatchTypingAction(action);
 		onTypingAction.dispatch(action);
 	}
-	
+
 	/**
 	 * Called when an `onKeyDown` event is recieved.
 	 */
@@ -179,16 +179,16 @@ class FlxInputTextManager extends FlxBasic
 		// Let's set one manually (just the stage itself)
 		FlxG.stage.focus = FlxG.stage;
 		#end
-		
+
 		// Modifier used for commands like cut, copy and paste
 		final commandPressed = _mac ? modifier.metaKey : modifier.ctrlKey;
-		
+
 		// Modifier used to move one word over
 		final wordModPressed = modifier.altKey;
-		
+
 		// Modifier used to move one line over
 		final lineModPressed = commandPressed;
-		
+
 		switch (key)
 		{
 			case RETURN, NUMPAD_ENTER:
@@ -260,7 +260,7 @@ class FlxInputTextManager extends FlxBasic
 			FlxG.stage.focus = null;
 		}
 	}
-	
+
 	/**
 	 * Called when a `COPY` event is received.
 	 */
@@ -271,7 +271,7 @@ class FlxInputTextManager extends FlxBasic
 			dispatchTypingAction(COMMAND(COPY));
 		}
 	}
-	
+
 	/**
 	 * Called when a `CUT` event is received.
 	 */
@@ -282,7 +282,7 @@ class FlxInputTextManager extends FlxBasic
 			dispatchTypingAction(COMMAND(CUT));
 		}
 	}
-	
+
 	/**
 	 * Called when a `PASTE` event is received.
 	 */
@@ -293,7 +293,7 @@ class FlxInputTextManager extends FlxBasic
 			dispatchTypingAction(COMMAND(PASTE));
 		}
 	}
-	
+
 	/**
 	 * Called when a `SELECT_ALL` event is received.
 	 */
@@ -305,7 +305,7 @@ class FlxInputTextManager extends FlxBasic
 		}
 	}
 	#end
-	
+
 	function get_isTyping():Bool
 	{
 		return focus != null && focus.editable;

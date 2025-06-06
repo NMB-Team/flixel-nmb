@@ -122,7 +122,7 @@ class FlxParticle extends FlxSprite implements IFlxParticle {
 			dragRange.end = FlxDestroyUtil.put(dragRange.end);
 			dragRange = null;
 		}
-		
+
 		if (accelerationRange != null) {
 			accelerationRange.start = FlxDestroyUtil.put(accelerationRange.start);
 			accelerationRange.end = FlxDestroyUtil.put(accelerationRange.end);
