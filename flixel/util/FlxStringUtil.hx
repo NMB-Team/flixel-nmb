@@ -772,7 +772,6 @@ class FlxStringUtil
 		}
 
 		return words.join(" ");
-		
 	}
 
 	/**

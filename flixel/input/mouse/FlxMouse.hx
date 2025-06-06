@@ -121,7 +121,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * Time in ticks of last left mouse button press.
 	 * @since 4.3.0
 	 */
-	public var justPressedTimeInTicks(get, never):Int;
+	public var justPressedTimeInTicks(get, never):Float;
 
 	#if FLX_MOUSE_ADVANCED
 	/**
@@ -149,7 +149,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * Time in ticks of last right mouse button press.
 	 * @since 4.3.0
 	 */
-	public var justPressedTimeInTicksRight(get, never):Int;
+	public var justPressedTimeInTicksRight(get, never):Float;
 
 	/**
 	 * Check to see if the middle mouse button is currently pressed.
@@ -176,7 +176,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * Time in ticks of last middle mouse button press.
 	 * @since 4.3.0
 	 */
-	public var justPressedTimeInTicksMiddle(get, never):Int;
+	public var justPressedTimeInTicksMiddle(get, never):Float;
 	#end
 
 	/**
@@ -618,7 +618,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	inline function get_justReleased():Bool
 		return _leftButton.justReleased;
 
-	inline function get_justPressedTimeInTicks():Int
+	inline function get_justPressedTimeInTicks():Float
 		return _leftButton.justPressedTimeInTicks;
 
 	#if FLX_MOUSE_ADVANCED
@@ -634,7 +634,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	inline function get_justReleasedRight():Bool
 		return _rightButton.justReleased;
 
-	inline function get_justPressedTimeInTicksRight():Int
+	inline function get_justPressedTimeInTicksRight():Float
 		return _rightButton.justPressedTimeInTicks;
 
 	inline function get_pressedMiddle():Bool
@@ -649,7 +649,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	inline function get_justReleasedMiddle():Bool
 		return _middleButton.justReleased;
 
-	inline function get_justPressedTimeInTicksMiddle():Int
+	inline function get_justPressedTimeInTicksMiddle():Float
 		return _middleButton.justPressedTimeInTicks;
 	#end
 

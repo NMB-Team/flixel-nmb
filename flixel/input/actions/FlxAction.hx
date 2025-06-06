@@ -341,9 +341,7 @@ class FlxAction implements IFlxDestroyable
 	var _x:Null<Float> = null;
 	var _y:Null<Float> = null;
 
-	var _timestamp:Int = 0;
-	@:deprecated("_checked is deprecated, use triggered, instead")
-	var _checked:Bool = false;
+	var _timestamp:Float = 0;
 
 	/**
 	 * Whether the steam controller inputs for this action have changed since the last time origins were polled. Always false if steam isn't active
