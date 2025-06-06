@@ -5,9 +5,9 @@ import openfl.display.GraphicsShader;
 class FlxGraphicsShader extends GraphicsShader
 {
 	@:glVertexHeader("
-		in float alpha;
-		in vec4 colorMultiplier;
-		in vec4 colorOffset;
+		attribute float alpha;
+		attribute vec4 colorMultiplier;
+		attribute vec4 colorOffset;
 		uniform bool hasColorTransform;
 	", true)
 	@:glVertexBody("
@@ -56,7 +56,7 @@ class FlxGraphicsShader extends GraphicsShader
 		}
 
 		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord) {
-			vec4 color = texture(bitmap, coord);
+			vec4 color = texture2D(bitmap, coord);
 			return applyFlixelEffects(color);
 		}
 
@@ -79,7 +79,7 @@ class FlxGraphicsShader extends GraphicsShader
 		}
 	", true)
 	@:glFragmentBody("
-		ofl_FragColor = flixel_texture2D(bitmap, openfl_TextureCoordv);
+		gl_FragColor = flixel_texture2D(bitmap, openfl_TextureCoordv);
 	", true)
 	public function new()
 	{
