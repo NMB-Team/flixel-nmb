@@ -211,7 +211,7 @@ class FlxAssets
 	#if (!macro || doc_gen)
 	// fonts
 	public static var FONT_DEFAULT:String = "Nokia Cellphone FC Small";
-	public static var FONT_DEBUGGER:String = "Monsterrat";
+	public static var FONT_DEBUGGER:String = "Montserrat SemiBold";
 
 	public static function drawLogo(graph:Graphics):Void
 	{
