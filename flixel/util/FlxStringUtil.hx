@@ -720,7 +720,6 @@ class FlxStringUtil
 		return out.toString();
 	}
 
-
 	/**
 	 * Truncates a long string in the middle and replaces the removed part with an ellipsis.
 	 * Useful for displaying file paths, usernames, or any long identifiers.
@@ -781,7 +780,16 @@ class FlxStringUtil
 	public static function capitalizeFirstLetters(str:String):String
 	{
 		// TODO: Unit test
-		return whitespace.map(str, (r)->r.matched(0).toUpperCase());
+		return whitespace.map(str, r -> r.matched(0).toUpperCase());
+	}
+
+	/**
+	 * Capitalizes the first letter of each word in a string.Add commentMore actions
+	 */
+	public static function toCapitalizeCase(string:String):String {
+		final split = string.split('-');
+		final formattedString = split.map(piece -> return piece.substr(0, 1).toUpperCase() + piece.substr(1)).join(' ');
+		return formattedString;
 	}
 
 	/**
