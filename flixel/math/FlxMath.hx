@@ -834,6 +834,62 @@ class FlxMath
 	}
 
 	/**
+	 * A faster, but less accurate version of `Math.tan()`.
+	 * About 2-6 times faster with < 0.05% average error.
+	 *
+	 * @param	n	The angle in radians.
+	 * @return	An approximated tangent of `n`.
+	 */
+	public static inline function fastTan(n:Float):Float
+	{
+		return fastSin(n) / fastCos(n);
+	}
+
+	/**
+	 * A faster, but less accurate version of `Math.cos() / Math.sin()` (cotangent).
+	 * About 2-6 times faster with < 0.05% average error.
+	 * 
+	 * Be aware: division by zero is possible near `n = 0, π, 2π...`
+	 *
+	 * @param	n	The angle in radians.
+	 * @return	An approximated cotangent of `n`.
+	 */
+	public static inline function fastCot(n:Float):Float
+	{
+		return fastCos(n) / fastSin(n);
+	}
+
+	/**
+	 * A faster, but less accurate version of `1 / Math.cos()`, also known as secant.
+	 * About 2–6 times faster than standard math functions, with < 0.05% average error.
+	 *
+	 * Be cautious near points where `cos(n)` is zero (e.g., `π/2`, `3π/2`, …),
+	 * which can cause division by zero or large inaccuracies.
+	 *
+	 * @param	n	The angle in radians.
+	 * @return	An approximated secant of `n`.
+	 */
+	public static inline function fastSec(n:Float):Float
+	{
+		return 1 / fastCos(n);
+	}
+
+	/**
+	 * A faster, but less accurate version of `1 / Math.sin()`, also known as cosecant.
+	 * About 2–6 times faster than standard math functions, with < 0.05% average error.
+	 *
+	 * Be cautious near points where `sin(n)` is zero (e.g., `0`, `π`, `2π`, …),
+	 * which can cause division by zero or large inaccuracies.
+	 *
+	 * @param	n	The angle in radians.
+	 * @return	An approximated cosecant of `n`.
+	 */
+	public static inline function fastCsc(n:Float):Float
+	{
+		return 1 / fastSin(n);
+	}
+
+	/**
 	 * Hyperbolic sine.
 	 */
 	public static inline function sinh(n:Float):Float
