@@ -18,22 +18,22 @@ import flixel.system.macros.FlxMacroUtil;
  */
 abstract FlxColor(Int) from Int from UInt to Int to UInt
 {
-	public static inline var TRANSPARENT:FlxColor = 0x00000000;
-	public static inline var WHITE:FlxColor = 0xFFFFFFFF;
-	public static inline var GRAY:FlxColor = 0xFF808080;
-	public static inline var BLACK:FlxColor = 0xFF000000;
+	public static inline final TRANSPARENT:FlxColor = 0x00000000;
+	public static inline final WHITE:FlxColor = 0xFFFFFFFF;
+	public static inline final GRAY:FlxColor = 0xFF808080;
+	public static inline final BLACK:FlxColor = 0xFF000000;
 
-	public static inline var GREEN:FlxColor = 0xFF008000;
-	public static inline var LIME:FlxColor = 0xFF00FF00;
-	public static inline var YELLOW:FlxColor = 0xFFFFFF00;
-	public static inline var ORANGE:FlxColor = 0xFFFFA500;
-	public static inline var RED:FlxColor = 0xFFFF0000;
-	public static inline var PURPLE:FlxColor = 0xFF800080;
-	public static inline var BLUE:FlxColor = 0xFF0000FF;
-	public static inline var BROWN:FlxColor = 0xFF8B4513;
-	public static inline var PINK:FlxColor = 0xFFFFC0CB;
-	public static inline var MAGENTA:FlxColor = 0xFFFF00FF;
-	public static inline var CYAN:FlxColor = 0xFF00FFFF;
+	public static inline final GREEN:FlxColor = 0xFF008000;
+	public static inline final LIME:FlxColor = 0xFF00FF00;
+	public static inline final YELLOW:FlxColor = 0xFFFFFF00;
+	public static inline final ORANGE:FlxColor = 0xFFFFA500;
+	public static inline final RED:FlxColor = 0xFFFF0000;
+	public static inline final PURPLE:FlxColor = 0xFF800080;
+	public static inline final BLUE:FlxColor = 0xFF0000FF;
+	public static inline final BROWN:FlxColor = 0xFF8B4513;
+	public static inline final PINK:FlxColor = 0xFFFFC0CB;
+	public static inline final MAGENTA:FlxColor = 0xFFFF00FF;
+	public static inline final CYAN:FlxColor = 0xFF00FFFF;
 
 	/**
 	 * A `Map<String, Int>` whose values are the static colors of `FlxColor`.
@@ -66,7 +66,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public var rgb(get, set):FlxColor;
 
-	/** 
+	/**
 	 * The hue of the color in degrees (from 0 to 359)
 	 */
 	public var hue(get, set):Float;
