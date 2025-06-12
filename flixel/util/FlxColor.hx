@@ -116,19 +116,19 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static inline function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setRGB(Red, Green, Blue, Alpha);
 	}
 
 	public static inline function fromRGBFast(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setRGBFast(Red, Green, Blue, Alpha);
 	}
 
 	public static inline function fromRGBUnsafe(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setRGBUnsafe(Red, Green, Blue, Alpha);
 	}
 
@@ -143,7 +143,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static inline function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setRGBFloat(Red, Green, Blue, Alpha);
 	}
 
@@ -159,7 +159,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setCMYK(Cyan, Magenta, Yellow, Black, Alpha);
 	}
 
@@ -174,7 +174,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setHSB(Hue, Saturation, Brightness, Alpha);
 	}
 
@@ -189,7 +189,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):FlxColor
 	{
-		var color = new FlxColor();
+		final color = new FlxColor();
 		return color.setHSL(Hue, Saturation, Lightness, Alpha);
 	}
 
@@ -215,12 +215,10 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 		if (COLOR_REGEX.match(str))
 		{
-			var hexColor:String = "0x" + COLOR_REGEX.matched(2);
+			final hexColor:String = "0x" + COLOR_REGEX.matched(2);
 			result = new FlxColor(Std.parseInt(hexColor));
 			if (hexColor.length == 8)
-			{
 				result.alphaFloat = 1;
-			}
 		}
 		else
 		{
@@ -259,10 +257,10 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static inline function interpolate(Color1:FlxColor, Color2:FlxColor, Factor:Float = 0.5):FlxColor
 	{
-		var r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
-		var g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
-		var b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
-		var a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
+		final r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
+		final g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
+		final b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
+		final a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
 
 		return fromRGB(r, g, b, a);
 	}
@@ -278,17 +276,13 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static function gradient(Color1:FlxColor, Color2:FlxColor, Steps:Int, ?Ease:EaseFunction):Array<FlxColor>
 	{
-		var output = new Array<FlxColor>();
+		final output = new Array<FlxColor>();
 
 		if (Ease == null)
-		{
 			Ease = FlxEase.linear;
-		}
 
 		for (step in 0...Steps)
-		{
 			output[step] = interpolate(Color1, Color2, Ease(step / (Steps - 1)));
-		}
 
 		return output;
 	}
@@ -349,8 +343,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getAnalogousHarmony(Threshold:Int = 30):Harmony
 	{
-		var warmer:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) - Threshold, 350), saturation, brightness, alphaFloat);
-		var colder:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) + Threshold, 350), saturation, brightness, alphaFloat);
+		final warmer:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) - Threshold, 350), saturation, brightness, alphaFloat);
+		final colder:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) + Threshold, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -364,9 +358,9 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getSplitComplementHarmony(Threshold:Int = 30):Harmony
 	{
-		var oppositeHue:Int = FlxMath.wrapMax(Std.int(hue) + 180, 350);
-		var warmer:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue - Threshold, 350), saturation, brightness, alphaFloat);
-		var colder:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue + Threshold, 350), saturation, brightness, alphaFloat);
+		final oppositeHue:Int = FlxMath.wrapMax(Std.int(hue) + 180, 350);
+		final warmer:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue - Threshold, 350), saturation, brightness, alphaFloat);
+		final colder:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue + Threshold, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -379,8 +373,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getTriadicHarmony():TriadicHarmony
 	{
-		var triadic1:FlxColor = fromHSB(FlxMath.wrapMax(Std.int(hue) + 120, 359), saturation, brightness, alphaFloat);
-		var triadic2:FlxColor = fromHSB(FlxMath.wrapMax(Std.int(triadic1.hue) + 120, 359), saturation, brightness, alphaFloat);
+		final triadic1:FlxColor = fromHSB(FlxMath.wrapMax(Std.int(hue) + 120, 359), saturation, brightness, alphaFloat);
+		final triadic2:FlxColor = fromHSB(FlxMath.wrapMax(Std.int(triadic1.hue) + 120, 359), saturation, brightness, alphaFloat);
 
 		return {color1: this, color2: triadic1, color3: triadic2};
 	}
@@ -434,7 +428,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	public function getDarkened(Factor:Float = 0.2):FlxColor
 	{
 		Factor = FlxMath.bound(Factor, 0, 1);
-		var output:FlxColor = this;
+		final output:FlxColor = this;
 		output.lightness = output.lightness * (1 - Factor);
 		return output;
 	}
@@ -448,7 +442,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	public inline function getLightened(Factor:Float = 0.2):FlxColor
 	{
 		Factor = FlxMath.bound(Factor, 0, 1);
-		var output:FlxColor = this;
+		final output:FlxColor = this;
 		output.lightness = output.lightness + (1 - lightness) * Factor;
 		return output;
 	}
@@ -460,8 +454,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function getInverted():FlxColor
 	{
-		var oldAlpha = alpha;
-		var output:FlxColor = FlxColor.WHITE - this;
+		final oldAlpha = alpha;
+		final output:FlxColor = FlxColor.WHITE - this;
 		output.alpha = oldAlpha;
 		return output;
 	}
@@ -477,7 +471,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function setRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
-				this = (boundChannel(Red) & 0xFF) << 16 | (boundChannel(Green) & 0xFF) << 8 | (boundChannel(Blue) & 0xFF) | (boundChannel(Alpha) & 0xFF) << 24;
+		this = (boundChannel(Red) & 0xFF) << 16 | (boundChannel(Green) & 0xFF) << 8 | (boundChannel(Blue) & 0xFF) | (boundChannel(Alpha) & 0xFF) << 24;
  		// red = Red;
  		// green = Green;
  		// blue = Blue;
@@ -554,8 +548,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function setHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha = 1.):FlxColor
 	{
-		var chroma = Brightness * Saturation;
-		var match = Brightness - chroma;
+		final chroma = Brightness * Saturation;
+		final match = Brightness - chroma;
 		return setHueChromaMatch(Hue, chroma, match, Alpha);
 	}
 
@@ -570,8 +564,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public inline function setHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha = 1.):FlxColor
 	{
-		var chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
-		var match = Lightness - chroma * .5;
+		final chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
+		final match = Lightness - chroma * .5;
 		return setHueChromaMatch(Hue, chroma, match, Alpha);
 	}
 
@@ -581,8 +575,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	inline function setHueChromaMatch(Hue:Float, Chroma:Float, Match:Float, Alpha:Float):FlxColor
 	{
 		Hue %= 360;
-		var hueD = Hue / 60;
-		var mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
+		final hueD = Hue / 60;
+		final mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
 		Chroma += Match;
 
 		switch (Std.int(hueD))
@@ -748,31 +742,31 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	inline function get_cyan():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
-		var bri = Math.max(r, Math.max(g, b));
-		var blck = 1 - bri;
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
+		final bri = Math.max(r, Math.max(g, b));
+		final blck = 1 - bri;
 		return (1 - r - blck) / bri;
 	}
 
 	inline function get_magenta():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
-		var bri = Math.max(r, Math.max(g, b));
-		var blck = 1 - bri;
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
+		final bri = Math.max(r, Math.max(g, b));
+		final blck = 1 - bri;
 		return (1 - g - blck) / bri;
 	}
 
 	inline function get_yellow():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
-		var bri = Math.max(r, Math.max(g, b));
-		var blck = 1 - bri;
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
+		final bri = Math.max(r, Math.max(g, b));
+		final blck = 1 - bri;
 		return (1 - b - blck) / bri;
 	}
 
@@ -807,30 +801,23 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	function get_hue():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
 
-		var max = Math.max(r, Math.max(g, b));
-		var min = Math.min(r, Math.min(g, b));
+		final max = Math.max(r, Math.max(g, b));
+		final min = Math.min(r, Math.min(g, b));
 
 		var h:Float = 0;
 
-		if (max != min)
-		{
-			var d:Float = max - min;
+		if (max != min) {
+			final d = max - min;
 			if (max == r)
-			{
 				h = (g - b) / d + (g < b ? 6 : 0);
-			}
 			else if (max == g)
-			{
 				h = (b - r) / d + 2;
-			}
 			else if (max == b)
-			{
 				h = (r - g) / d + 4;
-			}
 			h /= 6;
 		}
 
@@ -841,13 +828,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	function get_hueOld():Float
 	{
  		// 1.7320508075688772 = Math.sqrt(3)
- 		var hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
-		var hue:Float = 0;
-		if (hueRad != 0)
-		{
-			hue = flixel.math.FlxAngle.TO_DEG * hueRad;
-		}
-
+ 		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
+		final hue = (hueRad != 0) ? flixel.math.FlxAngle.TO_DEG * hueRad : 0;
 		return hue < 0 ? hue + 360 : hue;
 	}
 
@@ -863,22 +845,22 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 
 	inline function get_saturation():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
-		var max = Math.max(r, Math.max(g, b));
-		var min = Math.min(r, Math.min(g, b));
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
+		final max = Math.max(r, Math.max(g, b));
+		final min = Math.min(r, Math.min(g, b));
 		return (max - min) / max;
 	}
 
 	inline function get_lightness():Float
 	{
-		var r = redFloat;
-		var g = greenFloat;
-		var b = blueFloat;
-		var max = Math.max(r, Math.max(g, b));
-		var min = Math.min(r, Math.min(g, b));
-		return (max + min) * .5;
+		final r = redFloat;
+		final g = greenFloat;
+		final b = blueFloat;
+		final max = Math.max(r, Math.max(g, b));
+		final min = Math.min(r, Math.min(g, b));
+		finalurn (max + min) * .5;
 	}
 
 	inline function set_hue(Value:Float):Float
@@ -929,7 +911,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	inline function boundChannel(Value:Int):Int
 	{
 		#if cpp
-		var v:Int = Value;
+		final v:Int = Value;
 		return untyped __cpp__("((({0}) > 0xff) ? 0xff : (({0}) < 0) ? 0 : ({0}))", v);
 		#else
 		return Value > 0xff ? 0xff : Value < 0 ? 0 : Value;
