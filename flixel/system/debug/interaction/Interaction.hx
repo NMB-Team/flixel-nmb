@@ -371,7 +371,7 @@ class Interaction extends Window
 
 	public function getDebugGraphics():Graphics
 	{
-		if (FlxG.renderBlit)
+		if (FlxG.render.blit)
 		{
 			FlxSpriteUtil.flashGfx.clear();
 			return FlxSpriteUtil.flashGfx;
@@ -403,7 +403,7 @@ class Interaction extends Window
 		}
 
 		// Draw the debug info to the main camera buffer.
-		if (FlxG.renderBlit)
+		if (FlxG.render.blit)
 			FlxG.camera.buffer.draw(FlxSpriteUtil.flashGfxSprite);
 	}
 
@@ -755,7 +755,7 @@ class Interaction extends Window
 
 	public function toDebugX(worldX:Float, camera:FlxCamera)
 	{
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 			return camera.canvas.localToGlobal(new Point(worldX, 0)).x;
 		else
 			@:privateAccess
@@ -764,7 +764,7 @@ class Interaction extends Window
 
 	public function toDebugY(worldY:Float, camera:FlxCamera)
 	{
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 			return camera.canvas.localToGlobal(new Point(0, worldY)).y;
 		else
 			@:privateAccess

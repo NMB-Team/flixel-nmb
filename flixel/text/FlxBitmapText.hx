@@ -210,7 +210,7 @@ class FlxBitmapText extends FlxSprite
 
 		this.font = (font == null) ? FlxBitmapFont.getDefaultFont() : font;
 
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			pixels = new BitmapData(1, 1, true, FlxColor.TRANSPARENT);
 		}
@@ -238,7 +238,7 @@ class FlxBitmapText extends FlxSprite
 
 		_colorParams = null;
 
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 		{
 			textData = null;
 			textDrawData = null;
@@ -252,13 +252,13 @@ class FlxBitmapText extends FlxSprite
 	 */
 	override public function drawFrame(Force:Bool = false):Void
 	{
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 		{
 			Force = true;
 		}
 		pendingTextBitmapChange = pendingTextBitmapChange || Force;
 		checkPendingChanges(false);
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			super.drawFrame(Force);
 		}
@@ -272,7 +272,7 @@ class FlxBitmapText extends FlxSprite
 
 	function checkPendingChanges(useTiles:Bool = false):Void
 	{
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			useTiles = false;
 		}
@@ -303,7 +303,7 @@ class FlxBitmapText extends FlxSprite
 	static final frameDrawHelper = new ReusableFrame();
 	override function draw()
 	{
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			checkPendingChanges(false);
 			super.draw();
@@ -426,7 +426,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_clipRect(Rect:FlxRect):FlxRect
 	{
 		super.set_clipRect(Rect);
-		if (!FlxG.renderBlit)
+		if (!FlxG.render.bilt)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -436,7 +436,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_color(Color:FlxColor):FlxColor
 	{
 		super.set_color(Color);
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -446,7 +446,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_alpha(value:Float):Float
 	{
 		super.set_alpha(value);
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -458,7 +458,7 @@ class FlxBitmapText extends FlxSprite
 		if (textColor != value)
 		{
 			textColor = value;
-			if (FlxG.renderBlit)
+			if (FlxG.render.bilt)
 			{
 				pendingPixelsChange = true;
 			}
@@ -472,7 +472,7 @@ class FlxBitmapText extends FlxSprite
 		if (useTextColor != value)
 		{
 			useTextColor = value;
-			if (FlxG.renderBlit)
+			if (FlxG.render.bilt)
 			{
 				pendingPixelsChange = true;
 			}
@@ -483,7 +483,7 @@ class FlxBitmapText extends FlxSprite
 
 	override function calcFrame(RunOnCpp:Bool = false):Void
 	{
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 		{
 			drawFrame(RunOnCpp);
 		}
@@ -975,7 +975,7 @@ class FlxBitmapText extends FlxSprite
 	{
 		computeTextSize();
 
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			useTiles = false;
 		}
@@ -995,7 +995,7 @@ class FlxBitmapText extends FlxSprite
 
 			textBitmap.lock();
 		}
-		else if (FlxG.renderTile)
+		else if (FlxG.render.tile)
 		{
 			textData.clear();
 		}
@@ -1043,7 +1043,7 @@ class FlxBitmapText extends FlxSprite
 
 	function drawLine(line:UnicodeString, posX:Int, posY:Int, useTiles:Bool = false):Void
 	{
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			useTiles = false;
 		}
@@ -1073,7 +1073,7 @@ class FlxBitmapText extends FlxSprite
 
 	function tileLine(line:UnicodeString, startX:Int, startY:Int)
 	{
-		if (!FlxG.renderTile)
+		if (!FlxG.render.tile)
 			return;
 
 		addLineData(line, startX, startY, textData);
@@ -1146,7 +1146,7 @@ class FlxBitmapText extends FlxSprite
 		var colorForFill:Int = background ? backgroundColor : FlxColor.TRANSPARENT;
 		var bitmap:BitmapData = null;
 
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			if (pixels == null || (frameWidth != pixels.width || frameHeight != pixels.height))
 			{
@@ -1198,7 +1198,7 @@ class FlxBitmapText extends FlxSprite
 			bitmap.unlock();
 		}
 
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			dirty = true;
 		}
@@ -1275,7 +1275,7 @@ class FlxBitmapText extends FlxSprite
 
 	function drawText(posX:Int, posY:Int, isFront:Bool = true, ?bitmap:BitmapData, useTiles:Bool = false):Void
 	{
-		if (FlxG.renderBlit)
+		if (FlxG.render.bilt)
 		{
 			useTiles = false;
 		}
@@ -1322,7 +1322,7 @@ class FlxBitmapText extends FlxSprite
 
 	function tileText(posX:Int, posY:Int, isFront:Bool = true):Void
 	{
-		if (!FlxG.renderTile)
+		if (!FlxG.render.tile)
 			return;
 
 		final data:CharList = isFront ? textDrawData : borderDrawData;
@@ -1484,7 +1484,7 @@ class FlxBitmapText extends FlxSprite
 		if (background != value)
 		{
 			background = value;
-			if (FlxG.renderBlit)
+			if (FlxG.render.bilt)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1498,7 +1498,7 @@ class FlxBitmapText extends FlxSprite
 		if (backgroundColor != value)
 		{
 			backgroundColor = value;
-			if (FlxG.renderBlit)
+			if (FlxG.render.bilt)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1523,7 +1523,7 @@ class FlxBitmapText extends FlxSprite
 		if (borderColor != value)
 		{
 			borderColor = value;
-			if (FlxG.renderBlit)
+			if (FlxG.render.bilt)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1719,7 +1719,7 @@ private class ReusableFrame extends FlxFrame
 	public function new ()
 	{
 		super(null);
-		// We need to define this now, since it's created before renderTile is set
+		// We need to define this now, since it's created before render.tile is set
 		tileMatrix = new MatrixVector();
 	}
 

@@ -13,7 +13,7 @@ class FlxFocusLostScreen extends Sprite
 		super();
 		draw();
 
-		var logo:Sprite = new Sprite();
+		final logo = new Sprite();
 		FlxAssets.drawLogo(logo.graphics);
 		logo.scaleX = logo.scaleY = 0.2;
 		logo.x = logo.y = 5;
@@ -28,10 +28,10 @@ class FlxFocusLostScreen extends Sprite
 	 */
 	public function draw():Void
 	{
-		var gfx:Graphics = graphics;
+		final gfx = graphics;
 
-		var screenWidth:Int = Std.int(FlxG.stage.stageWidth);
-		var screenHeight:Int = Std.int(FlxG.stage.stageHeight);
+		final screenWidth = Std.int(FlxG.stage.stageWidth);
+		final screenHeight = Std.int(FlxG.stage.stageHeight);
 
 		// Draw transparent black backdrop
 		gfx.clear();
@@ -41,9 +41,9 @@ class FlxFocusLostScreen extends Sprite
 		gfx.endFill();
 
 		// Draw white arrow
-		var halfWidth:Int = Std.int(screenWidth * .5);
-		var halfHeight:Int = Std.int(screenHeight * .5);
-		var helper:Int = Std.int(Math.min(halfWidth, halfHeight) / 3);
+		final halfWidth = Std.int(screenWidth * .5);
+		final halfHeight = Std.int(screenHeight * .5);
+		final helper = Std.int(Math.min(halfWidth, halfHeight) / 3);
 		gfx.moveTo(halfWidth - helper, halfHeight - helper);
 		gfx.beginFill(0xffffff, 0.65);
 		gfx.lineTo(halfWidth + helper, halfHeight);

@@ -232,7 +232,7 @@ class FlxLayer extends FlxBasic
 			return;
 		}
 
-		if (FlxG.renderBlit)
+		if (FlxG.render.blit)
 		{
 			camera._helperMatrix.copyFrom(matrix);
 

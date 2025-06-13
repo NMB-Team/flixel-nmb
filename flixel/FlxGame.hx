@@ -466,8 +466,8 @@ class FlxGame extends Sprite
 	@:allow(flixel.FlxG)
 	function onResize(_):Void
 	{
-		var width:Int = FlxG.stage.stageWidth;
-		var height:Int = FlxG.stage.stageHeight;
+		final width = FlxG.stage.stageWidth;
+		final height = FlxG.stage.stageHeight;
 
 		resizeGame(width, height);
 	}
@@ -865,7 +865,7 @@ class FlxGame extends Sprite
 	function renderFrame():Void {
 		FlxG.signals.preDraw.dispatch();
 
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 			FlxDrawBaseItem.drawCalls = 0;
 
 		FlxG.cameras.lock();
@@ -885,7 +885,7 @@ class FlxGame extends Sprite
 				_state.draw();
 		}
 
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 		{
 			FlxG.cameras.render();
 

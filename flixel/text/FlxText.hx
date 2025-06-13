@@ -1058,7 +1058,7 @@ class FlxText extends FlxSprite
 		if (textField == null)
 			return;
 
-		if (FlxG.renderTile && !RunOnCpp)
+		if (FlxG.render.tile && !RunOnCpp)
 			return;
 
 		regenGraphic();

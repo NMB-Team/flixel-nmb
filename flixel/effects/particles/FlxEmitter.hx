@@ -301,7 +301,7 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T> {
 		final particle:T = Type.createInstance(particleClass, []);
 		final frame = multiple ? FlxG.random.int(0, totalFrames - 1) : -1;
 
-		if (FlxG.renderBlit && bakedRotationAngles > 0) particle.loadRotatedGraphic(graphics, bakedRotationAngles, frame, false, autoBuffer);
+		if (FlxG.render.blit && bakedRotationAngles > 0) particle.loadRotatedGraphic(graphics, bakedRotationAngles, frame, false, autoBuffer);
 		else particle.loadGraphic(graphics, multiple);
 
 		particle.setSize(width, height);

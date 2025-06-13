@@ -53,7 +53,7 @@ class FlxSubState extends FlxState
 		closeCallback = null;
 		openCallback = null;
 
-		if (FlxG.renderTile)
+		if (FlxG.render.tile)
 			_bgSprite = new FlxBGSprite();
 		this.bgColor = bgColor;
 	}
@@ -61,7 +61,7 @@ class FlxSubState extends FlxState
 	override public function draw():Void
 	{
 		// Draw background
-		if (FlxG.renderBlit)
+		if (FlxG.render.blit)
 		{
 			for (camera in cameras)
 			{
@@ -108,7 +108,7 @@ class FlxSubState extends FlxState
 	@:noCompletion
 	override function set_bgColor(value:FlxColor):FlxColor
 	{
-		if (FlxG.renderTile && _bgSprite != null)
+		if (FlxG.render.tile && _bgSprite != null)
 		{
 			_bgSprite.alpha = value.alphaFloat;
 			_bgSprite.visible = _bgSprite.alpha > 0;

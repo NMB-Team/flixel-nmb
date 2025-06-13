@@ -9,7 +9,7 @@ abstract FlxDebugDrawGraphic(Graphics) from Graphics to Graphics
 {
 	inline function useHardware(sizeSquared:Float)
 	{
-		return FlxG.renderTile && sizeSquared > 100 * 100;
+		return FlxG.render.tile && sizeSquared > 100 * 100;
 	}
 
 	public function drawBoundingBox(x:Float, y:Float, width:Float, height:Float, color:FlxColor, thickness = 1.0)

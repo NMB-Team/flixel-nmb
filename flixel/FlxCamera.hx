@@ -221,7 +221,7 @@ class FlxCamera extends FlxBasic
 	/**
 	 * Whether the positions of the objects rendered on this camera are rounded.
 	 * If set on individual objects, they ignore the global camera setting.
-	 * Defaults to `false` with `FlxG.renderTile` and to `true` with `FlxG.renderBlit`.
+	 * Defaults to `false` with `FlxG.renderTile` and to `true` with `FlxG.render.blit`.
 	 * WARNING: setting this to `false` on blitting targets is very expensive.
 	 */
 	public var pixelPerfectRender:Bool;
@@ -787,7 +787,7 @@ class FlxCamera extends FlxBasic
 	public function drawPixels(?frame:FlxFrame, ?pixels:BitmapData, matrix:FlxMatrix, ?transform:ColorTransform, ?blend:BlendMode, ?smoothing = false, ?shader:FlxShader):Void {
 		if (smoothing && !FlxG.allowAntialiasing) smoothing = false;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			_helperMatrix.copyFrom(matrix);
 			if (_useBlitMatrix) {
 				_helperMatrix.concat(_blitMatrix);
@@ -819,7 +819,7 @@ class FlxCamera extends FlxBasic
 	public function copyPixels(?frame:FlxFrame, ?pixels:BitmapData, ?sourceRect:Rectangle, destPoint:Point, ?transform:ColorTransform, ?blend:BlendMode, ?smoothing = false, ?shader:FlxShader):Void {
 		if (smoothing && !FlxG.allowAntialiasing) smoothing = false;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (pixels != null) {
 				if (_useBlitMatrix) {
 					_helperMatrix.identity();
@@ -872,7 +872,7 @@ class FlxCamera extends FlxBasic
 			?transform:ColorTransform, ?shader:FlxShader):Void {
 		if (smoothing && !FlxG.allowAntialiasing) smoothing = false;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (position == null) position = renderPoint.set();
 
 			_bounds.set(0, 0, width, height);
@@ -950,7 +950,7 @@ class FlxCamera extends FlxBasic
 	 * @return	transformed rectangle with respect to camera's zoom factor
 	 */
 	function transformRect(rect:FlxRect):FlxRect {
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			rect.offset(-viewMarginLeft, -viewMarginTop);
 			if (_useBlitMatrix) {
 				rect.x *= zoom;
@@ -968,7 +968,7 @@ class FlxCamera extends FlxBasic
 	 * @return	transformed point with respect to camera's zoom factor
 	 */
 	function transformPoint(point:FlxPoint):FlxPoint {
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			point.subtract(viewMarginLeft, viewMarginTop);
 			if (_useBlitMatrix) point.scale(zoom);
 		}
@@ -981,7 +981,7 @@ class FlxCamera extends FlxBasic
 	 * @return	transformed vector with respect to camera's zoom factor
 	 */
 	inline function transformVector(vector:FlxPoint):FlxPoint {
-		if (FlxG.renderBlit && _useBlitMatrix) vector.scale(zoom);
+		if (FlxG.render.blit && _useBlitMatrix) vector.scale(zoom);
 		return vector;
 	}
 
@@ -1036,9 +1036,9 @@ class FlxCamera extends FlxBasic
 		flashSprite.addChild(_scrollRect);
 		_scrollRect.scrollRect = new Rectangle();
 
-		pixelPerfectRender = FlxG.renderBlit;
+		pixelPerfectRender = FlxG.render.blit;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			screen = new FlxSprite();
 			buffer = new BitmapData(width, height, true, 0);
 			screen.pixels = buffer;
@@ -1077,7 +1077,7 @@ class FlxCamera extends FlxBasic
 	override public function destroy():Void {
 		FlxDestroyUtil.removeChild(flashSprite, _scrollRect);
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			FlxDestroyUtil.removeChild(_scrollRect, _flashBitmap);
 			screen = FlxDestroyUtil.destroy(screen);
 			buffer = null;
@@ -1344,7 +1344,7 @@ class FlxCamera extends FlxBasic
 	 * It's called every time you resize the camera or the game.
 	 */
 	function updateInternalSpritePositions():Void {
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (_flashBitmap != null) _flashBitmap.x = _flashBitmap.y = 0;
 		} else {
 			if (canvas != null) {
@@ -1544,7 +1544,7 @@ class FlxCamera extends FlxBasic
 	 * @param   BlendAlpha   Whether to blend the alpha value or just wipe the previous contents. Default is `true`.
 	 */
 	public function fill(color:FlxColor, blendAlpha = true, fxAlpha = 1., ?graphics:Graphics):Void {
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (blendAlpha) {
 				_fill.fillRect(_flashRect, color);
 				buffer.copyPixels(_fill, _flashRect, _flashPoint, null, null, blendAlpha);
@@ -1568,7 +1568,7 @@ class FlxCamera extends FlxBasic
 	@:allow(flixel.system.frontEnds.CameraFrontEnd) function drawFX():Void {
 		// Draw the "flash" special effect onto the buffer
 		if (_fxFlashAlpha > .0) {
-			if (FlxG.renderBlit) {
+			if (FlxG.render.blit) {
 				var color = _fxFlashColor;
 				color.alphaFloat *= _fxFlashAlpha;
 				fill(color);
@@ -1580,7 +1580,7 @@ class FlxCamera extends FlxBasic
 
 		// Draw the "fade" special effect onto the buffer
 		if (_fxFadeAlpha > .0) {
-			if (FlxG.renderBlit) {
+			if (FlxG.render.blit) {
 				var color = _fxFadeColor;
 				color.alphaFloat *= _fxFadeAlpha;
 				fill(color);
@@ -1592,7 +1592,7 @@ class FlxCamera extends FlxBasic
 	}
 
 	@:allow(flixel.system.frontEnds.CameraFrontEnd) function checkResize():Void {
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (width != buffer.width || height != buffer.height) {
 				final oldBuffer = screen.graphic;
 				buffer = new BitmapData(width, height, true, 0);
@@ -1986,7 +1986,7 @@ class FlxCamera extends FlxBasic
 		totalScaleX = scaleX * FlxG.scaleMode.scale.x;
 		totalScaleY = scaleY * FlxG.scaleMode.scale.y;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			updateBlitMatrix();
 
 			if (_useBlitMatrix) {
@@ -2133,7 +2133,7 @@ class FlxCamera extends FlxBasic
 
 	@:noCompletion function set_alpha(alpha:Float):Float {
 		this.alpha = FlxMath.bound(alpha, 0, 1);
-		if (FlxG.renderBlit) _flashBitmap.alpha = alpha;
+		if (FlxG.render.blit) _flashBitmap.alpha = alpha;
 		else canvas.alpha = alpha;
 		return alpha;
 	}
@@ -2157,7 +2157,7 @@ class FlxCamera extends FlxBasic
 	@:noCompletion function set_rotation(rotation:Float):Float
 	{
 		this.rotation = rotation;
-		@:privateAccess if (!FlxG.renderBlit) {
+		@:privateAccess if (!FlxG.render.blit) {
 			_rotationCanvas.__transform.identity();
 			_rotationCanvas.__transform.translate(-width * .5, -height * .5);
 			_rotationCanvas.__transform.rotate(rotation * FlxAngle.TO_RAD);
@@ -2174,7 +2174,7 @@ class FlxCamera extends FlxBasic
 		this.color = color;
 		var colorTransform:ColorTransform;
 
-		if (FlxG.renderBlit) {
+		if (FlxG.render.blit) {
 			if (_flashBitmap == null) return color;
 			colorTransform = _flashBitmap.transform.colorTransform;
 		} else colorTransform = canvas.transform.colorTransform;
@@ -2183,7 +2183,7 @@ class FlxCamera extends FlxBasic
 		colorTransform.greenMultiplier = this.color.greenFloat;
 		colorTransform.blueMultiplier = this.color.blueFloat;
 
-		if (FlxG.renderBlit) _flashBitmap.transform.colorTransform = colorTransform;
+		if (FlxG.render.blit) _flashBitmap.transform.colorTransform = colorTransform;
 		else canvas.transform.colorTransform = colorTransform;
 
 		return color;
@@ -2191,7 +2191,7 @@ class FlxCamera extends FlxBasic
 
 	@:noCompletion function set_antialiasing(Antialiasing:Bool):Bool {
 		antialiasing = Antialiasing;
-		if (FlxG.renderBlit) _flashBitmap.smoothing = Antialiasing && FlxG.allowAntialiasing;
+		if (FlxG.render.blit) _flashBitmap.smoothing = Antialiasing && FlxG.allowAntialiasing;
 		return Antialiasing;
 	}
 
@@ -2247,7 +2247,7 @@ class FlxCamera extends FlxBasic
 	}
 
 	inline function calcMarginX():Void {
-		if (!FlxG.renderBlit && rotation % 360 != 0) {
+		if (!FlxG.render.blit && rotation % 360 != 0) {
 			final rotatedBounds = FlxRect.weak(0, 0, width, height);
 			rotatedBounds.getRotatedBounds(rotation, null, rotatedBounds);
 
@@ -2259,7 +2259,7 @@ class FlxCamera extends FlxBasic
 	}
 
 	inline function calcMarginY():Void {
-		if (!FlxG.renderBlit && rotation % 360 != 0) {
+		if (!FlxG.render.blit && rotation % 360 != 0) {
 			final rotatedBounds = FlxRect.weak(0, 0, width, height);
 			rotatedBounds.getRotatedBounds(rotation, null, rotatedBounds);
 
