@@ -34,7 +34,7 @@ class FlxTouchManager implements IFlxInputManager
 	/**
 	 * WARNING: can be null if no active touch with the provided ID could be found
 	 */
-	public inline function getByID(TouchPointID:Int):FlxTouch
+	public inline function getByID(TouchPointID:Int):Null<FlxTouch>
 	{
 		return _touchesCache.get(TouchPointID);
 	}
@@ -42,16 +42,9 @@ class FlxTouchManager implements IFlxInputManager
 	/**
 	 * Return the first touch if there is one, beware of null
 	 */
-	public function getFirst():FlxTouch
+	public inline function getFirst():Null<FlxTouch>
 	{
-		if (list[0] != null)
-		{
-			return list[0];
-		}
-		else
-		{
-			return null;
-		}
+		return list[0];
 	}
 
 	/**

@@ -185,6 +185,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	override public function draw():Void
 	{
+		if (members.length == 0) return;
+
 		final oldDefaultCameras = FlxCamera._defaultCameras;
 		if (_cameras != null)
 		{
@@ -470,14 +472,15 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	inline function getFirstHelper(func:T->Bool):Null<T>
 	{
 		var result:T = null;
-		for (basic in members)
-		{
-			if (basic != null && func(basic))
+		if (members.length != 0)
+			for (basic in members)
 			{
-				result = basic;
-				break;
+				if (basic != null && func(basic))
+				{
+					result = basic;
+					break;
+				}
 			}
-		}
 		return result;
 	}
 
@@ -510,14 +513,15 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	public function getFirstIndex(func:T->Bool):Int
 	{
 		var result = -1;
-		for (i=>basic in members)
-		{
-			if (basic != null && func(basic))
+		if (members.length != 0)
+			for (i => basic in members)
 			{
-				result = i;
-				break;
+				if (basic != null && func(basic))
+				{
+					result = i;
+					break;
+				}
 			}
-		}
 		return result;
 	}
 
@@ -549,6 +553,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function any(func:T->Bool):Bool
 	{
+		if (members.length == 0) return true;
+
 		for (basic in members)
 		{
 			if (basic != null && func(basic))
@@ -564,6 +570,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function every(func:T->Bool):Bool
 	{
+		if (members.length == 0) return false;
+
 		for (basic in members)
 		{
 			if (basic != null && !func(basic))
@@ -651,16 +659,17 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		var count:Int = -1;
 
-		for (basic in members)
-		{
-			if (basic != null)
+		if (members.length != 0)
+			for (basic in members)
 			{
-				if (count < 0)
-					count = 0;
-				if (basic.exists && basic.alive)
-					count++;
+				if (basic != null)
+				{
+					if (count < 0)
+						count = 0;
+					if (basic.exists && basic.alive)
+						count++;
+				}
 			}
-		}
 
 		return count;
 	}
@@ -674,16 +683,17 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		var count:Int = -1;
 
-		for (basic in members)
-		{
-			if (basic != null)
+		if (members.length != 0)
+			for (basic in members)
 			{
-				if (count < 0)
-					count = 0;
-				if (!basic.alive)
-					count++;
+				if (basic != null)
+				{
+					if (count < 0)
+						count = 0;
+					if (!basic.alive)
+						count++;
+				}
 			}
-		}
 
 		return count;
 	}
@@ -729,6 +739,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function killMembers():Void
 	{
+		if (members.length == 0) return;
+
 		for (basic in members)
 		{
 			if (basic != null && basic.exists)
@@ -753,6 +765,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function reviveMembers():Void
 	{
+		if (members.length == 0) return;
+
 		for (basic in members)
 		{
 			if (basic != null && !basic.exists)
@@ -794,6 +808,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function forEach(func:T->Void, recurse = false)
 	{
+		if (members.length == 0) return;
+
 		for (basic in members)
 		{
 			if (basic != null)
@@ -818,6 +834,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function forEachAlive(func:T->Void, recurse = false)
 	{
+		if (members.length == 0) return;
+
 		for (basic in members)
 		{
 			if (basic != null && basic.exists && basic.alive)
@@ -842,6 +860,8 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 */
 	public function forEachDead(func:T->Void, recurse = false)
 	{
+		if (members.length == 0) return;
+
 		for (basic in members)
 		{
 			if (basic != null && !basic.alive)

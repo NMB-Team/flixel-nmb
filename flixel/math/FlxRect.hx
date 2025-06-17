@@ -82,12 +82,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function put():Void
 	{
-		if (!_inPool)
-		{
-			_inPool = true;
-			_weak = false;
-			_pool.putUnsafe(this);
-		}
+		if (_inPool) return;
+		_inPool = true;
+		_weak = false;
+		_pool.putUnsafe(this);
 	}
 
 	/**
@@ -649,7 +647,7 @@ class FlxRect implements IFlxPooled
 		return width == 0 || height == 0;
 	}
 
-	static function get_pool():IFlxPool<FlxRect>
+	static inline function get_pool():IFlxPool<FlxRect>
 	{
 		return _pool;
 	}

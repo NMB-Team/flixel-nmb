@@ -223,6 +223,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 		else
 		{
 			str = str.toUpperCase();
+			if (colorLookup.exists(str)) result = new FlxColor(colorLookup.get(str)); // for better result checking
+
 			for (key in colorLookup.keys())
 			{
 				if (key.toUpperCase() == str)

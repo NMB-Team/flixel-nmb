@@ -47,7 +47,7 @@ class FlxMath
 
 	/**
 	 * Quantizes a float value to the nearest multiple of the given snap value.
-	 * 
+	 *
 	 * @param f The float value to quantize.
 	 * @param snap The snap value to quantize to.
 	 */
@@ -70,7 +70,7 @@ class FlxMath
 	public static function roundDecimal(value:Float, precision:Int):Float
 	{
 		var mult = 1.;
-		for (i in 0...precision) mult *= 10;
+		if (precision > 0) mult = Math.pow(10, precision);
 		return Math.fround(value * mult) / mult;
 	}
 
@@ -126,7 +126,7 @@ class FlxMath
 
 	/**
 	 * Truncates a float value to the specified number of decimal places.
-	 * 
+	 *
 	 * @param x The float value to be truncated.
 	 * @param precision The number of decimal places to truncate to (default is 2).
 	 * @param round If true, the value will be rounded to the nearest whole number at the specified precision before being truncated.
@@ -224,7 +224,7 @@ class FlxMath
 	 * ```haxe
 	 * var result = FlxPoint.get(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio))
 	 * ```
-	 * 
+	 *
 	 * @see				FlxMath.lerp()
 	 * @param result	Optional arg for the returning point
 	 */
@@ -241,7 +241,7 @@ class FlxMath
 	/**
 	 * Interpolates between two float values using a weighted average.
 	 * This is a simple linear interpolation function.
-	 * 
+	 *
 	 * @param from The starting value.
 	 * @param to The target value.
 	 * @param weight The weight of the target value, clamped to the range [0, 1].
@@ -255,7 +255,7 @@ class FlxMath
 	/**
 	 * Returns the linear interpolation of two colors.
 	 * Works the same way as `FlxColor.interpolate` method.
-	 * 
+	 *
 	 * @see FlxMath.lerp
 	 * @see FlxColor.interpolate
 	 */
@@ -284,13 +284,13 @@ class FlxMath
 	{
 		if (equal(a, b))
 			return b;
-		
+
 		return lerp(a, b, getElapsedLerp(ratio, elapsed));
 	}
 
 	/**
 	 * Performs exponential interpolation between two values (a and b) over time.
-	 * 
+	 *
 	 * @param a The starting value.
 	 * @param b The target value.
 	 * @param t The interpolation factor (usually in the range [0, 1]).
@@ -380,7 +380,7 @@ class FlxMath
 
 	/**
 	 * Checks if the given integer is a power of two.
-	 * 
+	 *
 	 * @param n The number to check.
 	 * @return True if the number is a power of two, false otherwise.
 	 */
@@ -406,9 +406,9 @@ class FlxMath
 
 	/**
 	 * Calculates the mean of an array of float values.
-	 * 
+	 *
 	 * The mean is the average value of the array, calculated by summing all the values and dividing by the number of elements.
-	 * 
+	 *
 	 * @param values The array of float values to calculate the mean of.
 	 * @return The mean of the array.
 	 */
@@ -518,7 +518,7 @@ class FlxMath
 	 * The Euclidean algorithm is an efficient method for computing the greatest common divisor of two numbers.
 	 * It works by repeatedly dividing the larger number by the smaller number until the remainder is 0.
 	 * The GCD is then the last non-zero remainder.
-	 * 
+	 *
 	 * @param a The first number to compute the GCD for.
 	 * @param b The second number to compute the GCD for.
 	 */
@@ -848,7 +848,7 @@ class FlxMath
 	/**
 	 * A faster, but less accurate version of `Math.cos() / Math.sin()` (cotangent).
 	 * About 2-6 times faster with < 0.05% average error.
-	 * 
+	 *
 	 * Be aware: division by zero is possible near `n = 0, π, 2π...`
 	 *
 	 * @param	n	The angle in radians.
@@ -931,7 +931,7 @@ class FlxMath
 
 	/**
 	 * Clamps a value between a minimum and maximum value.
-	 * 
+	 *
 	 * @param val The value to clamp.
 	 * @param min The minimum value.
 	 * @param max The maximum value.
@@ -971,7 +971,7 @@ class FlxMath
 
 	/**
 	 * Converts a time in the format `h:m:s` to milliseconds.
-	 * 
+	 *
 	 * @param h The hours component.
 	 * @param m The minutes component.
 	 * @param s The seconds component.
@@ -1012,6 +1012,6 @@ class FlxMath
 	public static inline function mod(a:Float, b:Float):Float
 	{
 		b = Math.abs(b);
-		return a - b * Math.floor(a / b);
+		return a - b * Math.ffloor(a / b);
 	}
 }

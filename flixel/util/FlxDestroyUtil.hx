@@ -5,7 +5,8 @@ import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
 
-@:access(openfl.display.BitmapData) class FlxDestroyUtil
+@:access(openfl.display.BitmapData)
+class FlxDestroyUtil
 {
 	/**
 	 * Checks if an object is not null before calling destroy(), always returns null.
@@ -15,7 +16,7 @@ import openfl.display.DisplayObjectContainer;
 	 */
 	public static inline function destroy<T:IFlxDestroyable>(object:Null<IFlxDestroyable>):T
 	{
-		if (object != null) object.destroy();
+		object?.destroy();
 		return null;
 	}
 
@@ -27,8 +28,12 @@ import openfl.display.DisplayObjectContainer;
 	 */
 	public static function destroyArray<T:IFlxDestroyable>(array:Array<T>):Array<T>
 	{
-		if (array == null) return null;
-		for (e in array) destroy(e);
+		if (array == null)
+			return null;
+
+		for (e in array)
+			destroy(e);
+
 		array.resize(0);
 		return null;
 	}
@@ -41,7 +46,7 @@ import openfl.display.DisplayObjectContainer;
 	 */
 	public static inline function put<T:IFlxPooled>(object:IFlxPooled):T
 	{
-		if (object != null) object.put();
+		object?.put();
 		return null;
 	}
 
@@ -54,8 +59,7 @@ import openfl.display.DisplayObjectContainer;
 	 */
 	public static function putWeak<T:IFlxPooled>(object:IFlxPooled):T
 	{
-		if (object != null)
-			object.putWeak();
+		object?.putWeak();
 		return null;
 	}
 
@@ -68,8 +72,12 @@ import openfl.display.DisplayObjectContainer;
 	 */
 	public static function putArray<T:IFlxPooled>(array:Array<T>):Array<T>
 	{
-		if (array == null) return null;
-		for (e in array) put(e);
+		if (array == null)
+			return null;
+
+		for (e in array)
+			put(e);
+
 		array.resize(0);
 		return null;
 	}
@@ -81,11 +89,11 @@ import openfl.display.DisplayObjectContainer;
 	 * @param	Bitmap	A BitmapData to be disposed if not null
 	 * @return 	null
 	 */
-	public static function dispose(bitmapData:BitmapData):BitmapData
+	public static function dispose(bitmapData:BitmapData, ?ignoreTextureDispose = false):BitmapData
 	{
 		if (bitmapData != null)
 		{
-			bitmapData.__texture?.dispose();
+			if (!ignoreTextureDispose) bitmapData.__texture?.dispose();
 			bitmapData.dispose();
 		}
 		return null;
@@ -94,11 +102,11 @@ import openfl.display.DisplayObjectContainer;
 	/**
 	 * Checks if a BitmapData object is not null and it's size isn't equal to specified one before calling dispose() on it.
 	 */
-	public static function disposeIfNotEqual(bitmapData:BitmapData, width:Float, height:Float):BitmapData
+	public static function disposeIfNotEqual(bitmapData:BitmapData, width:Float, height:Float, ?ignoreTextureDispose = false):BitmapData
 	{
 		if (bitmapData != null && (bitmapData.width != width || bitmapData.height != height))
 		{
-			bitmapData.__texture?.dispose();
+			if (!ignoreTextureDispose) bitmapData.__texture?.dispose();
 			bitmapData.dispose();
 			return null;
 		}

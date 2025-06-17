@@ -1,5 +1,7 @@
 package flixel.input;
 
+import flixel.util.FlxStringUtil;
+
 class FlxInput<T> implements IFlxInput
 {
 	public var ID:T;
@@ -78,6 +80,18 @@ class FlxInput<T> implements IFlxInput
 	inline function get_justPressed():Bool
 	{
 		return current == JUST_PRESSED;
+	}
+
+	inline function toString() {
+		return FlxStringUtil.getDebugString([
+			LabelValuePair.weak("ID", ID),
+			LabelValuePair.weak("justReleased", justReleased),
+			LabelValuePair.weak("released", released),
+			LabelValuePair.weak("pressed", pressed),
+			LabelValuePair.weak("justPressed", justPressed),
+			LabelValuePair.weak("current", current),
+			LabelValuePair.weak("last", last),
+		]);
 	}
 }
 

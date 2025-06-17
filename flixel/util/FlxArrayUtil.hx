@@ -166,14 +166,15 @@ class FlxArrayUtil
 			while (array.length > 0)
 			{
 				var thing:T = array.pop();
-				if ((thing is Array))
+				if (thing is Array)
 					clearArray(array, recursive);
 			}
 		}
 		else
 		{
-			while (array.length > 0)
-				array.pop();
+			// while (array.length > 0)
+			// 	array.pop();
+			array.resize(0);
 		}
 
 		return array;

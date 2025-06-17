@@ -42,7 +42,7 @@ class FlxRandom
 	 */
 	public inline function resetInitialSeed():Int
 	{
-		return initialSeed = rangeBound(Std.int(Math.random() * FlxMath.MAX_VALUE_INT));
+		return initialSeed = Std.int(Math.random() * FlxMath.MAX_VALUE_INT); // use rangeBound here is not good idea, when its already uses in setter
 	}
 
 	/**

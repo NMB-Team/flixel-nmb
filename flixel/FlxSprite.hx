@@ -136,6 +136,8 @@ class FlxSprite extends FlxObject
 	 */
 	public static var defaultAntialiasing:Bool = false;
 
+	public static var defaultHaxeFlixelLogo:FlxGraphicAsset = "flixel/images/logo/default.png";
+
 	/**
 	 * Class that handles adding and playing animations on this sprite.
 	 * @see https://snippets.haxeflixel.com/sprites/animation/
@@ -373,7 +375,14 @@ class FlxSprite extends FlxObject
 	 * Internal, reused frequently during drawing and animating. Always contains `(0,0)`.
 	 */
 	@:noCompletion
-	var _flashPointZero:Point;
+	@:noCompletion
+	static var __flashPointZero:Point = new Point();
+	
+	@:noCompletion
+	var _flashPointZero(get, never):Point;
+	
+	inline function get__flashPointZero()
+		return __flashPointZero;
 
 	/**
 	 * Internal, helps with animation, caching and drawing.
@@ -381,11 +390,11 @@ class FlxSprite extends FlxObject
 	@:noCompletion
 	var _matrix:FlxMatrix;
 
-	/**
-	 * Rendering helper variable
-	 */
-	@:noCompletion
-	var _halfSize:FlxPoint;
+	// /**
+	//  * Rendering helper variable
+	//  */
+	// @:noCompletion
+	// var _halfSize:FlxPoint;
 
 	/**
 	 *  Helper variable
@@ -416,7 +425,7 @@ class FlxSprite extends FlxObject
 	 * Maps `FlxDirectionFlags` values to axis flips
 	 */
 	@:noCompletion
-	var _facingFlip:Map<FlxDirectionFlags, {x:Bool, y:Bool}> = new Map<FlxDirectionFlags, {x:Bool, y:Bool}>();
+	var _facingFlip:Map<FlxDirectionFlags, FlxSpriteFacingFlip> = new Map<FlxDirectionFlags, FlxSpriteFacingFlip>();
 
 	/**
 	 * Creates a `FlxSprite` at a specified position with a specified one-frame graphic.
@@ -446,12 +455,10 @@ class FlxSprite extends FlxObject
 		_flashPoint = new Point();
 		_flashRect = new Rectangle();
 		_flashRect2 = new Rectangle();
-		_flashPointZero = new Point();
 		offset = FlxPoint.get();
 		frameOffset = FlxPoint.get();
 		origin = FlxPoint.get();
 		scale = FlxPoint.get(1, 1);
-		_halfSize = FlxPoint.get();
 		_matrix = new FlxMatrix();
 		_scaledOrigin = new FlxPoint();
 		_scaledFrameOffset = new FlxPoint();
@@ -477,7 +484,6 @@ class FlxSprite extends FlxObject
 		frameOffset = FlxDestroyUtil.put(frameOffset);
 		origin = FlxDestroyUtil.put(origin);
 		scale = FlxDestroyUtil.put(scale);
-		_halfSize = FlxDestroyUtil.put(_halfSize);
 		_scaledOrigin = FlxDestroyUtil.put(_scaledOrigin);
 		_lastClipRect = FlxDestroyUtil.put(_lastClipRect);
 		_scaledFrameOffset = FlxDestroyUtil.put(_scaledFrameOffset);
@@ -487,7 +493,6 @@ class FlxSprite extends FlxObject
 		_flashPoint = null;
 		_flashRect = null;
 		_flashRect2 = null;
-		_flashPointZero = null;
 		_matrix = null;
 		blend = null;
 
@@ -779,7 +784,6 @@ class FlxSprite extends FlxObject
 			frameWidth = Std.int(frame.sourceSize.x);
 			frameHeight = Std.int(frame.sourceSize.y);
 		}
-		_halfSize.set(0.5 * frameWidth, 0.5 * frameHeight);
 		resetSize();
 	}
 
@@ -1022,14 +1026,14 @@ class FlxSprite extends FlxObject
 	function checkEmptyFrame()
 	{
 		if (_frame == null)
-			loadGraphic("flixel/images/logo/default.png");
+			loadGraphic(defaultHaxeFlixelLogo);
 		else if (graphic != null && graphic.isDestroyed)
 		{
 			// switch graphic but log and preserve size
 			final width = this.width;
 			final height = this.height;
 			FlxG.log.error('Cannot render a destroyed graphic, the placeholder image will be used instead');
-			loadGraphic("flixel/images/logo/default.png");
+			loadGraphic(defaultHaxeFlixelLogo);
 			this.width = width;
 			this.height = height;
 		}
@@ -2158,4 +2162,64 @@ interface IFlxSprite extends IFlxBasic
 
 	function reset(X:Float, Y:Float):Void;
 	function setPosition(X:Float = 0, Y:Float = 0):Void;
+}
+
+typedef FlxSpriteFacingFlipDynamic =
+{
+	x:Bool,
+	y:Bool
+}
+
+abstract FlxSpriteFacingFlip(#if macro Int #else ByteUInt #end) #if !macro from ByteUInt to ByteUInt #end from Int to Int
+{
+	public var x(get, set):Bool;
+	public var y(get, set):Bool;
+	
+	public function new(x = false, y = false)
+	{
+		this = 0;
+		set_x(x);
+		set_y(y);
+	}
+	
+	inline function get_x():Bool
+	{
+		return this & 0x01 == 0x01;
+	}
+	
+	inline function set_x(i:Bool):Bool
+	{
+		if (i)
+			this |= 0x01;
+		else
+			this &= 0xF0;
+		return i;
+	}
+	
+	inline function get_y():Bool
+	{
+		return this & 0x10 == 0x10;
+	}
+	
+	inline function set_y(i:Bool):Bool
+	{
+		if (i)
+			this |= 0x10;
+		else
+			this &= 0x0F;
+		return i;
+	}
+	
+	@:from static function fromDynamic(i:FlxSpriteFacingFlipDynamic):FlxSpriteFacingFlip
+	{
+		return new FlxSpriteFacingFlip(i.x, i.y);
+	}
+	
+	@:to function toDynamic():FlxSpriteFacingFlipDynamic
+	{
+		return {
+			x: x,
+			y: y
+		};
+	}
 }

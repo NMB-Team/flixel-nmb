@@ -57,25 +57,26 @@ class SoundFrontEnd
 	public var muteKeys:Array<FlxKey> = [ZERO, NUMPADZERO];
 	#end
 
+	public var countToChange(default, set):Int = 15;
+	
+	inline function set_countToChange(val:Int)
+	{
+		volume = Math.round(FlxMath.bound(volume, 0, 1) * val) / val;
+		return countToChange = val;
+	}
+
+	#if FLX_SOUND_TRAY
 	/**
 	 * Whether or not the soundTray should be shown when any of the
 	 * volumeUp-, volumeDown- or muteKeys is pressed.
 	 */
 	public var soundTrayEnabled:Bool = true;
 
-	#if FLX_SOUND_TRAY
 	/**
 	 * The sound tray display container.
 	 * A getter for `FlxG.game.soundTray`.
 	 */
 	public var soundTray(get, never):FlxSoundTray;
-
-	public var countToChange(default, set):Int = 15;
-	inline function set_countToChange(val:Int)
-	{
-		volume = Math.round(FlxMath.bound(volume, 0, 1) * val) / val;
-		return countToChange = val;
-	}
 
 	inline function get_soundTray()
 	{
@@ -316,19 +317,30 @@ class SoundFrontEnd
 	 */
 	public function destroy(forceDestroy = false):Void
 	{
+		if (forceDestroy)
+			forEachSound(destroySound);
+		else
+			forEachSound(i -> if (!i.persist) destroySound(i));
+
 		if (music != null && (forceDestroy || !music.persist))
-		{
-			music.destroy();
 			music = null;
-		}
+	}
+
+	public function forEachSound(func:FlxSound -> Void)
+	{
+		if (music != null)
+			func(music);
 
 		for (sound in list.members)
-		{
-			if (sound != null && (forceDestroy || !sound.persist))
-			{
-				sound.destroy();
-			}
-		}
+			if (sound != null)
+				func(sound);
+	}
+
+	private inline function destroySound(sound:FlxSound):Void
+	{
+		defaultMusicGroup.remove(sound);
+		defaultSoundGroup.remove(sound);
+		sound?.destroy();
 	}
 
 	/**
@@ -346,26 +358,27 @@ class SoundFrontEnd
 	/**
 	 * Changes the volume by a certain amount, also activating the sound tray.
 	 */
-	public dynamic function changeVolume(amount:Float, ?forceSound:Bool = true):Void
+	public dynamic function changeVolume(amount:Float, ?forceSound = true):Void
 	{
 		muted = false;
 		volume = Math.round((volume + amount) * countToChange) / countToChange;
+
+		#if FLX_SOUND_TRAY
 		showSoundTray(amount > 0, forceSound);
+		#end
 	}
 
+	#if FLX_SOUND_TRAY
 	/**
 	 * Shows the sound tray if it is enabled.
 	 * @param up Whether or not the volume is increasing.
 	 */
-	public function showSoundTray(up:Bool = false, ?forceSound:Bool = true):Void
+	public function showSoundTray(up:Bool = false, ?forceSound = true):Void
 	{
-		#if FLX_SOUND_TRAY
 		if (FlxG.game.soundTray != null && soundTrayEnabled)
-		{
 			FlxG.game.soundTray.show(up, forceSound);
-		}
-		#end
 	}
+	#end
 
 	/**
 	 * Takes the volume scale used by Flixel fields and gives the final transformed volume that is
@@ -402,9 +415,9 @@ class SoundFrontEnd
 		#end
 	}
 
-	@:noCompletion var volumeMult = 1;
-	@:noCompletion var holdTime = .0;
-	@:noCompletion var helper = .5;
+	@:noCompletion inline static final _pressDelay = .5;
+	@:noCompletion private var volumeMult = 1;
+	@:noCompletion private var holdTime = .0;
 
 	/**
 	 * Called by the game loop to make sure the sounds get updated each frame.
@@ -420,9 +433,9 @@ class SoundFrontEnd
 
 		#if FLX_KEYBOARD
 		if (keysAllowed && !FlxInputText.globalManager.isTyping) {
-			final justPressedMute:Bool = FlxG.keys.anyJustPressed(muteKeys);
-			final justPressedUp:Bool = FlxG.keys.anyJustPressed(volumeUpKeys);
-			final justPressedDown:Bool = FlxG.keys.anyJustPressed(volumeDownKeys);
+			final justPressedMute = FlxG.keys.anyJustPressed(muteKeys);
+			final justPressedUp = FlxG.keys.anyJustPressed(volumeUpKeys);
+			final justPressedDown = FlxG.keys.anyJustPressed(volumeDownKeys);
 
 			if (justPressedMute)
 				toggleMuted();
@@ -433,13 +446,13 @@ class SoundFrontEnd
 
 			if (justPressedMute || justPressedUp || justPressedDown) holdTime = 0;
 
-			final pressedUp:Bool = FlxG.keys.anyPressed(volumeUpKeys);
-			if(pressedUp || FlxG.keys.anyPressed(volumeDownKeys)) {
-				final checkLastHold = Math.round((holdTime - helper) * 10);
+			final pressedUp = FlxG.keys.anyPressed(volumeUpKeys);
+			if (pressedUp || FlxG.keys.anyPressed(volumeDownKeys)) {
+				final checkLastHold = Math.round((holdTime - _pressDelay) * 10);
 				@:privateAccess holdTime += FlxG.game._elapsedMS * .001;
-				final checkNewHold = Math.round((holdTime - helper) * 10);
+				final checkNewHold = Math.round((holdTime - _pressDelay) * 10);
 
-				if (holdTime > helper && checkNewHold - checkLastHold > 0)
+				if (holdTime > _pressDelay && checkNewHold - checkLastHold > 0)
 					changeVolume((checkNewHold - checkLastHold) * (pressedUp ? volumeMult : -volumeMult) / countToChange, false);
 			}
 		}

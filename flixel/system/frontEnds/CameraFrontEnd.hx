@@ -410,7 +410,7 @@ class CameraFrontEnd
 		{
 			for (camera in list)
 			{
-				if ((camera != null) && camera.exists && camera.visible)
+				if (camera != null && camera.exists && camera.visible)
 				{
 					camera.render();
 				}

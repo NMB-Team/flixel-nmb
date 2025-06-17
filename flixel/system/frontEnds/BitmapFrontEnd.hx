@@ -392,7 +392,7 @@ class BitmapFrontEnd
 
 	#if FLX_OPENGL_AVAILABLE
 	static var _maxTextureSize = -1;
-	function get_maxTextureSize():Int
+	inline function get_maxTextureSize():Int
 	{
 		if (_maxTextureSize < 0 && FlxG.stage.window.context.attributes.hardware)
 			_maxTextureSize = cast GL.getParameter(GL.MAX_TEXTURE_SIZE);

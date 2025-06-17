@@ -2,6 +2,7 @@ package flixel.input.mouse;
 
 import flixel.FlxBasic;
 import flixel.FlxCamera;
+import flixel.math.FlxMath;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -40,6 +41,8 @@ class FlxMouseEventManager extends FlxBasic
 	 * @since 4.4.0
 	 */
 	public var maxDoubleClickDelay:Float = 500;
+
+	public var limitedTouchesCount = -1;
 
 	public function new()
 	{
@@ -632,6 +635,11 @@ class FlxMouseEventManager extends FlxBasic
 
 	function checkOverlap<T:FlxObject>(event:FlxMouseEvent<T>):Bool
 	{
+		#if FLX_TOUCH
+		var touch;
+		final totalTouchesLength = limitedTouchesCount == -1 ? FlxG.touches.list.length : FlxMath.minInt(limitedTouchesCount, FlxG.touches.list.length);
+		#end
+
 		for (camera in event.object.getCameras())
 		{
 			#if FLX_MOUSE
@@ -648,16 +656,20 @@ class FlxMouseEventManager extends FlxBasic
 			#end
 
 			#if FLX_TOUCH
-			for (touch in FlxG.touches.list)
+			if (totalTouchesLength > 0)
 			{
-				_point = touch.getViewPosition(camera, _point);
-				if (camera.containsPoint(_point))
+				for (i in 0...totalTouchesLength)
 				{
-					_point = touch.getWorldPosition(camera, _point);
-
-					if (checkOverlapWithPoint(event, _point, camera))
+					touch = FlxG.touches.list[i];
+					_point = touch.getViewPosition(camera, _point);
+					if (camera.containsPoint(_point))
 					{
-						return true;
+						_point = touch.getWorldPosition(camera, _point);
+
+						if (checkOverlapWithPoint(event, _point, camera))
+						{
+							return true;
+						}
 					}
 				}
 			}
