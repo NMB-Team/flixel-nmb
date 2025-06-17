@@ -58,7 +58,7 @@ class SoundFrontEnd
 	#end
 
 	public var countToChange(default, set):Int = 15;
-	
+
 	inline function set_countToChange(val:Int)
 	{
 		volume = Math.round(FlxMath.bound(volume, 0, 1) * val) / val;
