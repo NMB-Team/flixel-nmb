@@ -116,10 +116,10 @@ class FlxAssets
 {
 	/**
 	 * The default sound format to be assumed when unspecified, only affects calls to
-	 * `FlxAssets.getSound` which are not common. Currently set to ".ogg" on non-flash targets
+	 * `FlxAssets.getSound` which are not common. Currently set to ".ogg"
 	 * for backwards compatibility reasons.
 	 */
-	public static var defaultSoundExtension = #if flash "mp3" #else "ogg" #end;
+	public static var defaultSoundExtension = "ogg";
 
 	#if (macro || doc_gen)
 	/**
@@ -352,7 +352,7 @@ class FlxAssets
 
 	/**
 	 * Loads an OpenFL sound asset from the given asset id. If an extension not provided the
-	 * `defaultSoundExtension` is used (defaults to "ogg" on non-flash targets).
+	 * `defaultSoundExtension` is used (defaults to "ogg").
 	 *
 	 * @param   id  The asset id of the local sound file.
 	 * @return  The sound file.

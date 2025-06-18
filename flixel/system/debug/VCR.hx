@@ -42,10 +42,8 @@ class VCR
 		#if FLX_RECORD
 		recordBtn = Debugger.addButton(CENTER, Icon.recordOff, FlxG.vcr.startRecording.bind(true));
 		openBtn = Debugger.addButton(CENTER, Icon.open, FlxG.vcr.onOpen);
-		#if !flash
 		openBtn.enabled = false;
 		openBtn.alpha = 0.3;
-		#end
 		#end
 		playbackToggleBtn = Debugger.addButton(CENTER, Icon.pause, onManualPause);
 		stepBtn = Debugger.addButton(CENTER, Icon.step, onStep);

@@ -20,42 +20,7 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  */
 enum abstract PS4ID(Int) to Int
 {
-	#if flash
-	var SQUARE = 10;
-	var X = 11;
-	var CIRCLE = 12;
-	var TRIANGLE = 13;
-	var L1 = 14;
-	var R1 = 15;
-	var L2 = 16;
-	var R2 = 17;
-	var SHARE = 18;
-	var OPTIONS = 19;
-	var LEFT_STICK_CLICK = 20;
-	var RIGHT_STICK_CLICK = 21;
-	var PS = 22;
-	var TOUCHPAD_CLICK = 23;
-
-	static inline final LEFT_X = 0;
-	static inline final LEFT_Y = 1;
-	static inline final RIGHT_X = 2;
-	static inline final RIGHT_Y = 5;
-
-	var LEFT_STICK_UP = 24;
-	var LEFT_STICK_DOWN = 25;
-	var LEFT_STICK_LEFT = 26;
-	var LEFT_STICK_RIGHT = 27;
-
-	var RIGHT_STICK_UP = 28;
-	var RIGHT_STICK_DOWN = 29;
-	var RIGHT_STICK_LEFT = 30;
-	var RIGHT_STICK_RIGHT = 31;
-
-	var DPAD_UP = 6;
-	var DPAD_DOWN = 7;
-	var DPAD_LEFT = 8;
-	var DPAD_RIGHT = 9;
-	#elseif FLX_GAMEINPUT_API
+	#if FLX_GAMEINPUT_API
 	// #if (html5 || windows || mac || linux)
 	var X = 6;
 	var CIRCLE = 7;

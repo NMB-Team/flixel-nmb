@@ -1189,7 +1189,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	/**
 	 * Internal function to update the current animation frame.
 	 *
-	 * @param	RunOnCpp	Whether the frame should also be recalculated if we're on a non-flash target
+	 * @param	RunOnCpp	Whether the frame should also be recalculated
 	 */
 	override inline function calcFrame(RunOnCpp:Bool = false):Void
 	{

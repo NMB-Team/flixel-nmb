@@ -19,36 +19,6 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  */
 enum abstract SwitchProID(Int) to Int
 {
-	#if flash
-	var DPAD_UP = 4;
-	var DPAD_DOWN = 5;
-	var DPAD_LEFT = 6;
-	var DPAD_RIGHT = 7;
-	var A = 8;
-	var B = 9;
-	var X = 10;
-	var Y = 11;
-	var L = 12;
-	var R = 13;
-	var ZL = 14;
-	var ZR = 15;
-	var MINUS = 16;
-	var PLUS = 17;
-	var HOME = 20;
-	var CAPTURE = 21;
-	var LEFT_STICK_CLICK = 22;
-	var RIGHT_STICK_CLICK = 23;
-
-	var LEFT_STICK_UP = 24;
-	var LEFT_STICK_DOWN = 25;
-	var LEFT_STICK_LEFT = 26;
-	var LEFT_STICK_RIGHT = 27;
-
-	var RIGHT_STICK_UP = 28;
-	var RIGHT_STICK_DOWN = 29;
-	var RIGHT_STICK_LEFT = 30;
-	var RIGHT_STICK_RIGHT = 31;
-	#else
 	var ZL = 4;
 	var ZR = 5;
 	var B = 6;
@@ -77,7 +47,6 @@ enum abstract SwitchProID(Int) to Int
 	var RIGHT_STICK_DOWN = 27;
 	var RIGHT_STICK_LEFT = 28;
 	var RIGHT_STICK_RIGHT = 29;
-	#end
 
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<SwitchProID>(0, 1, {
 		up: LEFT_STICK_UP,

@@ -17,31 +17,26 @@ class RatioScaleMode extends BaseScaleMode
 	 * @param fillScreen Whether to cut the excess side to fill the
 	 * screen or always display everything.
 	 */
-	public function new(fillScreen:Bool = false)
+	public function new(fillScreen = false)
 	{
 		super();
 		this.fillScreen = fillScreen;
 	}
 
-	override function updateGameSize(Width:Int, Height:Int):Void
+	override function updateGameSize(width:Int, height:Int):Void
 	{
-		var ratio:Float = FlxG.width / FlxG.height;
-		var realRatio:Float = Width / Height;
+		final ratio = FlxG.width / FlxG.height;
+		final realRatio = width / height;
 
-		var scaleY:Bool = realRatio < ratio;
+		var scaleY = realRatio < ratio;
 		if (fillScreen)
-		{
 			scaleY = !scaleY;
-		}
 
-		if (scaleY)
-		{
-			gameSize.x = Width;
+		if (scaleY) {
+			gameSize.x = width;
 			gameSize.y = Math.floor(gameSize.x / ratio);
-		}
-		else
-		{
-			gameSize.y = Height;
+		} else {
+			gameSize.y = height;
 			gameSize.x = Math.floor(gameSize.y * ratio);
 		}
 	}

@@ -112,14 +112,12 @@ class Console extends Window
 		input.addEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
 		input.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
-		#if !flash
 		// openfl/openfl#1856
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent)
 		{
 			if (FlxG.debugger.visible && FlxG.game.debugger.console.visible && e.keyCode == Keyboard.TAB)
 				FlxG.stage.focus = input;
 		});
-		#end
 		#end
 
 		#if sys // workaround for broken TextField focus on native

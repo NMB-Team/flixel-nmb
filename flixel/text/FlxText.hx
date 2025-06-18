@@ -22,9 +22,6 @@ import openfl.text.TextFormat;
 import openfl.text.TextFormatAlign;
 
 using flixel.util.FlxStringUtil;
-#if flash
-import openfl.geom.Rectangle;
-#end
 
 // TODO: think about filters and text
 
@@ -180,13 +177,6 @@ class FlxText extends FlxSprite
 	var _borderColorTransform:ColorTransform;
 
 	var _hasBorderAlpha = false;
-
-	#if flash
-	/**
-	 * Helper to draw line by line used at `drawTextFieldTo()`.
-	 */
-	var _textFieldRect:Rectangle = new Rectangle();
-	#end
 
 	/**
 	 * Creates a new `FlxText` object at the specified position.
@@ -886,7 +876,7 @@ class FlxText extends FlxSprite
 		final newWidth:Int = Math.ceil(newWidthFloat + borderWidth);
 		final newHeight:Int = Math.ceil(newHeightFloat + borderHeight);
 
-		// prevent text height from shrinking on flash if text == ""
+		// prevent text height from shrinking if text == ""
 		if (textField.textHeight != 0 && (oldWidth != newWidth || oldHeight != newHeight))
 		{
 			// Destroy the old bufferAdd commentMore actions
@@ -945,36 +935,11 @@ class FlxText extends FlxSprite
 	}
 
 	/**
-	 * Internal function to draw textField to a BitmapData, if flash it calculates every line x to avoid blurry lines.
+	 * Internal function to draw textField to a BitmapData.
 	 */
 	function drawTextFieldTo(graphic:BitmapData):Void
 	{
-		#if flash
-		if (alignment == FlxTextAlign.CENTER && isTextBlurry())
-		{
-			var h:Int = 0;
-			var tx:Float = _matrix.tx;
-			for (i in 0...textField.numLines)
-			{
-				var lineMetrics = textField.getLineMetrics(i);
-
-				// Workaround for blurry lines caused by non-integer x positions on flash
-				var diff:Float = lineMetrics.x - Std.int(lineMetrics.x);
-				if (diff != 0)
-				{
-					_matrix.tx = tx + diff;
-				}
-				_textFieldRect.setTo(0, h, textField.width, lineMetrics.height + lineMetrics.descent);
-
-				graphic.draw(textField, _matrix, null, null, _textFieldRect, false);
-
-				_matrix.tx = tx;
-				h += Std.int(lineMetrics.height);
-			}
-
-			return;
-		}
-		#elseif !web
+		#if !web
 		// Fix to render desktop and mobile text in the same visual location as web
 		_matrix.translate(-1, -1); // left and up
 		graphic.draw(textField, _matrix);
@@ -984,24 +949,6 @@ class FlxText extends FlxSprite
 
 		graphic.draw(textField, _matrix);
 	}
-
-	#if flash
-	/**
-	 * Helper function for `drawTextFieldTo()`, this checks if thw workaround is needed to prevent blurry lines.
-	 */
-	function isTextBlurry():Bool
-	{
-		for (i in 0...textField.numLines)
-		{
-			var lineMetricsX = textField.getLineMetrics(i).x;
-			if (lineMetricsX - Std.int(lineMetricsX) != 0)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	#end
 
 	override public function draw():Void
 	{
@@ -1051,7 +998,7 @@ class FlxText extends FlxSprite
 	/**
 	 * Internal function to update the current animation frame.
 	 *
-	 * @param	RunOnCpp	Whether the frame should also be recalculated if we're on a non-flash target
+	 * @param	RunOnCpp	Whether the frame should also be recalculated
 	 */
 	override function calcFrame(RunOnCpp:Bool = false):Void
 	{

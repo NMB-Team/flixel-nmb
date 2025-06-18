@@ -31,9 +31,6 @@ class FlxBitmapDataUtil
 	public static function merge(sourceBitmapData:BitmapData, sourceRect:Rectangle, destBitmapData:BitmapData, destPoint:Point, redMultiplier:Int,
 			greenMultiplier:Int, blueMultiplier:Int, alphaMultiplier:Int):Void
 	{
-		#if flash
-		destBitmapData.merge(sourceBitmapData, sourceRect, destPoint, redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier);
-		#else
 		if (destPoint.x >= destBitmapData.width
 			|| destPoint.y >= destBitmapData.height
 			|| sourceRect.x >= sourceBitmapData.width
@@ -146,7 +143,6 @@ class FlxBitmapDataUtil
 			}
 		}
 		destBitmapData.unlock();
-		#end
 	}
 
 	static inline function mergeColorComponent(source:Int, dest:Int, multiplier:Int):Int
@@ -167,9 +163,6 @@ class FlxBitmapDataUtil
 	 */
 	public static function compare(Bitmap1:BitmapData, Bitmap2:BitmapData):Dynamic
 	{
-		#if flash
-		return Bitmap1.compare(Bitmap2);
-		#else
 		if (Bitmap1 == Bitmap2)
 		{
 			return 0;
@@ -226,7 +219,6 @@ class FlxBitmapDataUtil
 		}
 
 		return 0;
-		#end
 	}
 
 	static inline function getDiff(value1:Int, value2:Int):Int

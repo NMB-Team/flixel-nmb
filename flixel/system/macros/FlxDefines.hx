@@ -29,8 +29,6 @@ private enum UserDefines
 	FLX_UNIT_TEST;
 	/* Defined in HaxeFlixel CI tests, do not use */
 	FLX_COVERAGE_TEST;
-	/* Defined in HaxeFlixel CI tests, do not use */
-	FLX_SWF_VERSION_TEST;
 	/* additional rendering define */
 	FLX_RENDER_TRIANGLE;
 	/* Uses flixel 4.0 legacy collision */
@@ -55,7 +53,7 @@ private enum UserDefines
 	FLX_NO_VALIDATE_CUSTOM_ASSETS_DIRECTORY;
 	/**
 	 * Allows you to use sound paths with no extension, and the default sound type for that
-	 * target will be used. If enabled it will use ogg on all targets except flash, which uses mp3.
+	 * target will be used. If enabled it will use ogg on all targets.
 	 * If this flag is set to any string, that is used for the file extension
 	 */
 	FLX_DEFAULT_SOUND_EXT;
@@ -96,8 +94,6 @@ private enum HelperDefines
 	FLX_NO_UNIT_TEST;
 	/* Used in HaxeFlixel CI, should have no effect on personal projects */
 	FLX_NO_COVERAGE_TEST;
-	/* Used in HaxeFlixel CI, should have no effect on personal projects */
-	FLX_NO_SWF_VERSION_TEST;
 	/* Used in HaxeFlixel CI, should have no effect on personal projects */
 	FLX_CI;
 	/* Used in HaxeFlixel CI, should have no effect on personal projects */
@@ -213,7 +209,6 @@ class FlxDefines
 		defineInversion(FLX_NO_POINT_POOL, FLX_POINT_POOL);
 		defineInversion(FLX_UNIT_TEST, FLX_NO_UNIT_TEST);
 		defineInversion(FLX_COVERAGE_TEST, FLX_NO_COVERAGE_TEST);
-		defineInversion(FLX_SWF_VERSION_TEST, FLX_NO_SWF_VERSION_TEST);
 		defineInversion(FLX_TRACK_POOLS, FLX_NO_TRACK_POOLS);
 		defineInversion(FLX_DEFAULT_SOUND_EXT, FLX_NO_DEFAULT_SOUND_EXT);
 		// defineInversion(FLX_TRACK_GRAPHICS, FLX_NO_TRACK_GRAPHICS); // special case
@@ -222,7 +217,7 @@ class FlxDefines
 
 	static function defineHelperDefines()
 	{
-		if (defined(FLX_UNIT_TEST) || defined(FLX_COVERAGE_TEST) || defined(FLX_SWF_VERSION_TEST))
+		if (defined(FLX_UNIT_TEST) || defined(FLX_COVERAGE_TEST))
 			define(FLX_CI);
 		else
 			define(FLX_NO_CI);

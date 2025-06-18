@@ -10,10 +10,6 @@ import flixel.math.FlxRandom;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.utils.ByteArray;
-#if flash
-import openfl.net.FileReference;
-import openfl.net.FileFilter;
-#end
 #end
 
 /**
@@ -22,11 +18,6 @@ import openfl.net.FileFilter;
 class VCRFrontEnd
 {
 	#if FLX_RECORD
-	#if flash
-	static var FILE_TYPES:Array<FileFilter> = [new FileFilter("Flixel Game Recording", "*.fgr")];
-
-	static inline var DEFAULT_FILE_NAME:String = "replay.fgr";
-	#end
 
 	/**
 	 * This function, if set, is triggered when the callback stops playing.
@@ -44,9 +35,6 @@ class VCRFrontEnd
 	 */
 	public var timeout:Float = 0;
 
-	#if flash
-	var _file:FileReference;
-	#end
 	#end
 
 	/**
@@ -241,7 +229,7 @@ class VCRFrontEnd
 	/**
 	 * Stop recording the current replay and return the replay data.
 	 *
-	 * @param	OpenSaveDialog	If true, and targeting flash, open an OS-native save dialog for the user to choose where to save the data, and save it there.
+	 * @param	OpenSaveDialog	If true, open an OS-native save dialog for the user to choose where to save the data, and save it there.
 	 *
 	 * @return	The replay data in simple ASCII format (see FlxReplay.save()).
 	 */
@@ -256,16 +244,7 @@ class VCRFrontEnd
 
 		var data:String = FlxG.game._replay.save();
 
-		if (OpenSaveDialog && (data != null) && (data.length > 0))
-		{
-			#if flash
-			_file = new FileReference();
-			_file.addEventListener(Event.COMPLETE, onSaveComplete);
-			_file.addEventListener(Event.CANCEL, onSaveCancel);
-			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data, DEFAULT_FILE_NAME);
-			#end
-		}
+		if (OpenSaveDialog && (data != null) && (data.length > 0)) {}
 		return data;
 	}
 
@@ -273,15 +252,7 @@ class VCRFrontEnd
 	 * Called when the "open file" button is pressed.
 	 * Opens the file dialog and registers event handlers for the file dialog.
 	 */
-	public function onOpen():Void
-	{
-		#if flash
-		_file = new FileReference();
-		_file.addEventListener(Event.SELECT, onOpenSelect);
-		_file.addEventListener(Event.CANCEL, onOpenCancel);
-		_file.browse(FILE_TYPES);
-		#end
-	}
+	public function onOpen():Void {}
 
 	/**
 	 * Clean up memory.
@@ -290,9 +261,6 @@ class VCRFrontEnd
 	{
 		#if FLX_RECORD
 		cancelKeys = null;
-		#if flash
-		_file = null;
-		#end
 		#end
 	}
 
@@ -300,111 +268,38 @@ class VCRFrontEnd
 	 * Called when a file is picked from the file dialog.
 	 * Attempts to load the file and registers file loading event handlers.
 	 */
-	function onOpenSelect(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.SELECT, onOpenSelect);
-		_file.removeEventListener(Event.CANCEL, onOpenCancel);
-
-		_file.addEventListener(Event.COMPLETE, onOpenComplete);
-		_file.addEventListener(IOErrorEvent.IO_ERROR, onOpenError);
-		_file.load();
-		#end
-	}
+	function onOpenSelect(_):Void {}
 
 	/**
 	 * Called when a file is opened successfully.
 	 * If there's stuff inside, then the contents are loaded into a new replay.
 	 */
-	function onOpenComplete(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.COMPLETE, onOpenComplete);
-		_file.removeEventListener(IOErrorEvent.IO_ERROR, onOpenError);
-
-		// Turn the file into a giant string
-		var fileContents:String = null;
-		var data:ByteArray = _file.data;
-		if (data != null)
-		{
-			fileContents = data.readUTFBytes(data.bytesAvailable);
-		}
-		_file = null;
-		if ((fileContents == null) || (fileContents.length <= 0))
-		{
-			FlxG.log.error("Empty flixel gameplay record.");
-			return;
-		}
-
-		FlxG.vcr.loadReplay(fileContents);
-		#end
-	}
+	function onOpenComplete(_):Void {}
 
 	/**
 	 * Called if the open file dialog is canceled.
 	 */
-	function onOpenCancel(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.SELECT, onOpenSelect);
-		_file.removeEventListener(Event.CANCEL, onOpenCancel);
-		_file = null;
-		#end
-	}
+	function onOpenCancel(_):Void {}
 
 	/**
 	 * Called if there is a file open error.
 	 */
-	function onOpenError(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.COMPLETE, onOpenComplete);
-		_file.removeEventListener(IOErrorEvent.IO_ERROR, onOpenError);
-		_file = null;
-		FlxG.log.error("Unable to open flixel gameplay record.");
-		#end
-	}
+	function onOpenError(_):Void {}
 
 	/**
 	 * Called when the file is saved successfully.
 	 */
-	function onSaveComplete(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
-		_file.removeEventListener(Event.CANCEL, onSaveCancel);
-		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-		_file = null;
-		FlxG.log.notice("Successfully saved flixel gameplay record.");
-		#end
-	}
+	function onSaveComplete(_):Void {}
 
 	/**
 	 * Called when the save file dialog is cancelled.
 	 */
-	function onSaveCancel(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
-		_file.removeEventListener(Event.CANCEL, onSaveCancel);
-		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-		_file = null;
-		#end
-	}
+	function onSaveCancel(_):Void {}
 
 	/**
 	 * Called if there is an error while saving the gameplay recording.
 	 */
-	function onSaveError(_):Void
-	{
-		#if flash
-		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
-		_file.removeEventListener(Event.CANCEL, onSaveCancel);
-		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-		_file = null;
-		FlxG.log.error("Problem saving flixel gameplay record.");
-		#end
-	}
+	function onSaveError(_):Void {}
 	#end
 
 	@:allow(flixel.FlxG)

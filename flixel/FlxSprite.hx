@@ -513,7 +513,6 @@ class FlxSprite extends FlxObject
 
 	/**
 	 * Load graphic from another `FlxSprite` and copy its tile sheet data.
-	 * This method can useful for non-flash targets.
 	 *
 	 * @param   Sprite   The `FlxSprite` from which you want to load graphic data.
 	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
@@ -1596,7 +1595,7 @@ class FlxSprite extends FlxObject
 	/**
 	 * Internal function to update the current animation frame.
 	 *
-	 * @param   force   Whether the frame should also be recalculated if we're on a non-flash target
+	 * @param   force   Whether the frame should also be recalculated
 	 */
 	@:noCompletion
 	function calcFrame(force = false):Void

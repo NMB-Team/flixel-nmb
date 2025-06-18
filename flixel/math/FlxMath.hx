@@ -18,7 +18,7 @@ class FlxMath
 	/**
 	 * Minimum value of a floating point number.
 	 */
-	public static inline final MIN_VALUE_FLOAT:Float = #if (flash || js || ios || blackberry) 0.0000000000000001 #else 5e-324 #end;
+	public static inline final MIN_VALUE_FLOAT:Float = #if (js || ios || blackberry) 0.0000000000000001 #else 5e-324 #end;
 
 	/**
 	 * Maximum value of a floating point number.

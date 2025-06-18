@@ -112,7 +112,7 @@ class FlxG
 	public static var game(default, null):FlxGame;
 
 	/**
-	 * The Flash stage object (required for event listeners).
+	 * The stage object (required for event listeners).
 	 * Will be `null` if it's not safe/useful yet.
 	 */
 	public static var stage(get, never):Stage;
@@ -204,7 +204,7 @@ class FlxG
 	public static var scaleMode(default, set):BaseScaleMode = new RatioScaleMode();
 
 	/**
-	 * Use this to toggle between fullscreen and normal mode. Works on CPP and Flash.
+	 * Use this to toggle between fullscreen and normal mode. Works on CPP.
 	 * You can easily toggle fullscreen with e.g.: `FlxG.fullscreen = !FlxG.fullscreen;`
 	 */
 	public static var fullscreen(get, set):Bool;
@@ -383,13 +383,7 @@ class FlxG
 	public static function resizeWindow(width:Int, height:Int):Void
 	{
 		#if desktop
-		#if air
-		var window = flash.desktop.NativeApplication.nativeApplication.activeWindow;
-		window.width = width;
-		window.height = height;
-		#else
 		Lib.application.window.resize(width, height);
-		#end
 		#end
 	}
 
@@ -744,7 +738,7 @@ class FlxG
 	static function set_updateFramerate(value:Int):Int
 	{
 		if (value < drawFramerate)
-			log.warn("FlxG.framerate: the game's framerate shouldn't be smaller than the flash framerate," + " since it can stop your game from updating.");
+			log.warn("FlxG.framerate: the game's framerate shouldn't be smaller than the framerate," + " since it can stop your game from updating.");
 
 		updateFramerate = value;
 

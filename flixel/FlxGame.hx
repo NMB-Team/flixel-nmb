@@ -396,11 +396,6 @@ class FlxGame extends Sprite
 
 	function onFocus(_):Void
 	{
-		#if flash
-		if (!_lostFocus)
-			return; // Don't run this function twice (bug in standalone flash player)
-		#end
-
 		#if mobile
 		// just check if device orientation has been changed
 		onResize(_);
@@ -433,11 +428,6 @@ class FlxGame extends Sprite
 
 	function onFocusLost(event:Event):Void
 	{
-		#if flash
-		if (_lostFocus)
-			return; // Don't run this function twice (bug in standalone flash player)
-		#end
-
 		_lostFocus = true;
 		FlxG.signals.focusLost.dispatch();
 

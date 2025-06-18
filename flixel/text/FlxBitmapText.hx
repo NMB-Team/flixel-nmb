@@ -889,7 +889,7 @@ class FlxBitmapText extends FlxSprite
 	}
 
 	/**
-	 * Wraps provided line by characters (as in standart flash text fields).
+	 * Wraps provided line by characters (as in standart text fields).
 	 *
 	 * @param	words		The array of words in the line to process.
 	 * @param	newLines	Array to fill with result lines.

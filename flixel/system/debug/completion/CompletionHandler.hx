@@ -115,7 +115,7 @@ class CompletionHandler
 	{
 		var pos = 0.0;
 		for (i in 0...getCaretIndex())
-			pos += #if flash input.getCharBoundaries(i).width #else 6 #end;
+			pos += 6;
 		return pos;
 	}
 

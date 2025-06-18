@@ -65,7 +65,7 @@ class FlxMatrix extends Matrix
 
 	/**
 	 * Transforms x coordinate of the point.
-	 * Took original code from openfl.geom.Matrix (which isn't available on flash target).
+	 * Took original code from openfl.geom.Matrix.
 	 *
 	 * @param	px	x coordinate of the point
 	 * @param	py	y coordinate of the point
@@ -80,7 +80,7 @@ class FlxMatrix extends Matrix
 
 	/**
 	 * Transforms y coordinate of the point.
-	 * Took original code from openfl.geom.Matrix (which isn't available on flash target).
+	 * Took original code from openfl.geom.Matrix.
 	 *
 	 * @param	px	x coordinate of the point
 	 * @param	py	y coordinate of the point
@@ -92,16 +92,4 @@ class FlxMatrix extends Matrix
 	{
 		return px * b + py * d + ty;
 	}
-
-	#if (nme && !flash)
-	public function copyFrom(sourceMatrix:Matrix):Void
-	{
-		a = sourceMatrix.a;
-		b = sourceMatrix.b;
-		c = sourceMatrix.c;
-		d = sourceMatrix.d;
-		tx = sourceMatrix.tx;
-		ty = sourceMatrix.ty;
-	}
-	#end
 }

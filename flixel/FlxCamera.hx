@@ -709,10 +709,8 @@ class FlxCamera extends FlxBasic
 			&& _headTriangles.antialiasing == smoothing
 			&& _headTriangles.colored == isColored
 			&& _headTriangles.blend == blend
-			#if !flash
 			&& _headTriangles.hasColorOffsets == hasColorOffsets
 			&& _headTriangles.shader == shader
-			#end
 			) return _headTriangles;
 		return getNewDrawTrianglesItem(graphic, smoothing, isColored, blend, hasColorOffsets, shader);
 	}
@@ -731,10 +729,8 @@ class FlxCamera extends FlxBasic
 		itemToReturn.antialiasing = smoothing;
 		itemToReturn.colored = isColored;
 		itemToReturn.blend = blend;
-		#if !flash
 		itemToReturn.hasColorOffsets = hasColorOffsets;
 		itemToReturn.shader = shader;
-		#end
 
 		itemToReturn.nextTyped = _headTriangles;
 		_headTriangles = itemToReturn;
@@ -851,22 +847,6 @@ class FlxCamera extends FlxBasic
 		}
 	}
 
-	// backwards compatibility for FlxClothSprite
-	#if flash
-	public function drawTriangles(graphic:FlxGraphic, vertices:DrawData<Float>, indices:DrawData<Int>, uvtData:DrawData<Float>, ?colors:DrawData<Int>,
-			?position:FlxPoint, ?blend:BlendMode, repeat = false, smoothing = false, ?transform:ColorTransform, ?shader:FlxShader):Void
-	{
-		drawTrianglesAdvanced(graphic, vertices, indices, uvtData, colors, position, 0, null, null, blend, repeat, smoothing, transform, shader);
-	}
-	#else
-	public function drawTriangles(graphic:FlxGraphic, vertices:DrawData<Float>, indices:DrawData<Int>, uvtData:DrawData<Float>, ?colors:DrawData<Int>,
-			?position:FlxPoint, angle = .0, ?scale:FlxPoint, ?origin:FlxPoint, ?blend:BlendMode, repeat = false, smoothing = false,
-			?transform:ColorTransform, ?shader:FlxShader):Void
-	{
-		drawTrianglesAdvanced(graphic, vertices, indices, uvtData, colors, position, angle, scale, origin, blend, repeat, smoothing, transform, shader);
-	}
-	#end
-
 	public function drawTrianglesAdvanced(graphic:FlxGraphic, vertices:DrawData<Float>, indices:DrawData<Int>, uvtData:DrawData<Float>, ?colors:DrawData<Int>,
 			?position:FlxPoint, angle = .0, ?scale:FlxPoint, ?origin:FlxPoint, ?blend:BlendMode, repeat = false, smoothing = false,
 			?transform:ColorTransform, ?shader:FlxShader):Void {
@@ -932,15 +912,10 @@ class FlxCamera extends FlxBasic
 		} else {
 			_bounds.set(0, 0, width, height);
 			var isColored = (colors != null && colors.length != 0);
-			#if !flash
 			final hasColorOffsets = (transform != null && transform.hasRGBAOffsets());
 			isColored = isColored || (transform != null && transform.hasRGBMultipliers());
 			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(graphic, smoothing, isColored, blend, hasColorOffsets, shader);
 			drawItem.addTriangles(vertices, indices, uvtData, colors, position, angle, scale, origin, _bounds, transform);
-			#else
-			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(graphic, smoothing, isColored, blend);
-			drawItem.addTrianglesAdvanced(vertices, indices, uvtData, colors, position, angle, scale, origin, _bounds);
-			#end
 		}
 	}
 

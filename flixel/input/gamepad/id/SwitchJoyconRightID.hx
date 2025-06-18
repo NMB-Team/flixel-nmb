@@ -14,7 +14,6 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  * LINUX: untested.
  *
  * MAC: Worked on html out of box for me when connected via microUSB cable or Bluetooth.
- * Flash couldn't detect the controller via bluetooth,
  * which is weird because The pro worked wirelessly.
  *
  * @since 4.8.0
@@ -22,25 +21,6 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
 
 enum abstract SwitchJoyconRightID(Int) to Int
 {
-	#if flash
-	var A = 8;
-	var B = 9;
-	var X = 10;
-	var Y = 11;
-	var SL = 12;
-	var SR = 13;
-	var ZR = 15;
-	var R = 16;
-	var PLUS = 17;
-	var HOME = 20;
-	var CAPTURE = 21;
-	var LEFT_STICK_CLICK = 22;
-
-	var LEFT_STICK_UP = 24;
-	var LEFT_STICK_DOWN = 25;
-	var LEFT_STICK_LEFT = 26;
-	var LEFT_STICK_RIGHT = 27;
-	#else
 	var ZR = 5;
 	var A = 6;
 	var X = 7;
@@ -57,7 +37,6 @@ enum abstract SwitchJoyconRightID(Int) to Int
 	var LEFT_STICK_DOWN = 23;
 	var LEFT_STICK_LEFT = 24;
 	var LEFT_STICK_RIGHT = 25;
-	#end
 
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<SwitchJoyconRightID>(0, 1, {
 		up: LEFT_STICK_UP,

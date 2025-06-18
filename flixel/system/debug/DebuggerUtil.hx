@@ -6,10 +6,6 @@ import openfl.text.TextFieldAutoSize;
 import openfl.text.TextFormat;
 import flixel.system.FlxAssets;
 import flixel.util.FlxColor;
-#if flash
-import openfl.text.AntiAliasType;
-import openfl.text.GridFitType;
-#end
 
 class DebuggerUtil
 {
@@ -26,10 +22,6 @@ class DebuggerUtil
 		tf.wordWrap = false;
 		tf.embedFonts = true;
 		tf.selectable = false;
-		#if flash
-		tf.antiAliasType = AntiAliasType.NORMAL;
-		tf.gridFitType = GridFitType.PIXEL;
-		#end
 		tf.defaultTextFormat = new TextFormat(FlxAssets.FONT_DEBUGGER, Size, Color.rgb);
 		tf.alpha = Color.alphaFloat;
 		tf.autoSize = TextFieldAutoSize.LEFT;

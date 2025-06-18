@@ -13,17 +13,14 @@ import flixel.FlxG;
  *
  * To enable it in your project, use `FlxG.scaleMode = new PixelPerfectScaleMode();`.
  */
-class PixelPerfectScaleMode extends BaseScaleMode
-{
-	override function updateGameSize(Width:Int, Height:Int)
-	{
-		var scaleFactorX:Float = Width / FlxG.width;
-		var scaleFactorY:Float = Height / FlxG.height;
-		var scaleFactor:Int = Math.floor(Math.min(scaleFactorX, scaleFactorY));
+class PixelPerfectScaleMode extends BaseScaleMode {
+	override function updateGameSize(width:Int, height:Int) {
+		final scaleFactorX = width / FlxG.width;
+		final scaleFactorY = height / FlxG.height;
+		var scaleFactor = Math.floor(Math.min(scaleFactorX, scaleFactorY));
 
 		// If the scale factor is less than zero, set it to one and crop
-		if (scaleFactor < 1)
-			scaleFactor = 1;
+		if (scaleFactor < 1) scaleFactor = 1;
 
 		gameSize.x = FlxG.width * scaleFactor;
 		gameSize.y = FlxG.height * scaleFactor;

@@ -104,12 +104,8 @@ class FlxSave implements IFlxDestroyable
 	 */
 	public static inline function resolveFlixelClasses(name:String)
 	{
-		#if flash
-		return Type.resolveClass(name);
-		#else
 		@:privateAccess
 		return SharedObject.__resolveClass(name);
-		#end
 	}
 	
 	/**
@@ -168,7 +164,7 @@ class FlxSave implements IFlxDestroyable
 	 *                        this parameter, the company name specified in your Project.xml is used.
 	 * @param   backupParser  If there is an error parsing the raw save data, this will be called as
 	 *                        a backup. if null is returned, the save will stay in an error state.
-	 *                        **Note:** This arg is never used when targeting flash
+	 *                        **Note:** This arg is never used
 	 * @return  Whether or not you successfully connected to the save data.
 	 */
 	public function bind(name:String, ?path:String, ?backupParser:(String, Exception)->Null<Any>):Bool
@@ -188,7 +184,6 @@ class FlxSave implements IFlxDestroyable
 					data = _sharedObject.data;
 					status = BOUND(name, path);
 					return true;
-				#if !flash
 				case FAILURE(PARSING(rawData, exception), sharedObject) if (backupParser != null):
 					// Use the provided backup parser
 					final parsedData = backupParser(rawData, exception);
@@ -204,7 +199,6 @@ class FlxSave implements IFlxDestroyable
 					sharedObject.data = parsedData;
 					status = BOUND(name, path);
 					return true;
-				#end
 				case FAILURE(type, sharedObject):
 					_sharedObject = sharedObject;
 					status = LOAD_ERROR(type);
@@ -407,7 +401,7 @@ class FlxSave implements IFlxDestroyable
 }
 
 /**
- * Internal helper for overriding OpenFL save directories. Ignored on flash. If no data is found at
+ * Internal helper for overriding OpenFL save directories. If no data is found at
  * the desired path, it will check the legacy path, but `flush` calls will save to the new path.
  * 
  * ## Paths
@@ -423,7 +417,7 @@ class FlxSave implements IFlxDestroyable
 @:access(openfl.net.SharedObject)
 private class FlxSharedObject extends SharedObject
 {
-	#if (flash || android || ios)
+	#if (android || ios)
 	/** Use SharedObject as usual */
 	public static inline function getLocal(name:String, ?localPath:String):LoadResult
 	{
@@ -434,7 +428,7 @@ private class FlxSharedObject extends SharedObject
 		}
 		catch (e)
 		{
-			// We can't detect parsing or naming errors in flash, just use IO for everything
+			// We can't detect parsing or naming errors, just use IO for everything
 			return FAILURE(IO(e));
 		}
 	}

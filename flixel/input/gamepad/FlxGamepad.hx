@@ -634,7 +634,6 @@ class FlxGamepad implements IFlxDestroyable
 
 	/**
 	 * Given both raw ID's for the axes of an analog stick, gets the value of its Y axis
-	 * (should be used in flash to correct the inverted y axis)
 	 */
 	public function getYAxisRaw(Stick:FlxGamepadAnalogStick):Float
 	{

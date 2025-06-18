@@ -59,10 +59,6 @@ class FlxSystemButton extends Sprite implements IFlxDestroyable
 		if (Icon != null)
 			changeIcon(Icon);
 
-		#if flash
-		tabEnabled = false;
-		#end
-
 		upHandler = UpHandler;
 		toggleMode = ToggleMode;
 

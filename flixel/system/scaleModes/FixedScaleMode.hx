@@ -9,10 +9,8 @@ import flixel.FlxG;
  *
  * To enable it in your project, use `FlxG.scaleMode = new FixedScaleMode();`.
  */
-class FixedScaleMode extends BaseScaleMode
-{
-	override function updateGameSize(Width:Int, Height:Int):Void
-	{
+class FixedScaleMode extends BaseScaleMode {
+	override function updateGameSize(width:Int, height:Int):Void {
 		gameSize.x = FlxG.width;
 		gameSize.y = FlxG.height;
 	}

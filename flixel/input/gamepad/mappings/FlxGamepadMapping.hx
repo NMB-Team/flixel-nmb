@@ -3,9 +3,6 @@ package flixel.input.gamepad.mappings;
 import flixel.input.gamepad.FlxGamepad.FlxGamepadAttachment;
 import flixel.input.gamepad.FlxGamepadAnalogStick;
 import flixel.input.gamepad.FlxGamepadInputID;
-#if flash
-import openfl.system.Capabilities;
-#end
 
 typedef FlxGamepadMapping = FlxTypedGamepadMapping<Int>;
 
@@ -32,15 +29,6 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	{
 		if (attachment != null)
 			this.attachment = attachment;
-
-		#if flash
-		manufacturer = switch (Capabilities.manufacturer)
-		{
-			case "Google Pepper": GooglePepper;
-			case "Adobe Windows": AdobeWindows;
-			default: Unknown;
-		}
-		#end
 
 		initValues();
 	}

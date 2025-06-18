@@ -90,7 +90,7 @@ class AssetFrontEnd
 	#end
 
 	#if (FLX_DEFAULT_SOUND_EXT == "1" || FLX_NO_DEFAULT_SOUND_EXT)
-	public final defaultSoundExtension:String = #if flash ".mp3" #else ".ogg" #end;
+	public final defaultSoundExtension:String = ".ogg";
 	#else
 	public final defaultSoundExtension:String = '.${haxe.macro.Compiler.getDefine("FLX_DEFAULT_SOUND_EXT")}';
 	#end

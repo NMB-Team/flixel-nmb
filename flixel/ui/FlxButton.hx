@@ -509,7 +509,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	}
 
 	/**
-	 * Using an event listener is necessary for security reasons on flash -
+	 * Using an event listener is necessary for security reasons -
 	 * certain things like opening a new window are only allowed when they are user-initiated.
 	 */
 	#if FLX_MOUSE

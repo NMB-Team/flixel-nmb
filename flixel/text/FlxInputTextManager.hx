@@ -69,26 +69,12 @@ class FlxInputTextManager extends FlxBasic
 		// Higher priority is needed here because FlxKeyboard will cancel
 		// the event for key codes in `preventDefaultKeys`.
 		FlxG.stage.window.onKeyDown.add(onKeyDown, false, 1000);
-		#if flash
-		FlxG.stage.addEventListener(Event.COPY, onCopy);
-		FlxG.stage.addEventListener(Event.CUT, onCut);
-		FlxG.stage.addEventListener(Event.PASTE, onPaste);
-		FlxG.stage.addEventListener(Event.SELECT_ALL, onSelectAll);
-		FlxG.stage.window.onKeyUp.add(onKeyUp, false, 1000);
-		#end
 	}
 
 	function removeEvents()
 	{
 		FlxG.stage.removeEventListener(TextEvent.TEXT_INPUT, onTextInput);
 		FlxG.stage.window.onKeyDown.remove(onKeyDown);
-		#if flash
-		FlxG.stage.removeEventListener(Event.COPY, onCopy);
-		FlxG.stage.removeEventListener(Event.CUT, onCut);
-		FlxG.stage.removeEventListener(Event.PASTE, onPaste);
-		FlxG.stage.removeEventListener(Event.SELECT_ALL, onSelectAll);
-		FlxG.stage.window.onKeyUp.remove(onKeyUp);
-		#end
 	}
 
 	/**
@@ -174,12 +160,6 @@ class FlxInputTextManager extends FlxBasic
 		if (focus == null)
 			return;
 
-		#if flash
-		// COPY, CUT, PASTE and SELECT_ALL events will only be dispatched if the stage has a focus.
-		// Let's set one manually (just the stage itself)
-		FlxG.stage.focus = FlxG.stage;
-		#end
-
 		// Modifier used for commands like cut, copy and paste
 		final commandPressed = _mac ? modifier.metaKey : modifier.ctrlKey;
 
@@ -247,64 +227,6 @@ class FlxInputTextManager extends FlxBasic
 		}
 		#end
 	}
-
-	#if flash
-	/**
-	 * Called when an `onKeyUp` event is recieved. This is used to reset the stage's focus
-	 * back to null.
-	 */
-	function onKeyUp(key:KeyCode, modifier:KeyModifier):Void
-	{
-		if (FlxG.stage.focus == FlxG.stage)
-		{
-			FlxG.stage.focus = null;
-		}
-	}
-
-	/**
-	 * Called when a `COPY` event is received.
-	 */
-	function onCopy(e:Event):Void
-	{
-		if (focus != null)
-		{
-			dispatchTypingAction(COMMAND(COPY));
-		}
-	}
-
-	/**
-	 * Called when a `CUT` event is received.
-	 */
-	function onCut(e:Event):Void
-	{
-		if (focus != null)
-		{
-			dispatchTypingAction(COMMAND(CUT));
-		}
-	}
-
-	/**
-	 * Called when a `PASTE` event is received.
-	 */
-	function onPaste(e:Event):Void
-	{
-		if (focus != null)
-		{
-			dispatchTypingAction(COMMAND(PASTE));
-		}
-	}
-
-	/**
-	 * Called when a `SELECT_ALL` event is received.
-	 */
-	function onSelectAll(e:Event):Void
-	{
-		if (focus != null)
-		{
-			dispatchTypingAction(COMMAND(SELECT_ALL));
-		}
-	}
-	#end
 
 	function get_isTyping():Bool
 	{

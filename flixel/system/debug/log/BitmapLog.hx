@@ -423,7 +423,6 @@ class Footer extends Sprite
 		bg.width = width;
 	}
 
-	// Note: get_height doesn't work in flash
 	public function getHeight() return Window.HEADER_HEIGHT;
 }
 

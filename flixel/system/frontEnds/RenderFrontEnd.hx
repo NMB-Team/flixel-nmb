@@ -19,7 +19,7 @@ class RenderFrontEnd
 	{
 		method = BLITTING;
 		
-		#if (!lime_legacy && !flash)
+		#if (!lime_legacy)
 		method = switch (FlxG.stage.window.context.type)
 		{
 			case OPENGL, OPENGLES, WEBGL: DRAW_TILES;
@@ -31,10 +31,6 @@ class RenderFrontEnd
 		#else
 		method = DRAW_TILES;
 		#end
-		#end
-		
-		#if air
-		method = BLITTING;
 		#end
 		
 		blit = method == BLITTING;

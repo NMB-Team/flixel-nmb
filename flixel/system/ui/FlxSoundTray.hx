@@ -16,10 +16,6 @@ import openfl.events.MouseEvent;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.text.TextFormatAlign;
-#if flash
-import openfl.text.AntiAliasType;
-import openfl.text.GridFitType;
-#end
 
 /**
  * The flixel sound tray, the little volume meter that pops down sometimes.
@@ -88,20 +84,14 @@ class FlxSoundTray extends Sprite
 		screenCenter();
 		addChild(bgMain);
 
-		var text = new TextField();
+		final text = new TextField();
 		text.width = bgMain.width;
 		text.height = bgMain.height;
 		text.multiline = false;
 		text.wordWrap = true;
 		text.selectable = false;
 
-		#if flash
-		text.embedFonts = true;
-		text.antiAliasType = AntiAliasType.NORMAL;
-		text.gridFitType = GridFitType.PIXEL;
-		#else
-		#end
-		var dtf:TextFormat = new TextFormat(FlxAssets.FONT_DEFAULT, 10, 0xffffff);
+		final dtf = new TextFormat(FlxAssets.FONT_DEFAULT, 10, 0xffffff);
 		dtf.align = TextFormatAlign.CENTER;
 		text.defaultTextFormat = dtf;
 		addChild(text);

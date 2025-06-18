@@ -22,44 +22,7 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  */
 enum abstract XInputID(Int) to Int
 {
-	#if flash
-	var A = 4;
-	var B = 5;
-	var X = 6;
-	var Y = 7;
-	var LB = 8;
-	var RB = 9;
-
-	var BACK = 12;
-	var GUIDE = -1;
-	var START = 13;
-
-	var LEFT_STICK_CLICK = 14;
-	var RIGHT_STICK_CLICK = 15;
-
-	var DPAD_UP = 16;
-	var DPAD_DOWN = 17;
-	var DPAD_LEFT = 18;
-	var DPAD_RIGHT = 19;
-
-	var LEFT_TRIGGER = 10;
-	var RIGHT_TRIGGER = 11;
-
-	static final LEFT_X = 0;
-	static final LEFT_Y = 1;
-	static final RIGHT_X = 2;
-	static final RIGHT_Y = 3;
-
-	var LEFT_STICK_UP = 20;
-	var LEFT_STICK_DOWN = 21;
-	var LEFT_STICK_LEFT = 22;
-	var LEFT_STICK_RIGHT = 23;
-
-	var RIGHT_STICK_UP = 24;
-	var RIGHT_STICK_DOWN = 25;
-	var RIGHT_STICK_LEFT = 26;
-	var RIGHT_STICK_RIGHT = 27;
-	#elseif FLX_GAMEINPUT_API
+	#if FLX_GAMEINPUT_API
 	var A = 6;
 	var B = 7;
 	var X = 8;

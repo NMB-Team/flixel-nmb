@@ -12,32 +12,27 @@ import flixel.FlxG;
  *
  * To enable it in your project, use `FlxG.scaleMode = new RelativeScaleMode();`.
  */
-class RelativeScaleMode extends BaseScaleMode
-{
+class RelativeScaleMode extends BaseScaleMode {
 	var _widthScale:Float;
 	var _heightScale:Float;
 
-	public function new(WidthScale:Float, HeightScale:Float)
-	{
+	public function new(widthScale:Float, heightScale:Float) {
 		super();
-		initScale(WidthScale, HeightScale);
+		initScale(widthScale, heightScale);
 	}
 
-	inline function initScale(WidthScale:Float, HeightScale:Float):Void
-	{
-		_widthScale = WidthScale;
-		_heightScale = HeightScale;
+	inline function initScale(widthScale:Float, heightScale:Float):Void {
+		_widthScale = widthScale;
+		_heightScale = heightScale;
 	}
 
-	public function setScale(WidthScale:Float, HeightScale:Float):Void
-	{
-		initScale(WidthScale, HeightScale);
+	public function setScale(widthScale:Float, heightScale:Float):Void {
+		initScale(widthScale, heightScale);
 		onMeasure(FlxG.stage.stageWidth, FlxG.stage.stageHeight);
 	}
 
-	override function updateGameSize(Width:Int, Height:Int):Void
-	{
-		gameSize.x = Std.int(Width * _widthScale);
-		gameSize.y = Std.int(Height * _heightScale);
+	override function updateGameSize(width:Int, height:Int):Void {
+		gameSize.x = Std.int(width * _widthScale);
+		gameSize.y = Std.int(height * _heightScale);
 	}
 }

@@ -152,18 +152,18 @@ class FlxSound extends FlxBasic
 	public var fadeTween:FlxTween;
 
 	/**
-	 * Internal tracker for a Flash sound object.
+	 * Internal tracker for a sound object.
 	 */
 	@:allow(flixel.system.frontEnds.SoundFrontEnd.load)
 	var _sound:Sound;
 
 	/**
-	 * Internal tracker for a Flash sound channel object.
+	 * Internal tracker for a sound channel object.
 	 */
 	var _channel:SoundChannel;
 
 	/**
-	 * Internal tracker for a Flash sound transform object.
+	 * Internal tracker for a sound transform object.
 	 */
 	var _transform:SoundTransform;
 
@@ -663,8 +663,7 @@ class FlxSound extends FlxBasic
 	}
 
 	/**
-	 * An internal helper function used to help Flash
-	 * clean up finished sounds or restart looped sounds.
+	 * An internal helper function used to clean up finished sounds or restart looped sounds.
 	 */
 	function stopped(?_):Void
 	{
@@ -680,7 +679,7 @@ class FlxSound extends FlxBasic
 	}
 
 	/**
-	 * An internal helper function used to help Flash clean up (and potentially re-use) finished sounds.
+	 * An internal helper function used to clean up (and potentially re-use) finished sounds.
 	 * Will stop the current sound and destroy the associated SoundChannel, plus,
 	 * any other commands ordered by the passed in parameters.
 	 *
