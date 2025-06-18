@@ -2,7 +2,8 @@
 
 Copyright (c) 2009 Adam 'Atomic' Saltsman <br>
 Copyright (c) 2012 Matt Tuttle <br>
-Copyright (c) 2013 [HaxeFlixel Team](https://github.com/orgs/HaxeFlixel/people)
+Copyright (c) 2013 [HaxeFlixel Team](https://github.com/orgs/HaxeFlixel/people) <br>
+Copyright (c) 2025 [NotMyBugs Team](https://github.com/orgs/NMB-Team/people) <br>
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
