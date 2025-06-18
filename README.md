@@ -19,6 +19,7 @@
 
 > [!WARNING]
 > This library does not support `flash` or `neko` targets. <br/>
+> Also it works only with Haxe 4.3.x or greater.
 > For best compatibility and performance, we recommend using the latest stable version of Haxe. <br/>
 > If you need those, please use the [original version](https://github.com/HaxeFlixel/flixel) of the library instead. <br/>
 
