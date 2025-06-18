@@ -8,6 +8,14 @@
 
 [![](images/showcase.png)](https://haxeflixel.com/showcase)
 
+#
+### ⚠️ This library does not support `flash` or `neko` targets.
+
+For best compatibility and performance, we recommend using the latest stable version of Haxe.
+
+If you need those, please use the [original version](https://github.com/HaxeFlixel/flixel) of the library instead.
+#
+
 ## Links
 
 Here are the most important links to get you started with HaxeFlixel:
