@@ -13,15 +13,14 @@
   <img src="/images/showcase.png" width="600" alt="logo" />
 </link>
 
-#
-### ⚠️ This library does not support `flash` or `neko` targets.
-
-For best compatibility and performance, we recommend using the latest stable version of Haxe.
-
-If you need those, please use the [original version](https://github.com/HaxeFlixel/flixel) of the library instead.
-#
-
 </div>
+
+#
+
+> [!WARNING]
+> This library does not support `flash` or `neko` targets. <br/>
+> For best compatibility and performance, we recommend using the latest stable version of Haxe. <br/>
+> If you need those, please use the [original version](https://github.com/HaxeFlixel/flixel) of the library instead. <br/>
 
 ## Links
 
