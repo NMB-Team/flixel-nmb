@@ -60,7 +60,7 @@ class FlxStringUtil
 
 	/**
 	 * Add leading zeros to a string until it reaches the specified length.
-	 * 
+	 *
 	 * @param str The string to add zeros to.
 	 * @param num The desired length of the string.
 	 */
@@ -70,10 +70,10 @@ class FlxStringUtil
 			str = '0${str}';
 		return str;
 	}
-	
+
 	/**
 	 * Add trailing zeros to a string until it reaches the specified length.
-	 * 
+	 *
 	 * @param str The string to add zeros to.
 	 * @param num The desired length of the string.
 	 */
@@ -221,7 +221,7 @@ class FlxStringUtil
 	}
 
 
-	/** 
+	/**
 	 * Takes a string and filters out everything but the digits.
 	 *
 	 * @param 	Input	The input string
@@ -285,13 +285,13 @@ class FlxStringUtil
 	public static function slugify(str:String):String
 	{
 		var s = str.toLowerCase().trim();
-		
+
 		s = ~/[^a-z0-9]+/gi.replace(s, "-");
 		s = ~/^-+|-+$/g.replace(s, "");
 
 		return s;
 	}
-	
+
 	/**
 	 * Get the string name of any class or class instance. Wraps `Type.getClassName()`.
 	 *
@@ -732,27 +732,27 @@ class FlxStringUtil
 	{
 		return s == null || s.length == 0;
 	}
-	
+
 	/**
 	 * Returns an Underscored, or "slugified" string
 	 * Example: `"A Tale of Two Cities, Part II"` becomes `"a_tale_of_two_cities__part_ii"`
 	 */
-	public static function toUnderscoreCase(str:String):String 
+	public static function toUnderscoreCase(str:String):String
 	{
 		var regex = ~/[^a-z0-9]+/g;
 		return regex.replace(str.toLowerCase(), '_');
 	}
-	
+
 	/**
-	 * Returns a string formatted to 'Title Case'. 
+	 * Returns a string formatted to 'Title Case'.
 	 * Example: `"a tale of two cities, pt ii" returns `"A Tale of Two Cities, Part II"`
 	 */
-	public static function toTitleCase(str:String):String 
+	public static function toTitleCase(str:String):String
 	{
 		var exempt:Array<String> = ["a", "an", "the", "at", "by", "for", "in", "of", "on", "to", "up", "and", "as", "but", "or", "nor"];
 		var words:Array<String> = str.toLowerCase().split(" ");
-		
-		for (i in 0...words.length) 
+
+		for (i in 0...words.length)
 		{
 			if (isRomanNumeral(words[i]))
 				words[i] = words[i].toUpperCase();
@@ -774,11 +774,10 @@ class FlxStringUtil
 	}
 
 	/**
-	 * Capitalizes the first letter of each word in a string.Add commentMore actions
+	 * Capitalizes the first letter
 	 */
 	public static function toCapitalizeCase(string:String):String {
-		final split = string.split('-');
-		final formattedString = split.map(piece -> return piece.substr(0, 1).toUpperCase() + piece.substr(1)).join(' ');
+		final formattedString = string.substr(0, 1).toUpperCase() + string.substr(1);
 		return formattedString;
 	}
 
@@ -805,7 +804,7 @@ class FlxStringUtil
 class LabelValuePair implements IFlxDestroyable
 {
 	static var _pool = new FlxPool(LabelValuePair.new);
-	
+
 	public static inline function weak(label:String, value:Dynamic):LabelValuePair
 	{
 		return _pool.get().create(label, value);
