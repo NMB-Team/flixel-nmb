@@ -989,8 +989,7 @@ class FlxSprite extends FlxObject
 	{
 		resetFrameSize();
 		resetSizeFromFrame();
-		_flashRect2.x = 0;
-		_flashRect2.y = 0;
+		_flashRect2.x = _flashRect2.y = 0;
 
 		if (graphic != null)
 		{
@@ -1018,6 +1017,7 @@ class FlxSprite extends FlxObject
 	 */
 	function updateAnimation(elapsed:Float):Void
 	{
+		if (animation.curAnim == null || animation.curAnim.numFrames <= 1) return;
 		animation.update(elapsed);
 	}
 
@@ -1102,7 +1102,6 @@ class FlxSprite extends FlxObject
 		else
 			_lastClipRect.copyFrom(clipRect);
 	}
-
 
 	@:noCompletion
 	function drawSimple(camera:FlxCamera):Void
@@ -1189,7 +1188,7 @@ class FlxSprite extends FlxObject
 		Brush.drawFrame();
 
 		if (graphic == null || Brush.graphic == null)
-			throw "Cannot stamp to or from a FlxSprite with no graphics.";
+			FlxG.log.critical("Cannot stamp to or from a FlxSprite with no graphics.");
 
 		var bitmapData:BitmapData = Brush.framePixels;
 

@@ -285,8 +285,8 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 			var size = if (trimmed)
 			{
-				FlxRect.get(Std.parseInt(texture.att.frameX), Std.parseInt(texture.att.frameY), Std.parseInt(texture.att.frameWidth),
-					Std.parseInt(texture.att.frameHeight));
+				FlxRect.get(Std.parseFloat(texture.att.frameX), Std.parseFloat(texture.att.frameY), Std.parseFloat(texture.att.frameWidth),
+					Std.parseFloat(texture.att.frameHeight));
 			}
 			else
 			{

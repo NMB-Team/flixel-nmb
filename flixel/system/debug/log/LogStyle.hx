@@ -11,13 +11,14 @@ using flixel.util.FlxStringUtil;
  */
 class LogStyle
 {
-	public static var NORMAL:LogStyle = new LogStyle();
-	public static var WARNING:LogStyle = new LogStyle("[WARNING] ", "D9F85C", 12, false, false, false, false, "flixel/sounds/beep", true);
-	public static var ERROR:LogStyle = new LogStyle("[ERROR] ", "FF8888", 12, false, false, false, false, "flixel/sounds/beep", true);
-	public static var NOTICE:LogStyle = new LogStyle("[NOTICE] ", "5CF878", 12, false);
-	public static var CONSOLE:LogStyle = new LogStyle("[CONSOLE] ", "5A96FA", 12, false);
-	public static var TRACE:LogStyle = new LogStyle("[TRACE] ", "FC763D", 12, false);
-	public static var BRACKET:LogStyle = new LogStyle("> ", "7982DB", 12, false);
+	public static final NORMAL = new LogStyle();
+	public static final WARNING = new LogStyle("[WARNING] ", "D9F85C", 12, false, false, false, false, "flixel/sounds/beep", true);
+	public static final ERROR = new LogStyle("[ERROR] ", "FF8888", 12, false, false, false, false, "flixel/sounds/beep", true);
+	public static final CRITICAL = new LogStyle("[CRITICAL] ", "FF0033", 12, false, false, false, false, "flixel/sounds/beep", true, true);
+	public static final NOTICE = new LogStyle("[NOTICE] ", "5CF878", 12, false);
+	public static final CONSOLE = new LogStyle("[CONSOLE] ", "5A96FA", 12, false);
+	public static final TRACE = new LogStyle("[TRACE] ", "FC763D", 12, false);
+	public static final BRACKET = new LogStyle("> ", "7982DB", 12, false);
 
 	/**
 	 * A prefix which is always attached to the start of the logged data
@@ -53,7 +54,7 @@ class LogStyle
 	 * **Note**: Unlike other log style properties, this happens even in release mode.
 	 * @since 5.4.0
 	 */
-	public var throwException:Bool = false;
+	public var throwException = false;
 
 	/**
 	 * Create a new LogStyle to be used in conjunction with `FlxG.log.advanced()`
@@ -82,8 +83,7 @@ class LogStyle
 		this.underlined = underlined;
 		this.errorSound = errorSound;
 		this.openConsole = openConsole;
-		if (callback != null)
-			onLog.add(callback);
+		if (callback != null) onLog.add(callback);
 		this.throwException = throwException;
 	}
 
@@ -92,16 +92,12 @@ class LogStyle
 	 *
 	 * @param   data  The data being logged
 	 */
-	public function toLogString(data:Array<Any>)
-	{
+	public function toLogString(data:Array<Any>) {
 		// Format FlxPoints, Arrays, Maps or turn the data entry into a String
 		final texts = new Array<String>();
-		for (i in 0...data.length)
-		{
+		for (i in 0...data.length) {
 			final text = Std.string(data[i]);
-
-			// Make sure you can't insert html tags
-			texts.push(StringTools.htmlEscape(text));
+			texts.push(StringTools.htmlEscape(text)); // Make sure you can't insert html tags
 		}
 
 		return prefix + texts.join(" ");
@@ -112,8 +108,7 @@ class LogStyle
 	 *
 	 * @param   data  The data being logged
 	 */
-	public inline function toHtmlString(data:Array<Any>)
-	{
+	public inline function toHtmlString(data:Array<Any>) {
 		return toLogString(data).htmlFormat(size, color, bold, italic, underlined);
 	}
 }

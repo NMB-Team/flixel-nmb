@@ -9,22 +9,19 @@ import flixel.FlxG;
  *
  * This is the default scaling mode used by HaxeFlixel.
  */
-class RatioScaleMode extends BaseScaleMode
-{
+class RatioScaleMode extends BaseScaleMode {
 	var fillScreen:Bool;
 
 	/**
 	 * @param fillScreen Whether to cut the excess side to fill the
 	 * screen or always display everything.
 	 */
-	public function new(fillScreen = false)
-	{
+	public function new(fillScreen = false) {
 		super();
 		this.fillScreen = fillScreen;
 	}
 
-	override function updateGameSize(width:Int, height:Int):Void
-	{
+	override function updateGameSize(width:Int, height:Int):Void {
 		final ratio = FlxG.width / FlxG.height;
 		final realRatio = width / height;
 
