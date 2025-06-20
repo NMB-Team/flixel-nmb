@@ -1,5 +1,6 @@
 package flixel.util;
 
+import flixel.system.debug.log.LogStyle;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import openfl.errors.Error;
 import openfl.net.SharedObject;
@@ -10,43 +11,43 @@ import haxe.Exception;
  * A class to help automate and simplify save game functionality. A simple wrapper for the OpenFl's
  * SharedObject, with a couple helpers. It's used automatically by various flixel utilities like
  * the sound tray, as well as some debugging features.
- * 
+ *
  * ## Resources
  * - [Handbook - FlxSave](https://haxeflixel.com/documentation/flxsave/)
  * - [Demo - Save](https://haxeflixel.com/demos/Save/)
- * 
+ *
  * ## Making your own
  * You can use a specific save name and path by calling the following,
  * ```haxe
  * FlxG.save.bind("myGameName", "myGameStudioName");
  * ```
  * It is recommended that you do so before creating an instance of FlxGame.
- * 
+ *
  * Note: It is NOT recommended to make you own instance of `FlxSave`, one is made for you when
  * a FlxGame is created at `FlxG.save`. The default `name` and `path` is specified by your
  * Project.xml's "file" and "company", respectively. That said, nothing is stopping you from
  * instantiating your own instance.
- * 
+ *
  * ## Default Paths
  * - Windows: ```"C:\ProgramData\<localPath>\saves\<name>.save"```
  * - Mac: ```"/Users/<username>/Library/Application Support/<localPath>/saves/<name>.save"```
  * - Chrome: In the developer tools, go to the Application tab, and under
  *     `Storage->Local Storage->https://<url>.com` with the key:`<localPath>:<name>"`
- * 
+ *
  * ## 5.0.0 Migration
  * In older version of flixel, a null path on html5 would use the current url. FlxSaves with a
  * null path will now look for that path, if the new default path is not found. If data is found
  * at the legacy, it is loaded, but `flush` calls will save to the new default path. The old save
  * is not deleted.
- * 
+ *
  * Prior to 5.0.0, FlxG.save's default save name was `"flixel"`, now it uses the project name as
  * defined in Project.xml. FlxG.save will automatically look for the old default save if the new
  * one is not found, and any flush call will save to the new path and id.
- * 
+ *
  * Previously, on desktop targets, saves were added to subfolders based on the project's name and
  * company, eg: `"/<app company>/<app title>/<localPath>/<name>.sol"`. This prevent separate
  * projects from referencing each others saves (this was OpenFL attempting to mirror Flash's
- * SharedObject behaviour). To allow cross-save referencing, the new location is simply: 
+ * SharedObject behaviour). To allow cross-save referencing, the new location is simply:
  * `'/<localPath>/<name>.sol'`. If no data is found in this location, `FlxSave` will look in the
  * old location, any `flush` call will save to the new location. For example, a save named with the
  * old default name `"flixel"` may be saved at `"<...>/FooBarGames/PorbsAdventure/flixel.sol"`.
@@ -56,9 +57,10 @@ import haxe.Exception;
 @:allow(flixel.util.FlxSharedObject)
 class FlxSave implements IFlxDestroyable
 {
-	
 	static var invalidChars = ~/[ ~%&\\;:"',<>?#]+/g;
-	
+
+	public static final saveLogStyle = new LogStyle("[SAVE] ", "54FFEE", 12, true);
+
 	/**
 	 * Checks for `~%&\;:"',<>?#` or space characters
 	 */
@@ -71,7 +73,7 @@ class FlxSave implements IFlxDestroyable
 		return invalidChars.match(str);
 		#end
 	}
-	
+
 	/**
 	 * Converts invalid characters to "-", producing a valid string for a FlxSave's name and path
 	 */
@@ -85,7 +87,7 @@ class FlxSave implements IFlxDestroyable
 		return invalidChars.split(str).join("-");
 		#end
 	}
-	
+
 	/**
 	 * Converts invalid characters to "-", and logs a warning in debug mode
 	 */
@@ -107,7 +109,7 @@ class FlxSave implements IFlxDestroyable
 		@:privateAccess
 		return SharedObject.__resolveClass(name);
 	}
-	
+
 	/**
 	 * Allows you to directly access the data container in the local shared object.
 	 */
@@ -135,7 +137,7 @@ class FlxSave implements IFlxDestroyable
 	 * @since 5.0.0
 	 */
 	public var isBound(get, never):Bool;
-	
+
 	/**
 	 * The local shared object itself.
 	 */
@@ -170,11 +172,11 @@ class FlxSave implements IFlxDestroyable
 	public function bind(name:String, ?path:String, ?backupParser:(String, Exception)->Null<Any>):Bool
 	{
 		destroy();
-		
+
 		name = validateAndWarn(name, "name");
 		if (path != null)
 			path = validateAndWarn(path, "path");
-		
+
 		try
 		{
 			switch FlxSharedObject.getLocal(name, path)
@@ -192,7 +194,7 @@ class FlxSave implements IFlxDestroyable
 						status = LOAD_ERROR(PARSING(rawData, exception));
 						return false;
 					}
-					
+
 					_sharedObject = sharedObject;
 					data = parsedData;
 					@:privateAccess
@@ -216,7 +218,7 @@ class FlxSave implements IFlxDestroyable
 	/**
 	 * Creates a new FlxSave and copies the data from old to new,
 	 * flushes the new save (if changed) and then optionally erases the old save.
-	 * 
+	 *
 	 * @param   name         The name of the save.
 	 * @param   path         The full or partial path to the file that created the save.
 	 * @param   overwrite    Whether the data should overwrite, should the 2 saves share data fields. defaults to false.
@@ -228,7 +230,7 @@ class FlxSave implements IFlxDestroyable
 	{
 		if (!checkStatus())
 			return false;
-		
+
 		final oldSave = new FlxSave();
 		// check old save location
 		if (oldSave.bind(name, path))
@@ -250,7 +252,7 @@ class FlxSave implements IFlxDestroyable
 
 	/**
 	 * Copies the given data over to this save and flushes (if changed).
-	 * 
+	 *
 	 * @param   sourceData   The data to merge
 	 * @param   overwrite    Whether the data should overwrite, should the 2 saves share data fields. defaults to false.
 	 * @param   minFileSize  If you need X amount of space for your save, specify it here.
@@ -311,9 +313,9 @@ class FlxSave implements IFlxDestroyable
 		{
 			status = SAVE_ERROR(ENCODING(e));
 		}
-		
+
 		checkStatus();
-		
+
 		return isBound;
 	}
 
@@ -403,14 +405,14 @@ class FlxSave implements IFlxDestroyable
 /**
  * Internal helper for overriding OpenFL save directories. If no data is found at
  * the desired path, it will check the legacy path, but `flush` calls will save to the new path.
- * 
+ *
  * ## Paths
  * - Windows: ```"C:\ProgramData\<app company>\<localPath>\saves\<name>.save"```
  * - Mac: ```"/Users/<username>/Library/Application Support/<localPath>/<name>.save"```
- * 
+ *
  * If localPath is null, the Project.xml's app company metadata is used. FlxG.save's default bind
  * args are `bind(app.company, app.file)`.
- * 
+ *
  * This prevents 2 different HaxeFlixel apps from using each other's save files, but cross-save
  * referencing is a really cool idea so let's allow it!
  */
@@ -432,7 +434,7 @@ private class FlxSharedObject extends SharedObject
 			return FAILURE(IO(e));
 		}
 	}
-	
+
 	public static inline function exists(name:String, ?path:String)
 	{
 		return true;
@@ -444,13 +446,13 @@ private class FlxSharedObject extends SharedObject
 	}
 	#else
 	static var all:Map<String, FlxSharedObject>;
-	
+
 	static function init()
 	{
 		if (all == null)
 		{
 			all = new Map();
-			
+
 			var app = lime.app.Application.current;
 			if (app != null)
 				app.onExit.add(onExit);
@@ -465,13 +467,13 @@ private class FlxSharedObject extends SharedObject
 	static function startPath(?name = '')
 		return haxe.io.Path.normalize('${Sys.getEnv("PROGRAMDATA")}/${getDefaultLocalPath()}/${openfl.Lib.current.stage.application.meta['file']}/$name');
 	#end
-	
+
 	static function onExit(_)
 	{
 		for (sharedObject in all)
 			sharedObject.flush();
 	}
-	
+
 	/**
 	 * Returns the company name listed in the Project.xml
 	 */
@@ -483,29 +485,29 @@ private class FlxSharedObject extends SharedObject
 			path = "HaxeFlixel";
 		else
 			path = FlxSave.validate(path);
-		
+
 		return path;
 	}
-	
+
 	public static function getLocal(name:String, ?localPath:String):LoadResult
 	{
 		if (name == null || name == "")
 			return FAILURE(INVALID_NAME(name));
-		
+
 		if (localPath == null)
 			localPath = "";
-		
+
 		var id = localPath + "/" + name;
-		
+
 		init();
-		
+
 		if (!all.exists(id))
 		{
 			var encodedData = null;
 
 			if (~/(?:^|\/)\.\.\//.match(localPath))
 				return FAILURE(INVALID_PATH(localPath, "../ not allowed in localPath"));
-			
+
 			try
 			{
 				encodedData = getData(name, localPath);
@@ -514,15 +516,15 @@ private class FlxSharedObject extends SharedObject
 			{
 				return FAILURE(IO(e));
 			}
-			
+
 			if (localPath == "")
 				localPath = getDefaultLocalPath();
-			
+
 			final sharedObject = new FlxSharedObject();
 			sharedObject.data = {};
 			sharedObject.__localPath = localPath;
 			sharedObject.__name = name;
-			
+
 			if (encodedData != null && encodedData != "") {
 				try {
 					final unserializer = new haxe.Unserializer(encodedData);
@@ -536,86 +538,86 @@ private class FlxSharedObject extends SharedObject
 					return FAILURE(PARSING(encodedData, e), sharedObject);
 				}
 			}
-			
+
 			all.set(id, sharedObject);
 		}
-		
+
 		return SUCCESS(all.get(id));
 	}
-	
+
 	#if (js && html5)
 	static function getData(name:String, ?localPath:String)
 	{
 		final storage = js.Browser.getLocalStorage();
 		if (storage == null)
 			return null;
-		
+
 		function get(path:String)
 		{
 			return storage.getItem(path + ":" + name);
 		}
-		
+
 		// do not check for legacy saves when path is provided
 		if (localPath != "")
 			return get(localPath);
-		
+
 		var encodedData:String;
 		// check default localPath
 		encodedData = get(getDefaultLocalPath());
 		if (encodedData != null)
 			return encodedData;
-		
+
 		// check pre-5.0.0 default local path
 		encodedData = get(js.Browser.window.location.pathname);
 		if (encodedData != null)
 			return encodedData;
-		
+
 		// check pre-4.6.0 default local path
 		return get(js.Browser.window.location.href);
 	}
-	
+
 	public static function exists(name:String, ?localPath:String)
 	{
 		final storage = js.Browser.getLocalStorage();
-		
+
 		if (storage == null)
 			return false;
-		
+
 		inline function has(path:String)
 		{
 			return storage.getItem(path + ":" + name) != null;
 		}
-		
+
 		return has(localPath)
 			|| has(getDefaultLocalPath())
 			|| has(js.Browser.window.location.pathname)
 			|| has(js.Browser.window.location.href);
 	}
-	
+
 	// should include every sys target
 	#else
-	
+
 	static function getData(name:String, ?localPath:String)
 	{
 		var path = getPath(localPath, name);
 		if (sys.FileSystem.exists(path))
 			return sys.io.File.getContent(path);
-		
+
 		// No save found, check the legacy save path
 		path = getLegacyPath(localPath, name);
 		if (sys.FileSystem.exists(path))
 			return sys.io.File.getContent(path);
-		
+
 		return null;
 	}
 
 	static function helperPath(name:String) {
 		name = StringTools.replace(name, "//", "/");
 		name = StringTools.replace(name, "//", "/");
-		
+
 		if (StringTools.startsWith(name, "/")) name = name.substr(1);
 		if (StringTools.endsWith(name, "/")) name = name.substring(0, name.length - 1);
-		
+
 		if (name.indexOf("/") > -1) {
 			final split = name.split("/");
 			name = "";
@@ -623,13 +625,16 @@ private class FlxSharedObject extends SharedObject
 			name += split[split.length - 1];
 		}
 	}
-	
+
 	static function getPath(localPath:String, name:String):String {
 		// Avoid ever putting .save files directly in ProgramData
+		final extension = ".save";
 		#if ((hl || cpp) && windows)
 			helperPath(name);
-			FlxG.log.notice('Saved to ${startPath('saves/$name.save')}');
-			return startPath('saves/$name.save');
+
+			final folder = "saves";
+			FlxG.log.advanced('Saved to ${startPath('$folder/$name$extension')}', FlxSave.saveLogStyle);
+			return startPath('$folder/$name$extension');
 		#else
 			if (localPath.isNullOrEmpty()) localPath = getDefaultLocalPath();
 
@@ -638,11 +643,12 @@ private class FlxSharedObject extends SharedObject
 
 			helperPath(name);
 
-			FlxG.log.notice('Saved to ${path + name + '.save'}');
-			return path + name + '.save';
+			final pathTo = path + name + extension;
+			FlxG.log.advanced('Saved to $pathTo', FlxSave.saveLogStyle);
+			return pathTo;
 		#end
 	}
-	
+
 	/**
 	 * Whether the save exists, checks both the old and new path.
 	 */
@@ -651,7 +657,7 @@ private class FlxSharedObject extends SharedObject
 		return newExists(localPath, name)
 			|| legacyExists(localPath, name);
 	}
-	
+
 	/**
 	 * Whether the save exists, checks the NEW location
 	 */
@@ -659,12 +665,12 @@ private class FlxSharedObject extends SharedObject
 	{
 		return sys.FileSystem.exists(getPath(localPath, name));
 	}
-	
+
 	static inline function getLegacyPath(localPath:String, name:String)
 	{
 		return SharedObject.__getPath(localPath, name);
 	}
-	
+
 	/**
 	 * Whether the save exists, checks the LEGACY location
 	 */
@@ -672,24 +678,24 @@ private class FlxSharedObject extends SharedObject
 	{
 		return sys.FileSystem.exists(getLegacyPath(localPath, name));
 	}
-	
+
 	override function flush(minDiskSpace:Int = 0)
 	{
 		if (Reflect.fields(data).length == 0)
 		{
 			return SharedObjectFlushStatus.FLUSHED;
 		}
-		
+
 		var encodedData = haxe.Serializer.run(data);
-		
+
 		try
 		{
 			var path = getPath(__localPath, __name);
 			var directory = haxe.io.Path.directory(path);
-			
+
 			if (!sys.FileSystem.exists(directory))
 				SharedObject.__mkdir(directory);
-			
+
 			var output = sys.io.File.write(path, false);
 			output.writeString(encodedData);
 			output.close();
@@ -698,18 +704,18 @@ private class FlxSharedObject extends SharedObject
 		{
 			return SharedObjectFlushStatus.PENDING;
 		}
-		
+
 		return SharedObjectFlushStatus.FLUSHED;
 	}
-	
+
 	override function clear()
 	{
 		data = {};
-		
+
 		try
 		{
 			var path = getPath(__localPath, __name);
-			
+
 			if (sys.FileSystem.exists(path))
 				sys.FileSystem.deleteFile(path);
 		}
@@ -729,13 +735,13 @@ enum LoadFailureType
 {
 	/** Malformed name string */
 	INVALID_NAME(name:String, ?message:String);
-	
+
 	/** Malformed path string */
 	INVALID_PATH(path:String, ?message:String);
-	
+
 	/** An error while retrieving the data */
 	IO(exception:Exception);
-	
+
 	/** An error while parsing the data */
 	PARSING(rawData:String, exception:Exception);
 }
@@ -744,7 +750,7 @@ enum SaveFailureType
 {
 	/** FlxSave is requesting extra storage space **/
 	STORAGE;
-	
+
 	/** There was an problem encoding the save data */
 	ENCODING(e:Exception);
 }
@@ -755,17 +761,17 @@ enum FlxSaveStatus
 	 * The initial state, call bind() in order to use.
 	 */
 	EMPTY;
-	
+
 	/**
 	 * The save is set up correctly.
 	 */
 	BOUND(name:String, ?path:String);
-	
+
 	/**
 	 * There was an issue during `flush`. Previously known as `ERROR(msg:String)`
 	 */
 	SAVE_ERROR(type:SaveFailureType);
-	
+
 	/**
 	 * There was an issue while loading
 	 */
