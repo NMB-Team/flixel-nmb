@@ -9,7 +9,7 @@ class RenderFrontEnd
 	public var method:FlxRenderMethod;
 	public var blit(default, null):Bool;
 	public var tile(default, null):Bool;
-	
+
 	public var pixelMode(default, null):FlxPixelMode = CUSTOM;
 
 	public function new() {}
@@ -18,7 +18,7 @@ class RenderFrontEnd
 	function init()
 	{
 		method = BLITTING;
-		
+
 		#if (!lime_legacy)
 		method = switch (FlxG.stage.window.context.type)
 		{
@@ -32,7 +32,7 @@ class RenderFrontEnd
 		method = DRAW_TILES;
 		#end
 		#end
-		
+
 		blit = method == BLITTING;
 		tile = method == DRAW_TILES;
 		FlxObject.defaultPixelPerfectPosition = blit;
