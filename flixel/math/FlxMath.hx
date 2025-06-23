@@ -922,6 +922,7 @@ class FlxMath
 
 	/**
 	 * Clamps an integer value to ensure it stays within the specified minimum and maximum bounds.
+	 * More safely than `FlxMath.wrap()`
 	 */
 	public static inline function clamp(v:Int, min:Int, max:Int):Int
 	{

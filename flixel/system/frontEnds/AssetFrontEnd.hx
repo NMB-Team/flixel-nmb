@@ -464,7 +464,7 @@ class AssetFrontEnd
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 */
-	public inline function getJsonUnsafe(id:String, useCache = true)
+	public inline function getJsonUnsafe(id:String, useCache = true):Dynamic
 	{
 		final text = getTextUnsafe(id, useCache);
 		return text != null ? parseJson(text) : null;
@@ -479,7 +479,7 @@ class AssetFrontEnd
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
 	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
 	 */
-	public inline function getJson(id:String, useCache = true, ?logStyle:LogStyle)
+	public inline function getJson(id:String, useCache = true, ?logStyle:LogStyle):Dynamic
 	{
 		final text = getText(id, useCache, logStyle);
 		return text != null ? parseJson(text) : null;
