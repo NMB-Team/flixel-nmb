@@ -537,6 +537,9 @@ class FlxMath
 	 */
 	public static function wrap(value:Int, min:Int, max:Int):Int
 	{
+		if (max < min)
+			FlxG.log.error('FlxMath.wrap() error: max ($max) must be >= min ($min)');
+
 		final range = max - min + 1;
 
 		if (value < min)
@@ -550,6 +553,9 @@ class FlxMath
 	 */
 	public static inline function wrapInt(value:Int, min:Int, max:Int):Int
 	{
+		if (max < min)
+			FlxG.log.error('FlxMath.wrap() error: max ($max) must be >= min ($min)');
+
 		final range = max - min + 1;
 		return min + ((value - min) % range + range) % range;
 	}
@@ -564,6 +570,9 @@ class FlxMath
 	 */
 	public static inline function fwrap(value:Float, min:Float, max:Float):Float
 	{
+		if (max < min)
+			FlxG.log.error('FlxMath.wrap() error: max ($max) must be >= min ($min)');
+
 		final range = max - min;
 		return min + ((value < min ? value + range : value) - min) % (range + FlxPoint.EPSILON_SQUARED);
 	}
@@ -922,7 +931,6 @@ class FlxMath
 
 	/**
 	 * Clamps an integer value to ensure it stays within the specified minimum and maximum bounds.
-	 * More safely than `FlxMath.wrap()`
 	 */
 	public static inline function clamp(v:Int, min:Int, max:Int):Int
 	{
