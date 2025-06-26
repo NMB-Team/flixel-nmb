@@ -73,31 +73,28 @@ import flixel.util.FlxStringUtil;
  * - [Demos - Collision and Grouping](https://haxeflixel.com/demos/CollisionAndGrouping/)
  * @see [Demos - EZPlatformer](https://haxeflixel.com/demos/EZPlatformer/)
  */
-class FlxObject extends FlxBasic
-{
+class FlxObject extends FlxBasic {
 	/**
 	 * Default value for `FlxObject`'s `pixelPerfectPosition` var.
 	 */
-	public static var defaultPixelPerfectPosition:Bool = false;
+	public static var defaultPixelPerfectPosition = false;
 
 	/**
 	 * This value dictates the maximum number of pixels two objects have to intersect
 	 * before collision stops trying to separate them.
 	 * Don't modify this unless your objects are passing through each other.
 	 */
-	public static var SEPARATE_BIAS:Float = 4;
+	public static var SEPARATE_BIAS = 4.;
 
 	/**
 	 * The default `moves` value of all future `FlxObjects` and `FlxSprites`
 	 * Note: Has no effect on `FlxTexts`, `FlxTilemaps` and `FlxTileBlocks`
 	 * @since 5.6.0
 	 */
-	public static var defaultMoves:Bool = true;
+	public static var defaultMoves = true;
 
-	static function allowCollisionDrag(type:CollisionDragType, object1:FlxObject, object2:FlxObject):Bool
-	{
-		return object2.active && object2.moves && switch (type)
-		{
+	static function allowCollisionDrag(type:CollisionDragType, object1:FlxObject, object2:FlxObject):Bool {
+		return object2.active && object2.moves && switch (type) {
 			case NEVER: false;
 			case ALWAYS: true;
 			case IMMOVABLE: object2.immovable;
@@ -117,30 +114,24 @@ class FlxObject extends FlxBasic
 	  	 * @return  The result of whichever separator was used
 	  	 * @since 5.9.0
 	 */
-	static function processCheckTilemap(object1:FlxObject, object2:FlxObject, func:(FlxObject, FlxObject) -> Bool, ?position:FlxPoint, isCollision = true):Bool
-	{
+	static function processCheckTilemap(object1:FlxObject, object2:FlxObject, func:(FlxObject, FlxObject) -> Bool, ?position:FlxPoint, isCollision = true):Bool {
 		// two immovable objects cannot collide
 		if (isCollision && object1.immovable && object2.immovable)
 			return false;
 
 		// If one of the objects is a tilemap, just pass it off.
-		if (object1.flixelType == TILEMAP)
-		{
+		if (object1.flixelType == TILEMAP) {
 			final tilemap:FlxBaseTilemap<Dynamic> = cast object1;
 			// If object1 is a tilemap, check it's tiles against object2, which may also be a tilemap
-			function recurseProcess(tile, _)
-			{
+			function recurseProcess(tile, _) {
 				// Keep tile as first arg
 				return processCheckTilemap(tile, object2, func, position, isCollision);
 			}
 			return tilemap.objectOverlapsTiles(object2, recurseProcess, position);
-		}
-		else if (object2.flixelType == TILEMAP)
-		{
+		} else if (object2.flixelType == TILEMAP) {
 			final tilemap:FlxBaseTilemap<Dynamic> = cast object2;
 			// If object1 is a tilemap, check it's tiles against object2, which may also be a tilemap
-			function recurseProcess(tile, _)
-			{
+			function recurseProcess(tile, _) {
 				// Keep tile as second arg
 				return processCheckTilemap(object1, tile, func, position, isCollision);
 			}
@@ -156,33 +147,21 @@ class FlxObject extends FlxBasic
  	 *
  	 * @return  Whether the objects were overlapping and were separated
  	 */
-	public static function separate(object1:FlxObject, object2:FlxObject):Bool
-	{
-		var tmp1 = object1.last.copyTo();
-		var tmp2 = object2.last.copyTo();
+	public static function separate(object1:FlxObject, object2:FlxObject):Bool {
+		final tmp1 = object1.last.copyTo();
+		final tmp2 = object2.last.copyTo();
+
 		final separatedX = separateX(object1, object2);
 		object1.last.x = object1.x;
 		object2.last.x = object2.x;
+
 		final separatedY = separateY(object1, object2);
 		object1.last.copyFrom(tmp1);
 		object2.last.copyFrom(tmp2);
+
 		tmp1.put();
 		tmp2.put();
 		return separatedX || separatedY;
-
-		/*
-			* Note: can't do the following, FlxTilemapExt works better when you separate all
-			* tiles in the x and then all tiles the y, rather than iterating all overlapping
-			* tiles and separating the x and y on each of them. If we find a way around this
-			* if would be more efficient to do the following
-			*/
-		// function helper(object1, object2)
-		// {
-		// 	final separatedX = separateXHelper(object1, object2);
-		// 	final separatedY = separateYHelper(object1, object2);
-		// 	return separatedX || separatedY;
-		// }
-		// return processCheckTilemap(object1, object2, helper);
 	}
 
 	/**
@@ -191,8 +170,7 @@ class FlxObject extends FlxBasic
  	 *
  	 * @return  Whether the objects were overlapping and were separated along the X-axis
 	 */
-	public static function separateX(object1:FlxObject, object2:FlxObject):Bool
-	{
+	public static function separateX(object1:FlxObject, object2:FlxObject):Bool {
 		return processCheckTilemap(object1, object2, separateXHelper);
 	}
 
@@ -202,32 +180,28 @@ class FlxObject extends FlxBasic
 	 *
 	 * @return  Whether the objects were overlapping and were separated along the Y-axis
 	 */
-	public static function separateY(object1:FlxObject, object2:FlxObject):Bool
-	{
+	public static function separateY(object1:FlxObject, object2:FlxObject):Bool {
 		return processCheckTilemap(object1, object2, separateYHelper);
 	}
 
 	/**
 	 * Same as `separateX` but assumes both are not immovable and not tilemaps
 	 */
-	static function separateXHelper(object1:FlxObject, object2:FlxObject):Bool
-	{
-		final overlap:Float = computeOverlapX(object1, object2);
+	static function separateXHelper(object1:FlxObject, object2:FlxObject):Bool {
+		final overlap = computeOverlapX(object1, object2);
 		// Then adjust their positions and velocities accordingly (if there was any overlap)
-		if (overlap != 0)
-		{
+		if (overlap != 0) {
 			final delta1 = object1.x - object1.last.x;
 			final delta2 = object2.x - object2.last.x;
 			final vel1 = object1.velocity.x;
 			final vel2 = object2.velocity.x;
 
-			if (!object1.immovable && !object2.immovable)
-			{
+			if (!object1.immovable && !object2.immovable) {
 				#if FLX_4_LEGACY_COLLISION
 				legacySeparateX(object1, object2, overlap);
 				#else
-				object1.x -= overlap * 0.5;
-				object2.x += overlap * 0.5;
+				object1.x -= overlap * .5;
+				object2.x += overlap * .5;
 
 				final mass1 = object1.mass;
 				final mass2 = object2.mass;
@@ -235,23 +209,17 @@ class FlxObject extends FlxBasic
 				object1.velocity.x = (momentum + object1.elasticity * mass2 * (vel2 - vel1)) / (mass1 + mass2);
 				object2.velocity.x = (momentum + object2.elasticity * mass1 * (vel1 - vel2)) / (mass1 + mass2);
 				#end
-			}
-			else if (!object1.immovable)
-			{
+			} else if (!object1.immovable) {
 				object1.x -= overlap;
 				object1.velocity.x = vel2 - vel1 * object1.elasticity;
-			}
-			else if (!object2.immovable)
-			{
+			} else if (!object2.immovable) {
 				object2.x += overlap;
 				object2.velocity.x = vel1 - vel2 * object2.elasticity;
 			}
 
 			// use collisionDrag properties to determine whether one object
-			if (allowCollisionDrag(object1.collisionYDrag, object1, object2) && delta1 > delta2)
-				object1.y += object2.y - object2.last.y;
-			else if (allowCollisionDrag(object2.collisionYDrag, object2, object1) && delta2 > delta1)
-				object2.y += object1.y - object1.last.y;
+			if (allowCollisionDrag(object1.collisionYDrag, object1, object2) && delta1 > delta2) object1.y += object2.y - object2.last.y;
+			else if (allowCollisionDrag(object2.collisionYDrag, object2, object1) && delta2 > delta1) object2.y += object1.y - object1.last.y;
 
 			return true;
 		}
@@ -262,19 +230,16 @@ class FlxObject extends FlxBasic
 	/**
 	 * Same as `separateY` but assumes both are not immovable and not tilemaps
 	 */
-	static function separateYHelper(object1:FlxObject, object2:FlxObject):Bool
-	{
-		final overlap:Float = computeOverlapY(object1, object2);
+	static function separateYHelper(object1:FlxObject, object2:FlxObject):Bool {
+		final overlap = computeOverlapY(object1, object2);
 		// Then adjust their positions and velocities accordingly (if there was any overlap)
-		if (overlap != 0)
-		{
+		if (overlap != 0) {
 			final delta1 = object1.y - object1.last.y;
 			final delta2 = object2.y - object2.last.y;
 			final vel1 = object1.velocity.y;
 			final vel2 = object2.velocity.y;
 
-			if (!object1.immovable && !object2.immovable)
-			{
+			if (!object1.immovable && !object2.immovable) {
 				#if FLX_4_LEGACY_COLLISION
 				legacySeparateY(object1, object2, overlap);
 				#else
@@ -289,23 +254,17 @@ class FlxObject extends FlxBasic
 				object1.velocity.y = newVel1;
 				object2.velocity.y = newVel2;
 				#end
-			}
-			else if (!object1.immovable)
-			{
+			} else if (!object1.immovable) {
 				object1.y -= overlap;
 				object1.velocity.y = vel2 - vel1 * object1.elasticity;
-			}
-			else if (!object2.immovable)
-			{
+			} else if (!object2.immovable) {
 				object2.y += overlap;
 				object2.velocity.y = vel1 - vel2 * object2.elasticity;
 			}
 
 			// use collisionDrag properties to determine whether one object
-			if (allowCollisionDrag(object1.collisionXDrag, object1, object2) && delta1 > delta2)
-				object1.x += object2.x - object2.last.x;
-			else if (allowCollisionDrag(object2.collisionXDrag, object2, object1) && delta2 > delta1)
-				object2.x += object1.x - object1.last.x;
+			if (allowCollisionDrag(object1.collisionXDrag, object1, object2) && delta1 > delta2) object1.x += object2.x - object2.last.x;
+			else if (allowCollisionDrag(object2.collisionXDrag, object2, object1) && delta2 > delta1) object2.x += object1.x - object1.last.x;
 
 			return true;
 		}
@@ -316,18 +275,17 @@ class FlxObject extends FlxBasic
 	 * The separateX that existed before HaxeFlixel 5.0, preserved for anyone who
 	 * needs to use it in an old project. Does not preserve momentum, avoid if possible
 	 */
-	static inline function legacySeparateX(object1:FlxObject, object2:FlxObject, overlap:Float)
-	{
+	static inline function legacySeparateX(object1:FlxObject, object2:FlxObject, overlap:Float) {
 		final vel1 = object1.velocity.x;
 		final vel2 = object2.velocity.x;
 		final mass1 = object1.mass;
 		final mass2 = object2.mass;
-		object1.x = object1.x - (overlap * 0.5);
-		object2.x += overlap * 0.5;
+		object1.x = object1.x - (overlap * .5);
+		object2.x += overlap * .5;
 
 		var newVel1 = Math.sqrt((vel2 * vel2 * mass2) / mass1) * ((vel2 > 0) ? 1 : -1);
 		var newVel2 = Math.sqrt((vel1 * vel1 * mass1) / mass2) * ((vel1 > 0) ? 1 : -1);
-		final average = (newVel1 + newVel2) * 0.5;
+		final average = (newVel1 + newVel2) * .5;
 		newVel1 -= average;
 		newVel2 -= average;
 		object1.velocity.x = average + (newVel1 * object1.elasticity);
@@ -338,18 +296,17 @@ class FlxObject extends FlxBasic
 	 * The separateY that existed before HaxeFlixel 5.0, preserved for anyone who
 	 * needs to use it in an old project. Does not preserve momentum, avoid if possible
 	 */
-	static inline function legacySeparateY(object1:FlxObject, object2:FlxObject, overlap:Float)
-	{
+	static inline function legacySeparateY(object1:FlxObject, object2:FlxObject, overlap:Float) {
 		final vel1 = object1.velocity.y;
 		final vel2 = object2.velocity.y;
 		final mass1 = object1.mass;
 		final mass2 = object2.mass;
-		object1.y = object1.y - (overlap * 0.5);
-		object2.y += overlap * 0.5;
+		object1.y = object1.y - (overlap * .5);
+		object2.y += overlap * .5;
 
 		var newVel1 = Math.sqrt((vel2 * vel2 * mass2) / mass1) * ((vel2 > 0) ? 1 : -1);
 		var newVel2 = Math.sqrt((vel1 * vel1 * mass1) / mass2) * ((vel1 > 0) ? 1 : -1);
-		final average = (newVel1 + newVel2) * 0.5;
+		final average = (newVel1 + newVel2) * .5;
 		newVel1 -= average;
 		newVel2 -= average;
 		object1.velocity.y = average + (newVel1 * object1.elasticity);
@@ -362,11 +319,10 @@ class FlxObject extends FlxBasic
 	 *
 	 * @return  Whether the objects in fact touched
 	 */
-	public static function updateTouchingFlags(object1:FlxObject, object2:FlxObject):Bool
-	{
+	public static function updateTouchingFlags(object1:FlxObject, object2:FlxObject):Bool {
 		function helper(object1:FlxObject, object2:FlxObject):Bool {
-			final touchingX:Bool = updateTouchingFlagsXHelper(object1, object2);
-			final touchingY:Bool = updateTouchingFlagsYHelper(object1, object2);
+			final touchingX = updateTouchingFlagsXHelper(object1, object2);
+			final touchingY = updateTouchingFlagsYHelper(object1, object2);
 			return touchingX || touchingY;
 		}
 		return processCheckTilemap(object1, object2, helper, false);
@@ -378,13 +334,11 @@ class FlxObject extends FlxBasic
 	 *
 	 * @return  Whether the objects are overlapping in the X-axis
 	 */
-	public static function updateTouchingFlagsX(object1:FlxObject, object2:FlxObject):Bool
-	{
+	public static function updateTouchingFlagsX(object1:FlxObject, object2:FlxObject):Bool {
 		return processCheckTilemap(object1, object2, updateTouchingFlagsXHelper, false);
 	}
 
-	static function updateTouchingFlagsXHelper(object1:FlxObject, object2:FlxObject):Bool
-	{
+	static function updateTouchingFlagsXHelper(object1:FlxObject, object2:FlxObject):Bool {
 		// Since we are not separating, always return any amount of overlap => false as last parameter
 		return computeOverlapX(object1, object2, false) != 0;
 	}
@@ -395,13 +349,11 @@ class FlxObject extends FlxBasic
 	 *
 	 * @return  Whether the objects are overlapping in the Y-axis
 	 */
-	public static function updateTouchingFlagsY(object1:FlxObject, object2:FlxObject):Bool
-	{
+	public static function updateTouchingFlagsY(object1:FlxObject, object2:FlxObject):Bool {
 		return processCheckTilemap(object1, object2, updateTouchingFlagsYHelper, false);
 	}
 
-	static function updateTouchingFlagsYHelper(object1:FlxObject, object2:FlxObject):Bool
-	{
+	static function updateTouchingFlagsYHelper(object1:FlxObject, object2:FlxObject):Bool {
 		// Since we are not separating, always return any amount of overlap => false as last parameter
 		return computeOverlapY(object1, object2, false) != 0;
 	}
@@ -411,34 +363,29 @@ class FlxObject extends FlxBasic
 	 * `checkMaxOverlap` is used to determine whether we want to exclude (therefore check) overlaps which are
 	 * greater than a certain maximum (linked to `SEPARATE_BIAS`). Default is `true`, handy for `separateX` code.
 	 */
-	public static function computeOverlapX(object1:FlxObject, object2:FlxObject, checkMaxOverlap:Bool = true):Float
-	{
-		var overlap:Float = 0;
+	public static function computeOverlapX(object1:FlxObject, object2:FlxObject, checkMaxOverlap = true):Float {
+		var overlap = 0;
 		// First, get the two object deltas
-		final delta1:Float = object1.x - object1.last.x;
-		final delta2:Float = object2.x - object2.last.x;
+		final delta1 = object1.x - object1.last.x;
+		final delta2 = object2.x - object2.last.x;
 
-		if (delta1 != delta2)
-		{
+		if (delta1 != delta2) {
 			// Check if the X hulls actually overlap
-			final delta1Abs:Float = (delta1 > 0) ? delta1 : -delta1;
-			final delta2Abs:Float = (delta2 > 0) ? delta2 : -delta2;
+			final delta1Abs = (delta1 > 0) ? delta1 : -delta1;
+			final delta2Abs = (delta2 > 0) ? delta2 : -delta2;
 
 			final rect1 = FlxRect.get(object1.x - (delta1 > 0 ? delta1 : 0), object1.last.y, object1.width + delta1Abs, object1.height);
 			final rect2 = FlxRect.get(object2.x - (delta2 > 0 ? delta2 : 0), object2.last.y, object2.width + delta2Abs, object2.height);
 
-			if (rect1.overlaps(rect2))
-			{
-				final maxOverlap:Float = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
+			if (rect1.overlaps(rect2)) {
+				final maxOverlap = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
 
-				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags)
-				{
+				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags) {
 					return obj.allowCollisions.has(dir);
 				}
 
 				// If they do overlap (and can), figure out by how much and flip the corresponding flags
-				if (delta1 > delta2)
-				{
+				if (delta1 > delta2) {
 					overlap = object1.x + object1.width - object2.x;
 					if ((checkMaxOverlap && overlap > maxOverlap)
 						|| !canCollide(object1, FlxDirectionFlags.RIGHT)
@@ -446,14 +393,11 @@ class FlxObject extends FlxBasic
 					{
 						overlap = 0;
 					}
-					else
-					{
+					else {
 						object1.touching |= FlxDirectionFlags.RIGHT;
 						object2.touching |= FlxDirectionFlags.LEFT;
 					}
-				}
-				else if (delta1 < delta2)
-				{
+				} else if (delta1 < delta2) {
 					overlap = object1.x - object2.width - object2.x;
 					if ((checkMaxOverlap && -overlap > maxOverlap)
 						|| !canCollide(object1, FlxDirectionFlags.LEFT)
@@ -461,8 +405,7 @@ class FlxObject extends FlxBasic
 					{
 						overlap = 0;
 					}
-					else
-					{
+					else {
 						object1.touching |= FlxDirectionFlags.LEFT;
 						object2.touching |= FlxDirectionFlags.RIGHT;
 					}
@@ -481,15 +424,13 @@ class FlxObject extends FlxBasic
 	 * `checkMaxOverlap` is used to determine whether we want to exclude (therefore check) overlaps which are
 	 * greater than a certain maximum (linked to `SEPARATE_BIAS`). Default is `true`, handy for `separateY` code.
 	 */
-	public static function computeOverlapY(object1:FlxObject, object2:FlxObject, checkMaxOverlap:Bool = true):Float
-	{
-		var overlap:Float = 0;
+	public static function computeOverlapY(object1:FlxObject, object2:FlxObject, checkMaxOverlap = true):Float {
+		var overlap = .0;
 		// First, get the two object deltas
-		final delta1:Float = object1.y - object1.last.y;
-		final delta2:Float = object2.y - object2.last.y;
+		final delta1 = object1.y - object1.last.y;
+		final delta2 = object2.y - object2.last.y;
 
-		if (delta1 != delta2)
-		{
+		if (delta1 != delta2) {
 			// Check if the Y hulls actually overlap
 			final delta1Abs:Float = (delta1 > 0) ? delta1 : -delta1;
 			final delta2Abs:Float = (delta2 > 0) ? delta2 : -delta2;
@@ -497,18 +438,15 @@ class FlxObject extends FlxBasic
 			final rect1 = FlxRect.get(object1.last.x, object1.y - (delta1 > 0 ? delta1 : 0), object1.width, object1.height + delta1Abs);
 			final rect2 = FlxRect.get(object2.last.x, object2.y - (delta2 > 0 ? delta2 : 0), object2.width, object2.height + delta2Abs);
 
-			if (rect1.overlaps(rect2))
-			{
-				final maxOverlap:Float = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
+			if (rect1.overlaps(rect2)) {
+				final maxOverlap = checkMaxOverlap ? (delta1Abs + delta2Abs + SEPARATE_BIAS) : 0;
 
-				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags)
-				{
+				inline function canCollide(obj:FlxObject, dir:FlxDirectionFlags) {
 					return obj.allowCollisions.has(dir);
 				}
 
 				// If they did overlap (and can), figure out by how much and flip the corresponding flags
-				if (delta1 > delta2)
-				{
+				if (delta1 > delta2) {
 					overlap = object1.y + object1.height - object2.y;
 					if ((checkMaxOverlap && (overlap > maxOverlap))
 						|| !canCollide(object1, FlxDirectionFlags.DOWN)
@@ -516,14 +454,11 @@ class FlxObject extends FlxBasic
 					{
 						overlap = 0;
 					}
-					else
-					{
+					else {
 						object1.touching |= FlxDirectionFlags.DOWN;
 						object2.touching |= FlxDirectionFlags.UP;
 					}
-				}
-				else if (delta1 < delta2)
-				{
+				} else if (delta1 < delta2) {
 					overlap = object1.y - object2.height - object2.y;
 					if ((checkMaxOverlap && (-overlap > maxOverlap))
 						|| !canCollide(object1, FlxDirectionFlags.UP)
@@ -531,8 +466,7 @@ class FlxObject extends FlxBasic
 					{
 						overlap = 0;
 					}
-					else
-					{
+					else {
 						object1.touching |= FlxDirectionFlags.UP;
 						object2.touching |= FlxDirectionFlags.DOWN;
 					}
@@ -547,24 +481,22 @@ class FlxObject extends FlxBasic
 	/**
 	 * X position of the upper left corner of this object in world space.
 	 */
-	public var x(default, set):Float = 0;
+	public var x(default, set) = .0;
 
 	/**
 	 * Y position of the upper left corner of this object in world space.
 	 */
-	public var y(default, set):Float = 0;
+	public var y(default, set) = .0;
 
 	/**
 	 * The width of this object's hitbox. For sprites, use `offset` to control the hitbox position.
 	 */
-	@:isVar
-	public var width(get, set):Float;
+	@:isVar public var width(get, set):Float;
 
 	/**
 	 * The height of this object's hitbox. For sprites, use `offset` to control the hitbox position.
 	 */
-	@:isVar
-	public var height(get, set):Float;
+	@:isVar public var height(get, set):Float;
 
 	/**
 	 * Whether or not the coordinates should be rounded during rendering.
@@ -577,24 +509,24 @@ class FlxObject extends FlxBasic
 	/**
 	 * Whether or not the position of this object should be rounded before any `draw()` or collision checking.
 	 */
-	public var pixelPerfectPosition:Bool = true;
+	public var pixelPerfectPosition = true;
 
 	/**
 	 * Set the angle (in degrees) of a sprite to rotate it. WARNING: rotating sprites
 	 * decreases their rendering performance by a factor of ~10x when using blitting!
 	 */
-	public var angle(default, set):Float = 0;
+	public var angle(default, set) = .0;
 
 	/**
 	 * Set this to `false` if you want to skip the automatic motion/movement stuff (see `updateMotion()`).
 	 * `FlxObject` and `FlxSprite` default to `true`. `FlxText`, `FlxTileblock` and `FlxTilemap` default to `false`.
 	 */
-	public var moves(default, set):Bool = defaultMoves;
+	public var moves(default, set) = defaultMoves;
 
 	/**
 	 * Whether an object will move/alter position after a collision.
 	 */
-	public var immovable(default, set):Bool = false;
+	public var immovable(default, set) = false;
 
 	/**
 	 * Whether the object collides or not. For more control over what directions the object will collide from,
@@ -642,32 +574,32 @@ class FlxObject extends FlxBasic
 	 * The virtual mass of the object. Default value is 1. Currently only used with elasticity
 	 * during collision resolution. Change at your own risk; effects seem crazy unpredictable so far!
 	 */
-	public var mass:Float = 1;
+	public var mass = 1.;
 
 	/**
 	 * The bounciness of this object. Only affects collisions. Default value is 0, or "not bouncy at all."
 	 */
-	public var elasticity:Float = 0;
+	public var elasticity = .0;
 
 	/**
 	 * This is how fast you want this sprite to spin (in degrees per second).
 	 */
-	public var angularVelocity:Float = 0;
+	public var angularVelocity = .0;
 
 	/**
 	 * How fast the spin speed should change (in degrees per second).
 	 */
-	public var angularAcceleration:Float = 0;
+	public var angularAcceleration = .0;
 
 	/**
 	 * Like drag but for spinning.
 	 */
-	public var angularDrag:Float = 0;
+	public var angularDrag = .0;
 
 	/**
 	 * Use in conjunction with angularAcceleration for fluid spin speed control.
 	 */
-	public var maxAngular:Float = 10000;
+	public var maxAngular = 10000.;
 
 	/**
 	 * Bit field of flags (use with UP, DOWN, LEFT, RIGHT, etc) indicating surface contacts. Use bitwise operators to check the values
@@ -734,7 +666,7 @@ class FlxObject extends FlxBasic
 	 * Setting this to `true` will prevent the object's bounding box from appearing
 	 * when `FlxG.debugger.drawDebug` is `true`.
 	 */
-	public var ignoreDrawDebug:Bool = false;
+	public var ignoreDrawDebug = false;
 	#end
 
 	/**
@@ -744,7 +676,7 @@ class FlxObject extends FlxBasic
 	 * doesn't work correctly but flixel sucks to modify and i'm too
 	 * lazy to give a shit to properly fix it
 	 */
-	public var forceIsOnScreen:Bool = false;
+	public var forceIsOnScreen = false;
 
 	/**
 	 * The path this object follows. Not initialized by default.
@@ -754,10 +686,8 @@ class FlxObject extends FlxBasic
 	 */
 	public var path(default, set):FlxPath = null;
 
-	@:noCompletion
-	var _point:FlxPoint = FlxPoint.get();
-	@:noCompletion
-	var _rect:FlxRect = FlxRect.get();
+	@:noCompletion var _point = FlxPoint.get();
+	@:noCompletion var _rect = FlxRect.get();
 
 	/**
 	 * @param   X        The X-coordinate of the point in space.
@@ -765,8 +695,7 @@ class FlxObject extends FlxBasic
 	 * @param   Width    Desired width of the rectangle.
 	 * @param   Height   Desired height of the rectangle.
 	 */
-	public function new(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0)
-	{
+	public function new(x = .0, y = .0, width = .0, height = .0) {
 		super();
 
 		this.x = x;
@@ -780,9 +709,7 @@ class FlxObject extends FlxBasic
 	/**
 	 * Internal function for initialization of some object's variables.
 	 */
-	@:noCompletion
-	function initVars():Void
-	{
+	@:noCompletion function initVars():Void {
 		flixelType = OBJECT;
 		last = FlxPoint.get(x, y);
 		scrollFactor = FlxPoint.get(1, 1);
@@ -794,9 +721,7 @@ class FlxObject extends FlxBasic
 	/**
 	 * Internal function for initialization of some variables that are used in `updateMotion()`.
 	 */
-	@:noCompletion
-	inline function initMotionVars():Void
-	{
+	@:noCompletion inline function initMotionVars():Void {
 		velocity = FlxPoint.get();
 		acceleration = FlxPoint.get();
 		drag = FlxPoint.get();
@@ -813,8 +738,7 @@ class FlxObject extends FlxBasic
 	 * Override this function to `null` out variables manually or call `destroy()` on class members if necessary.
 	 * Don't forget to call `super.destroy()`!
 	 */
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
 
 		velocity = FlxDestroyUtil.put(velocity);
@@ -831,8 +755,7 @@ class FlxObject extends FlxBasic
 	 * Override this function to update your class's position and appearance.
 	 * This is where most of your game rules and behavioral code will go.
 	 */
-	override public function update(elapsed:Float):Void
-	{
+	override public function update(elapsed:Float):Void {
 		#if FLX_DEBUG
 		// this just increments FlxBasic.activeCount, no need to waste a function call on release
 		super.update(elapsed);
@@ -840,11 +763,8 @@ class FlxObject extends FlxBasic
 
 		last.set(x, y);
 
-		if (path != null && path.active)
-			path.update(elapsed);
-
-		if (moves)
-			updateMotion(elapsed);
+		if (path != null && path.active) path.update(elapsed);
+		if (moves) updateMotion(elapsed);
 
 		wasTouching = touching;
 		touching = FlxDirectionFlags.NONE;
@@ -855,21 +775,19 @@ class FlxObject extends FlxBasic
 	 * Useful for cases when you need to update this but are buried down in too many supers.
 	 * Does a slightly fancier-than-normal integration to help with higher fidelity framerate-independent motion.
 	 */
-	@:noCompletion
-	function updateMotion(elapsed:Float):Void
-	{
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(angularVelocity, angularAcceleration, angularDrag, maxAngular, elapsed) - angularVelocity);
+	@:noCompletion function updateMotion(elapsed:Float):Void {
+		var velocityDelta = .5 * (FlxVelocity.computeVelocity(angularVelocity, angularAcceleration, angularDrag, maxAngular, elapsed) - angularVelocity);
 		angularVelocity += velocityDelta;
 		angle += angularVelocity * elapsed;
 		angularVelocity += velocityDelta;
 
-		velocityDelta = 0.5 * (FlxVelocity.computeVelocity(velocity.x, acceleration.x, drag.x, maxVelocity.x, elapsed) - velocity.x);
+		velocityDelta = .5 * (FlxVelocity.computeVelocity(velocity.x, acceleration.x, drag.x, maxVelocity.x, elapsed) - velocity.x);
 		velocity.x += velocityDelta;
 		var delta = velocity.x * elapsed;
 		velocity.x += velocityDelta;
 		x += delta;
 
-		velocityDelta = 0.5 * (FlxVelocity.computeVelocity(velocity.y, acceleration.y, drag.y, maxVelocity.y, elapsed) - velocity.y);
+		velocityDelta = .5 * (FlxVelocity.computeVelocity(velocity.y, acceleration.y, drag.y, maxVelocity.y, elapsed) - velocity.y);
 		velocity.y += velocityDelta;
 		delta = velocity.y * elapsed;
 		velocity.y += velocityDelta;
@@ -879,8 +797,7 @@ class FlxObject extends FlxBasic
 	/**
 	 * Rarely called, and in this case just increments the visible objects count and calls `drawDebug()` if necessary.
 	 */
-	override public function draw():Void
-	{
+	override public function draw():Void {
 		#if FLX_DEBUG
 		super.draw();
 		if (FlxG.debugger.drawDebug)
@@ -900,31 +817,26 @@ class FlxObject extends FlxBasic
 	 * @return  Whether or not the two objects overlap.
 	 */
 	@:access(flixel.group.FlxTypedGroup)
-	public function overlaps(objectOrGroup:FlxBasic, inScreenSpace:Bool = false, ?camera:FlxCamera):Bool
-	{
-		var group = FlxTypedGroup.resolveGroup(objectOrGroup);
+	public function overlaps(objectOrGroup:FlxBasic, inScreenSpace:Bool = false, ?camera:FlxCamera):Bool {
+		final group = FlxTypedGroup.resolveGroup(objectOrGroup);
 		if (group != null) // if it is a group
-		{
 			return group.any(overlapsCallback.bind(_, 0, 0, inScreenSpace, camera));
-		}
 
 		if (objectOrGroup.flixelType == TILEMAP)
 		{
 			// Since tilemap's have to be the caller, not the target, to do proper tile-based collisions,
 			// we redirect the call to the tilemap overlap here.
-			var tilemap:FlxBaseTilemap<Dynamic> = cast objectOrGroup;
+			final tilemap:FlxBaseTilemap<Dynamic> = cast objectOrGroup;
 			return tilemap.overlaps(this, inScreenSpace, camera);
 		}
 
-		var object:FlxObject = cast objectOrGroup;
+		final object:FlxObject = cast objectOrGroup;
 		if (!inScreenSpace)
-		{
 			return (object.x + object.width > x) && (object.x < x + width) && (object.y + object.height > y) && (object.y < y + height);
-		}
 
-		if (camera == null) camera = getDefaultCamera();
+		camera ??= getDefaultCamera();
 
-		var objectScreenPos:FlxPoint = object.getScreenPosition(null, camera);
+		final objectScreenPos = object.getScreenPosition(null, camera);
 		getScreenPosition(_point, camera);
 		return (objectScreenPos.x + object.width > _point.x)
 			&& (objectScreenPos.x < _point.x + width)
@@ -932,9 +844,7 @@ class FlxObject extends FlxBasic
 			&& (objectScreenPos.y < _point.y + height);
 	}
 
-	@:noCompletion
-	inline function overlapsCallback(objectOrGroup:FlxBasic, x:Float, y:Float, inScreenSpace:Bool, camera:FlxCamera):Bool
-	{
+	@:noCompletion inline function overlapsCallback(objectOrGroup:FlxBasic, x:Float, y:Float, inScreenSpace:Bool, camera:FlxCamera):Bool {
 		return overlaps(objectOrGroup, inScreenSpace, camera);
 	}
 
@@ -956,33 +866,27 @@ class FlxObject extends FlxBasic
 	 * @return  Whether or not the two objects overlap.
 	 */
 	@:access(flixel.group.FlxTypedGroup)
-	public function overlapsAt(x:Float, y:Float, objectOrGroup:FlxBasic, inScreenSpace = false, ?camera:FlxCamera):Bool
-	{
-		var group = FlxTypedGroup.resolveGroup(objectOrGroup);
+	public function overlapsAt(x:Float, y:Float, objectOrGroup:FlxBasic, inScreenSpace = false, ?camera:FlxCamera):Bool {
+		final group = FlxTypedGroup.resolveGroup(objectOrGroup);
 		if (group != null) // if it is a group
-		{
 			return group.any(overlapsAtCallback.bind(_, x, y, inScreenSpace, camera));
-		}
 
-		if (objectOrGroup.flixelType == TILEMAP)
-		{
+		if (objectOrGroup.flixelType == TILEMAP) {
 			// Since tilemap's have to be the caller, not the target, to do proper tile-based collisions,
 			// we redirect the call to the tilemap overlap here.
 			// However, since this is overlapsAt(), we also have to invent the appropriate position for the tilemap.
 			// So we calculate the offset between the player and the requested position, and subtract that from the tilemap.
-			var tilemap:FlxBaseTilemap<Dynamic> = cast objectOrGroup;
+			final tilemap:FlxBaseTilemap<Dynamic> = cast objectOrGroup;
 			return tilemap.overlapsAt(tilemap.x - (x - this.x), tilemap.y - (y - this.y), this, inScreenSpace, camera);
 		}
 
-		var object:FlxObject = cast objectOrGroup;
+		final object:FlxObject = cast objectOrGroup;
 		if (!inScreenSpace)
-		{
 			return (object.x + object.width > x) && (object.x < x + width) && (object.y + object.height > y) && (object.y < y + height);
-		}
 
-		if (camera == null) camera = getDefaultCamera();
+		camera ??= getDefaultCamera();
 
-		var objectScreenPos:FlxPoint = object.getScreenPosition(null, camera);
+		final objectScreenPos = object.getScreenPosition(null, camera);
 		getScreenPosition(_point, camera);
 		return (objectScreenPos.x + object.width > _point.x)
 			&& (objectScreenPos.x < _point.x + width)
@@ -990,9 +894,7 @@ class FlxObject extends FlxBasic
 			&& (objectScreenPos.y < _point.y + height);
 	}
 
-	@:noCompletion
-	inline function overlapsAtCallback(objectOrGroup:FlxBasic, x:Float, y:Float, inScreenSpace:Bool, camera:FlxCamera):Bool
-	{
+	@:noCompletion inline function overlapsAtCallback(objectOrGroup:FlxBasic, x:Float, y:Float, inScreenSpace:Bool, camera:FlxCamera):Bool {
 		return overlapsAt(x, y, objectOrGroup, inScreenSpace, camera);
 	}
 
@@ -1004,17 +906,13 @@ class FlxObject extends FlxBasic
  	 * @param   camera         The desired "screen" space. If `null`, `getDefaultCamera()` is used
 	 * @return  Whether or not the point overlaps this object.
 	 */
-	public function overlapsPoint(point:FlxPoint, inScreenSpace = false, ?camera:FlxCamera):Bool
-	{
-		if (!inScreenSpace)
-		{
-			return (point.x >= x) && (point.x < x + width) && (point.y >= y) && (point.y < y + height);
-		}
+	public function overlapsPoint(point:FlxPoint, inScreenSpace = false, ?camera:FlxCamera):Bool {
+		if (!inScreenSpace) return (point.x >= x) && (point.x < x + width) && (point.y >= y) && (point.y < y + height);
 
-		if (camera == null) camera = getDefaultCamera();
+		camera ??= getDefaultCamera();
 
-		final xPos:Float = point.x - camera.scroll.x;
-		final yPos:Float = point.y - camera.scroll.y;
+		final xPos = point.x - camera.scroll.x;
+		final yPos = point.y - camera.scroll.y;
 		getScreenPosition(_point, camera);
 		point.putWeak();
 		return (xPos >= _point.x) && (xPos < _point.x + width) && (yPos >= _point.y) && (yPos < _point.y + height);
@@ -1026,8 +924,7 @@ class FlxObject extends FlxBasic
 	 *
 	 * @return   Whether the object is within the world bounds or not.
 	 */
-	public inline function inWorldBounds():Bool
-	{
+	public inline function inWorldBounds():Bool {
 		return (x + width > FlxG.worldBounds.x) && (x < FlxG.worldBounds.right) && (y + height > FlxG.worldBounds.y) && (y < FlxG.worldBounds.bottom);
 	}
 
@@ -1038,16 +935,12 @@ class FlxObject extends FlxBasic
 	 * @param   camera  The desired "screen" coordinate space. If `null`, `getDefaultCamera()` is used.
 	 * @return  The screen position of this object.
 	 */
-	public function getScreenPosition(?result:FlxPoint, ?camera:FlxCamera):FlxPoint
-	{
-		if (result == null)
-			result = FlxPoint.get();
-
-		if (camera == null) camera = getDefaultCamera();
+	public function getScreenPosition(?result:FlxPoint, ?camera:FlxCamera):FlxPoint {
+		result ??= FlxPoint.get();
+		camera ??= getDefaultCamera();
 
 		result.set(x, y);
-		if (pixelPerfectPosition)
-			result.floor();
+		if (pixelPerfectPosition) result.floor();
 		result.subtract(camera.scroll.x * scrollFactor.x, camera.scroll.y * scrollFactor.y);
 
 		return camera.alterScreenPosition(this, result);
@@ -1061,13 +954,9 @@ class FlxObject extends FlxBasic
 	 * @return  The view position of this objects
 	 * @since 6.2.0
 	 */
-	public function getViewPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint
-	{
-		if (result == null)
-			result = FlxPoint.get();
-
-		if (camera == null)
-			camera = getDefaultCamera();
+	public function getViewPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
+		result ??= FlxPoint.get();
+		camera ??= getDefaultCamera();
 
 		return result.set(getViewXHelper(camera), getViewYHelper(camera));
 	}
@@ -1079,16 +968,12 @@ class FlxObject extends FlxBasic
 	 * @return  The view position of this object
 	 * @since 6.2.0
 	 */
-	public function getViewX(?camera:FlxCamera)
-	{
-		if (camera == null)
-			camera = getDefaultCamera();
-
+	public function getViewX(?camera:FlxCamera){
+		camera ??= getDefaultCamera();
 		return getViewXHelper(camera);
 	}
 
-	inline function getViewXHelper(camera:FlxCamera)
-	{
+	inline function getViewXHelper(camera:FlxCamera) {
 		final x = pixelPerfectPosition ? Math.floor(this.x) : this.x;
 		return (x - (camera.scroll.x * scrollFactor.x) - camera.viewMarginX) * camera.zoom;
 	}
@@ -1100,20 +985,15 @@ class FlxObject extends FlxBasic
 	 * @return  The view position of this object
 	 * @since 6.2.0
 	 */
-	public function getViewY(?camera:FlxCamera)
-	{
-		if (camera == null)
-			camera = getDefaultCamera();
-
+	public function getViewY(?camera:FlxCamera) {
+		camera ??= getDefaultCamera();
 		return getViewYHelper(camera);
 	}
 
-	inline function getViewYHelper(camera:FlxCamera)
-	{
+	inline function getViewYHelper(camera:FlxCamera) {
 		final y = pixelPerfectPosition ? Math.floor(this.y) : this.y;
 		return (y - (camera.scroll.y * scrollFactor.y) - camera.viewMarginY) * camera.zoom;
 	}
-
 
 	/**
 	 * Returns the world position of this object.
@@ -1121,11 +1001,8 @@ class FlxObject extends FlxBasic
 	 * @param   result  Optional arg for the returning point.
 	 * @return  The world position of this object.
 	 */
-	public function getPosition(?result:FlxPoint):FlxPoint
-	{
-		if (result == null)
-			result = FlxPoint.get();
-
+	public function getPosition(?result:FlxPoint):FlxPoint {
+		result ??= FlxPoint.get();
 		return result.set(x, y);
 	}
 
@@ -1136,17 +1013,13 @@ class FlxObject extends FlxBasic
 	 *                  Otherwise a new one is created.
 	 * @return  A `FlxPoint` object containing the midpoint of this object in world coordinates.
 	 */
-	public function getMidpoint(?point:FlxPoint):FlxPoint
-	{
-		if (point == null)
-			point = FlxPoint.get();
-		return point.set(x + width * 0.5, y + height * 0.5);
+	public function getMidpoint(?point:FlxPoint):FlxPoint {
+		point ??= FlxPoint.get();
+		return point.set(x + width * .5, y + height * .5);
 	}
 
-	public function getHitbox(?rect:FlxRect):FlxRect
-	{
-		if (rect == null)
-			rect = FlxRect.get();
+	public function getHitbox(?rect:FlxRect):FlxRect {
+		rect ??= FlxRect.get();
 		return rect.set(x, y, width, height);
 	}
 
@@ -1157,8 +1030,7 @@ class FlxObject extends FlxBasic
 	 * @param   x   The new X position of this object.
 	 * @param   y   The new Y position of this object.
 	 */
-	public function reset(x:Float, y:Float):Void
-	{
+	public function reset(x:Float, y:Float):Void {
 		touching = FlxDirectionFlags.NONE;
 		wasTouching = FlxDirectionFlags.NONE;
 		setPosition(x, y);
@@ -1174,11 +1046,10 @@ class FlxObject extends FlxBasic
 	 *                   If `null`, it will just grab the first global camera.
 	 * @return  Whether the object is on screen or not.
 	 */
-	public function isOnScreen(?camera:FlxCamera):Bool
-	{
+	public function isOnScreen(?camera:FlxCamera):Bool {
 		if (forceIsOnScreen) return true;
 
-		if (camera == null) camera = getDefaultCamera();
+		camera ??= getDefaultCamera();
 
 		getScreenPosition(_point, camera);
 		return camera.containsPoint(_point, width, height);
@@ -1187,9 +1058,8 @@ class FlxObject extends FlxBasic
 	/**
 	 * Check if object is rendered pixel perfect on a specific camera.
 	 */
-	public function isPixelPerfectRender(?camera:FlxCamera):Bool
-	{
-		if (camera == null) camera = getDefaultCamera();
+	public function isPixelPerfectRender(?camera:FlxCamera):Bool {
+		camera ??= getDefaultCamera();
 		return pixelPerfectRender == null ? camera.pixelPerfectRender : pixelPerfectRender;
 	}
 
@@ -1200,8 +1070,7 @@ class FlxObject extends FlxBasic
 	 * @param   direction   Any of the collision flags (e.g. `LEFT`, `FLOOR`, etc).
 	 * @return  Whether the object is touching an object in (any of) the specified direction(s) this frame.
 	 */
-	public inline function isTouching(direction:FlxDirectionFlags):Bool
-	{
+	public inline function isTouching(direction:FlxDirectionFlags):Bool {
 		return touching.hasAny(direction);
 	}
 
@@ -1212,8 +1081,7 @@ class FlxObject extends FlxBasic
 	 * @param   direction   Any of the collision flags (e.g. `LEFT`, `FLOOR`, etc).
 	 * @return  Whether the object just landed on (any of) the specified surface(s) this frame.
 	 */
-	public inline function justTouched(direction:FlxDirectionFlags):Bool
-	{
+	public inline function justTouched(direction:FlxDirectionFlags):Bool {
 		return touching.hasAny(direction) && !wasTouching.hasAny(direction);
 	}
 
@@ -1224,8 +1092,7 @@ class FlxObject extends FlxBasic
 	 * @param   x   The new x position
 	 * @param   y   The new y position
 	 */
-	public function setPosition(x = 0.0, y = 0.0):Void
-	{
+	public function setPosition(x = .0, y = .0):Void {
 		this.x = x;
 		this.y = y;
 	}
@@ -1236,28 +1103,20 @@ class FlxObject extends FlxBasic
 	 * @param   width    The new hitbox width.
 	 * @param   height   The new hitbox height.
 	 */
-	public function setSize(width:Float, height:Float)
-	{
+	public function setSize(width:Float, height:Float) {
 		this.width = width;
-		this.height = height;
+		this.height = Math.isNaN(height) ? width : height;
 	}
 
 	#if FLX_DEBUG
-	public function drawDebug():Void
-	{
-		if (ignoreDrawDebug)
-			return;
+	public function drawDebug():Void {
+		if (ignoreDrawDebug) return;
 
 		final drawPath = path != null && !path.ignoreDrawDebug;
 
-		for (camera in getCamerasLegacy())
-		{
+		for (camera in getCamerasLegacy()) {
 			drawDebugOnCamera(camera);
-
-			if (drawPath)
-			{
-				path.drawDebugOnCamera(camera);
-			}
+			if (drawPath) path.drawDebugOnCamera(camera);
 		}
 	}
 
@@ -1267,25 +1126,21 @@ class FlxObject extends FlxBasic
 	 *
 	 * @param   Camera   Which camera to draw the debug visuals to.
 	 */
-	public function drawDebugOnCamera(camera:FlxCamera):Void
-	{
-		if (!camera.visible || !camera.exists || !isOnScreen(camera))
-			return;
+	public function drawDebugOnCamera(camera:FlxCamera):Void {
+		if (!camera.visible || !camera.exists || !isOnScreen(camera)) return;
 
-		var rect = getBoundingBox(camera);
-		var gfx:Graphics = beginDrawDebug(camera);
+		final rect = getBoundingBox(camera);
+		final gfx = beginDrawDebug(camera);
 		drawDebugBoundingBox(gfx, rect, allowCollisions, immovable);
 		endDrawDebug(camera);
 	}
 
-	function drawDebugBoundingBox(gfx:Graphics, rect:FlxRect, allowCollisions:FlxDirectionFlags, partial:Bool)
-	{
+	function drawDebugBoundingBox(gfx:Graphics, rect:FlxRect, allowCollisions:FlxDirectionFlags, partial:Bool) {
 		final color = getDebugBoundingBoxColor(allowCollisions);
 		drawDebugBoundingBoxColor(gfx, rect, color);
 	}
 
-	function getDebugBoundingBoxColor(allowCollisions:FlxDirectionFlags)
-	{
+	function getDebugBoundingBoxColor(allowCollisions:FlxDirectionFlags) {
 		if (debugBoundingBoxColor != null)
 			return debugBoundingBoxColor;
 
@@ -1298,44 +1153,32 @@ class FlxObject extends FlxBasic
 		return debugBoundingBoxColorPartial;
 	}
 
-	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor)
-	{
-		color.alphaFloat = 0.75;
-		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1.0);
+	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor) {
+		color.alphaFloat = .75;
+		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1);
 	}
 
-	inline function beginDrawDebug(camera:FlxCamera):Graphics
-	{
-		if (FlxG.render.blit)
-		{
+	inline function beginDrawDebug(camera:FlxCamera):Graphics {
+		if (FlxG.render.blit) {
 			FlxSpriteUtil.flashGfx.clear();
 			return FlxSpriteUtil.flashGfx;
-		}
-		else
-		{
+		} else
 			return camera.debugLayer.graphics;
-		}
 	}
 
-	inline function endDrawDebug(camera:FlxCamera)
-	{
+	inline function endDrawDebug(camera:FlxCamera) {
 		if (FlxG.render.blit)
 			camera.buffer.draw(FlxSpriteUtil.flashGfxSprite);
 	}
 	#end
 
 	@:access(flixel.FlxCamera)
-	function getBoundingBox(camera:FlxCamera):FlxRect
-	{
+	function getBoundingBox(camera:FlxCamera):FlxRect {
 		getScreenPosition(_point, camera);
 
 		_rect.set(_point.x, _point.y, width, height);
 		_rect = camera.transformRect(_rect);
-
-		if (isPixelPerfectRender(camera))
-		{
-			_rect.floor();
-		}
+		if (isPixelPerfectRender(camera)) _rect.floor();
 
 		return _rect;
 	}
@@ -1349,10 +1192,8 @@ class FlxObject extends FlxBasic
 	 * @return A globally aligned `FlxRect` that fully contains the input object's width and height.
 	 * @since 4.11.0
 	 */
-	public function getRotatedBounds(?newRect:FlxRect)
-	{
-		if (newRect == null)
-			newRect = FlxRect.get();
+	public function getRotatedBounds(?newRect:FlxRect) {
+		newRect ??= FlxRect.get();
 
 		newRect.set(x, y, width, height);
 		return newRect.getRotatedBounds(angle, null, newRect);
@@ -1361,8 +1202,7 @@ class FlxObject extends FlxBasic
 	/**
 	 * Convert object to readable string name. Useful for debugging, save games, etc.
 	 */
-	override public function toString():String
-	{
+	override public function toString():String {
 		return FlxStringUtil.getDebugString([
 			LabelValuePair.weak("x", x),
 			LabelValuePair.weak("y", y),
@@ -1373,24 +1213,17 @@ class FlxObject extends FlxBasic
 		]);
 	}
 
-	@:noCompletion
-	function set_x(value:Float):Float
-	{
+	@:noCompletion function set_x(value:Float):Float {
 		return x = value;
 	}
 
-	@:noCompletion
-	function set_y(value:Float):Float
-	{
+	@:noCompletion function set_y(value:Float):Float {
 		return y = value;
 	}
 
-	@:noCompletion
-	function set_width(value:Float):Float
-	{
+	@:noCompletion function set_width(value:Float):Float {
 		#if FLX_DEBUG
-		if (value < 0)
-		{
+		if (value < 0) {
 			FlxG.log.warn("An object's width cannot be smaller than 0. Use offset for sprites to control the hitbox position!");
 			return value;
 		}
@@ -1399,12 +1232,9 @@ class FlxObject extends FlxBasic
 		return width = value;
 	}
 
-	@:noCompletion
-	function set_height(value:Float):Float
-	{
+	@:noCompletion function set_height(value:Float):Float {
 		#if FLX_DEBUG
-		if (value < 0)
-		{
+		if (value < 0) {
 			FlxG.log.warn("An object's height cannot be smaller than 0. Use offset for sprites to control the hitbox position!");
 			return value;
 		}
@@ -1413,92 +1243,63 @@ class FlxObject extends FlxBasic
 		return height = value;
 	}
 
-	@:noCompletion
-	function get_width():Float
-	{
+	@:noCompletion function get_width():Float {
 		return width;
 	}
 
-	@:noCompletion
-	function get_height():Float
-	{
+	@:noCompletion function get_height():Float {
 		return height;
 	}
 
-	@:noCompletion
-	inline function get_solid():Bool
-	{
+	@:noCompletion inline function get_solid():Bool {
 		return allowCollisions != FlxDirectionFlags.NONE;
 	}
 
-	@:noCompletion
-	function set_solid(value:Bool):Bool
-	{
+	@:noCompletion function set_solid(value:Bool):Bool {
 		allowCollisions = value ? FlxDirectionFlags.ANY : FlxDirectionFlags.NONE;
 		return value;
 	}
 
-	@:noCompletion
-	function set_angle(value:Float):Float
-	{
+	@:noCompletion function set_angle(value:Float):Float {
 		return angle = value;
 	}
 
-	@:noCompletion
-	function set_moves(value:Bool):Bool
-	{
+	@:noCompletion function set_moves(value:Bool):Bool {
 		return moves = value;
 	}
 
-	@:noCompletion
-	function set_immovable(value:Bool):Bool
-	{
+	@:noCompletion function set_immovable(value:Bool):Bool {
 		return immovable = value;
 	}
 
-	@:noCompletion
-	function set_pixelPerfectRender(value:Bool):Bool
-	{
+	@:noCompletion function set_pixelPerfectRender(value:Bool):Bool {
 		return pixelPerfectRender = value;
 	}
 
-	@:noCompletion
-	function set_allowCollisions(value:FlxDirectionFlags):FlxDirectionFlags
-	{
+	@:noCompletion function set_allowCollisions(value:FlxDirectionFlags):FlxDirectionFlags {
 		return allowCollisions = value;
 	}
 
 	#if FLX_DEBUG
-	@:noCompletion
-	function set_debugBoundingBoxColorSolid(color:FlxColor)
-	{
+	@:noCompletion function set_debugBoundingBoxColorSolid(color:FlxColor) {
 		return debugBoundingBoxColorSolid = color;
 	}
 
-	@:noCompletion
-	function set_debugBoundingBoxColorNotSolid(color:FlxColor)
-	{
+	@:noCompletion function set_debugBoundingBoxColorNotSolid(color:FlxColor) {
 		return debugBoundingBoxColorNotSolid = color;
 	}
 
-	@:noCompletion
-	function set_debugBoundingBoxColorPartial(color:FlxColor)
-	{
+	@:noCompletion function set_debugBoundingBoxColorPartial(color:FlxColor) {
 		return debugBoundingBoxColorPartial = color;
 	}
 	#end
 
-	@:noCompletion
-	function set_path(path:FlxPath):FlxPath
-	{
-		if (this.path == path)
-			return path;
+	@:noCompletion function set_path(path:FlxPath):FlxPath {
+		if (this.path == path) return path;
 
-		if (this.path != null)
-			this.path.object = null;
+		this.path?.object = null;
+		path?.object = this;
 
-		if (path != null)
-			path.object = this;
 		return this.path = path;
 	}
 }
@@ -1506,17 +1307,16 @@ class FlxObject extends FlxBasic
 /**
  * Determines when to apply collision drag to one object that collided with another.
  */
-enum abstract CollisionDragType(ByteUInt)
-{
+enum abstract CollisionDragType(ByteUInt) {
 	/** Never drags on colliding objects. */
-	var NEVER = 0;
+	final NEVER = 0;
 
 	/** Always drags on colliding objects. */
-	var ALWAYS = 1;
+	final ALWAYS = 1;
 
 	/** Drags when colliding with immovable objects. */
-	var IMMOVABLE = 2;
+	final IMMOVABLE = 2;
 
 	/** Drags when colliding with heavier objects. Immovable objects have infinite mass. */
-	var HEAVIER = 3;
+	final HEAVIER = 3;
 }

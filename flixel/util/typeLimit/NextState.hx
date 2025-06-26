@@ -20,25 +20,16 @@ package flixel.util.typeLimit;
  * ```haxe
  * FlxG.switchState(function () { return new PlayState(); });
  * ```
- * [Deprecated] Lastly, you can use the old way and pass in a type (until it's removed):
- * ```haxe
- * FlxG.switchState(PlayState);
- * ```
  * 
  * @since 5.6.0
  * @see [HaxeFlixel issue #2541](https://github.com/HaxeFlixel/flixel/issues/2541)
  */
-abstract NextState(() -> FlxState) from () -> FlxState to () -> FlxState
-{
-	@:from
-	public static function fromType(state:Class<FlxState>):NextState
-	{
+abstract NextState(() -> FlxState) from () -> FlxState to () -> FlxState {
+	@:from public static function fromType(state:Class<FlxState>):NextState {
 		return () -> Type.createInstance(state, []);
 	}
 	
-	@:op(a())
-	public function createInstance():FlxState
-	{
+	@:op(a()) public function createInstance():FlxState {
 		return this();
 	}
 }

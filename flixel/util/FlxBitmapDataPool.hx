@@ -1,5 +1,6 @@
 package flixel.util;
 
+import flixel.util.FlxDestroyUtil;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 
@@ -13,22 +14,21 @@ import openfl.geom.Rectangle;
  * @author azrafe7
  */
 @:access(FlxBitmapDataPoolNode)
-class FlxBitmapDataPool
-{
+class FlxBitmapDataPool {
 	/**
 	 * Maximum number of BitmapData to hold in the pool.
 	 */
-	public static var maxLength(default, set):Int = 8;
+	public static var maxLength(default, set) = 8;
 
 	/** 
 	 * Current number of BitmapData present in the pool.
 	 */
-	public static var length(default, null):Int = 0;
+	public static var length(default, null) = 0;
 
 	static var _head:FlxBitmapDataPoolNode = null;
 	static var _tail:FlxBitmapDataPoolNode = null;
 
-	static var _rect:Rectangle = new Rectangle();
+	static var _rect = new Rectangle();
 
 	/** 
 	 * Returns a BitmapData with the specified parameters.
@@ -37,29 +37,23 @@ class FlxBitmapDataPool
 	 *
 	 * @param exactSize	If false a BitmapData with size >= [w, h] may be returned.
 	 */
-	public static function get(w:Int, h:Int, transparent:Bool = true, ?fillColor:FlxColor, ?exactSize:Bool = false):BitmapData
-	{
+	public static function get(w:Int, h:Int, transparent = true, ?fillColor:FlxColor, ?exactSize = false):BitmapData {
 		var res:BitmapData = null;
 
 		// search the pool
 		var node = _head;
-		while (node != null)
-		{
-			var bmd = node.bmd;
-			if ((bmd.transparent == transparent && bmd.width >= w && bmd.height >= h)
-				&& (!exactSize || (exactSize && bmd.width == w && bmd.height == h)))
-			{
+		while (node != null) {
+			final bmd = node.bmd;
+			if ((bmd.transparent == transparent && bmd.width >= w && bmd.height >= h) && (!exactSize || (exactSize && bmd.width == w && bmd.height == h))) {
 				res = bmd;
 
 				// remove it from pool
-				if (node.prev != null)
-					node.prev.next = node.next;
-				if (node.next != null)
-					node.next.prev = node.prev;
-				if (node == _head)
-					_head = node.next;
-				if (node == _tail)
-					_tail = node.prev;
+				node.prev?.next = node.next;
+				node.next?.prev = node.prev;
+
+				if (node == _head) _head = node.next;
+				if (node == _tail) _tail = node.prev;
+
 				node = null;
 				length--;
 				break;
@@ -67,21 +61,15 @@ class FlxBitmapDataPool
 			node = node.next;
 		}
 
-		if (res != null) // suitable BitmapData found in the pool
-		{
-			if (fillColor != null)
-			{
-				_rect.x = 0;
-				_rect.y = 0;
+		if (res != null) { // suitable BitmapData found in the pool
+			if (fillColor != null) {
+				_rect.x = _rect.y = 0;
 				_rect.width = w;
 				_rect.height = h;
 				res.fillRect(_rect, fillColor);
 			}
-		}
-		else // not found: create a new one
-		{
-			res = new BitmapData(w, h, transparent, fillColor != null ? fillColor : FlxColor.WHITE);
-		}
+		} else 
+			res = new BitmapData(w, h, transparent, fillColor != null ? fillColor : FlxColor.WHITE); // not found: create a new one
 
 		return res;
 	}
@@ -89,14 +77,11 @@ class FlxBitmapDataPool
 	/** 
 	 * Adds bmd to the pool for future use.
 	 */
-	public static function put(bmd:BitmapData):Void
-	{
-		if (length >= maxLength)
-		{
+	public static function put(bmd:BitmapData):Void {
+		if (length >= maxLength) {
 			var last = _tail;
 			last.bmd.dispose();
-			if (last.prev != null)
-			{
+			if (last.prev != null) {
 				last.prev.next = null;
 				_tail = last.prev;
 			}
@@ -104,47 +89,38 @@ class FlxBitmapDataPool
 			length--;
 		}
 
-		var node = new FlxBitmapDataPoolNode(bmd);
+		final node = new FlxBitmapDataPoolNode(bmd);
 		node.next = _head;
-		if (_head == null)
-		{
-			_head = _tail = node;
-		}
-		else
-		{
+		if (_head != null) {
 			_head = node;
 			node.next.prev = node;
-		}
+		} else 
+			_head = _tail = node;
+
 		length++;
 	}
 
 	/**
 	 * Disposes of all the BitmapData in the pool.
 	 */
-	public static function clear():Void
-	{
+	public static function clear():Void {
 		var node = _head;
-		while (node != null)
-		{
+		while (node != null) {
 			var bmd = node.bmd;
-			bmd.dispose();
-			bmd = null;
+			bmd = FlxDestroyUtil.dispose(bmd);
 			node = node.next;
 		}
 		length = 0;
 		_head = _tail = null;
 	}
 
-	static function set_maxLength(value:Int):Int
-	{
-		if (maxLength != value)
-		{
+	static function set_maxLength(value:Int):Int {
+		if (maxLength != value) {
 			var node = _tail;
-			while ((node != null) && (length > value))
-			{
+			while ((node != null) && (length > value)) {
 				var bmd = node.bmd;
-				bmd.dispose();
-				bmd = null;
+				bmd = FlxDestroyUtil.dispose(bmd);
+
 				node = node.prev;
 				length--;
 			}
@@ -153,14 +129,12 @@ class FlxBitmapDataPool
 	}
 }
 
-private class FlxBitmapDataPoolNode
-{
+private final class FlxBitmapDataPoolNode {
 	public var bmd:BitmapData;
 	public var prev:FlxBitmapDataPoolNode;
 	public var next:FlxBitmapDataPoolNode;
 
-	public function new(?bmd:BitmapData, ?prev:FlxBitmapDataPoolNode, ?next:FlxBitmapDataPoolNode):Void
-	{
+	public function new(?bmd:BitmapData, ?prev:FlxBitmapDataPoolNode, ?next:FlxBitmapDataPoolNode):Void {
 		this.bmd = bmd;
 		this.prev = prev;
 		this.next = next;

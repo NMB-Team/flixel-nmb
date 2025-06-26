@@ -55,17 +55,15 @@ import haxe.Exception;
  * @see [Flixel 5.0.0 Migration guide](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide)
  */
 @:allow(flixel.util.FlxSharedObject)
-class FlxSave implements IFlxDestroyable
-{
-	static var invalidChars = ~/[ ~%&\\;:"',<>?#]+/g;
+class FlxSave implements IFlxDestroyable {
+	static final invalidChars = ~/[ ~%&\\;:"',<>?#]+/g;
 
 	public static final saveLogStyle = new LogStyle("[SAVE] ", "54FFEE", 12, true);
 
 	/**
 	 * Checks for `~%&\;:"',<>?#` or space characters
 	 */
-	static function hasInvalidChars(str:String)
-	{
+	static function hasInvalidChars(str:String) {
 		#if html5
 		// most chars are fine on browsers
 		return true;
@@ -78,8 +76,7 @@ class FlxSave implements IFlxDestroyable
 	 * Converts invalid characters to "-", producing a valid string for a FlxSave's name and path
 	 */
 	@:allow(flixel.FlxG.initSave)
-	static function validate(str:String)
-	{
+	static function validate(str:String) {
 		#if html5
 		// most chars are fine on browsers
 		return str;
@@ -91,9 +88,8 @@ class FlxSave implements IFlxDestroyable
 	/**
 	 * Converts invalid characters to "-", and logs a warning in debug mode
 	 */
-	static function validateAndWarn(str, fieldId:String)
-	{
-		var newStr = validate(str);
+	static function validateAndWarn(str, fieldId:String) {
+		final newStr = validate(str);
 		#if debug
 		if (newStr != str)
 			FlxG.log.warn('FlxSave $fieldId: "$str" contains invalid characters, using "$newStr" instead');
@@ -104,8 +100,7 @@ class FlxSave implements IFlxDestroyable
 	/**
 	 * The default class resolver of a FlxSave, handles certain Flixel and Openfl classes
 	 */
-	public static inline function resolveFlixelClasses(name:String)
-	{
+	public static inline function resolveFlixelClasses(name:String) {
 		@:privateAccess
 		return SharedObject.__resolveClass(name);
 	}
@@ -148,8 +143,7 @@ class FlxSave implements IFlxDestroyable
 	/**
 	 * Clean up memory.
 	 */
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		_sharedObject = null;
 		status = EMPTY;
 		data = null;
@@ -169,18 +163,14 @@ class FlxSave implements IFlxDestroyable
 	 *                        **Note:** This arg is never used
 	 * @return  Whether or not you successfully connected to the save data.
 	 */
-	public function bind(name:String, ?path:String, ?backupParser:(String, Exception)->Null<Any>):Bool
-	{
+	public function bind(name:String, ?path:String, ?backupParser:(String, Exception)->Null<Any>):Bool {
 		destroy();
 
 		name = validateAndWarn(name, "name");
-		if (path != null)
-			path = validateAndWarn(path, "path");
+		if (path != null) path = validateAndWarn(path, "path");
 
-		try
-		{
-			switch FlxSharedObject.getLocal(name, path)
-			{
+		try {
+			switch FlxSharedObject.getLocal(name, path) {
 				case SUCCESS(sharedObject):
 					_sharedObject = sharedObject;
 					data = _sharedObject.data;
@@ -189,8 +179,7 @@ class FlxSave implements IFlxDestroyable
 				case FAILURE(PARSING(rawData, exception), sharedObject) if (backupParser != null):
 					// Use the provided backup parser
 					final parsedData = backupParser(rawData, exception);
-					if (parsedData == null)
-					{
+					if (parsedData == null) {
 						status = LOAD_ERROR(PARSING(rawData, exception));
 						return false;
 					}
@@ -206,9 +195,7 @@ class FlxSave implements IFlxDestroyable
 					status = LOAD_ERROR(type);
 					return false;
 			}
-		}
-		catch (e)
-		{
+		} catch (e) {
 			FlxG.log.error('Error:${e.message} name:"$name", path:"$path".');
 			destroy();
 			return false;
@@ -226,19 +213,15 @@ class FlxSave implements IFlxDestroyable
 	 * @param   minFileSize  If you need X amount of space for your save, specify it here.
 	 * @return  Whether or not you successfully found, merged and flushed data.
 	 */
-	public function mergeDataFrom(name:String, ?path:String, overwrite = false, eraseSave = true, minFileSize = 0):Bool
-	{
-		if (!checkStatus())
-			return false;
+	public function mergeDataFrom(name:String, ?path:String, overwrite = false, eraseSave = true, minFileSize = 0):Bool {
+		if (!checkStatus()) return false;
 
 		final oldSave = new FlxSave();
 		// check old save location
-		if (oldSave.bind(name, path))
-		{
+		if (oldSave.bind(name, path)) {
 			final success = mergeData(oldSave.data, overwrite, minFileSize);
 
-			if (eraseSave)
-				oldSave.erase();
+			if (eraseSave) oldSave.erase();
 			oldSave.destroy();
 
 			// save changes, if there are any
@@ -258,11 +241,9 @@ class FlxSave implements IFlxDestroyable
 	 * @param   minFileSize  If you need X amount of space for your save, specify it here.
 	 * @return  Whether or not you successfully saved the data.
 	 */
-	public function mergeData(sourceData:Dynamic, overwrite = false, minFileSize = 0)
-	{
+	public function mergeData(sourceData:Dynamic, overwrite = false, minFileSize = 0) {
 		var hasAnyField = false;
-		for (field in Reflect.fields(sourceData))
-		{
+		for (field in Reflect.fields(sourceData)) {
 			hasAnyField = true;
 			// Don't overwrite any existing data in the new save
 			if (overwrite || !Reflect.hasField(data, field))
@@ -270,8 +251,7 @@ class FlxSave implements IFlxDestroyable
 		}
 
 		// save changes, if there are any
-		if (hasAnyField)
-			return flush(minFileSize);
+		if (hasAnyField) return flush(minFileSize);
 
 		return true;
 	}
@@ -284,9 +264,8 @@ class FlxSave implements IFlxDestroyable
 	 * @param   minFileSize  If you need X amount of space for your save, specify it here.
 	 * @return  The result of result of the flush() call (see below for more details).
 	 */
-	public function close(minFileSize:Int = 0):Bool
-	{
-		var success = flush(minFileSize);
+	public function close(minFileSize = 0):Bool {
+		final success = flush(minFileSize);
 		destroy();
 		return success;
 	}
@@ -297,20 +276,14 @@ class FlxSave implements IFlxDestroyable
 	 * @param   minFileSize  If you need X amount of space for your save, specify it here.
 	 * @return  Whether or not the data was written immediately. False could be an error OR a storage request popup.
 	 */
-	public function flush(minFileSize:Int = 0):Bool
-	{
-		if (!checkStatus())
-			return false;
+	public function flush(minFileSize = 0):Bool {
+		if (!checkStatus()) return false;
 
-		try
-		{
+		try {
 			final result = _sharedObject.flush(minFileSize);
 
-			if (result != FLUSHED)
-				status = SAVE_ERROR(STORAGE);
-		}
-		catch (e)
-		{
+			if (result != FLUSHED) status = SAVE_ERROR(STORAGE);
+		} catch (e) {
 			status = SAVE_ERROR(ENCODING(e));
 		}
 
@@ -326,10 +299,8 @@ class FlxSave implements IFlxDestroyable
 	 *
 	 * @return	Returns false if the save object is not bound yet.
 	 */
-	public function erase():Bool
-	{
-		if (!checkStatus())
-			return false;
+	public function erase():Bool {
+		if (!checkStatus()) return false;
 
 		_sharedObject.clear();
 		data = {};
@@ -341,54 +312,38 @@ class FlxSave implements IFlxDestroyable
 	 *
 	 * @return	Whether the shared object was bound yet.
 	 */
-	function checkStatus():Bool
-	{
-		switch (status)
-		{
-			case BOUND(name, path):
-				return true;
-			case EMPTY:
-				FlxG.log.warn("You must call save.bind() before you can read or write data.");
-			case SAVE_ERROR(STORAGE):
-				FlxG.log.error("FlxSave is requesting extra storage space");
-			case SAVE_ERROR(ENCODING(e)):
-				FlxG.log.error('There was an problem encoding the save data: ${e.message}');
-			case LOAD_ERROR(IO(e)):
-				FlxG.log.error('IO ERROR: ${e.message}');
-			case LOAD_ERROR(INVALID_NAME(name, reason)):
-				FlxG.log.error('Invalid name:"$name", ${reason == null ? "" : reason}.');
-			case LOAD_ERROR(INVALID_PATH(path, reason)):
-				FlxG.log.error('Invalid path:"$path", ${reason == null ? "" : reason}.');
-			case LOAD_ERROR(PARSING(rawData, e)):
-				FlxG.log.error('Error parsing "$rawData", ${e.message}.');
-			case found:
-				throw 'Unexpected status: $found';
+	function checkStatus():Bool {
+		switch (status) {
+			case BOUND(name, path): return true;
+			case EMPTY: FlxG.log.warn("You must call save.bind() before you can read or write data.");
+			case SAVE_ERROR(STORAGE): FlxG.log.error("FlxSave is requesting extra storage space");
+			case SAVE_ERROR(ENCODING(e)): FlxG.log.error('There was an problem encoding the save data: ${e.message}');
+			case LOAD_ERROR(IO(e)): FlxG.log.error('IO ERROR: ${e.message}');
+			case LOAD_ERROR(INVALID_NAME(name, reason)): FlxG.log.error('Invalid name:"$name", ${reason == null ? "" : reason}.');
+			case LOAD_ERROR(INVALID_PATH(path, reason)): FlxG.log.error('Invalid path:"$path", ${reason == null ? "" : reason}.');
+			case LOAD_ERROR(PARSING(rawData, e)): FlxG.log.error('Error parsing "$rawData", ${e.message}.');
+			case found: throw 'Unexpected status: $found';
 		}
 		return false;
 	}
 
-	function get_name()
-	{
-		return switch (status)
-		{
+	function get_name() {
+		return switch (status) {
 			// can't use the pattern var `name` or it will break in 4.0.5
 			case BOUND(n, _): n;
 			default: null;
 		}
 	}
 
-	function get_path()
-	{
-		return switch (status)
-		{
+	function get_path() {
+		return switch (status) {
 			// can't use the pattern var `path` or it will break in 4.0.5
 			case BOUND(_, p): p;
 			default: null;
 		}
 	}
 
-	inline function get_isBound()
-	{
+	inline function get_isBound() {
 		return status.match(BOUND(_, _));
 	}
 
@@ -396,8 +351,7 @@ class FlxSave implements IFlxDestroyable
 	 * Scans the data for any properties.
 	 * @since 5.0.0
 	 */
-	public function isEmpty()
-	{
+	public function isEmpty() {
 		return data == null || Reflect.fields(data).length == 0;
 	}
 }
@@ -417,56 +371,68 @@ class FlxSave implements IFlxDestroyable
  * referencing is a really cool idea so let's allow it!
  */
 @:access(openfl.net.SharedObject)
-private class FlxSharedObject extends SharedObject
-{
+private class FlxSharedObject extends SharedObject {
 	#if (android || ios)
 	/** Use SharedObject as usual */
-	public static inline function getLocal(name:String, ?localPath:String):LoadResult
-	{
-		try
-		{
+	public static inline function getLocal(name:String, ?localPath:String):LoadResult {
+		try {
 			final obj = SharedObject.getLocal(name, localPath);
 			return SUCCESS(obj);
-		}
-		catch (e)
-		{
+		} catch (e) {
 			// We can't detect parsing or naming errors, just use IO for everything
 			return FAILURE(IO(e));
 		}
 	}
 
-	public static inline function exists(name:String, ?path:String)
-	{
+	public static inline function exists(name:String, ?path:String) {
 		return true;
 	}
 
-	public function dispose()
-	{
-		// do nothing
-	}
+	public function dispose() {} // do nothing
 	#else
 	static var all:Map<String, FlxSharedObject>;
 
-	static function init()
-	{
-		if (all == null)
-		{
+	static function init() {
+		if (all == null) {
 			all = new Map();
 
-			var app = lime.app.Application.current;
-			if (app != null)
-				app.onExit.add(onExit);
+			final app = lime.app.Application.current;
+			app?.onExit.add(onExit);
 		}
 	}
 
-	#if ((hl || cpp) && windows)
 	/**
-	 * Returns the path to the root directory of the project, with an optional suffix.
-	 * @param name The suffix to add to the path.
+	 * Returns the platform-specific path to the project's root data directory, with an optional subpath.
+	 *
+	 * @param subpath Relative subdirectory or filename (e.g. "saves/mysave.save").
+	 * @return Full normalized path.
 	 */
-	static function startPath(?name = '')
-		return haxe.io.Path.normalize('${Sys.getEnv("PROGRAMDATA")}/${getDefaultLocalPath()}/${openfl.Lib.current.stage.application.meta['file']}/$name');
-	#end
+	static inline function getStoragePath(subpath:String):String {
+		#if js
+		final base = "/";
+		final appName = "app";
+		#else
+		final base = switch (Sys.systemName()) {
+			case "Windows":
+				Sys.getEnv("PROGRAMDATA") ?? "C:/ProgramData";
+			case "Mac":
+				Sys.getEnv("HOME") != null ? haxe.io.Path.join([Sys.getEnv("HOME"), "Library", "Application Support"]) : "/tmp";
+			case "Linux":
+				Sys.getEnv("XDG_DATA_HOME") ?? (Sys.getEnv("HOME") != null ? haxe.io.Path.join([Sys.getEnv("HOME"), ".local", "share"]) : "/tmp");
+			default:
+				"/tmp";
+		};
+		
+		final meta = openfl.Lib.current.stage?.application?.meta;
+		final appName = meta != null ? meta.get("file") : "default";
+		#end
+		
+		final localPath = getDefaultLocalPath(); // usually company name
+		final parts = #if js [base, subpath] #else [base, localPath, appName, subpath] #end;
+		
+		final fullPath = haxe.io.Path.normalize(haxe.io.Path.join(parts.filter(p -> p != null && p != "")));
+		return fullPath;
+	}
 
 	static function onExit(_)
 	{
@@ -479,7 +445,7 @@ private class FlxSharedObject extends SharedObject
 	 */
 	static function getDefaultLocalPath()
 	{
-		var meta = openfl.Lib.current.stage.application.meta;
+		final meta = openfl.Lib.current.stage.application.meta;
 		var path = meta["company"];
 		if (path == null || path == "")
 			path = "HaxeFlixel";
@@ -489,36 +455,29 @@ private class FlxSharedObject extends SharedObject
 		return path;
 	}
 
-	public static function getLocal(name:String, ?localPath:String):LoadResult
-	{
-		if (name == null || name == "")
+	public static function getLocal(name:String, ?localPath:String):LoadResult {
+		if (FlxStringUtil.isNullOrEmpty(name))
 			return FAILURE(INVALID_NAME(name));
 
-		if (localPath == null)
-			localPath = "";
+		if (localPath == null) localPath = "";
 
-		var id = localPath + "/" + name;
+		final id = localPath + "/" + name;
 
 		init();
 
-		if (!all.exists(id))
-		{
+		if (!all.exists(id)) {
 			var encodedData = null;
 
 			if (~/(?:^|\/)\.\.\//.match(localPath))
 				return FAILURE(INVALID_PATH(localPath, "../ not allowed in localPath"));
 
-			try
-			{
+			try {
 				encodedData = getData(name, localPath);
-			}
-			catch (e)
-			{
+			} catch (e) {
 				return FAILURE(IO(e));
 			}
 
-			if (localPath == "")
-				localPath = getDefaultLocalPath();
+			if (localPath == "") localPath = getDefaultLocalPath();
 
 			final sharedObject = new FlxSharedObject();
 			sharedObject.data = {};
@@ -531,9 +490,7 @@ private class FlxSharedObject extends SharedObject
 					final resolver = {resolveEnum: Type.resolveEnum, resolveClass: FlxSave.resolveFlixelClasses};
 					unserializer.setResolver(cast resolver);
 					sharedObject.data = unserializer.unserialize();
-				}
-				catch (e)
-				{
+				} catch (e) {
 					all.set(id, sharedObject);
 					return FAILURE(PARSING(encodedData, e), sharedObject);
 				}
@@ -546,20 +503,16 @@ private class FlxSharedObject extends SharedObject
 	}
 
 	#if (js && html5)
-	static function getData(name:String, ?localPath:String)
-	{
+	static function getData(name:String, ?localPath:String) {
 		final storage = js.Browser.getLocalStorage();
-		if (storage == null)
-			return null;
+		if (storage == null) return null;
 
-		function get(path:String)
-		{
+		function get(path:String) {
 			return storage.getItem(path + ":" + name);
 		}
 
 		// do not check for legacy saves when path is provided
-		if (localPath != "")
-			return get(localPath);
+		if (localPath != "") return get(localPath);
 
 		var encodedData:String;
 		// check default localPath
@@ -569,22 +522,18 @@ private class FlxSharedObject extends SharedObject
 
 		// check pre-5.0.0 default local path
 		encodedData = get(js.Browser.window.location.pathname);
-		if (encodedData != null)
-			return encodedData;
+		if (encodedData != null) return encodedData;
 
 		// check pre-4.6.0 default local path
 		return get(js.Browser.window.location.href);
 	}
 
-	public static function exists(name:String, ?localPath:String)
-	{
+	public static function exists(name:String, ?localPath:String) {
 		final storage = js.Browser.getLocalStorage();
 
-		if (storage == null)
-			return false;
+		if (storage == null) return false;
 
-		inline function has(path:String)
-		{
+		inline function has(path:String) {
 			return storage.getItem(path + ":" + name) != null;
 		}
 
@@ -597,16 +546,13 @@ private class FlxSharedObject extends SharedObject
 	// should include every sys target
 	#else
 
-	static function getData(name:String, ?localPath:String)
-	{
+	static function getData(name:String, ?localPath:String) {
 		var path = getPath(localPath, name);
-		if (sys.FileSystem.exists(path))
-			return sys.io.File.getContent(path);
+		if (sys.FileSystem.exists(path)) return sys.io.File.getContent(path);
 
 		// No save found, check the legacy save path
 		path = getLegacyPath(localPath, name);
-		if (sys.FileSystem.exists(path))
-			return sys.io.File.getContent(path);
+		if (sys.FileSystem.exists(path)) return sys.io.File.getContent(path);
 
 		return null;
 	}
@@ -626,95 +572,79 @@ private class FlxSharedObject extends SharedObject
 		}
 	}
 
+	/**
+	 * Returns the full path to a save file.
+	 *
+	 * @param localPath Optional local folder name (usually the company).
+	 * @param name Save name (e.g. "slot1").
+	 * @return Full normalized path to the save file.
+	 */
 	static function getPath(localPath:String, name:String):String {
-		// Avoid ever putting .save files directly in ProgramData
 		final extension = ".save";
-		#if ((hl || cpp) && windows)
-			helperPath(name);
-
-			final folder = "saves";
-			FlxG.log.advanced('Saved to ${startPath('$folder/$name$extension')}', FlxSave.saveLogStyle);
-			return startPath('$folder/$name$extension');
-		#else
-			if (localPath.isNullOrEmpty()) localPath = getDefaultLocalPath();
-
-			final directory = lime.system.System.applicationStorageDirectory;
-			final path = haxe.io.Path.normalize('$directory/../../../$localPath') + "/";
-
-			helperPath(name);
-
-			final pathTo = path + name + extension;
-			FlxG.log.advanced('Saved to $pathTo', FlxSave.saveLogStyle);
-			return pathTo;
-		#end
+		final folder = "saves";
+		
+		helperPath(name); // applies naming conventions and slashes
+		
+		final subPath = '$folder/$name$extension';
+		final fullPath = getStoragePath(subPath);
+		
+		FlxG.log.advanced('Saved to $fullPath', FlxSave.saveLogStyle);
+		return fullPath;
 	}
 
 	/**
 	 * Whether the save exists, checks both the old and new path.
 	 */
-	public static inline function exists(name:String, ?localPath:String)
-	{
-		return newExists(localPath, name)
-			|| legacyExists(localPath, name);
+	public static inline function exists(name:String, ?localPath:String) {
+		return newExists(localPath, name) || legacyExists(localPath, name);
 	}
 
 	/**
 	 * Whether the save exists, checks the NEW location
 	 */
-	static inline function newExists(name:String, ?localPath:String)
-	{
+	static inline function newExists(name:String, ?localPath:String) {
 		return sys.FileSystem.exists(getPath(localPath, name));
 	}
 
-	static inline function getLegacyPath(localPath:String, name:String)
-	{
+	static inline function getLegacyPath(localPath:String, name:String) {
 		return SharedObject.__getPath(localPath, name);
 	}
 
 	/**
 	 * Whether the save exists, checks the LEGACY location
 	 */
-	static inline function legacyExists(name:String, ?localPath:String)
-	{
+	static inline function legacyExists(name:String, ?localPath:String) {
 		return sys.FileSystem.exists(getLegacyPath(localPath, name));
 	}
 
-	override function flush(minDiskSpace:Int = 0)
-	{
+	override function flush(minDiskSpace:Int = 0) {
 		if (Reflect.fields(data).length == 0)
-		{
 			return SharedObjectFlushStatus.FLUSHED;
-		}
 
-		var encodedData = haxe.Serializer.run(data);
+		final encodedData = haxe.Serializer.run(data);
 
-		try
-		{
-			var path = getPath(__localPath, __name);
-			var directory = haxe.io.Path.directory(path);
+		try {
+			final path = getPath(__localPath, __name);
+			final directory = haxe.io.Path.directory(path);
 
 			if (!sys.FileSystem.exists(directory))
 				SharedObject.__mkdir(directory);
 
-			var output = sys.io.File.write(path, false);
+			final output = sys.io.File.write(path, false);
 			output.writeString(encodedData);
 			output.close();
-		}
-		catch (e:Dynamic)
-		{
+		} catch (e:Dynamic) {
 			return SharedObjectFlushStatus.PENDING;
 		}
 
 		return SharedObjectFlushStatus.FLUSHED;
 	}
 
-	override function clear()
-	{
+	override function clear() {
 		data = {};
 
-		try
-		{
-			var path = getPath(__localPath, __name);
+		try {
+			final path = getPath(__localPath, __name);
 
 			if (sys.FileSystem.exists(path))
 				sys.FileSystem.deleteFile(path);
@@ -725,14 +655,12 @@ private class FlxSharedObject extends SharedObject
 	#end
 }
 
-enum LoadResult
-{
+enum LoadResult {
 	SUCCESS(obj:SharedObject);
 	FAILURE(type:LoadFailureType, ?obj:SharedObject);
 }
 
-enum LoadFailureType
-{
+enum LoadFailureType {
 	/** Malformed name string */
 	INVALID_NAME(name:String, ?message:String);
 
@@ -746,8 +674,7 @@ enum LoadFailureType
 	PARSING(rawData:String, exception:Exception);
 }
 
-enum SaveFailureType
-{
+enum SaveFailureType {
 	/** FlxSave is requesting extra storage space **/
 	STORAGE;
 
@@ -755,8 +682,7 @@ enum SaveFailureType
 	ENCODING(e:Exception);
 }
 
-enum FlxSaveStatus
-{
+enum FlxSaveStatus {
 	/**
 	 * The initial state, call bind() in order to use.
 	 */

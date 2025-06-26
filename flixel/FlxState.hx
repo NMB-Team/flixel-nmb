@@ -11,15 +11,14 @@ import flixel.util.typeLimit.NextState;
  * It is for all intents and purpose a fancy `FlxGroup`. And really, it's not even that fancy.
  */
 @:keepSub // workaround for HaxeFoundation/haxe#3749
-class FlxState extends FlxGroup
-{
+class FlxState extends FlxGroup {
 	/**
 	 * Determines whether or not this state is updated even when it is not the active state.
 	 * For example, if you have your game state first, and then you push a menu state on top of it,
 	 * if this is set to `true`, the game state would continue to update in the background.
 	 * By default this is `false`, so background states will be "paused" when they are not active.
 	 */
-	public var persistentUpdate:Bool = false;
+	public var persistentUpdate = false;
 
 	/**
 	 * Determines whether or not this state is updated even when it is not the active state.
@@ -30,23 +29,23 @@ class FlxState extends FlxGroup
 	 * If background states are not `visible` when you have a different state on top,
 	 * you should set this to `false` for improved performance.
 	 */
-	public var persistentDraw:Bool = true;
+	public var persistentDraw = true;
 
 	/**
 	 * If substates get destroyed when they are closed, setting this to
 	 * `false` might reduce state creation time, at greater memory cost.
 	 */
-	public var destroySubStates:Bool = true;
+	public var destroySubStates = true;
 
 	/**
 	 * Tracker for whenever the state has already been created.
 	 */
-	public var created:Bool = false;
+	public var created = false;
 
 	/**
 	 * Tracker for whenever the state has already been post-created.
 	 */
-	public var postCreated:Bool = false;
+	public var postCreated = false;
 
 	/**
 	 * The natural background color the cameras default to. In `AARRGGBB` format.
@@ -75,31 +74,30 @@ class FlxState extends FlxGroup
 	 * Whether to reset the substate (when it changes, or when it's closed).
 	 */
 	@:noCompletion
-	var _requestSubStateReset:Bool = false;
+	var _requestSubStateReset = false;
 
 	/**
 	 * A `FlxSignal` that dispatches when a sub state is opened from this state.
 	 * @since 4.9.0
 	 */
-	public var subStateOpened(get, never):FlxTypedSignal<FlxSubState->Void>;
+	public var subStateOpened(get, never):FlxTypedSignal<FlxSubState -> Void>;
 
 	/**
 	 * A `FlxSignal` that dispatches when a sub state is closed from this state.
 	 * @since 4.9.0
 	 */
-	public var subStateClosed(get, never):FlxTypedSignal<FlxSubState->Void>;
+	public var subStateClosed(get, never):FlxTypedSignal<FlxSubState -> Void>;
 
 	/**
 	 * Internal variables for lazily creating `subStateOpened` and `subStateClosed` signals when needed.
 	 */
 	@:noCompletion
-	var _subStateOpened:FlxTypedSignal<FlxSubState->Void>;
+	var _subStateOpened:FlxTypedSignal<FlxSubState -> Void>;
 
 	@:noCompletion
-	var _subStateClosed:FlxTypedSignal<FlxSubState->Void>;
+	var _subStateClosed:FlxTypedSignal<FlxSubState -> Void>;
 
-	public function new ()
-	{
+	public function new() {
 		super(0);
 	}
 
@@ -113,45 +111,38 @@ class FlxState extends FlxGroup
 		created = true;
 	}
 
-	override function draw():Void
-	{
+	override function draw():Void {
 		if (persistentDraw || subState == null)
 			super.draw();
 
-		if (subState != null)
-			subState.draw();
+		subState?.draw();
 	}
 
-	public function openSubState(SubState:FlxSubState):Void
-	{
+	public function openSubState(subState:FlxSubState):Void {
 		_requestSubStateReset = true;
-		_requestedSubState = SubState;
+		_requestedSubState = subState;
 	}
 
 	/**
 	 * Closes the substate of this state, if one exists.
 	 */
-	public function closeSubState():Void
-	{
+	public function closeSubState():Void {
 		_requestSubStateReset = true;
 	}
 
 	/**
 	 * Called at the very end of the state creation process.
 	 */
-	public function createPost():Void
-	{
+	public function createPost():Void {
 		postCreated = true;
 	}
 
 	/**
 	 * Load substate for this state
 	 */
-	public function resetSubState():Void
-	{
+	public function resetSubState():Void {
 		// Close the old state (if there is an old state)
-		if (subState != null)
-		{
+		if (subState != null) {
 			if (subState.closeCallback != null)
 				subState.closeCallback();
 			if (_subStateClosed != null)
@@ -165,8 +156,7 @@ class FlxState extends FlxGroup
 		subState = _requestedSubState;
 		_requestedSubState = null;
 
-		if (subState != null)
-		{
+		if (subState != null) {
 			// Reset the input so things like "justPressed" won't interfere
 			if (!persistentUpdate)
 				FlxG.inputs.onStateSwitch();
@@ -192,17 +182,12 @@ class FlxState extends FlxGroup
 		}
 	}
 
-	override function destroy():Void
-	{
-		_constructor = function():FlxState
-		{
-			throw "Attempting to resetState while the current state is destroyed";
-		};
+	override function destroy():Void {
+		_constructor = function():FlxState FlxG.log.critical("Attempting to resetState while the current state is destroyed");
 		FlxDestroyUtil.destroy(_subStateOpened);
 		FlxDestroyUtil.destroy(_subStateClosed);
 
-		if (subState != null)
-		{
+		if (subState != null) {
 			subState.destroy();
 			subState = null;
 		}
@@ -218,8 +203,7 @@ class FlxState extends FlxGroup
 	 * @param   onOutroComplete  Called when the outro is complete.
 	 * @since 5.3.0
 	 */
-	public function startOutro(onOutroComplete:()->Void)
-	{
+	public function startOutro(onOutroComplete:() -> Void) {
 		onOutroComplete();
 	}
 
@@ -227,78 +211,56 @@ class FlxState extends FlxGroup
 	 * This method is called after the game loses focus.
 	 * Can be useful for third party libraries, such as tweening engines.
 	 */
-	public function onFocusLost():Void
-	{
-		if (subState != null)
-			subState.onFocusLost();
+	public function onFocusLost():Void {
+		subState?.onFocusLost();
 	}
 
 	/**
 	 * This method is called after the game receives focus.
 	 * Can be useful for third party libraries, such as tweening engines.
 	 */
-	public function onFocus():Void
-	{
-		if (subState != null)
-			subState.onFocus();
+	public function onFocus():Void {
+		subState?.onFocus();
 	}
 
 	/**
 	 * This function is called whenever the window size has been changed.
 	 *
-	 * @param   Width    The new window width
-	 * @param   Height   The new window Height
+	 * @param   width    The new window width
+	 * @param   height   The new window Height
 	 */
-	public function onResize(Width:Int, Height:Int):Void
-	{
-		if (subState != null)
-			subState.onResize(Width, Height);
+	public function onResize(width:Int, height:Int):Void {
+		subState?.onResize(width, height);
 	}
 
 	@:allow(flixel.FlxGame)
-	function tryUpdate(elapsed:Float):Void
-	{
+	function tryUpdate(elapsed:Float):Void {
 		if (persistentUpdate || subState == null)
 			update(elapsed);
 
-		if (_requestSubStateReset)
-		{
+		if (_requestSubStateReset) {
 			_requestSubStateReset = false;
 			resetSubState();
 		}
-		if (subState != null)
-		{
-			subState.tryUpdate(elapsed);
-		}
+
+		subState?.tryUpdate(elapsed);
 	}
 
-	@:noCompletion
-	function get_bgColor():FlxColor
-	{
+	@:noCompletion function get_bgColor():FlxColor {
 		return FlxG.cameras.bgColor;
 	}
 
-	@:noCompletion
-	function set_bgColor(Value:FlxColor):FlxColor
-	{
-		return FlxG.cameras.bgColor = Value;
+	@:noCompletion function set_bgColor(value:FlxColor):FlxColor {
+		return FlxG.cameras.bgColor = value;
 	}
 
-	@:noCompletion
-	function get_subStateOpened():FlxTypedSignal<FlxSubState->Void>
-	{
-		if (_subStateOpened == null)
-			_subStateOpened = new FlxTypedSignal<FlxSubState->Void>();
-
+	@:noCompletion function get_subStateOpened():FlxTypedSignal<FlxSubState->Void> {
+		_subStateOpened ??= new FlxTypedSignal<FlxSubState->Void>();
 		return _subStateOpened;
 	}
 
-	@:noCompletion
-	function get_subStateClosed():FlxTypedSignal<FlxSubState->Void>
-	{
-		if (_subStateClosed == null)
-			_subStateClosed = new FlxTypedSignal<FlxSubState->Void>();
-
+	@:noCompletion function get_subStateClosed():FlxTypedSignal<FlxSubState -> Void> {
+		_subStateClosed ??= new FlxTypedSignal<FlxSubState -> Void>();
 		return _subStateClosed;
 	}
 }

@@ -4,28 +4,26 @@ import flixel.FlxG;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.typeLimit.OneOfTwo;
 
-
 /**
  * A generic container that facilitates pooling and recycling of objects.
  * WARNING: Pooled objects must have parameter-less constructors: function new()
  */
-class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
-{
+class FlxPool<T:IFlxDestroyable> implements IFlxPool<T> {
 	public var length(get, never):Int;
 
 	var _pool:Array<T> = [];
-	var _constructor:()->T;
+	var _constructor:() -> T;
 
 	/**
 	 * Objects aren't actually removed from the array in order to improve performance.
 	 * _count keeps track of the valid, accessible pool objects.
 	 */
-	var _count:Int = 0;
+	var _count = 0;
 
 	#if FLX_TRACK_POOLS
 	/** Set to false before creating FlxGame to prevent logs */
 	public var autoLog = true;
-	
+
 	// For some reason, this causes CI errors: `final _tracked = new Map<T, String>();`
 	final _tracked:Map<T, String> = [];
 	final _leakCount:Map<String, Int> = [];
@@ -38,88 +36,71 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 	 * @param   constructor  A function that takes no args and creates an instance,
 	 *                       example: `FlxRect.new.bind(0, 0, 0, 0)`
 	 */
-	
-	public function new(constructor)
-	{
+	public function new(constructor) {
 		_constructor = constructor;
 	}
 
-	public function get():T
-	{
-		final obj:T = if (_count == 0)
-		{
+	public function get():T {
+		final obj:T = if (_count == 0) {
 			#if FLX_TRACK_POOLS
 			_totalCreated++;
 			#end
 			_constructor();
-		}
-		else _pool[--_count];
-		
+		} else _pool[--_count];
+
 		#if FLX_TRACK_POOLS
 		trackGet(obj);
 		#end
-		
+
 		return obj;
 	}
 
-	public function put(obj:T):Void
-	{
+	public function put(obj:T):Void {
 		// we don't want to have the same object in the accessible pool twice (ok to have multiple in the inaccessible zone)
-		if (obj != null)
-		{
-			var i:Int = _pool.indexOf(obj);
+		if (obj != null) {
+			final i = _pool.indexOf(obj);
 			// if the object's spot in the pool was overwritten, or if it's at or past _count (in the inaccessible zone)
-			if (i == -1 || i >= _count)
-				putHelper(obj);
+			if (i == -1 || i >= _count) putHelper(obj);
 		}
 	}
 
-	public function putUnsafe(obj:T):Void
-	{
+	public function putUnsafe(obj:T):Void {
 		// TODO: remove null check and make private?
 		if (obj != null)
 			putHelper(obj);
 	}
 
-	function putHelper(obj:T)
-	{
+	function putHelper(obj:T) {
 		obj.destroy();
 		_pool[_count++] = obj;
-		
+
 		#if FLX_TRACK_POOLS
 		trackPut(obj);
 		#end
 	}
 
-	public function preAllocate(numObjects:Int):Void
-	{
+	public function preAllocate(numObjects:Int):Void {
 		while (numObjects-- > 0)
-		{
 			_pool[_count++] = _constructor();
-		}
 	}
 
-	public function clear():Array<T>
-	{
+	public function clear():Array<T> {
 		_count = 0;
-		var oldPool = _pool;
+		final oldPool = _pool;
 		_pool = [];
 		return oldPool;
 	}
 
-	inline function get_length():Int
-	{
+	inline function get_length():Int {
 		return _count;
 	}
 
 	#if FLX_TRACK_POOLS
-	public function addLogs(?id:String)
-	{
-		if (id == null)
-		{
+	public function addLogs(?id:String) {
+		if (id == null) {
 			if (_pool.length == 0)
 				preAllocate(1);
-				
+
 			id = Type.getClassName(Type.getClass(_pool[0]))
 				.split(".")
 				.pop()
@@ -128,81 +109,67 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 				.split("Flx")
 				.pop();
 		}
-		
-		FlxG.watch.addFunction(id + "-pool", function()
-		{
+
+		FlxG.watch.addFunction(id + "-pool", () -> {
 			var most = 0;
 			var topStack:String = null;
-			for (stack in _leakCount.keys())
-			{
+			for (stack in _leakCount.keys()) {
 				final count = _leakCount[stack];
-				if (most < count)
-				{
+				if (most < count) {
 					most = count;
 					topStack = stack;
 				}
 			}
-			
+
 			var msg = '$length/$_totalCreated';
-			if (topStack != null)
-				msg += ' | $most from ${prettyStack(topStack)}';
+			if (topStack != null) msg += ' | $most from ${prettyStack(topStack)}';
 			return msg;
 		});
 	}
-	
-	function trackGet(obj:T)
-	{
+
+	function trackGet(obj:T) {
 		final callStack = haxe.CallStack.callStack();
 		final stack = stackToString(callStack[2]);
-		if (stack == null)
-			return;
-			
-		if (autoLog && !_autoLogInitted && FlxG.signals != null)
-		{
+		if (stack == null) return;
+
+		if (autoLog && !_autoLogInitted && FlxG.signals != null) {
 			_autoLogInitted = true;
 			FlxG.signals.postStateSwitch.add(() -> addLogs());
 			if (FlxG.game != null && FlxG.state != null)
 				addLogs();
 		}
-		
+
 		_tracked[obj] = stack;
-		if (_leakCount.exists(stack) == false)
-			_leakCount[stack] = 0;
-			
+		if (_leakCount.exists(stack) == false) _leakCount[stack] = 0;
+
 		_leakCount[stack]++;
 	}
-	
-	inline function trackPut(obj:T)
-	{
+
+	inline function trackPut(obj:T) {
 		final stack = _tracked[obj];
 		_tracked.remove(obj);
 		_leakCount[stack]--;
 	}
-	
-	function stackToString(stack:haxe.CallStack.StackItem)
-	{
-		return switch (stack)
-		{
+
+	function stackToString(stack:haxe.CallStack.StackItem) {
+		return switch (stack) {
 			case FilePos(_, file, line, _): '$file[$line]';
 			default: null;
 		}
 	}
-	
-	inline function prettyStack(pos:String)
-	{
+
+	inline function prettyStack(pos:String) {
 		return pos.split("/").pop().split(".hx").join("");
 	}
 	#end
 }
 
-interface IFlxPooled extends IFlxDestroyable
-{
+interface IFlxPooled extends IFlxDestroyable {
 	function put():Void;
 	function putWeak():Void;
 }
 
-interface IFlxPool<T:IFlxDestroyable>
-{
+interface IFlxPool<T:IFlxDestroyable> {
 	function preAllocate(numObjects:Int):Void;
 	function clear():Array<T>;
 }

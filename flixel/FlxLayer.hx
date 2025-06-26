@@ -14,8 +14,7 @@ import flixel.FlxCamera;
 using flixel.util.FlxColorTransformUtil;
 
 @:access(flixel.FlxCamera)
-class FlxLayer extends FlxBasic
-{
+class FlxLayer extends FlxBasic {
 	/**
 	 * Currently used draw stack item
 	 */
@@ -46,21 +45,17 @@ class FlxLayer extends FlxBasic
 	 */
 	static var _storageTrianglesHead:FlxDrawTrianglesItem;
 
-	public function new()
-	{
+	public function new() {
 		super();
 		FlxG.signals.preDraw.add(clearDrawStack);
 	}
 
-	override function destroy():Void
-	{
+	override function destroy():Void {
 		FlxG.signals.preDraw.remove(clearDrawStack);
 		super.destroy();
 	}
 
-	@:noCompletion
-	public function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets:Bool = false, ?blend:BlendMode, smooth:Bool = false, ?shader:FlxShader)
-	{
+	@:noCompletion public function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets = false, ?blend:BlendMode, smooth = false, ?shader:FlxShader) {
 		#if FLX_RENDER_TRIANGLE
 		return startTrianglesBatch(graphic, smooth, colored, blend);
 		#else
@@ -73,22 +68,17 @@ class FlxLayer extends FlxBasic
 			&& _headTiles.hasColorOffsets == hasColorOffsets
 			&& _headTiles.blend == blend
 			&& _headTiles.antialiasing == smooth
-			&& _headTiles.shader == shader)
-		{
+			&& _headTiles.shader == shader
+		)
 			return _headTiles;
-		}
 
-		if (_storageTilesHead != null)
-		{
+		if (_storageTilesHead != null) {
 			itemToReturn = _storageTilesHead;
-			var newHead = _storageTilesHead.nextTyped;
+			final newHead = _storageTilesHead.nextTyped;
 			itemToReturn.reset();
 			_storageTilesHead = newHead;
-		}
-		else
-		{
+		} else
 			itemToReturn = new FlxDrawItem();
-		}
 
 		itemToReturn.graphics = graphic;
 		itemToReturn.antialiasing = smooth;
@@ -101,14 +91,10 @@ class FlxLayer extends FlxBasic
 		_headTiles = itemToReturn;
 
 		if (_headOfDrawStack == null)
-		{
 			_headOfDrawStack = itemToReturn;
-		}
 
 		if (_currentDrawItem != null)
-		{
 			_currentDrawItem.next = itemToReturn;
-		}
 
 		_currentDrawItem = itemToReturn;
 
@@ -116,10 +102,7 @@ class FlxLayer extends FlxBasic
 		#end
 	}
 
-	@:noCompletion
-	public function startTrianglesBatch(graphic:FlxGraphic, smoothing:Bool = false, isColored:Bool = false, ?blend:BlendMode, ?hasColorOffsets:Bool,
-			?shader:FlxShader):FlxDrawTrianglesItem
-	{
+	@:noCompletion public function startTrianglesBatch(graphic:FlxGraphic, smoothing = false, isColored = false, ?blend:BlendMode, ?hasColorOffsets:Bool, ?shader:FlxShader):FlxDrawTrianglesItem {
 		if (_currentDrawItem != null
 			&& _currentDrawItem.type == FlxDrawItemType.TRIANGLES
 			&& _headTriangles.graphics == graphic
@@ -128,30 +111,21 @@ class FlxLayer extends FlxBasic
 			&& _headTriangles.hasColorOffsets == hasColorOffsets
 			&& _headTriangles.shader == shader
 		)
-		{
 			return _headTriangles;
-		}
 
 		return getNewDrawTrianglesItem(graphic, smoothing, isColored, blend, hasColorOffsets, shader);
 	}
 
-	@:noCompletion
-	public function getNewDrawTrianglesItem(graphic:FlxGraphic, smoothing:Bool = false, isColored:Bool = false, ?blend:BlendMode, ?hasColorOffsets:Bool,
-			?shader:FlxShader):FlxDrawTrianglesItem
-	{
+	@:noCompletion public function getNewDrawTrianglesItem(graphic:FlxGraphic, smoothing = false, isColored = false, ?blend:BlendMode, ?hasColorOffsets:Bool, ?shader:FlxShader):FlxDrawTrianglesItem {
 		var itemToReturn:FlxDrawTrianglesItem = null;
 
-		if (_storageTrianglesHead != null)
-		{
+		if (_storageTrianglesHead != null) {
 			itemToReturn = _storageTrianglesHead;
-			var newHead:FlxDrawTrianglesItem = _storageTrianglesHead.nextTyped;
+			final newHead:FlxDrawTrianglesItem = _storageTrianglesHead.nextTyped;
 			itemToReturn.reset();
 			_storageTrianglesHead = newHead;
-		}
-		else
-		{
+		} else
 			itemToReturn = new FlxDrawTrianglesItem();
-		}
 
 		itemToReturn.graphics = graphic;
 		itemToReturn.antialiasing = smoothing;
@@ -163,14 +137,10 @@ class FlxLayer extends FlxBasic
 		_headTriangles = itemToReturn;
 
 		if (_headOfDrawStack == null)
-		{
 			_headOfDrawStack = itemToReturn;
-		}
 
 		if (_currentDrawItem != null)
-		{
 			_currentDrawItem.next = itemToReturn;
-		}
 
 		_currentDrawItem = itemToReturn;
 
@@ -178,13 +148,11 @@ class FlxLayer extends FlxBasic
 	}
 
 	@:allow(flixel.system.frontEnds.CameraFrontEnd)
-	function clearDrawStack():Void
-	{
+	function clearDrawStack():Void {
 		var currTiles = _headTiles;
 		var newTilesHead;
 
-		while (currTiles != null)
-		{
+		while (currTiles != null) {
 			newTilesHead = currTiles.nextTyped;
 			currTiles.reset();
 			currTiles.nextTyped = _storageTilesHead;
@@ -195,8 +163,7 @@ class FlxLayer extends FlxBasic
 		var currTriangles:FlxDrawTrianglesItem = _headTriangles;
 		var newTrianglesHead:FlxDrawTrianglesItem;
 
-		while (currTriangles != null)
-		{
+		while (currTriangles != null) {
 			newTrianglesHead = currTriangles.nextTyped;
 			currTriangles.reset();
 			currTriangles.nextTyped = _storageTrianglesHead;
@@ -210,90 +177,63 @@ class FlxLayer extends FlxBasic
 		_headTriangles = null;
 	}
 
-	public function drawPixels(sprite:FlxSprite, camera:FlxCamera, ?frame:FlxFrame, ?pixels:BitmapData, matrix:FlxMatrix, ?transform:ColorTransform,
-			?blend:BlendMode, ?smoothing:Bool = false, ?shader:FlxShader):Void
-	{
+	public function drawPixels(sprite:FlxSprite, camera:FlxCamera, ?frame:FlxFrame, ?pixels:BitmapData, matrix:FlxMatrix, ?transform:ColorTransform, ?blend:BlendMode, ?smoothing = false, ?shader:FlxShader):Void {
 		var cameraExists = false;
 		for (cam in cameras)
-		{
-			if (cam == camera)
-			{
+			if (cam == camera) {
 				cameraExists = true;
 				break;
 			}
-		}
 
-		if (!cameraExists)
-		{
+		if (!cameraExists) {
 			FlxG.log.warn('Camera ${camera} is not added to the layer, drawing normally');
 			camera.drawPixels(frame, pixels, matrix, transform, blend, smoothing, shader);
 			return;
 		}
 
-		if (FlxG.render.blit)
-		{
+		if (FlxG.render.blit) {
 			camera._helperMatrix.copyFrom(matrix);
 
-			if (camera._useBlitMatrix)
-			{
+			if (camera._useBlitMatrix) {
 				camera._helperMatrix.concat(camera._blitMatrix);
 				camera.buffer.draw(pixels, camera._helperMatrix, null, null, null, (smoothing || camera.antialiasing));
-			}
-			else
-			{
+			} else {
 				camera._helperMatrix.translate(-camera.viewMarginLeft, -camera.viewMarginTop);
 				camera.buffer.draw(pixels, camera._helperMatrix, null, blend, null, (smoothing || camera.antialiasing));
 			}
-		}
-		else
-		{
-			var isColored = (transform != null && transform.hasRGBMultipliers());
-			var hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
+		} else {
+			final isColored = (transform != null && transform.hasRGBMultipliers());
+			final hasColorOffsets = (transform != null && transform.hasRGBAOffsets());
 
-			if (!camera.rotateSprite && camera.angle != 0)
-			{
+			if (!camera.rotateSprite && camera.angle != 0) {
 				matrix.translate(-camera.width * .5, -camera.height * .5);
 				matrix.rotateWithTrig(camera._cosAngle, camera._sinAngle);
 				matrix.translate(camera.width * .5, camera.height * .5);
 			}
 
 			#if FLX_RENDER_TRIANGLE
-			var drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
+			final drawItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
 			#else
-			var drawItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, blend, smoothing, shader);
+			final drawItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, blend, smoothing, shader);
 			#end
 			drawItem.addQuad(frame, matrix, transform);
 		}
 	}
 
-	public function injectDrawCall(camera:FlxCamera, drawItem:FlxDrawItem):Void
-	{
+	public function injectDrawCall(camera:FlxCamera, drawItem:FlxDrawItem):Void {
 		drawItem.next = null;
 
 		if (camera._headOfDrawStack == null)
-		{
 			camera._headOfDrawStack = drawItem;
-		}
 		else
-		{
-			// var current:FlxDrawBaseItem<Dynamic> = camera._headOfDrawStack;
-			// while (current.next != null)
-			// {
-			//	current = current.next;
-			// }
-			// current.next = drawItem;
 			camera._currentDrawItem.next = drawItem;
-		}
 
 		camera._currentDrawItem = drawItem;
 	}
 
-	public override function draw()
-	{
+	public override function draw() {
 		// TODO: support multiple cameras
 		if (_headTiles != null)
-		{
 			injectDrawCall(camera, _headTiles);
-		}
 	}
 }

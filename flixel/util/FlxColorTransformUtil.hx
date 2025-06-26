@@ -2,15 +2,13 @@ package flixel.util;
 
 import openfl.geom.ColorTransform;
 
-class FlxColorTransformUtil
-{
+class FlxColorTransformUtil {
 	/**
 	 * Resets the transform to default values, multipliers become `1.0` and offsets become `0.0`
 	 * @since 6.1.0
 	 */
-	public static inline function reset(transform:ColorTransform):ColorTransform
-	{
-		return set(transform, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+	public static inline function reset(transform:ColorTransform):ColorTransform {
+		return set(transform, 1, 1, 1, 1, 0, 0, 0, 0);
 	}
 
 	/**
@@ -26,9 +24,7 @@ class FlxColorTransformUtil
 	 * @param   aOffset  The offset for alpha transparency channel value, ranges from -255 to 255
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function set(transform:ColorTransform, rMult, gMult, bMult, aMult, rOffset, gOffset, bOffset,
-			aOffset = 0.0):ColorTransform
-	{
+	overload public static inline extern function set(transform:ColorTransform, rMult, gMult, bMult, aMult, rOffset, gOffset, bOffset, aOffset = .0):ColorTransform {
 		setMultipliers(transform, rMult, gMult, bMult, aMult);
 		setOffsets(transform, rOffset, gOffset, bOffset, aOffset);
 
@@ -46,9 +42,8 @@ class FlxColorTransformUtil
 	 * @param   bOffset  The offset for the blue color channel value, ranges from -255 to 255
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function set(transform:ColorTransform, rMult, gMult, bMult, rOffset, gOffset, bOffset):ColorTransform
-	{
-		return set(transform, rMult, gMult, bMult, 1.0, rOffset, gOffset, bOffset);
+	overload public static inline extern function set(transform:ColorTransform, rMult, gMult, bMult, rOffset, gOffset, bOffset):ColorTransform {
+		return set(transform, rMult, gMult, bMult, 1, rOffset, gOffset, bOffset);
 	}
 
 	/**
@@ -60,8 +55,7 @@ class FlxColorTransformUtil
 	 *                     determine the offsets of this transform
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function set(transform:ColorTransform, colorMult = FlxColor.WHITE, colorOffset:FlxColor = 0x0):ColorTransform
-	{
+	overload public static inline extern function set(transform:ColorTransform, colorMult = FlxColor.WHITE, colorOffset:FlxColor = 0x0):ColorTransform {
 		return set(transform, colorMult.redFloat, colorMult.greenFloat, colorMult.blueFloat, colorMult.alphaFloat, colorOffset.red, colorOffset.green,
 			colorOffset.blue, colorOffset.alpha);
 	}
@@ -76,8 +70,7 @@ class FlxColorTransformUtil
 	 * @return ColorTransform
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function scaleMultipliers(transform:ColorTransform, rMult:Float, gMult:Float, bMult:Float, aMult = 1.0):ColorTransform
-	{
+	overload public static inline extern function scaleMultipliers(transform:ColorTransform, rMult:Float, gMult:Float, bMult:Float, aMult = 1.):ColorTransform {
 		transform.redMultiplier *= rMult;
 		transform.greenMultiplier *= gMult;
 		transform.blueMultiplier *= bMult;
@@ -93,8 +86,7 @@ class FlxColorTransformUtil
 	 *                  `alphaFloat` values scale the multipliers of this transform
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function scaleMultipliers(transform:ColorTransform, color:FlxColor):ColorTransform
-	{
+	overload public static inline extern function scaleMultipliers(transform:ColorTransform, color:FlxColor):ColorTransform {
 		transform.redMultiplier *= color.redFloat;
 		transform.greenMultiplier *= color.greenFloat;
 		transform.blueMultiplier *= color.blueFloat;
@@ -111,8 +103,7 @@ class FlxColorTransformUtil
 	 * @param   bMult  The value for the blue multiplier, ranges from 0 to 1
 	 * @param   aMult  The value for the alpha transparency multiplier, ranges from 0 to 1
 	 */
-	overload public static inline extern function setMultipliers(transform:ColorTransform, red:Float, green:Float, blue:Float, alpha = 1.0):ColorTransform
-	{
+	overload public static inline extern function setMultipliers(transform:ColorTransform, red:Float, green:Float, blue:Float, alpha = 1.):ColorTransform {
 		transform.redMultiplier = red;
 		transform.greenMultiplier = green;
 		transform.blueMultiplier = blue;
@@ -128,8 +119,7 @@ class FlxColorTransformUtil
 	 *                  `alphaFloat` values determine the multipliers of this transform
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function setMultipliers(transform:ColorTransform, color:FlxColor):ColorTransform
-	{
+	overload public static inline extern function setMultipliers(transform:ColorTransform, color:FlxColor):ColorTransform {
 		transform.redMultiplier = color.redFloat;
 		transform.greenMultiplier = color.greenFloat;
 		transform.blueMultiplier = color.blueFloat;
@@ -146,8 +136,7 @@ class FlxColorTransformUtil
 	 * @param   blue   The value for the blue offset, ranges from 0 to 255
 	 * @param   alpha  The value for the alpha transparency offset, ranges from 0 to 255
 	 */
-	overload public static inline extern function setOffsets(transform:ColorTransform, red:Float, green:Float, blue:Float, alpha = 0.0):ColorTransform
-	{
+	overload public static inline extern function setOffsets(transform:ColorTransform, red:Float, green:Float, blue:Float, alpha = .0):ColorTransform {
 		transform.redOffset = red;
 		transform.greenOffset = green;
 		transform.blueOffset = blue;
@@ -163,40 +152,35 @@ class FlxColorTransformUtil
 	 *                  `alpha` values determine the offsets of this transform
 	 * @since 6.1.0
 	 */
-	overload public static inline extern function setOffsets(transform:ColorTransform, color:FlxColor):ColorTransform
-	{
+	overload public static inline extern function setOffsets(transform:ColorTransform, color:FlxColor):ColorTransform {
 		return setOffsets(transform, color.red, color.green, color.blue, color.alpha);
 	}
 
 	/**
 	 * Returns whether red, green, or blue multipliers are set to anything other than 1.
 	 */
-	public inline static function hasRGBMultipliers(transform:ColorTransform):Bool
-	{
+	public inline static function hasRGBMultipliers(transform:ColorTransform):Bool {
 		return transform.redMultiplier != 1 || transform.greenMultiplier != 1 || transform.blueMultiplier != 1;
 	}
 
 	/**
 	 * Returns whether red, green, blue, or alpha multipliers are set to anything other than 1.
 	 */
-	public inline static function hasRGBAMultipliers(transform:ColorTransform):Bool
-	{
+	public inline static function hasRGBAMultipliers(transform:ColorTransform):Bool {
 		return transform.redMultiplier != 1 || transform.greenMultiplier != 1 || transform.blueMultiplier != 1 || transform.alphaMultiplier != 1;
 	}
 
 	/**
 	 * Returns whether red, green, or blue offsets are set to anything other than 0.
 	 */
-	public inline static function hasRGBOffsets(transform:ColorTransform):Bool
-	{
+	public inline static function hasRGBOffsets(transform:ColorTransform):Bool {
 		return transform.redOffset != 0 || transform.greenOffset != 0 || transform.blueOffset != 0;
 	}
 
 	/**
 	 * Returns whether red, green, blue, or alpha offsets are set to anything other than 0.
 	 */
-	public inline static function hasRGBAOffsets(transform:ColorTransform):Bool
-	{
+	public inline static function hasRGBAOffsets(transform:ColorTransform):Bool {
 		return transform.redOffset != 0 || transform.greenOffset != 0 || transform.blueOffset != 0 || transform.alphaOffset != 0;
 	}
 }
