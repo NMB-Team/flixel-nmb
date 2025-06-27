@@ -51,18 +51,18 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		removeEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
 	}
 
-	function onMouseUp(_):Void {
+	private function onMouseUp(_):Void {
 		setIsEditing(true);
 	}
 
-	function onKeyUp(e:KeyboardEvent):Void {
+	private function onKeyUp(e:KeyboardEvent):Void {
 		switch (e.keyCode) {
 			case Keyboard.ENTER: submit();
 			case Keyboard.ESCAPE: setIsEditing(false);
 		}
 	}
 
-	function onKeyDown(e:KeyboardEvent):Void {
+	private function onKeyDown(e:KeyboardEvent):Void {
 		final modifier = e.altKey ? .1 : (e.shiftKey ? 10. : 1.);
 
 		switch (e.keyCode) {
@@ -71,7 +71,7 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		}
 	}
 
-	function cycleValue(modifier:Float, selection:Int):Void {
+	private function cycleValue(modifier:Float, selection:Int):Void {
 		switch (expectedType) {
 			case TInt | TFloat:
 				cycleNumericValue(modifier);
@@ -87,11 +87,11 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		}
 	}
 
-	function selectEnd():Void {
+	private function selectEnd():Void {
 		setSelection(text.length, text.length);
 	}
 
-	function cycleNumericValue(modifier:Float):Void {
+	private function cycleNumericValue(modifier:Float):Void {
 		var value = Std.parseFloat(text);
 		if (Math.isNaN(value)) return;
 
@@ -100,7 +100,7 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		text = Std.string(value);
 	}
 
-	function cycleEnumValue(e:Enum<Dynamic>, modifier:Int):Void {
+	private function cycleEnumValue(e:Enum<Dynamic>, modifier:Int):Void {
 		var values = e.getConstructors();
 		var index = values.indexOf(text);
 		if (index == -1) index = 0;
@@ -111,7 +111,7 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		text = Std.string(values[index]);
 	}
 
-	function onFocusLost(_) {
+	private function onFocusLost(_) {
 		setIsEditing(false);
 	}
 
@@ -135,7 +135,7 @@ class EditableTextField extends TextField implements IFlxDestroyable {
 		setIsEditing(false);
 	}
 
-	function setIsEditing(isEditing:Bool) {
+	private function setIsEditing(isEditing:Bool) {
 		this.isEditing = isEditing;
 
 		#if FLX_KEYBOARD

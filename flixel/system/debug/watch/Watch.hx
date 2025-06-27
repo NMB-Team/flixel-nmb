@@ -63,7 +63,7 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		addEntry(displayName, data);
 	}
 
-	function isInvalid(displayName:String, data:WatchEntryData):Bool {
+	private function isInvalid(displayName:String, data:WatchEntryData):Bool {
 		return switch (data) {
 			case FIELD(object, field): object == null || field == null;
 			case QUICK(value): displayName.isNullOrEmpty();
@@ -72,7 +72,7 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		}
 	}
 
-	function getExistingEntry(displayName:String, data:WatchEntryData):TEntry {
+	private function getExistingEntry(displayName:String, data:WatchEntryData):TEntry {
 		for (entry in entries) {
 			if (data == null || data.match(QUICK(_) | FUNCTION(_))) {
 				if (entry.displayName == displayName)
@@ -83,7 +83,7 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		return null;
 	}
 
-	function addEntry(displayName:String, data:WatchEntryData, redraw = true) {
+	private function addEntry(displayName:String, data:WatchEntryData, redraw = true) {
 		final entry = create(displayName, data);
 		entry.onRemove.addOnce(removeEntry.bind(entry));
 		entries.push(entry);
@@ -91,12 +91,12 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		if (redraw) updateSize();
 	}
 
-	public function remove(displayName:String, data:WatchEntryData):Void {
+	private public function remove(displayName:String, data:WatchEntryData):Void {
 		final existing = getExistingEntry(displayName, data);
 		if (existing != null) removeEntry(existing);
 	}
 
-	function removeEntry(entry:TEntry) {
+	private function removeEntry(entry:TEntry) {
 		entries.fastSplice(entry);
 		entriesContainer.removeChild(entry);
 		entry.destroy();
@@ -106,7 +106,7 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 	/**
 	 * internal method to remove all without calling updateSize
 	 */
-	function clear():Void {
+	private function clear():Void {
 		for (entry in entries) {
 			entriesContainer.removeChild(entry);
 			entry.destroy();
@@ -137,15 +137,15 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		resetEntries();
 	}
 
-	function getMarginWidth() {
+	inline function getMarginWidth() {
 		return _width - entriesContainer.x - (_resizable ? 5 : 3) - scrollbar.width - 4;
 	}
 
-	function getMarginHeight() {
+	inline function getMarginHeight() {
 		return _height - entriesContainer.y - 3;
 	}
 
-	function resetEntries():Void {
+	private function resetEntries():Void {
 		final width = getMarginWidth();
 		final sansNameWidth = Math.min(width * .8, getMaxMinWidth());
 		final nameWidth = Math.min(getMaxNameWidth(), width - sansNameWidth);
@@ -156,15 +156,15 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		}
 	}
 
-	function getMaxNameWidth():Float {
+	inline function getMaxNameWidth():Float {
 		return getMax(entry -> return entry.getNameWidth());
 	}
 
-	function getMaxMinWidth():Float {
+	inline function getMaxMinWidth():Float {
 		return getMax(entry -> return entry.getMinWidth());
 	}
 
-	function getMax(getValue:WatchEntry -> Float):Float {
+	private function getMax(getValue:WatchEntry -> Float):Float {
 		var max = .0;
 		for (entry in entries) {
 			final value = getValue(entry);

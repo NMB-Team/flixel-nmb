@@ -43,7 +43,7 @@ class ScrollSprite extends Sprite {
 		return scrollBar = new ScrollBar(this);
 	}
 
-	function onMouseScroll(e:MouseEvent) {
+	private function onMouseScroll(e:MouseEvent) {
 		if (mouseX > 0 && mouseX < scroll.width && mouseY - scroll.y > 0 && mouseY - scroll.y < scroll.height) {
 			scroll.y -= e.delta;
 			updateScroll();
@@ -57,7 +57,7 @@ class ScrollSprite extends Sprite {
 		updateScroll();
 	}
 
-	function updateScroll() {
+	private function updateScroll() {
 		scrollRect = null;
 
 		if (scroll.bottom > this.height) scroll.y = height - scroll.height;
@@ -133,7 +133,7 @@ class ScrollBar extends Sprite {
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
 	}
 
-	function onBgMouseDown(e:MouseEvent) {
+	private function onBgMouseDown(e:MouseEvent) {
 		if (state != IDLE)
 			FlxG.log.critical("expected state: IDLE");
 
@@ -141,7 +141,7 @@ class ScrollBar extends Sprite {
 		mouseMoveHelper(e.stageY);
 	}
 
-	function onHandleMouse(e:MouseEvent) {
+	private function onHandleMouse(e:MouseEvent) {
 		if (e.type == MouseEvent.MOUSE_DOWN) {
 			if (state != IDLE)
 				FlxG.log.critical("expected state: IDLE");
@@ -151,15 +151,15 @@ class ScrollBar extends Sprite {
 			state = IDLE;
 	}
 
-	function onMouseMove(e:MouseEvent) {
+	private function onMouseMove(e:MouseEvent) {
 		mouseMoveHelper(e.stageY);
 	}
 
-	function getLocalY(stageY:Float) {
+	private function getLocalY(stageY:Float) {
 		return globalToLocal(new Point(0, stageY)).y;
 	}
 
-	function mouseMoveHelper(stageY:Float) {
+	private function mouseMoveHelper(stageY:Float) {
 		final localY = getLocalY(stageY);
 		switch state {
 			case IDLE:
@@ -172,7 +172,7 @@ class ScrollBar extends Sprite {
 		}
 	}
 
-	function onHandleMove() {
+	private function onHandleMove() {
 		if (handle.y < 0) handle.y = 0;
 
 		final calc_height = bg.height - handle.height;
@@ -187,7 +187,7 @@ class ScrollBar extends Sprite {
 		onViewChange();
 	}
 
-	function onViewChange() {
+	private function onViewChange() {
 		mouseEnabled = mouseChildren = visible = target.maxScrollY > 0 && target.maxScrollY < target.height;
 		handle.y = (target.scrollY / target.maxScrollY) * (bg.height - handle.height);
 	}

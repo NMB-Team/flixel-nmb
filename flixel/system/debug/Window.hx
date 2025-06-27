@@ -234,7 +234,7 @@ class Window extends Sprite {
 	}
 
 	#if FLX_SAVE
-	function loadSaveData():Void {
+	private function loadSaveData():Void {
 		if (!FlxG.save.isBound) return;
 
 		if (FlxG.save.data.windowSettings == null) {
@@ -244,12 +244,12 @@ class Window extends Sprite {
 		visible = FlxG.save.data.windowSettings[_id];
 	}
 
-	function initWindowsSave() {
+	private function initWindowsSave() {
 		final maxWindows = 10; // arbitrary
 		FlxG.save.data.windowSettings = [for (_ in 0...maxWindows) true];
 	}
 
-	function saveWindowVisibility() {
+	private function saveWindowVisibility() {
 		if (FlxG.save.data.windowSettings == null) initWindowsSave();
 
 		FlxG.save.data.windowSettings[_id] = visible;
@@ -264,7 +264,7 @@ class Window extends Sprite {
 	/**
 	 * Used to set up basic mouse listeners..
 	 */
-	function init(?_:Event):Void {
+	private function init(?_:Event):Void {
 		if (stage == null) return;
 
 		removeEventListener(Event.ENTER_FRAME, init);
@@ -279,7 +279,7 @@ class Window extends Sprite {
 	/**
 	 * Mouse movement handler.  Figures out if mouse is over handle or header bar or what.
 	 */
-	function onMouseMove(?_:MouseEvent):Void {
+	private function onMouseMove(?_:MouseEvent):Void {
 		// mouseX / Y can be negative, which messes with the resizing if dragging in the opposite direction
 		final mouseX = (this.mouseX < 0) ? 0 : this.mouseX;
 		final mouseY = (this.mouseY < 0) ? 0 : this.mouseY;
@@ -306,7 +306,7 @@ class Window extends Sprite {
 	/**
 	 * Figure out if window is being repositioned (clicked on header) or resized (clicked on handle).
 	 */
-	function onMouseDown(?_:MouseEvent):Void {
+	private function onMouseDown(?_:MouseEvent):Void {
 		if (_overHeader) {
 			if (_alwaysOnTop) putOnTop();
 			_dragging = true;
@@ -325,7 +325,7 @@ class Window extends Sprite {
 	/**
 	 * User let go of header bar or handler (or nothing), so turn off drag and resize behaviors.
 	 */
-	function onMouseUp(?_:MouseEvent):Void {
+	private function onMouseUp(?_:MouseEvent):Void {
 		_dragging = _resizing = false;
 	}
 
@@ -342,7 +342,7 @@ class Window extends Sprite {
 	/**
 	 * Update the Flash shapes to match the new size, and reposition the header, shadow, and handle accordingly.
 	 */
-	function updateSize():Void {
+	private function updateSize():Void {
 		_width = Std.int(FlxMath.bound(_width, minSize.x, maxSize.x));
 		_height = Std.int(FlxMath.bound(_height, minSize.y, maxSize.y));
 

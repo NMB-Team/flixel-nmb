@@ -213,7 +213,7 @@ class TooltipOverlay extends Sprite {
 	/**
 	 * Update the Flash shapes to match the new size, and reposition the header, shadow, and handle accordingly.
 	 */
-	function updateSize():Void {
+	private function updateSize():Void {
 		_width = Std.int(maxSize.x <= 0 ? textField.textWidth : Math.abs(maxSize.x)) + 8;
 		_height = Std.int(maxSize.y <= 0 ? textField.textHeight : Math.abs(maxSize.y)) + 8;
 		_background.scaleX = _width;
@@ -223,7 +223,7 @@ class TooltipOverlay extends Sprite {
 		textField.width = _width;
 	}
 
-	function ensureOnScreen():Void {
+	private function ensureOnScreen():Void {
 		// Move the tooltip back to the screen if top-left corner
 		// is out of the screen.
 		x = x < 0 ? 0 : x;
@@ -238,7 +238,7 @@ class TooltipOverlay extends Sprite {
 		y += offsetY;
 	}
 
-	function handleMouseEvents(event:MouseEvent):Void {
+	private function handleMouseEvents(event:MouseEvent):Void {
 		if (event.type == MouseEvent.MOUSE_OVER && !visible) {
 			x = event.stageX + MARGIN_X;
 			y = event.stageY + MARGIN_Y;

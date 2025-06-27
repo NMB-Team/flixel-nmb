@@ -209,7 +209,7 @@ class Tracker extends Watch {
 		super.destroy();
 	}
 
-	function findProfileByClass(objectClass:Class<Dynamic>):TrackerProfile {
+	private function findProfileByClass(objectClass:Class<Dynamic>):TrackerProfile {
 		for (profile in profiles)
 			if (profile.objectClass == objectClass)
 				return profile;
@@ -217,13 +217,13 @@ class Tracker extends Watch {
 		return null;
 	}
 
-	function initWatchEntries(profile:TrackerProfile):Void {
+	private function initWatchEntries(profile:TrackerProfile):Void {
 		if (profile == null) return;
 		addExtensions(profile);
 		addVariables(profile.variables);
 	}
 
-	function addExtensions(profile:TrackerProfile):Void {
+	private function addExtensions(profile:TrackerProfile):Void {
 		if (profile.extensions == null) return;
 
 		for (extension in profile.extensions) {
@@ -237,7 +237,7 @@ class Tracker extends Watch {
 		}
 	}
 
-	function addVariables(variables:Array<String>):Void {
+	private function addVariables(variables:Array<String>):Void {
 		if (variables == null) return;
 
 		for (variable in variables)

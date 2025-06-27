@@ -235,7 +235,7 @@ class Stats extends Window {
 		}
 	}
 
-	function updateTexts():Void {
+	private function updateTexts():Void {
 		final updTime = FlxMath.roundDecimal(divide(updateTime, _updateMarker), DECIMALS);
 		final drwTime = FlxMath.roundDecimal(divide(drawTime, _drawMarker), DECIMALS);
 
@@ -246,7 +246,7 @@ class Stats extends Window {
 			+ (FlxG.render.tile ? (drawCallsCount + "\n") : "") + FlxQuadTree._NUM_CACHED_QUAD_TREES + "\n" + FlxLinkedList._NUM_CACHED_FLX_LIST;
 	}
 
-	function divide(f1:Float, f2:Float):Float {
+	private function divide(f1:Float, f2:Float):Float {
 		return (f2 == 0) ? 0 : f1 / f2;
 	}
 
@@ -335,7 +335,7 @@ class Stats extends Window {
 		_paused = true;
 	}
 
-	function toggleSize():Void {
+	private function toggleSize():Void {
 		if (_width == INITIAL_WIDTH) {
 			resize(INITIAL_WIDTH * 2, _height);
 			x -= INITIAL_WIDTH;

@@ -57,8 +57,7 @@ class FlxSpriteUtil {
 		var data = FlxAssets.resolveBitmapData(source);
 		final maskData = FlxAssets.resolveBitmapData(mask);
 
-		if (data == null || maskData == null)
-			return null;
+		if (data == null || maskData == null) return null;
 
 		data = data.clone();
 		data.copyChannel(maskData, new Rectangle(0, 0, data.width, data.height), new Point(), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA);

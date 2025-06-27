@@ -95,7 +95,7 @@ class BitmapLog extends Window {
 		FlxG.signals.preStateSwitch.remove(clear);
 	}
 
-	function onMouseWheel(e:MouseEvent):Void {
+	private function onMouseWheel(e:MouseEvent):Void {
 		zoom = Math.max(.01, zoom + FlxMath.signOf(e.delta) * .25);
 		drawCanvas();
 	}
@@ -155,14 +155,14 @@ class BitmapLog extends Window {
 		canvasOffset.set();
 	}
 
-	function indexOf(bitmap:BitmapData) {
+	private function indexOf(bitmap:BitmapData) {
 		for (i => entry in entries)
 			if (entry.bitmap == bitmap)
 				return i;
 		return -1;
 	}
 
-	function entryOf(bitmap:BitmapData):Null<BitmapLogEntry> {
+	private function entryOf(bitmap:BitmapData):Null<BitmapLogEntry> {
 		for (entry in entries)
 			if (entry.bitmap == bitmap)
 				return entry;
@@ -218,7 +218,7 @@ class BitmapLog extends Window {
 		drawCanvas();
 	}
 
-	function drawCanvas() {
+	private function drawCanvas() {
 		if (canvas.bitmapData == null) return; // If the window is too small there is no canvas bitmap
 
 		final canvasBmd = canvas.bitmapData;
@@ -251,7 +251,7 @@ class BitmapLog extends Window {
 		footer.setText(entries[index]);
 	}
 
-	function setIndex(index:Int):Bool {
+	private function setIndex(index:Int):Bool {
 		this.index = validIndex(index);
 
 		if (this.index < 0) header.clear();
@@ -261,7 +261,7 @@ class BitmapLog extends Window {
 		return true;
 	}
 
-	function validIndex(index:Int) {
+	private function validIndex(index:Int) {
 		if (entries.length == 0) return -1;
 		if (index < 0) return entries.length - 1;
 		if (index >= entries.length) return 0;
@@ -269,7 +269,7 @@ class BitmapLog extends Window {
 		return index;
 	}
 
-	function drawBoundingBox(bitmap:BitmapData):Void {
+	private function drawBoundingBox(bitmap:BitmapData):Void {
 		final gfx = FlxSpriteUtil.flashGfx;
 		gfx.clear();
 		gfx.lineStyle(1, FlxColor.RED, .75, false, LineScaleMode.NONE);
@@ -313,17 +313,17 @@ class Header extends Sprite {
 		addChild(dimensions);
 	}
 
-	public function clear() {
+	public inline function clear() {
 		setText(0, 0, 0, 0);
 		dimensions.text = "";
 	}
 
-	public function setText(index:Int, total:Int, width:Int, height:Int) {
+	public inline function setText(index:Int, total:Int, width:Int, height:Int) {
 		counter.text = '$index/$total';
 		dimensions.text = '$width x $height';
 	}
 
-	public function resize(width:Float) {
+	public inline function resize(width:Float) {
 		next.x = width - next.width - 3;
 		reset.x = next.x - reset.width - 3;
 		prev.x = reset.x - prev.width - 3;
@@ -331,8 +331,7 @@ class Header extends Sprite {
 		dimensions.visible = width > 200;
 	}
 
-	// Note: get_height doesn't work in flash
-	public function getHeight() return Window.HEADER_HEIGHT;
+	public inline function getHeight() return Window.HEADER_HEIGHT;
 }
 
 class Footer extends Sprite {
@@ -350,17 +349,17 @@ class Footer extends Sprite {
 		addChild(text);
 	}
 
-	public function setText(entry:BitmapLogEntry) {
+	public inline function setText(entry:BitmapLogEntry) {
 		text.text = (entry.name == "") ? "" : '"${entry.name}" | '
 			+ FlxStringUtil.formatBytes(entry.bitmap.getMemorySize());
 		text.x = (bg.width - text.width) * .5;
 	}
 
-	public function resize(width:Float) {
+	public inline function resize(width:Float) {
 		bg.width = width;
 	}
 
-	public function getHeight() {
+	public inline function getHeight() {
 		return Window.HEADER_HEIGHT;
 	}
 }

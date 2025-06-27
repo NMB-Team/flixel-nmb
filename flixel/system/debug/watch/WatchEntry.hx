@@ -50,11 +50,11 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		removeButton.alpha = .3;
 	}
 
-	function canEdit(data:WatchEntryData) {
+	inline function canEdit(data:WatchEntryData) {
 		return data.match(FIELD(_, _));
 	}
 
-	function getTextColor():FlxColor {
+	inline function getTextColor():FlxColor {
 		return switch (data) {
 			case FIELD(_, _): 0xFFFFFF;
 			case QUICK(_): 0xA5F1ED;
@@ -63,7 +63,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		}
 	}
 
-	function initTextField<T:TextField>(textField:T):T {
+	inline function initTextField<T:TextField>(textField:T):T {
 		textField.selectable = true;
 		textField.defaultTextFormat = defaultFormat;
 		textField.autoSize = TextFieldAutoSize.NONE;
@@ -81,7 +81,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		removeButton.x = textWidth;
 	}
 
-	function updateName() {
+	private function updateName() {
 		if (displayName == null) {
 			switch (data) {
 				case FIELD(object, field): displayName = object.getClassName(true) + "." + field;
@@ -94,13 +94,13 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		setNameText(displayName);
 	}
 
-	function setNameText(name:String) {
+	inline function setNameText(name:String) {
 		nameText.text = name;
 		final currentWidth = nameText.textWidth + 4;
 		nameText.width = Math.min(currentWidth, MAX_NAME_WIDTH);
 	}
 
-	function getValue():Dynamic {
+	private function getValue():Dynamic {
 		return switch (data) {
 			case FIELD(object, field): Reflect.getProperty(object, field);
 			case EXPRESSION(_, parsedExpr):
@@ -114,7 +114,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		}
 	}
 
-	function getFormattedValue():String {
+	private function getFormattedValue():String {
 		final value:Dynamic = getValue();
 		return Std.string(formatValue(getValue()));
 	}
@@ -124,7 +124,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable {
 		return Std.string(value);
 	}
 
-	function submitValue(value:Dynamic):Void {
+	private function submitValue(value:Dynamic):Void {
 		switch (data) {
 			case FIELD(object, field): Reflect.setProperty(object, field, value);
 			case _:

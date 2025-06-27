@@ -96,7 +96,7 @@ class FlxDebugger extends openfl.display.Sprite {
 	 * @param   scale   The scale of the debugger relative to the stage size
 	 */
 	@:allow(flixel.FlxGame)
-	function new(width:Float, height:Float, scale = 0) {
+	private function new(width:Float, height:Float, scale = 0) {
 		super();
 
 		if (scale == 0) scale = defaultScale;
@@ -332,7 +332,7 @@ class FlxDebugger extends openfl.display.Sprite {
 		y = -FlxG.scaleMode.offset.y;
 	}
 
-	function updateBounds():Void {
+	private function updateBounds():Void {
 		_screenBounds = new Rectangle(GUTTER, TOP_HEIGHT + GUTTER * .5, _screen.x - GUTTER * 2, _screen.y - GUTTER * 2 - TOP_HEIGHT);
 		for (window in _windows)
 			window.updateBounds(_screenBounds);
@@ -341,7 +341,7 @@ class FlxDebugger extends openfl.display.Sprite {
 	/**
 	 * Align an array of debugger buttons, used for the middle and right layouts
 	 */
-	function hAlignButtons(sprites:Array<FlxSystemButton>, padding = .0, set = true, leftOffset = .0):Float {
+	private function hAlignButtons(sprites:Array<FlxSystemButton>, padding = .0, set = true, leftOffset = .0):Float {
 		var width = .0;
 		var last = leftOffset;
 
@@ -358,7 +358,7 @@ class FlxDebugger extends openfl.display.Sprite {
 	/**
 	 * Position the debugger buttons
 	 */
-	function resetButtonLayout():Void {
+	private function resetButtonLayout():Void {
 		hAlignButtons(_buttons[FlxHorizontalAlign.LEFT], 10, true, 10);
 
 		final offset = FlxG.stage.stageWidth / scaleX * .5 - hAlignButtons(_buttons[FlxHorizontalAlign.CENTER], 10, false) * .5;
@@ -439,18 +439,18 @@ class FlxDebugger extends openfl.display.Sprite {
 	/**
 	 * Mouse handler that helps with fake "mouse focus" type behavior.
 	 */
-	function onMouseOver(_):Void {
+	private function onMouseOver(_):Void {
 		onMouseFocus();
 	}
 
 	/**
 	 * Mouse handler that helps with fake "mouse focus" type behavior.
 	 */
-	function onMouseOut(_):Void {
+	private function onMouseOut(_):Void {
 		onMouseFocusLost();
 	}
 
-	function onMouseFocus():Void {
+	private function onMouseFocus():Void {
 		#if FLX_MOUSE
 		FlxG.mouse.enabled = false;
 		_wasMouseVisible = FlxG.mouse.visible;
@@ -460,7 +460,7 @@ class FlxDebugger extends openfl.display.Sprite {
 	}
 
 	@:allow(flixel.system.debug)
-	function onMouseFocusLost():Void {
+	private function onMouseFocusLost():Void {
 		#if FLX_MOUSE
 		// Disable mouse input if the interaction tool is in use,
 		// so users can select interactable elements, e.g. buttons.

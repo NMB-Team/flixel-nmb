@@ -73,7 +73,7 @@ class StatsGraph extends Sprite
 	/**
 	 * Redraws the axes of the graph.
 	 */
-	function drawAxes():Void {
+	inline function drawAxes():Void {
 		final gfx = _axis.graphics;
 		gfx.clear();
 		gfx.lineStyle(1, AXIS_COLOR, AXIS_ALPHA);
@@ -90,7 +90,7 @@ class StatsGraph extends Sprite
 	/**
 	 * Redraws the graph based on the values stored in the history.
 	 */
-	function drawGraph():Void {
+	inline function drawGraph():Void {
 		final gfx:Graphics = graphics;
 		gfx.clear();
 		gfx.lineStyle(1, graphColor, 1);
@@ -126,7 +126,7 @@ class StatsGraph extends Sprite
 		drawGraph();
 	}
 
-	function formatValue(value:Float):String {
+	inline function formatValue(value:Float):String {
 		return FlxMath.roundDecimal(value, Stats.DECIMALS) + " " + _unit;
 	}
 
