@@ -6,51 +6,43 @@ import flixel.system.FlxAssets;
 import flixel.system.debug.interaction.Interaction;
 import flixel.system.ui.FlxSystemButton;
 import flixel.util.FlxDestroyUtil;
+import flixel.util.FlxStringUtil;
 
 /**
  * The base class of all tools in the interactive debug.
  *
  * @author Fernando Bevilacqua (dovyski@gmail.com)
  */
-class Tool extends Sprite implements IFlxDestroyable
-{
+class Tool extends Sprite implements IFlxDestroyable {
 	public var button(default, null):FlxSystemButton;
 	public var cursor(default, null):BitmapData;
-	public var cursorInUse(default, null):String = "";
+	public var cursorInUse(default, null) = "";
 
-	var _name:String = "(Unknown tool)";
+	var _name = "(Unknown tool)";
 	var _shortcut:String;
 	var _brain:Interaction;
 
-	public function init(brain:Interaction):Tool
-	{
+	public function init(brain:Interaction):Tool {
 		_brain = brain;
 		return this;
 	}
 
 	public function update():Void {}
-
 	public function draw():Void {}
-
 	public function activate():Void {}
-
 	public function deactivate():Void {}
-
 	public function destroy():Void {}
 
-	public function isActive():Bool
-	{
+	public function isActive():Bool {
 		return _brain.activeTool == this && _brain.visible;
 	}
 
-	function setButton(icon:FlxGraphicSource):Void
-	{
+	private function setButton(icon:FlxGraphicSource):Void {
 		button = new FlxSystemButton(icon.resolveBitmapData(), onButtonClicked, true);
 		button.toggled = true;
 
 		var tooltipName = _name;
-		if (_shortcut != null)
-			tooltipName += ' ($_shortcut)';
+		if (_shortcut != null) tooltipName += ' ($_shortcut)';
 		Tooltip.add(button, tooltipName);
 	}
 
@@ -61,9 +53,8 @@ class Tool extends Sprite implements IFlxDestroyable
 	 * that a specific action is happening. Use `setCursorInUse()` to
 	 * learn more about custom cursors.
 	 */
-	function setCursor(Icon:BitmapData, offsetX = 0.0, offsetY = 0.0):Void
-	{
-		cursor = Icon;
+	private inline function setCursor(icon:BitmapData, offsetX = .0, offsetY = .0):Void {
+		cursor = icon;
 		_brain.registerCustomCursor(_name, cursor, offsetX, offsetY);
 	}
 
@@ -76,27 +67,23 @@ class Tool extends Sprite implements IFlxDestroyable
 	 *
 	 * @param	customCursorName	Name of the custom cursor that will be used from now on for the tool. If an empty string is informed, the tool's default icon (informed via `setCursor()`) will be used.
 	 */
-	function setCursorInUse(customCursorName:String):Void
-	{
+	private inline function setCursorInUse(customCursorName:String):Void {
 		cursorInUse = customCursorName;
 	}
 
 	/**
 	 * Make the tool use its default cursor, which was informed via `setCursor()`.
 	 */
-	function useDefaultCursor():Void
-	{
-		if (cursorInUse != "")
-			cursorInUse = "";
+	private inline function useDefaultCursor():Void {
+		if (FlxStringUtil.isNullOrEmpty(cursorInUse)) return;
+		cursorInUse = "";
 	}
 
-	function onButtonClicked():Void
-	{
+	private inline function onButtonClicked():Void {
 		_brain.setActiveTool(this);
 	}
 
-	public function getName():String
-	{
+	public inline function getName():String {
 		return _name;
 	}
 }

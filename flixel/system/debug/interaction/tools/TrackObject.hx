@@ -13,36 +13,32 @@ using flixel.util.FlxArrayUtil;
  *
  * @author George
  */
-class TrackObject extends Tool
-{
-	override function init(brain:Interaction):Tool
-	{
+class TrackObject extends Tool {
+	override function init(brain:Interaction):Tool {
 		super.init(brain);
 
 		_name = "Track object";
 		setButton(Icon.watch);
 		button.toggleMode = true;
 
-		setCursor(Icon.watch, -5, -5);
+		final OFFSET = -5;
+		setCursor(Icon.watch, OFFSET, OFFSET);
 
 		return this;
 	}
 
 	#if FLX_DEBUG
-	override function update():Void
-	{
-		if (isActive() && _brain.pointerJustPressed)
-		{
-			final rect = FlxRect.get(_brain.flixelPointer.x, _brain.flixelPointer.y, 1, 1);
-			final item = _brain.getTopItemWithinState(FlxG.state, rect);
-			if (item != null)
-			{
-				FlxG.debugger.track(item);
-				_brain.selectedItems.clear();
-				_brain.selectedItems.add(item);
-			}
-			rect.put();
+	override function update():Void {
+		if (!isActive() || !_brain.pointerJustPressed) return;
+
+		final rect = FlxRect.get(_brain.flixelPointer.x, _brain.flixelPointer.y, 1, 1);
+		final item = _brain.getTopItemWithinState(FlxG.state, rect);
+		if (item != null) {
+			FlxG.debugger.track(item);
+			_brain.selectedItems.clear();
+			_brain.selectedItems.add(item);
 		}
+		rect.put();
 	}
 	#end
 }

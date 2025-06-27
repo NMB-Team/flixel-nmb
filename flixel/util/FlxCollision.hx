@@ -125,8 +125,8 @@ class FlxCollision {
 		var hit = false;
 
 		// Analyze overlapping area of BitmapDatas to check for a collision (alpha values >= alphaTolerance)
-		final alphaA = 0;
-		final alphaB = 0;
+		var alphaA = 0;
+		var alphaB = 0;
 		final overlapPixels = overlapWidth * overlapHeight;
 		var alphaIdx = 0;
 

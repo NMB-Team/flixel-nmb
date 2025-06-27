@@ -1297,8 +1297,11 @@ class FlxObject extends FlxBasic {
 	@:noCompletion function set_path(path:FlxPath):FlxPath {
 		if (this.path == path) return path;
 
-		this.path?.object = null;
-		path?.object = this;
+		if (this.path != null)
+			this.path.object = null;
+
+		if (path != null)
+			path.object = this;
 
 		return this.path = path;
 	}

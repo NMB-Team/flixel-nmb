@@ -15,44 +15,32 @@ using flixel.util.FlxArrayUtil;
  *
  * @author George
  */
-class LogBitmap extends Tool
-{
-	override function init(brain:Interaction):Tool
-	{
+class LogBitmap extends Tool {
+	override function init(brain:Interaction):Tool {
 		super.init(brain);
 
 		_name = "Log selected bitmaps";
 		setButton(Icon.bitmapLog);
 		button.toggleMode = false;
 
-		// _tooltip = Tooltip.add(null, "");
-		// _tooltip.textField.wordWrap = false;
-
 		return this;
 	}
 
-	override function update():Void
-	{
+	override function update():Void {
 		button.enabled = _brain.selectedItems.countLiving() > 0;
 		button.mouseEnabled = button.enabled;
-		button.alpha = button.enabled ? 0.3 : 0.1;
+		button.alpha = button.enabled ? .3 : .1;
 	}
 
-	override function onButtonClicked()
-	{
+	override function onButtonClicked() {
 		#if FLX_DEBUG // needed for coverage tests
-		// super.onButtonClicked();
-		if (_brain.selectedItems.length == 0)
-			return;
+		if (_brain.selectedItems.length == 0) return;
 
 		for (member in _brain.selectedItems)
-		{
-			if (member != null && member is FlxSprite)
-			{
+			if (member != null && member is FlxSprite) {
 				final sprite:FlxSprite = cast member;
 				FlxG.bitmapLog.add(sprite.graphic);
 			}
-		}
 		#end
 	}
 }

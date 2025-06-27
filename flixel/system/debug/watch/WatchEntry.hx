@@ -17,11 +17,10 @@ using flixel.util.FlxStringUtil;
 import flixel.system.debug.console.ConsoleUtil;
 #end
 
-class WatchEntry extends Sprite implements IFlxDestroyable
-{
-	static inline var GUTTER = 4;
-	static inline var TEXT_HEIGHT = 20;
-	static inline var MAX_NAME_WIDTH = 125;
+class WatchEntry extends Sprite implements IFlxDestroyable {
+	static inline final GUTTER = 4;
+	static inline final TEXT_HEIGHT = 20;
+	static inline final MAX_NAME_WIDTH = 125;
 
 	public var data:WatchEntryData;
 	public var displayName(default, null):String;
@@ -32,8 +31,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 	var removeButton:FlxSystemButton;
 	var defaultFormat:TextFormat;
 
-	public function new(displayName:String, data:WatchEntryData)
-	{
+	public function new(displayName:String, data:WatchEntryData) {
 		super();
 
 		this.displayName = displayName;
@@ -47,20 +45,17 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 
 		updateName();
 
-		addChild(removeButton = new FlxSystemButton(Icon.close, ()->onRemove.dispatch()));
+		addChild(removeButton = new FlxSystemButton(Icon.close, () -> onRemove.dispatch()));
 		removeButton.y = (TEXT_HEIGHT - removeButton.height) * .5;
-		removeButton.alpha = 0.3;
+		removeButton.alpha = .3;
 	}
 
-	function canEdit(data:WatchEntryData)
-	{
+	function canEdit(data:WatchEntryData) {
 		return data.match(FIELD(_, _));
 	}
 
-	function getTextColor():FlxColor
-	{
-		return switch (data)
-		{
+	function getTextColor():FlxColor {
+		return switch (data) {
 			case FIELD(_, _): 0xFFFFFF;
 			case QUICK(_): 0xA5F1ED;
 			case EXPRESSION(_, _): 0xC4FE83;
@@ -68,8 +63,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		}
 	}
 
-	function initTextField<T:TextField>(textField:T):T
-	{
+	function initTextField<T:TextField>(textField:T):T {
 		textField.selectable = true;
 		textField.defaultTextFormat = defaultFormat;
 		textField.autoSize = TextFieldAutoSize.NONE;
@@ -78,9 +72,8 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		return textField;
 	}
 
-	public function updateSize(nameWidth:Float, windowWidth:Float):Void
-	{
-		var textWidth = windowWidth - removeButton.width - GUTTER;
+	public function updateSize(nameWidth:Float, windowWidth:Float):Void {
+		final textWidth = windowWidth - removeButton.width - GUTTER;
 
 		nameText.width = nameWidth;
 		valueText.x = nameWidth + GUTTER;
@@ -88,16 +81,11 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		removeButton.x = textWidth;
 	}
 
-	function updateName()
-	{
-		if (displayName == null)
-		{
-			switch (data)
-			{
-				case FIELD(object, field):
-					displayName = object.getClassName(true) + "." + field;
-				case EXPRESSION(expression, _):
-					displayName = expression;
+	function updateName() {
+		if (displayName == null) {
+			switch (data) {
+				case FIELD(object, field): displayName = object.getClassName(true) + "." + field;
+				case EXPRESSION(expression, _): displayName = expression;
 				case QUICK(_):
 				case FUNCTION(_):
 			}
@@ -106,82 +94,64 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 		setNameText(displayName);
 	}
 
-	function setNameText(name:String)
-	{
+	function setNameText(name:String) {
 		nameText.text = name;
-		var currentWidth = nameText.textWidth + 4;
+		final currentWidth = nameText.textWidth + 4;
 		nameText.width = Math.min(currentWidth, MAX_NAME_WIDTH);
 	}
 
-	function getValue():Dynamic
-	{
-		return switch (data)
-		{
-			case FIELD(object, field):
-				Reflect.getProperty(object, field);
+	function getValue():Dynamic {
+		return switch (data) {
+			case FIELD(object, field): Reflect.getProperty(object, field);
 			case EXPRESSION(_, parsedExpr):
 				#if hscript
 				ConsoleUtil.runExpr(parsedExpr);
 				#else
 				"hscript is not installed";
 				#end
-			case QUICK(value):
-				value;
-			case FUNCTION(func):
-				func();
+			case QUICK(value): value;
+			case FUNCTION(func): func();
 		}
 	}
 
-	function getFormattedValue():String
-	{
-		var value:Dynamic = getValue();
+	function getFormattedValue():String {
+		final value:Dynamic = getValue();
 		return Std.string(formatValue(getValue()));
 	}
 
-	static function formatValue(value:Any):String
-	{
-		if ((value is Float))
-			value = FlxMath.roundDecimal(cast value, FlxG.debugger.precision);
+	static function formatValue(value:Any):String {
+		if ((value is Float)) value = FlxMath.roundDecimal(cast value, FlxG.debugger.precision);
 		return Std.string(value);
 	}
 
-	function submitValue(value:Dynamic):Void
-	{
-		switch (data)
-		{
-			case FIELD(object, field):
-				Reflect.setProperty(object, field, value);
+	function submitValue(value:Dynamic):Void {
+		switch (data) {
+			case FIELD(object, field): Reflect.setProperty(object, field, value);
 			case _:
 		}
 	}
 
-	public function updateValue()
-	{
-		if (!valueText.isEditing)
-		{
-			final newValue = getFormattedValue();
-			if (newValue != valueText.text)
-				valueText.text = newValue;
-		}
+	public function updateValue() {
+		if (valueText.isEditing) return;
+
+		final newValue = getFormattedValue();
+		if (newValue != valueText.text)
+			valueText.text = newValue;
 	}
 
-	public function getNameWidth():Float
-	{
+	public function getNameWidth():Float {
 		return nameText.textWidth;
 	}
 
-	public function getValueWidth():Float
-	{
+	public function getValueWidth():Float {
 		return valueText.textWidth;
 	}
 
-	public function getMinWidth():Float
-	{
+	public function getMinWidth():Float {
 		return getValueWidth() + (2 + GUTTER) * 2 + removeButton.width;
 	}
 
-	public function destroy()
-	{
+	public function destroy() {
 		nameText = FlxDestroyUtil.removeChild(this, nameText);
 		FlxDestroyUtil.destroy(valueText);
 		valueText = FlxDestroyUtil.removeChild(this, valueText);

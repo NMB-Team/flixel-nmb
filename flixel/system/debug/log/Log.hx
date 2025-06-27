@@ -1,16 +1,16 @@
 package flixel.system.debug.log;
 
 #if FLX_DEBUG
+import flixel.util.FlxDestroyUtil;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 
 /**
  * A simple trace output window for use in the debugger overlay.
  */
-class Log extends Window
-{
-	public static inline var MAX_LOG_LINES:Int = 200;
-	static inline var LINE_BREAK:String = #if js "\n" #else "<br>" #end;
+class Log extends Window {
+	public static inline final MAX_LOG_LINES:Int = 200;
+	static inline final LINE_BREAK = #if js "\n" #else "<br>" #end;
 
 	var _text:TextField;
 	var _lines:Array<String>;
@@ -18,18 +18,14 @@ class Log extends Window
 	/**
 	 * Creates a log window object
 	 */
-	public function new()
-	{
+	public function new() {
 		super("Log", Icon.log);
 
 		_text = new TextField();
 		_text.x = 2;
 		_text.y = 15;
-		_text.multiline = true;
-		_text.wordWrap = true;
-		_text.selectable = true;
-		_text.embedFonts = true;
-		_text.defaultTextFormat = new TextFormat(FlxAssets.FONT_DEBUGGER, 12, 0xffffff);
+		_text.multiline = _text.wordWrap = _text.selectable = _text.embedFonts = true;
+		_text.defaultTextFormat = new TextFormat(FlxAssets.FONT_DEBUGGER, 12, 0xFFFFFF);
 		addChild(_text);
 
 		_lines = new Array<String>();
@@ -38,13 +34,8 @@ class Log extends Window
 	/**
 	 * Clean up memory
 	 */
-	override public function destroy():Void
-	{
-		if (_text != null)
-		{
-			removeChild(_text);
-			_text = null;
-		}
+	override public function destroy():Void {
+		_text = FlxDestroyUtil.removeChild(this, _text);
 
 		_lines = null;
 		super.destroy();
@@ -57,12 +48,8 @@ class Log extends Window
 	 * @param   style     The LogStyle to be used
 	 * @param   fireOnce  If true, the log history is checked for matching logs
 	 */
-	public function add(data:Array<Dynamic>, style:LogStyle, fireOnce = false):Bool
-	{
-		if (data == null)
-		{
-			return false;
-		}
+	public function add(data:Array<Dynamic>, style:LogStyle, fireOnce = false):Bool {
+		if (data == null) return false;
 
 		// Apply text formatting
 		#if (!js && !lime_console)
@@ -73,41 +60,29 @@ class Log extends Window
 
 		// Check if the text has been added yet already
 		if (fireOnce)
-		{
 			for (line in _lines)
-			{
 				if (text == line)
-				{
 					return false;
-				}
-			}
-		}
 
 		// Actually add it to the textfield
-		if (_lines.length <= 0)
-		{
-			_text.text = "";
-		}
+		if (_lines.length <= 0) _text.text = "";
 
 		_lines.push(text);
 
-		if (_lines.length > MAX_LOG_LINES)
-		{
+		if (_lines.length > MAX_LOG_LINES) {
 			_lines.shift();
-			var newText:String = "";
+
+			var newText = "";
 			for (i in 0..._lines.length)
-			{
 				newText += _lines[i] + LINE_BREAK;
-			}
+
 			// TODO: Make htmlText work on HTML5 target
 			#if (!js && !lime_console)
 			_text.htmlText = newText;
 			#else
 			_text.text = newText;
 			#end
-		}
-		else
-		{
+		} else {
 			// TODO: Make htmlText work on HTML5 target
 			#if (!js && !lime_console)
 			_text.htmlText += (text + LINE_BREAK);
@@ -120,8 +95,7 @@ class Log extends Window
 		return true;
 	}
 
-	public function clear():Void
-	{
+	public function clear():Void {
 		_text.text = "";
 		_lines.splice(0, _lines.length);
 		#if !js
@@ -132,8 +106,7 @@ class Log extends Window
 	/**
 	 * Adjusts the width and height of the text field accordingly.
 	 */
-	override function updateSize():Void
-	{
+	override function updateSize():Void {
 		super.updateSize();
 
 		_text.width = _width - 10;

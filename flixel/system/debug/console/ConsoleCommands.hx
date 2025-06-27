@@ -13,17 +13,15 @@ import flixel.system.debug.FlxDebugger.FlxDebuggerLayout;
 
 using StringTools;
 
-class ConsoleCommands
-{
+class ConsoleCommands {
 	var _console:Console;
 
 	/**
 	 * Helper variable for toggling the mouse coords in the watch window.
 	 */
-	var _watchingMouse:Bool = false;
+	var _watchingMouse = false;
 
-	public function new(console:Console):Void
-	{
+	public function new(console:Console):Void {
 		_console = console;
 
 		console.registerFunction("help", help, "Displays the help text of a registered object or function. See \"help\".");
@@ -44,7 +42,7 @@ class ConsoleCommands
 		console.registerFunction("viewCache", FlxG.bitmapLog.viewCache, "Adds the cache to the bitmapLog window.");
 
 		console.registerFunction("create", create,
-			"Creates a new FlxObject and registers it - by default at the mouse position. \"create(ObjClass:Class<T>, PlaceAtMouse:Bool, ExtraParams:Array<Dynamic>)\" Ex: \"create(FlxSprite, false, [100, 100])\"");
+			"Creates a new FlxObject and registers it - by default at the mouse position. \"create(objClass:Class<T>, placeAtMouse:Bool, extraParams:Array<Dynamic>)\" Ex: \"create(FlxSprite, false, [100, 100])\"");
 
 		console.registerFunction("watch", FlxG.watch.add, "Adds the specified field of an object to the watch window.");
 		console.registerFunction("watchExpression", FlxG.watch.addExpression,
@@ -77,95 +75,69 @@ class ConsoleCommands
 		console.registerObject("selection", null);
 	}
 
-	function help(?Alias:String):String
-	{
-		if (Alias == null || Alias.length == 0)
-		{
-			var output:String = "System classes and commands: ";
-			for (obj in _console.registeredObjects.keys())
-			{
-				output += obj + ", ";
-			}
-			for (func in _console.registeredFunctions.keys())
-			{
-				output += func + "(), ";
-			}
+	private function help(?alias:String):String {
+		if (FlxStringUtil.isNullOrEmpty(alias)) {
+			var output = "System classes and commands: ";
+
+			for (obj in _console.registeredObjects.keys()) output += obj + ", ";
+			for (func in _console.registeredFunctions.keys()) output += func + "(), ";
+
 			return output + "\nTry 'help(\"command\")' for more information about a specific command.";
-		}
-		else
-		{
-			if (_console.registeredHelp.exists(Alias))
-			{
-				return Alias + (_console.registeredFunctions.exists(Alias) ? "()" : "") + ": " + _console.registeredHelp.get(Alias);
-			}
-			else
-			{
-				FlxG.log.error("Help: The command '" + Alias + "' does not have help text.");
+		} else {
+			if (_console.registeredHelp.exists(alias))
+				return alias + (_console.registeredFunctions.exists(alias) ? "()" : "") + ": " + _console.registeredHelp.get(alias);
+			else {
+				FlxG.log.error("Help: The command '" + alias + "' does not have help text.");
 				return null;
 			}
 		}
 	}
 
-	inline function close():Void
-	{
+	inline function close():Void {
 		FlxG.debugger.visible = false;
 	}
 
-	function create<T:FlxObject>(ObjClass:Class<T>, MousePos:Bool = true, ?Params:Array<Dynamic>):Void
-	{
-		if (Params == null)
-			Params = [];
+	private function create<T:FlxObject>(objClass:Class<T>, mousePos = true, ?params:Array<Dynamic>):Void {
+		params ??= [];
 
-		var obj:FlxObject = Type.createInstance(ObjClass, Params);
+		final obj:FlxObject = Type.createInstance(objClass, params);
 
-		if (obj == null)
-			return;
+		if (obj == null) return;
 
-		if (MousePos)
-		{
+		if (mousePos) {
 			obj.x = FlxG.game.mouseX;
 			obj.y = FlxG.game.mouseY;
 		}
 
 		FlxG.state.add(obj);
 
-		if (Params.length == 0)
-			ConsoleUtil.log("create: New " + ObjClass + " created at X = " + obj.x + " Y = " + obj.y);
-		else
-			ConsoleUtil.log("create: New " + ObjClass + " created at X = " + obj.x + " Y = " + obj.y + " with params " + Params);
+		ConsoleUtil.log("create: New " + objClass + " created at X = " + obj.x + " Y = " + obj.y + (params.length != 0 ? " with params " + params : ""));
 
 		_console.objectStack.push(obj);
 
-		var name = "Object_" + _console.objectStack.length;
+		final name = "Object_" + _console.objectStack.length;
 		_console.registerObject(name, obj);
 
-		ConsoleUtil.log("create: " + ObjClass + " registered as '" + name + "'");
+		ConsoleUtil.log("create: " + objClass + " registered as '" + name + "'");
 	}
 
-	function fields(Object:Dynamic):String
-	{
+	private function fields(Object:Dynamic):String {
 		return 'Fields of ${Type.getClassName(Object)}:\n' + ConsoleUtil.getFields(Object).join("\n").trim();
 	}
 
-	function listObjects():Void
-	{
+	private function listObjects():Void {
 		ConsoleUtil.log("Objects registered: \n" + FlxStringUtil.formatStringMap(_console.registeredObjects));
 	}
 
-	function listFunctions():Void
-	{
+	private function listFunctions():Void {
 		ConsoleUtil.log("Functions registered: \n" + FlxStringUtil.formatStringMap(_console.registeredFunctions));
 	}
 
-	function watchMouse():Void
-	{
-		if (!_watchingMouse)
-		{
+	private function watchMouse():Void {
+		if (!_watchingMouse) {
 			FlxG.watch.addMouse();
 			ConsoleUtil.log("watchMouse: Mouse position added to watch window");
-		}
-		else
-		{
+		} else {
 			FlxG.watch.removeMouse();
 			ConsoleUtil.log("watchMouse: Mouse position removed from watch window");
 		}
@@ -173,24 +145,19 @@ class ConsoleCommands
 		_watchingMouse = !_watchingMouse;
 	}
 
-	function pause():Void
-	{
-		if (FlxG.vcr.paused)
-		{
+	private function pause():Void {
+		if (FlxG.vcr.paused) {
 			FlxG.vcr.resume();
 			ConsoleUtil.log("pause: Game unpaused");
-		}
-		else
-		{
+		} else {
 			FlxG.vcr.pause();
 			ConsoleUtil.log("pause: Game paused");
 		}
 	}
 
-	function step():Void
-	{
-		if (FlxG.vcr.paused)
-			FlxG.game.debugger.vcr.onStep();
+	private function step():Void {
+		if (!FlxG.vcr.paused) return;
+		FlxG.game.debugger.vcr.onStep();
 	}
 }
 #end

@@ -15,6 +15,7 @@ import flixel.system.debug.watch.Tracker;
 import flixel.system.debug.watch.Watch;
 import flixel.system.ui.FlxSystemButton;
 import flixel.util.FlxAlign;
+import flixel.util.FlxDestroyUtil;
 import openfl.display.DisplayObject;
 import openfl.events.MouseEvent;
 import openfl.geom.Point;
@@ -30,30 +31,23 @@ using flixel.util.FlxArrayUtil;
  * Container for the new debugger overlay. Most of the functionality is in the debug folder widgets,
  * but this class instantiates the widgets and handles their basic formatting and arrangement.
  */
-class FlxDebugger extends openfl.display.Sprite
-{
+class FlxDebugger extends openfl.display.Sprite {
 	#if FLX_DEBUG
-
 	/**
 	 * The scale of the debug windows must be set before the `FlxGame` is made.
 	 * Can also use the compile flag `-DFLX_DEBUGGER_SCALE=2`
 	 */
-	public static var defaultScale:Int
-	#if FLX_DEBUGGER_SCALE
-	= Std.parseInt('${haxe.macro.Compiler.getDefine("FLX_DEBUGGER_SCALE")}');
-	#else
-	= 1;
-	#end
+	public static final defaultScale = #if FLX_DEBUGGER_SCALE Std.parseInt('${haxe.macro.Compiler.getDefine("FLX_DEBUGGER_SCALE")}') #else 1 #end;
 
 	/**
 	 * Internal, used to space out windows from the edges.
 	 */
-	public static inline var GUTTER:Int = 2;
+	public static inline final GUTTER = 2;
 
 	/**
 	 * Internal, used to space out windows from the edges.
 	 */
-	public static inline var TOP_HEIGHT:Int = 20;
+	public static inline final TOP_HEIGHT = 20;
 
 	public var stats:Stats;
 	public var log:Log;
@@ -69,12 +63,12 @@ class FlxDebugger extends openfl.display.Sprite
 	/**
 	 * Internal, tracks what debugger window layout user has currently selected.
 	 */
-	var _layout:FlxDebuggerLayout = FlxDebuggerLayout.STANDARD;
+	var _layout = FlxDebuggerLayout.STANDARD;
 
 	/**
 	 * Internal, stores width and height of the game.
 	 */
-	var _screen:Point = new Point();
+	var _screen = new Point();
 
 	/**
 	 * Stores the bounds in which the windows can move.
@@ -91,8 +85,8 @@ class FlxDebugger extends openfl.display.Sprite
 	var _windows:Array<Window> = [];
 
 	var _usingSystemCursor = false;
-	var _wasMouseVisible:Bool = true;
-	var _wasUsingSystemCursor:Bool = false;
+	var _wasMouseVisible = true;
+	var _wasUsingSystemCursor = false;
 
 	/**
 	 * Instantiates the debugger overlay.
@@ -102,16 +96,14 @@ class FlxDebugger extends openfl.display.Sprite
 	 * @param   scale   The scale of the debugger relative to the stage size
 	 */
 	@:allow(flixel.FlxGame)
-	function new(width:Float, height:Float, scale = 0)
-	{
+	function new(width:Float, height:Float, scale = 0) {
 		super();
-		if (scale == 0)
-			scale = defaultScale;
+
+		if (scale == 0) scale = defaultScale;
 		scaleX = scale;
 		scaleY = scale;
 
-		visible = false;
-		tabChildren = false;
+		visible = tabChildren = false;
 
 		Tooltip.init(this);
 
@@ -121,13 +113,14 @@ class FlxDebugger extends openfl.display.Sprite
 		_topBar.graphics.endFill();
 		addChild(_topBar);
 
-		var txt = new TextField();
+		final txt = new TextField();
 		txt.height = 20;
 		txt.selectable = false;
 		txt.y = -9;
 		txt.multiline = false;
 		txt.embedFonts = true;
-		var format = new TextFormat(FlxAssets.FONT_DEBUGGER, 12, 0xffffff);
+
+		final format = new TextFormat(FlxAssets.FONT_DEBUGGER, 12, 0xffffff);
 		txt.defaultTextFormat = format;
 		txt.autoSize = TextFieldAutoSize.LEFT;
 		txt.text = Std.string(FlxG.VERSION);
@@ -153,12 +146,9 @@ class FlxDebugger extends openfl.display.Sprite
 		addWindowToggleButton(console, Icon.console);
 		addWindowToggleButton(stats, Icon.stats);
 
-		var drawDebugButton = addButton(RIGHT, Icon.drawDebug, toggleDrawDebug, true);
+		final drawDebugButton = addButton(RIGHT, Icon.drawDebug, toggleDrawDebug, true);
 		drawDebugButton.toggled = !FlxG.debugger.drawDebug;
-		FlxG.debugger.drawDebugChanged.add(function()
-		{
-			drawDebugButton.toggled = !FlxG.debugger.drawDebug;
-		});
+		FlxG.debugger.drawDebugChanged.add(() -> drawDebugButton.toggled = !FlxG.debugger.drawDebug);
 
 		#if FLX_RECORD
 		addButton(CENTER).addChild(vcr.runtimeDisplay);
@@ -177,65 +167,44 @@ class FlxDebugger extends openfl.display.Sprite
 	/**
 	 * Clean up memory.
 	 */
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		_screen = null;
-		_buttons = null;
+		_buttons = FlxArrayUtil.clear(_buttons);
 
-		removeChild(_topBar);
-		_topBar = null;
+		_topBar = FlxDestroyUtil.removeChild(this, _topBar);
 
-		if (log != null)
-		{
-			removeChild(log);
-			log.destroy();
-			log = null;
-		}
-		if (watch != null)
-		{
-			removeChild(watch);
-			watch.destroy();
-			watch = null;
-		}
-		if (bitmapLog != null)
-		{
-			removeChild(bitmapLog);
-			bitmapLog.destroy();
-			bitmapLog = null;
-		}
-		if (stats != null)
-		{
-			removeChild(stats);
-			stats.destroy();
-			stats = null;
-		}
-		if (console != null)
-		{
-			removeChild(console);
-			console.destroy();
-			console = null;
-		}
+		if (log != null) removeChild(log);
+		log = FlxDestroyUtil.destroy(log);
 
-		_windows = null;
+		if (watch != null) removeChild(watch);
+		watch = FlxDestroyUtil.destroy(watch);
+
+		if (bitmapLog != null) removeChild(bitmapLog);
+		bitmapLog = FlxDestroyUtil.destroy(bitmapLog);
+
+		if (stats != null) removeChild(stats);
+		stats = FlxDestroyUtil.destroy(stats);
+
+		if (console != null) removeChild(console);
+		console = FlxDestroyUtil.destroy(console);
+
+		_windows = FlxArrayUtil.clearArray(_windows);
 
 		removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 		removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 	}
 
-	public function update():Void
-	{
-		for (window in _windows)
-			window.update();
+	public function update():Void {
+		for (window in _windows) window.update();
 	}
 
 	/**
 	 * Change the way the debugger's windows are laid out.
 	 *
-	 * @param   Layout   The layout codes can be found in FlxDebugger, for example FlxDebugger.MICRO
+	 * @param   layout   The layout codes can be found in FlxDebugger, for example FlxDebugger.MICRO
 	 */
-	public inline function setLayout(Layout:FlxDebuggerLayout):Void
-	{
-		_layout = Layout;
+	public inline function setLayout(layout:FlxDebuggerLayout):Void {
+		_layout = layout;
 		resetLayout();
 	}
 
@@ -243,77 +212,112 @@ class FlxDebugger extends openfl.display.Sprite
 	 * Forces the debugger windows to reset to the last specified layout.
 	 * The default layout is STANDARD.
 	 */
-	public function resetLayout():Void
-	{
-		switch (_layout)
-		{
+	public function resetLayout():Void {
+		final screenW = _screen.x;
+		final screenH = _screen.y;
+		final halfW = screenW * 0.5;
+		final thirdW = screenW / 3;
+		final quarterW = screenW * .25;
+		final quarterH = screenH * .25;
+		final halfH = screenH * .5;
+		final consoleH = 35;
+
+		inline function bottom(y:Float)
+			return screenH - y;
+		inline function right(x:Float)
+			return screenW - x;
+
+		switch (_layout) {
 			case MICRO:
-				log.resize(_screen.x * .25, 68);
-				log.reposition(0, _screen.y);
-				console.resize((_screen.x * .5) - GUTTER * 4, 35);
-				console.reposition(log.x + log.width + GUTTER, _screen.y);
-				watch.resize(_screen.x * .25, 68);
-				watch.reposition(_screen.x, _screen.y);
-				stats.reposition(_screen.x, 0);
-				bitmapLog.resize(_screen.x * .25, 68);
-				bitmapLog.reposition(0, _screen.y - (68 * 2) - (GUTTER * 2));
+				log.resize(quarterW, 68);
+				log.reposition(0, screenH);
+
+				console.resize(halfW - GUTTER * 4, consoleH);
+				console.reposition(log.x + log.width + GUTTER, screenH);
+
+				watch.resize(quarterW, 68);
+				watch.reposition(screenW, screenH);
+
+				stats.reposition(screenW, 0);
+
+				bitmapLog.resize(quarterW, 68);
+				bitmapLog.reposition(0, screenH - 68 * 2 - GUTTER * 2);
+
 			case BIG:
-				console.resize(_screen.x - GUTTER * 2, 35);
-				console.reposition(GUTTER, _screen.y);
-				log.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .5);
-				log.reposition(0, _screen.y - log.height - console.height - GUTTER * 1.5);
-				watch.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .5);
-				watch.reposition(_screen.x, _screen.y - watch.height - console.height - GUTTER * 1.5);
-				stats.reposition(_screen.x, 0);
-				bitmapLog.resize((_screen.x - GUTTER * 3) * .5, _screen.y - (GUTTER * 2) - (_screen.y * .5) - (35 * 2));
+				console.resize(right(GUTTER * 2), consoleH);
+				console.reposition(GUTTER, screenH);
+
+				final logW = (right(GUTTER * 3)) * .5;
+				final logH = halfH;
+				log.resize(logW, logH);
+				log.reposition(0, bottom(logH + consoleH + GUTTER * 1.5));
+
+				watch.resize(logW, halfH);
+				watch.reposition(screenW, bottom(halfH + consoleH + GUTTER * 1.5));
+
+				stats.reposition(screenW, 0);
+
+				final bitmapH = right(GUTTER * 2) - halfH - consoleH * 2;
+				bitmapLog.resize(logW, bitmapH);
 				bitmapLog.reposition(0, GUTTER * 1.5);
+
 			case TOP:
-				console.resize(_screen.x - GUTTER * 2, 35);
+				console.resize(right(GUTTER * 2), consoleH);
 				console.reposition(0, 0);
-				log.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .25);
-				log.reposition(0, console.height + GUTTER + 15);
-				watch.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .25);
-				watch.reposition(_screen.x, console.height + GUTTER + 15);
-				stats.reposition(_screen.x, _screen.y);
-				bitmapLog.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .25);
-				bitmapLog.reposition(0, console.height + (GUTTER * 2) + 15 + (_screen.y * .25) + GUTTER);
-			case LEFT:
-				console.resize(_screen.x - GUTTER * 2, 35);
-				console.reposition(GUTTER, _screen.y);
-				log.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5 - GUTTER);
-				log.reposition(0, 0);
-				watch.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5);
-				watch.reposition(0, log.y + log.height + GUTTER);
-				stats.reposition(_screen.x, 0);
-				bitmapLog.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5 - GUTTER);
-				bitmapLog.reposition((_screen.x / 3) + GUTTER * 2, 0);
-			case RIGHT:
-				console.resize(_screen.x - GUTTER * 2, 35);
-				console.reposition(GUTTER, _screen.y);
-				log.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5 - GUTTER);
-				log.reposition(_screen.x, 0);
-				watch.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5);
-				watch.reposition(_screen.x, log.y + log.height + GUTTER);
-				stats.reposition(0, 0);
-				bitmapLog.resize(_screen.x / 3, (_screen.y - 15 - GUTTER * 2.5) * .5 - console.height * .5 - GUTTER);
-				bitmapLog.reposition(_screen.x - (GUTTER * 2) - ((_screen.x / 3) * 2), 0);
+
+				final logW = right(GUTTER * 3) * .5;
+				log.resize(logW, quarterH);
+				log.reposition(0, consoleH + GUTTER + 15);
+
+				watch.resize(logW, quarterH);
+				watch.reposition(screenW, consoleH + GUTTER + 15);
+
+				stats.reposition(screenW, screenH);
+
+				bitmapLog.resize(logW, quarterH);
+				bitmapLog.reposition(0, consoleH + (GUTTER * 2) + 15 + quarterH + GUTTER);
+
+			case LEFT, RIGHT:
+				console.resize(right(GUTTER * 2), consoleH);
+				console.reposition(GUTTER, screenH);
+
+				final logH = (screenH - 15 - GUTTER * 2.5) * .5 - consoleH * .5 - GUTTER;
+				log.resize(thirdW, logH);
+				watch.resize(thirdW, logH + GUTTER);
+
+				final baseX = (_layout == LEFT) ? 0 : screenW;
+
+				log.reposition(baseX, 0);
+				watch.reposition(baseX, log.y + log.height + GUTTER);
+
+				stats.reposition((_layout == LEFT) ? screenW : 0, 0);
+
+				bitmapLog.resize(thirdW, logH);
+				final bitmapX = (_layout == LEFT) ? thirdW + GUTTER * 2 : right(GUTTER * 2) - (thirdW * 2);
+
+				bitmapLog.reposition(bitmapX, 0);
+
 			case STANDARD:
-				console.resize(_screen.x - GUTTER * 2, 35);
-				console.reposition(GUTTER, _screen.y);
-				log.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .25);
-				log.reposition(0, _screen.y - log.height - console.height - GUTTER * 1.5);
-				watch.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .5);
-				watch.reposition(_screen.x, _screen.y - watch.height - console.height - GUTTER * 1.5);
-				stats.reposition(_screen.x, 0);
-				bitmapLog.resize((_screen.x - GUTTER * 3) * .5, _screen.y * .25);
-				bitmapLog.reposition(0, log.y - GUTTER - bitmapLog.height);
+				console.resize(right(GUTTER * 2), consoleH);
+				console.reposition(GUTTER, screenH);
+
+				final logW = right(GUTTER * 3) * .5;
+				log.resize(logW, quarterH);
+				log.reposition(0, bottom(quarterH + consoleH + GUTTER * 1.5));
+
+				watch.resize(logW, halfH);
+				watch.reposition(screenW, bottom(halfH + consoleH + GUTTER * 1.5));
+
+				stats.reposition(screenW, 0);
+
+				bitmapLog.resize(logW, quarterH);
+				bitmapLog.reposition(0, log.y - GUTTER - quarterH);
 		}
 	}
 
-	public function onResize(width:Float, height:Float, scale = 0):Void
-	{
-		if (scale == 0)
-			scale = defaultScale;
+	public function onResize(width:Float, height:Float, scale = 0):Void {
+		if (scale == 0) scale = defaultScale;
+
 		this.scale = scale;
 		_screen.x = width / scale;
 		_screen.y = height / scale;
@@ -322,35 +326,30 @@ class FlxDebugger extends openfl.display.Sprite
 		_topBar.width = FlxG.stage.stageWidth / scaleX;
 		resetButtonLayout();
 		resetLayout();
+
 		scaleX = scaleY = scale;
 		x = -FlxG.scaleMode.offset.x;
 		y = -FlxG.scaleMode.offset.y;
 	}
 
-	function updateBounds():Void
-	{
+	function updateBounds():Void {
 		_screenBounds = new Rectangle(GUTTER, TOP_HEIGHT + GUTTER * .5, _screen.x - GUTTER * 2, _screen.y - GUTTER * 2 - TOP_HEIGHT);
 		for (window in _windows)
-		{
 			window.updateBounds(_screenBounds);
-		}
 	}
 
 	/**
 	 * Align an array of debugger buttons, used for the middle and right layouts
 	 */
-	function hAlignButtons(Sprites:Array<FlxSystemButton>, Padding:Float = 0, Set:Bool = true, LeftOffset:Float = 0):Float
-	{
-		var width:Float = 0;
-		var last:Float = LeftOffset;
+	function hAlignButtons(sprites:Array<FlxSystemButton>, padding = .0, set = true, leftOffset = .0):Float {
+		var width = .0;
+		var last = leftOffset;
 
-		for (i in 0...Sprites.length)
-		{
-			var o:Sprite = Sprites[i];
-			width += o.width + Padding;
-			if (Set)
-				o.x = last;
-			last = o.x + o.width + Padding;
+		for (i in 0...sprites.length) {
+			final o:Sprite = sprites[i];
+			width += o.width + padding;
+			if (set) o.x = last;
+			last = o.x + o.width + padding;
 		}
 
 		return width;
@@ -359,37 +358,33 @@ class FlxDebugger extends openfl.display.Sprite
 	/**
 	 * Position the debugger buttons
 	 */
-	function resetButtonLayout():Void
-	{
+	function resetButtonLayout():Void {
 		hAlignButtons(_buttons[FlxHorizontalAlign.LEFT], 10, true, 10);
 
-		var offset = FlxG.stage.stageWidth / scaleX * 0.5 - hAlignButtons(_buttons[FlxHorizontalAlign.CENTER], 10, false) * 0.5;
+		final offset = FlxG.stage.stageWidth / scaleX * .5 - hAlignButtons(_buttons[FlxHorizontalAlign.CENTER], 10, false) * .5;
 		hAlignButtons(_buttons[FlxHorizontalAlign.CENTER], 10, true, offset);
 
-		var offset = FlxG.stage.stageWidth / scaleX - hAlignButtons(_buttons[FlxHorizontalAlign.RIGHT], 10, false);
+		final offset = FlxG.stage.stageWidth / scaleX - hAlignButtons(_buttons[FlxHorizontalAlign.RIGHT], 10, false);
 		hAlignButtons(_buttons[FlxHorizontalAlign.RIGHT], 10, true, offset);
 	}
 
 	/**
 	 * Create and add a new debugger button.
 	 *
-	 * @param   Position       Either LEFT, CENTER or RIGHT.
-	 * @param   Icon           The icon to use for the button
-	 * @param   UpHandler      The function to be called when the button is pressed.
-	 * @param   ToggleMode     Whether this is a toggle button or not.
-	 * @param   UpdateLayout   Whether to update the button layout.
+	 * @param   position       Either LEFT, CENTER or RIGHT.
+	 * @param   icon           The icon to use for the button
+	 * @param   upHandler      The function to be called when the button is pressed.
+	 * @param   toggleMode     Whether this is a toggle button or not.
+	 * @param   updateLayout   Whether to update the button layout.
 	 * @return  The added button.
 	 */
-	public function addButton(Position:FlxHorizontalAlign, ?Icon:BitmapData, ?UpHandler:Void->Void, ToggleMode:Bool = false,
-			UpdateLayout:Bool = false):FlxSystemButton
-	{
-		var button = new FlxSystemButton(Icon, UpHandler, ToggleMode);
+	public function addButton(position:FlxHorizontalAlign, ?icon:BitmapData, ?upHandler:Void -> Void, toggleMode = false, updateLayout = false):FlxSystemButton {
+		final button = new FlxSystemButton(icon, upHandler, toggleMode);
 		button.y = (TOP_HEIGHT * .5) - (button.height * .5);
-		_buttons[Position].push(button);
+		_buttons[position].push(button);
 		addChild(button);
 
-		if (UpdateLayout)
-			resetButtonLayout();
+		if (updateLayout) resetButtonLayout();
 
 		return button;
 	}
@@ -397,124 +392,104 @@ class FlxDebugger extends openfl.display.Sprite
 	/**
 	 * Removes and destroys a button from the debugger.
 	 *
-	 * @param   Button         The FlxSystemButton instance to remove.
-	 * @param   UpdateLayout   Whether to update the button layout.
+	 * @param   button         The FlxSystemButton instance to remove.
+	 * @param   updateLayout   Whether to update the button layout.
 	 */
-	public function removeButton(Button:FlxSystemButton, UpdateLayout:Bool = true):Void
-	{
-		removeChild(Button);
-		Button.destroy();
+	public function removeButton(button:FlxSystemButton, updateLayout = true):Void {
+		removeChild(button);
+		button.destroy();
 
-		_buttons[FlxHorizontalAlign.LEFT].remove(Button);
-		_buttons[FlxHorizontalAlign.CENTER].remove(Button);
-		_buttons[FlxHorizontalAlign.RIGHT].remove(Button);
+		_buttons[FlxHorizontalAlign.LEFT].remove(button);
+		_buttons[FlxHorizontalAlign.CENTER].remove(button);
+		_buttons[FlxHorizontalAlign.RIGHT].remove(button);
 
-		if (UpdateLayout)
-			resetButtonLayout();
+		if (updateLayout) resetButtonLayout();
 	}
 
-	public function addWindowToggleButton(window:Window, icon:FlxGraphicSource):Void
-	{
-		var button = addButton(RIGHT, icon.resolveBitmapData(), window.toggleVisible, true, true);
+	public function addWindowToggleButton(window:Window, icon:FlxGraphicSource):Void {
+		final button = addButton(RIGHT, icon.resolveBitmapData(), window.toggleVisible, true, true);
 		window.toggleButton = button;
 		button.toggled = !window.visible;
 	}
 
-	public inline function addWindow(window:Window):Window
-	{
+	public inline function addWindow(window:Window):Window {
 		_windows.push(window);
 		addChild(window);
-		if (_screenBounds != null)
-		{
+
+		if (_screenBounds != null) {
 			updateBounds();
 			window.bound();
 		}
+
 		return window;
 	}
 
-	public inline function removeWindow(window:Window):Void
-	{
-		if (contains(window))
-			removeChild(window);
+	public inline function removeWindow(window:Window):Void {
+		if (contains(window)) removeChild(window);
 		_windows.fastSplice(window);
 	}
 
-	override public function addChild(child:DisplayObject):DisplayObject
-	{
-		var result = super.addChild(child);
+	override public function addChild(child:DisplayObject):DisplayObject {
+		final result = super.addChild(child);
 		// hack to make sure the completion list always stays on top
-		if (completionList != null)
-			super.addChild(completionList);
+		if (completionList != null) super.addChild(completionList);
 		return result;
 	}
 
 	/**
 	 * Mouse handler that helps with fake "mouse focus" type behavior.
 	 */
-	function onMouseOver(_):Void
-	{
+	function onMouseOver(_):Void {
 		onMouseFocus();
 	}
 
 	/**
 	 * Mouse handler that helps with fake "mouse focus" type behavior.
 	 */
-	function onMouseOut(_):Void
-	{
+	function onMouseOut(_):Void {
 		onMouseFocusLost();
 	}
 
-	function onMouseFocus():Void
-	{
+	function onMouseFocus():Void {
 		#if FLX_MOUSE
 		FlxG.mouse.enabled = false;
 		_wasMouseVisible = FlxG.mouse.visible;
 		_wasUsingSystemCursor = FlxG.mouse.useSystemCursor;
-		FlxG.mouse.useSystemCursor = true;
-		_usingSystemCursor = true;
+		FlxG.mouse.useSystemCursor = _usingSystemCursor = true;
 		#end
 	}
 
 	@:allow(flixel.system.debug)
-	function onMouseFocusLost():Void
-	{
+	function onMouseFocusLost():Void {
 		#if FLX_MOUSE
 		// Disable mouse input if the interaction tool is in use,
 		// so users can select interactable elements, e.g. buttons.
 		FlxG.mouse.enabled = !interaction.isInUse();
 
-		if (_usingSystemCursor)
-		{
+		if (_usingSystemCursor) {
 			FlxG.mouse.useSystemCursor = _wasUsingSystemCursor;
 			FlxG.mouse.visible = _wasMouseVisible;
 		}
 		#end
 	}
 
-	inline function toggleDrawDebug():Void
-	{
+	inline function toggleDrawDebug():Void {
 		FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
 	}
 
-	inline function openHomepage():Void
-	{
+	inline function openHomepage():Void {
 		FlxG.openURL("https://haxeflixel.com");
 	}
 
-	inline function openGitHub():Void
-	{
+	inline function openGitHub():Void {
 		var url = "https://github.com/dtwotwo/flixel-dtwotwo";
-		if (FlxVersion.sha != "")
-		{
-			url += '/commit/${FlxVersion.sha}';
-		}
+		if (!flixel.util.FlxStringUtil.isNullOrEmpty(sha)) url += '/commit/${FlxVersion.sha}';
 		FlxG.openURL(url);
 	}
 	#end
 }
 
-enum FlxDebuggerLayout
-{
+enum FlxDebuggerLayout {
 	STANDARD;
 	MICRO;
 	BIG;

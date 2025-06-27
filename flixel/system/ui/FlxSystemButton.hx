@@ -11,29 +11,28 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  * A basic button for the debugger, extends openfl.display.Sprite.
  * Cannot be used in a FlxState.
  */
-class FlxSystemButton extends Sprite implements IFlxDestroyable
-{
+class FlxSystemButton extends Sprite implements IFlxDestroyable {
 	/**
 	 * The function to be called when the button is pressed.
 	 */
-	public var upHandler:Void->Void;
+	public var upHandler:Void -> Void;
 
 	/**
 	 * Whether or not the downHandler function will be called when
 	 * the button is clicked.
 	 */
-	public var enabled:Bool = true;
+	public var enabled = true;
 
 	/**
 	 * Whether this is a toggle button or not. If so, a Boolean representing the current
 	 * state will be passed to the callback function, and the alpha value will be lowered when toggled.
 	 */
-	public var toggleMode:Bool = false;
+	public var toggleMode = false;
 
 	/**
 	 * Whether the button has been toggled in toggleMode.
 	 */
-	public var toggled(default, set):Bool = false;
+	public var toggled(default, set) = false;
 
 	/**
 	 * The icon this button uses.
@@ -43,24 +42,22 @@ class FlxSystemButton extends Sprite implements IFlxDestroyable
 	/**
 	 * Whether the mouse has been pressed while over this button.
 	 */
-	var _mouseDown:Bool = false;
+	var _mouseDown = false;
 
 	/**
 	 * Create a new FlxSystemButton
 	 *
-	 * @param	Icon		The icon to use for the button.
-	 * @param	UpHandler	The function to be called when the button is pressed.
-	 * @param	ToggleMode	Whether this is a toggle button or not.
+	 * @param	icon		The icon to use for the button.
+	 * @param	upHandler	The function to be called when the button is pressed.
+	 * @param	toggleMode	Whether this is a toggle button or not.
 	 */
-	public function new(Icon:BitmapData, ?UpHandler:Void->Void, ToggleMode:Bool = false)
-	{
+	public function new(icon:BitmapData, ?upHandler:Void -> Void, toggleMode = false) {
 		super();
 
-		if (Icon != null)
-			changeIcon(Icon);
+		if (icon != null) changeIcon(icon);
 
-		upHandler = UpHandler;
-		toggleMode = ToggleMode;
+		upHandler = upHandler;
+		toggleMode = toggleMode;
 
 		addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -69,63 +66,56 @@ class FlxSystemButton extends Sprite implements IFlxDestroyable
 	}
 
 	/**
-	 * Change the Icon of the button
+	 * Change the icon of the button
 	 *
-	 * @param	Icon	The new icon to use for the button.
+	 * @param	icon	The new icon to use for the button.
 	 */
-	public function changeIcon(Icon:BitmapData):Void
-	{
-		if (_icon != null)
-			removeChild(_icon);
+	public function changeIcon(icon:BitmapData):Void {
+		if (_icon != null) removeChild(_icon);
 
-		DebuggerUtil.fixSize(Icon);
-		_icon = new Bitmap(Icon);
+		DebuggerUtil.fixSize(icon);
+		_icon = new Bitmap(icon);
 		addChild(_icon);
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+
 		_icon = null;
 		upHandler = null;
 	}
 
-	function onMouseUp(_):Void
-	{
-		if (enabled && _mouseDown)
-		{
-			toggled = !toggled;
-			_mouseDown = false;
+	@:noCompletion inline function onMouseUp(_):Void {
+		if (!enabled || !_mouseDown) return;
 
-			if (upHandler != null)
-				upHandler();
-		}
+		toggled = !toggled;
+		_mouseDown = false;
+
+		if (upHandler != null)
+			upHandler();
 	}
 
-	function onMouseDown(_):Void
-	{
+	@:noCompletion inline function onMouseDown(_):Void {
 		_mouseDown = true;
 	}
 
-	inline function onMouseOver(_):Void
-	{
-		if (enabled)
-			alpha -= 0.2;
+	@:noCompletion inline final MULT_ALPHA = .2;
+	@:noCompletion inline function onMouseOver(_):Void {
+		if (!enabled) return;
+		alpha -= MULT_ALPHA;
 	}
 
-	inline function onMouseOut(_):Void
-	{
-		if (enabled)
-			alpha += 0.2;
+	@:noCompletion inline function onMouseOut(_):Void {
+		if (!enabled) return;
+		alpha += MULT_ALPHA;
 	}
 
-	function set_toggled(Value:Bool):Bool
-	{
+	@:noCompletion inline function set_toggled(value:Bool):Bool {
 		if (toggleMode)
-			alpha = Value ? 0.3 : 1;
-		return toggled = Value;
+			alpha = value ? MULT_ALPHA + .1 : 1;
+		return toggled = value;
 	}
 }

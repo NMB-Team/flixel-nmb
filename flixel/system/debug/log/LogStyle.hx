@@ -9,8 +9,7 @@ using flixel.util.FlxStringUtil;
  * A class that allows you to create a custom style for `FlxG.log.advanced()`.
  * Also used internally for the pre-defined styles.
  */
-class LogStyle
-{
+class LogStyle {
 	public static final NORMAL = new LogStyle();
 	public static final WARNING = new LogStyle("[WARNING] ", "D9F85C", 12, false, false, false, false, "flixel/sounds/beep", true);
 	public static final ERROR = new LogStyle("[ERROR] ", "FF8888", 12, false, false, false, false, "flixel/sounds/beep", true);
@@ -72,7 +71,7 @@ class LogStyle
 	 * @param   throwError        Whether an error is thrown when this LogStyle is used
 	 */
 	public function new(prefix = "", color = "FFFFFF", size = 12, ignoreInfo = false, bold = false, italic = false, underlined = false,
-			?errorSound:String, openConsole = false, ?callbackFunction:()->Void, ?callback:(Any, ?PosInfos)->Void, throwException = false)
+			?errorSound:String, openConsole = false, ?callbackFunction:() -> Void, ?callback:(Any, ?PosInfos) -> Void, throwException = false)
 	{
 		this.prefix = prefix;
 		this.color = color;

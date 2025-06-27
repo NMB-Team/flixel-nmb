@@ -14,84 +14,65 @@ import Type.ValueType;
 
 using StringTools;
 
-class EditableTextField extends TextField implements IFlxDestroyable
-{
+class EditableTextField extends TextField implements IFlxDestroyable {
 	public var isEditing(default, null):Bool;
 
 	var allowEditing:Bool;
-	var submitValue:Dynamic->Void;
+	var submitValue:Dynamic -> Void;
 	var expectedType:ValueType;
 
 	var defaultFormat:TextFormat;
 	var editFormat:TextFormat;
 
-	public function new(allowEditing:Bool, defaultFormat:TextFormat, submitValue:Dynamic->Void, expectedType:ValueType)
-	{
+	public function new(allowEditing:Bool, defaultFormat:TextFormat, submitValue:Dynamic -> Void, expectedType:ValueType) {
 		super();
+
 		this.allowEditing = allowEditing;
 		this.submitValue = submitValue;
 		this.defaultFormat = defaultFormat;
 		this.expectedType = expectedType;
 
-		if (allowEditing)
-		{
-			editFormat = new TextFormat(defaultFormat.font, defaultFormat.size, 0x000000);
+		if (!allowEditing) return;
 
-			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			addEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
-		}
+		editFormat = new TextFormat(defaultFormat.font, defaultFormat.size, 0x000000);
+
+		addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		addEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
 	}
 
-	public function destroy():Void
-	{
-		if (allowEditing)
-		{
-			removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			removeEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
-		}
+	public function destroy():Void {
+		if (!allowEditing) return;
+
+		removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		removeEventListener(FocusEvent.FOCUS_OUT, onFocusLost);
 	}
 
-	function onMouseUp(_):Void
-	{
+	function onMouseUp(_):Void {
 		setIsEditing(true);
 	}
 
-	function onKeyUp(e:KeyboardEvent):Void
-	{
-		switch (e.keyCode)
-		{
-			case Keyboard.ENTER:
-				submit();
-			case Keyboard.ESCAPE:
-				setIsEditing(false);
+	function onKeyUp(e:KeyboardEvent):Void {
+		switch (e.keyCode) {
+			case Keyboard.ENTER: submit();
+			case Keyboard.ESCAPE: setIsEditing(false);
 		}
 	}
 
-	function onKeyDown(e:KeyboardEvent):Void
-	{
-		var modifier = 1.0;
-		if (e.altKey)
-			modifier = 0.1;
-		if (e.shiftKey)
-			modifier = 10.0;
+	function onKeyDown(e:KeyboardEvent):Void {
+		final modifier = e.altKey ? .1 : (e.shiftKey ? 10. : 1.);
 
-		switch (e.keyCode)
-		{
-			case Keyboard.UP:
-				cycleValue(modifier, 0);
-			case Keyboard.DOWN:
-				cycleValue(-modifier, text.length);
+		switch (e.keyCode) {
+			case Keyboard.UP: cycleValue(modifier, 0);
+			case Keyboard.DOWN: cycleValue(-modifier, text.length);
 		}
 	}
 
-	function cycleValue(modifier:Float, selection:Int):Void
-	{
-		switch (expectedType)
-		{
+	function cycleValue(modifier:Float, selection:Int):Void {
+		switch (expectedType) {
 			case TInt | TFloat:
 				cycleNumericValue(modifier);
 				selectEnd();
@@ -106,45 +87,36 @@ class EditableTextField extends TextField implements IFlxDestroyable
 		}
 	}
 
-	function selectEnd():Void
-	{
+	function selectEnd():Void {
 		setSelection(text.length, text.length);
 	}
 
-	function cycleNumericValue(modifier:Float):Void
-	{
-		var value:Float = Std.parseFloat(text);
-		if (Math.isNaN(value))
-			return;
+	function cycleNumericValue(modifier:Float):Void {
+		var value = Std.parseFloat(text);
+		if (Math.isNaN(value)) return;
 
 		value += modifier;
 		value = FlxMath.roundDecimal(value, FlxG.debugger.precision);
 		text = Std.string(value);
 	}
 
-	function cycleEnumValue(e:Enum<Dynamic>, modifier:Int):Void
-	{
+	function cycleEnumValue(e:Enum<Dynamic>, modifier:Int):Void {
 		var values = e.getConstructors();
 		var index = values.indexOf(text);
-		if (index == -1)
-			index = 0;
-		else
-		{
+		if (index == -1) index = 0;
+		else {
 			index += modifier;
 			index = Std.int(FlxMath.wrap(index, 0, values.length - 1));
 		}
 		text = Std.string(values[index]);
 	}
 
-	function onFocusLost(_)
-	{
+	function onFocusLost(_) {
 		setIsEditing(false);
 	}
 
-	public function submit():Void
-	{
-		var value:Dynamic = switch (expectedType)
-		{
+	public function submit():Void {
+		final value:Dynamic = switch (expectedType) {
 			case TInt if (text.startsWith("#") || text.startsWith("0x")): FlxColor.fromString(text);
 			case TInt: Std.parseInt(text);
 			case TFloat: Std.parseFloat(text);
@@ -156,17 +128,14 @@ class EditableTextField extends TextField implements IFlxDestroyable
 			case _: text;
 		}
 
-		try
-		{
+		try {
 			submitValue(value);
-		}
-		catch (e:Dynamic) {}
+		} catch (e:Dynamic) {}
 
 		setIsEditing(false);
 	}
 
-	function setIsEditing(isEditing:Bool)
-	{
+	function setIsEditing(isEditing:Bool) {
 		this.isEditing = isEditing;
 
 		#if FLX_KEYBOARD

@@ -4,8 +4,7 @@ package flixel.system.debug.watch;
 import hscript.Expr;
 #end
 
-enum WatchEntryData
-{
+enum WatchEntryData {
 	/**
 	 * `object.field` resolved via `Reflect.getProperty()`.
 	 */
@@ -24,5 +23,5 @@ enum WatchEntryData
 	/**
 	 * A function that returns the value to display.
 	 */
-	FUNCTION(func:()->Dynamic);
+	FUNCTION(func:() -> Dynamic);
 }

@@ -12,15 +12,13 @@ import flixel.system.debug.interaction.Interaction;
  *
  * @author Fernando Bevilacqua (dovyski@gmail.com)
  */
-class Mover extends Tool
-{
-	var _dragging:Bool = false;
-	var _lastCursorPosition:FlxPoint;
+class Mover extends Tool {
+	final _lastCursorPosition = new FlxPoint();
+	var _dragging = false;
 
-	override public function init(brain:Interaction):Tool
-	{
+	override public function init(brain:Interaction):Tool {
 		super.init(brain);
-		_lastCursorPosition = new FlxPoint(brain.flixelPointer.x, brain.flixelPointer.x);
+		_lastCursorPosition.set(brain.flixelPointer.x, brain.flixelPointer.x);
 
 		_name = "Mover";
 		_shortcut = brain.macKeyboard ? "⌘" : "Ctrl";
@@ -30,33 +28,24 @@ class Mover extends Tool
 		return this;
 	}
 
-	override public function update():Void
-	{
+	override public function update():Void {
 		final key = _brain.macKeyboard ? Keyboard.COMMAND : Keyboard.CONTROL;
 		// Is the tool active or its hotkey pressed?
-		if (!isActive() && !_brain.keyPressed(key) && !_dragging)
-			return;
+		if (!isActive() && !_brain.keyPressed(key) && !_dragging) return;
 
-		if (_brain.pointerPressed && !_dragging)
-			startDragging();
-		else if (_brain.pointerPressed && _dragging)
-			doDragging();
-		else if (_brain.pointerJustReleased)
-			stopDragging();
+		if (_brain.pointerPressed && !_dragging) startDragging();
+		else if (_brain.pointerPressed && _dragging) doDragging();
+		else if (_brain.pointerJustReleased) stopDragging();
 
-		_lastCursorPosition.x = _brain.flixelPointer.x;
-		_lastCursorPosition.y = _brain.flixelPointer.y;
+		_lastCursorPosition.set(_brain.flixelPointer.x, _brain.flixelPointer.y);
 	}
 
-	function stopDragging():Void
-	{
+	inline function stopDragging():Void {
 		_dragging = false;
 	}
 
-	function startDragging():Void
-	{
-		if (_dragging)
-			return;
+	inline function startDragging():Void {
+		if (_dragging) return;
 
 		_dragging = true;
 
@@ -67,19 +56,15 @@ class Mover extends Tool
 			(cast _brain.activeTool : Pointer).cancelSelection();
 	}
 
-	function doDragging():Void
-	{
-		var dx:Float = _brain.flixelPointer.x - _lastCursorPosition.x;
-		var dy:Float = _brain.flixelPointer.y - _lastCursorPosition.y;
+	function doDragging():Void {
+		final dx = _brain.flixelPointer.x - _lastCursorPosition.x;
+		final dy = _brain.flixelPointer.y - _lastCursorPosition.y;
 
-		for (member in _brain.selectedItems.members)
-		{
-			if (!(member is FlxObject))
-				continue;
+		for (member in _brain.selectedItems.members) {
+			if (!(member is FlxObject)) continue;
 
-			var object:FlxObject = cast member;
-			if (object != null)
-			{
+			final object:FlxObject = cast member;
+			if (object != null) {
 				object.x += dx;
 				object.y += dy;
 			}

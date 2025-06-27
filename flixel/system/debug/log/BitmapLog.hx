@@ -25,9 +25,8 @@ using flixel.util.FlxBitmapDataUtil;
 /**
  * An output window that lets you paste BitmapData in the debugger overlay.
  */
-class BitmapLog extends Window
-{
-	public var zoom:Float = 1;
+class BitmapLog extends Window {
+	public var zoom = 1.;
 
 	final entries = new Array<BitmapLogEntry>();
 	final canvas:Bitmap;
@@ -36,11 +35,10 @@ class BitmapLog extends Window
 	final buttonRemove:FlxSystemButton;
 	final canvasOffset = FlxPoint.get();
 
-	var index:Int = -1;
+	var index = -1;
 	var state:State = IDLE;
 
-	public function new()
-	{
+	public function new() {
 		super("BitmapLog", Icon.bitmapLog);
 
 		minSize.x = 165;
@@ -58,13 +56,12 @@ class BitmapLog extends Window
 
 		header = new Header();
 		header.y = 2;
-		header.onPrev.add(()->setIndex(index - 1));
-		header.onNext.add(()->setIndex(index + 1));
+		header.onPrev.add(() -> setIndex(index - 1));
+		header.onNext.add(() -> setIndex(index + 1));
 		header.onReset.add(resetSettings);
 		addChild(header);
 
-		footer = new Footer();
-		addChild(footer);
+		addChild(footer = new Footer());
 
 		setVisible(false);
 
@@ -84,8 +81,7 @@ class BitmapLog extends Window
 	/**
 	 * Clean up memory.
 	 */
-	override function destroy():Void
-	{
+	override function destroy():Void {
 		super.destroy();
 
 		clear();
@@ -99,32 +95,27 @@ class BitmapLog extends Window
 		FlxG.signals.preStateSwitch.remove(clear);
 	}
 
-	function onMouseWheel(e:MouseEvent):Void
-	{
-		zoom = Math.max(0.01, zoom + FlxMath.signOf(e.delta) * 0.25);
+	function onMouseWheel(e:MouseEvent):Void {
+		zoom = Math.max(.01, zoom + FlxMath.signOf(e.delta) * .25);
 		drawCanvas();
 	}
 
-	override function onMouseDown(?e:MouseEvent)
-	{
+	override function onMouseDown(?e:MouseEvent) {
 		super.onMouseDown(e);
 
-		if (_overHeader == false && _overHandle == false)
-			state = DRAG(e.stageX, e.stageY, canvasOffset.x, canvasOffset.y);
+		if (_overHeader || _overHandle) return;
+		state = DRAG(e.stageX, e.stageY, canvasOffset.x, canvasOffset.y);
 	}
 
-	override function onMouseUp(?e:MouseEvent)
-	{
+	override function onMouseUp(?e:MouseEvent) {
 		super.onMouseUp(e);
 		state = IDLE;
 	}
 
-	override function onMouseMove(?e:MouseEvent)
-	{
+	override function onMouseMove(?e:MouseEvent) {
 		super.onMouseMove(e);
 
-		switch state
-		{
+		switch state {
 			case IDLE:
 			case DRAG(startX, startY, offsetStartX, offsetStartY):
 				canvasOffset.x = e.stageX - startX + offsetStartX;
@@ -133,15 +124,13 @@ class BitmapLog extends Window
 		}
 	}
 
-	override function updateSize():Void
-	{
+	override function updateSize():Void {
 		super.updateSize();
 		// account for the footer
 		_background.scaleY = _height - _header.height * 2;
 	}
 
-	override function resize(width:Float, height:Float):Void
-	{
+	override function resize(width:Float, height:Float):Void {
 		super.resize(width, height);
 
 		canvas.bitmapData = FlxDestroyUtil.dispose(canvas.bitmapData);
@@ -149,8 +138,7 @@ class BitmapLog extends Window
 		final canvasWidth = Std.int(_width - canvas.x);
 		final canvasHeight = Std.int(_height - canvas.y - footer.getHeight());
 
-		if (canvasWidth > 0 && canvasHeight > 0)
-		{
+		if (canvasWidth > 0 && canvasHeight > 0) {
 			canvas.bitmapData = new BitmapData(canvasWidth, canvasHeight, true, FlxColor.TRANSPARENT);
 			drawCanvas();
 		}
@@ -162,107 +150,80 @@ class BitmapLog extends Window
 		footer.resize(_width);
 	}
 
-	inline function resetSettings()
-	{
+	inline function resetSettings() {
 		zoom = 1;
 		canvasOffset.set();
 	}
 
-	function indexOf(bitmap:BitmapData)
-	{
+	function indexOf(bitmap:BitmapData) {
 		for (i => entry in entries)
-		{
 			if (entry.bitmap == bitmap)
 				return i;
-		}
 		return -1;
 	}
 
-	function entryOf(bitmap:BitmapData):Null<BitmapLogEntry>
-	{
+	function entryOf(bitmap:BitmapData):Null<BitmapLogEntry> {
 		for (entry in entries)
-		{
 			if (entry.bitmap == bitmap)
 				return entry;
-		}
 		return null;
 	}
 
-	public function has(bitmap:BitmapData)
-	{
+	public function has(bitmap:BitmapData) {
 		for (i => entry in entries)
-		{
 			if (entry.bitmap == bitmap)
 				return true;
-		}
 		return false;
 	}
 
 	/**
 	 * Add a BitmapData to the log
 	 */
-	public function add(bitmap:BitmapData, name:String = ""):Bool
-	{
-		if (bitmap == null)
-			return false;
+	public function add(bitmap:BitmapData, name = ""):Bool {
+		if (bitmap == null) return false;
 
 		setVisible(true);
 
 		final entry = entryOf(bitmap);
-		if (entry != null && entry.name == name)
-			return true;
+		if (entry != null && entry.name == name) return true;
 
 		entries.push({bitmap: bitmap, name: name});
 		setIndex(index < 0 ? 0 : index);
 		return true;
 	}
 
-	public function remove(bitmap:BitmapData)
-	{
+	public function remove(bitmap:BitmapData) {
 		final index = indexOf(bitmap);
-		if (index != -1)
-			clearAt(index);
+		if (index != -1) clearAt(index);
 	}
 
-	function removeCurrent()
-	{
+	function removeCurrent() {
 		clearAt(index);
 	}
 
 	/**
 	 * Clear one bitmap object from the log -- the last one, by default
 	 */
-	public function clearAt(index = -1):Void
-	{
-		if (index == -1)
-			index = entries.length - 1;
+	public function clearAt(index = -1):Void {
+		if (index == -1) index = entries.length - 1;
 
 		entries.splice(index, 1);
 
-		if (index > entries.length - 1)
-			setIndex(entries.length - 1);
-		else
-			drawCanvas();
+		if (index > entries.length - 1) setIndex(entries.length - 1);
+		else drawCanvas();
 	}
 
-	public function clear():Void
-	{
+	public function clear():Void {
 		entries.resize(0);
 		drawCanvas();
 	}
 
-	function drawCanvas()
-	{
-		if (canvas.bitmapData == null)
-		{
-			// If the window is too small there is no canvas bitmap
-			return;
-		}
+	function drawCanvas() {
+		if (canvas.bitmapData == null) return; // If the window is too small there is no canvas bitmap
 
 		final canvasBmd = canvas.bitmapData;
 
-		if (index < 0)
-		{
+		if (index < 0) {
 			// wiping transparent doesn't work for some reason
 			canvasBmd.fillRect(canvasBmd.rect, FlxColor.WHITE);
 			canvasBmd.fillRect(canvasBmd.rect, FlxColor.TRANSPARENT);
@@ -271,10 +232,7 @@ class BitmapLog extends Window
 
 		final bitmap = entries[index].bitmap;
 		// find the window center
-		final point = FlxPoint.get();
-		point.x = (canvasBmd.width * .5) - (bitmap.width * zoom * .5);
-		point.y = (canvasBmd.height * .5) - (bitmap.height * zoom * .5);
-
+		final point = FlxPoint.get((canvasBmd.width * .5) - (bitmap.width * zoom * .5), (canvasBmd.height * .5) - (bitmap.height * zoom * .5));
 		point.add(canvasOffset);
 
 		final matrix = new Matrix();
@@ -293,50 +251,37 @@ class BitmapLog extends Window
 		footer.setText(entries[index]);
 	}
 
-	function setIndex(index:Int):Bool
-	{
+	function setIndex(index:Int):Bool {
 		this.index = validIndex(index);
 
-		if (this.index < 0)
-			header.clear();
+		if (this.index < 0) header.clear();
 
 		resetSettings();
 		drawCanvas();
 		return true;
 	}
 
-	function validIndex(index:Int)
-	{
-		if (entries.length == 0)
-			return -1;
-
-		if (index < 0)
-			return entries.length - 1;
-
-		if (index >= entries.length)
-			return 0;
+	function validIndex(index:Int) {
+		if (entries.length == 0) return -1;
+		if (index < 0) return entries.length - 1;
+		if (index >= entries.length) return 0;
 
 		return index;
 	}
 
-	function drawBoundingBox(bitmap:BitmapData):Void
-	{
-		var gfx:Graphics = FlxSpriteUtil.flashGfx;
+	function drawBoundingBox(bitmap:BitmapData):Void {
+		final gfx = FlxSpriteUtil.flashGfx;
 		gfx.clear();
-		gfx.lineStyle(1, FlxColor.RED, 0.75, false, LineScaleMode.NONE);
-		var offset = 1 / zoom;
+		gfx.lineStyle(1, FlxColor.RED, .75, false, LineScaleMode.NONE);
+
+		final offset = 1 / zoom;
 		gfx.drawRect(-offset, -offset, bitmap.width + offset, bitmap.height + offset);
 	}
 }
 
-typedef BitmapLogEntry =
-{
-	bitmap:BitmapData,
-	name:String
-}
+typedef BitmapLogEntry = {bitmap:BitmapData, name:String}
 
-class Header extends Sprite
-{
+class Header extends Sprite {
 	public final onReset = new FlxSignal();
 	public final onPrev = new FlxSignal();
 	public final onNext = new FlxSignal();
@@ -347,8 +292,7 @@ class Header extends Sprite
 	final dimensions:TextField;
 	final counter:TextField;
 
-	public function new ()
-	{
+	public function new() {
 		super();
 		prev = new FlxSystemButton(Icon.arrowLeft, onPrev.dispatch);
 		addChild(prev);
@@ -369,20 +313,17 @@ class Header extends Sprite
 		addChild(dimensions);
 	}
 
-	public function clear()
-	{
+	public function clear() {
 		setText(0, 0, 0, 0);
 		dimensions.text = "";
 	}
 
-	public function setText(index:Int, total:Int, width:Int, height:Int)
-	{
+	public function setText(index:Int, total:Int, width:Int, height:Int) {
 		counter.text = '$index/$total';
 		dimensions.text = '$width x $height';
 	}
 
-	public function resize(width:Float)
-	{
+	public function resize(width:Float) {
 		next.x = width - next.width - 3;
 		reset.x = next.x - reset.width - 3;
 		prev.x = reset.x - prev.width - 3;
@@ -394,13 +335,11 @@ class Header extends Sprite
 	public function getHeight() return Window.HEADER_HEIGHT;
 }
 
-class Footer extends Sprite
-{
+class Footer extends Sprite {
 	final bg = new Shape();
 	final text = new TextField();
 
-	public function new ()
-	{
+	public function new() {
 		super();
 		bg.graphics.beginFill(Window.HEADER_COLOR);
 		bg.graphics.drawRect(0, 0, 1, Window.HEADER_HEIGHT);
@@ -411,23 +350,22 @@ class Footer extends Sprite
 		addChild(text);
 	}
 
-	public function setText(entry:BitmapLogEntry)
-	{
+	public function setText(entry:BitmapLogEntry) {
 		text.text = (entry.name == "") ? "" : '"${entry.name}" | '
 			+ FlxStringUtil.formatBytes(entry.bitmap.getMemorySize());
 		text.x = (bg.width - text.width) * .5;
 	}
 
-	public function resize(width:Float)
-	{
+	public function resize(width:Float) {
 		bg.width = width;
 	}
 
-	public function getHeight() return Window.HEADER_HEIGHT;
+	public function getHeight() {
+		return Window.HEADER_HEIGHT;
+	}
 }
 
-private enum State
-{
+private enum State {
 	IDLE;
 	DRAG(startX:Float, startY:Float, offsetStartX:Float, offsetStartY:Float);
 }
