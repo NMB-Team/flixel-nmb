@@ -3,60 +3,43 @@ package flixel.animation;
 /**
  * @author Zaphod
  */
-class FlxPrerotatedAnimation extends FlxBaseAnimation
-{
-	public static inline var PREROTATED:String = "prerotated_animation";
+class FlxPrerotatedAnimation extends FlxBaseAnimation {
+	public static inline final PREROTATED = "prerotated_animation";
 
 	var rotations:Int;
-
 	var baked:Float;
 
-	public function new(Parent:FlxAnimationController, Baked:Float)
-	{
-		super(Parent, PREROTATED);
-		baked = Baked;
-		rotations = Math.round(360 / Baked);
+	public function new(parent:FlxAnimationController, baked:Float) {
+		super(parent, PREROTATED);
+		this.baked = baked;
+		rotations = Math.round(360 / baked);
 	}
 
-	public var angle(default, set):Float = 0;
+	public var angle(default, set) = .0;
 
-	function set_angle(Value:Float):Float
-	{
-		if (Math.isNaN(Value))
-			throw "angle must not be NaN";
+	private function set_angle(value:Float):Float {
+		if (Math.isNaN(value))
+			FlxG.log.critical("angle must not be NaN");
 
-		var oldIndex:Int = curIndex;
-		var angleHelper:Int = Math.floor(Value % 360);
+		final oldIndex = curIndex;
+		var angleHelper = Math.floor(value % 360);
 
-		while (angleHelper < 0)
-		{
-			angleHelper += 360;
-		}
+		while (angleHelper < 0) angleHelper += 360;
 
-		var newIndex:Int = Math.floor(angleHelper / baked + 0.5);
+		final newIndex = Math.floor(angleHelper / baked + .5);
 		newIndex = Std.int(newIndex % rotations);
-		if (oldIndex != newIndex)
-		{
-			curIndex = newIndex;
-		}
+		if (oldIndex != newIndex) curIndex = newIndex;
 
-		return angle = Value;
+		return angle = value;
 	}
 
-	override function set_curIndex(Value:Int):Int
-	{
-		curIndex = Value;
-
-		if (parent != null)
-		{
-			parent.frameIndex = Value;
-		}
-
-		return Value;
+	override function set_curIndex(value:Int):Int {
+		curIndex = value;
+		parent?.frameIndex = value;
+		return value;
 	}
 
-	override public function clone(Parent:FlxAnimationController):FlxPrerotatedAnimation
-	{
-		return new FlxPrerotatedAnimation(Parent, baked);
+	override public function clone(parent:FlxAnimationController):FlxPrerotatedAnimation {
+		return new FlxPrerotatedAnimation(parent, baked);
 	}
 }

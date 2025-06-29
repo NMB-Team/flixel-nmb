@@ -15,8 +15,7 @@ import flixel.util.FlxSpriteUtil;
  *
  * @author Ka Wing Chin
  */
-class FlxVirtualPad extends FlxSpriteContainer
-{
+class FlxVirtualPad extends FlxSpriteContainer {
 	/**
 	 * Group of directions buttons.
 	 */
@@ -38,16 +37,14 @@ class FlxVirtualPad extends FlxSpriteContainer
 	 * @param   DPadMode     The D-Pad mode. `FULL` for example.
 	 * @param   ActionMode   The action buttons mode. `A_B_C` for example.
 	 */
-	public function new(dPadMode = FlxDPadMode.FULL, actionMode = FlxActionMode.A_B_C)
-	{
+	public function new(dPadMode = FlxDPadMode.FULL, actionMode = FlxActionMode.A_B_C) {
 		super();
 		scrollFactor.set();
 
 		add(actions = new FlxVirtualActionButtons(0, 0, actionMode));
 		actions.x = FlxG.width - actions.width;
 
-		switch dPadMode
-		{
+		switch dPadMode {
 			case ANALOG:
 				add(stick = new FlxVirtualStick());
 				stick.y = height - stick.height;
@@ -64,10 +61,8 @@ class FlxVirtualPad extends FlxSpriteContainer
 		#end
 	}
 
-	public function getButton(id:FlxVirtualInputID)
-	{
-		return switch id
-		{
+	public function getButton(id:FlxVirtualInputID) {
+		return switch id {
 			case A | B | C | X | Y: actions.getButton(id);
 			case UP | DOWN | LEFT | RIGHT if (dPad == null): null;
 			case UP | DOWN | LEFT | RIGHT: dPad.getButton(id);
@@ -76,12 +71,10 @@ class FlxVirtualPad extends FlxSpriteContainer
 	}
 }
 
-class FlxVirtualPadButtons extends FlxTypedSpriteContainer<FlxVirtualPadButton>
-{
+class FlxVirtualPadButtons extends FlxTypedSpriteContainer<FlxVirtualPadButton> {
 	final buttons = new Map<FlxVirtualInputID, FlxVirtualPadButton>();
 
-	public function new (x = 0.0, y = 0.0)
-	{
+	public function new(x = .0, y = .0) {
 		super(x, y);
 		scrollFactor.set();
 
@@ -90,31 +83,24 @@ class FlxVirtualPadButtons extends FlxTypedSpriteContainer<FlxVirtualPadButton>
 		#end
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
-
 		buttons.clear();
 	}
 
-	public function addButton(x = 0.0, y = 0.0, id, ?onClick)
-	{
+	public function addButton(x = .0, y = .0, id, ?onClick) {
 		return buttons[id] = add(new FlxVirtualPadButton(x, y, id, onClick));
 	}
 
-	public function getButton(id)
-	{
+	public function getButton(id) {
 		return buttons[id];
 	}
 }
 
-class FlxVirtualDPadButtons extends FlxVirtualPadButtons
-{
-	public function new (x = 0.0, y = 0.0, mode:FlxDPadMode)
-	{
+class FlxVirtualDPadButtons extends FlxVirtualPadButtons {
+	public function new (x = .0, y = .0, mode:FlxDPadMode) {
 		super(x, y);
-		switch (mode)
-		{
+		switch (mode) {
 			case UP_DOWN:
 				addButton( 0,  0, UP   );
 				addButton( 0, 40, DOWN );
@@ -136,13 +122,10 @@ class FlxVirtualDPadButtons extends FlxVirtualPadButtons
 	}
 }
 
-class FlxVirtualActionButtons extends FlxVirtualPadButtons
-{
-	public function new (x = 0.0, y = 0.0, mode:FlxActionMode)
-	{
+class FlxVirtualActionButtons extends FlxVirtualPadButtons {
+	public function new (x = .0, y = .0, mode:FlxActionMode) {
 		super(x, y);
-		switch (mode)
-		{
+		switch (mode){
 			case A:
 				addButton( 0,  0, A);
 			case A_B:
@@ -162,11 +145,8 @@ class FlxVirtualActionButtons extends FlxVirtualPadButtons
 	}
 }
 
-@:forward
-abstract FlxVirtualPadButton(FlxButton) to FlxButton
-{
-	public function new(x = 0.0, y = 0.0, id:FlxVirtualInputID, ?onClick)
-	{
+@:forward abstract FlxVirtualPadButton(FlxButton) to FlxButton {
+	public function new(x = .0, y = .0, id:FlxVirtualInputID, ?onClick) {
 		this = new FlxButton(x, y, null, onClick);
 		this.frames = id.getFrames();
 		this.resetSizeFromFrame();
@@ -178,8 +158,7 @@ abstract FlxVirtualPadButton(FlxButton) to FlxButton
 	}
 }
 
-enum FlxDPadMode
-{
+enum FlxDPadMode {
 	NONE;
 	UP_DOWN;
 	LEFT_RIGHT;
@@ -188,8 +167,7 @@ enum FlxDPadMode
 	ANALOG;
 }
 
-enum FlxActionMode
-{
+enum FlxActionMode {
 	NONE;
 	A;
 	A_B;
@@ -198,8 +176,7 @@ enum FlxActionMode
 }
 
 @:using(flixel.ui.FlxVirtualPad.FlxVirtualInputIDTools)
-enum FlxVirtualInputID
-{
+enum FlxVirtualInputID {
 	UP;
 	DOWN;
 	LEFT;
@@ -212,12 +189,9 @@ enum FlxVirtualInputID
 	STICK;
 }
 
-private class FlxVirtualInputIDTools
-{
-	public static function getFrames(id:FlxVirtualInputID)
-	{
-		final name = switch id
-		{
+private class FlxVirtualInputIDTools {
+	public static function getFrames(id:FlxVirtualInputID) {
+		final name = switch id {
 			case UP: "up";
 			case DOWN: "down";
 			case LEFT: "left";

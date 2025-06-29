@@ -52,7 +52,7 @@ using flixel.util.FlxColorTransformUtil;
  * in the project xml file you simply have to define a path to your image and the compiler will do
  * the rest.
  * ```haxe
- * var player = new FlxSprite();
+ * final player = new FlxSprite();
  * player.loadGraphic("assets/player.png");
  * add(player);
  * ```
@@ -76,7 +76,7 @@ using flixel.util.FlxColorTransformUtil;
  * [Snippets - Loading Sprites](https://snippets.haxeflixel.com/sprites/making-sprites/)
  * This method is a handy way to make a simple color fill to quickly test a feature or have the basic shape.
  * ```haxe
- * var whiteSquare = new FlxSprite();
+ * final whiteSquare = new FlxSprite();
  * whiteSquare.makeGraphic(200, 200, FlxColor.WHITE);
  * add(whiteSquare);
  * ```
@@ -92,7 +92,7 @@ using flixel.util.FlxColorTransformUtil;
  * of this sprite, use scale to change the graphic's size.
  * ```haxe
  * // get
- * var getWidth = whiteSquare.width;
+ * final getWidth = whiteSquare.width;
  *
  * // set
  * whiteSquare.width = 100;
@@ -142,8 +142,6 @@ class FlxSprite extends FlxObject {
 	 * @see https://snippets.haxeflixel.com/sprites/animation/
 	 */
 	public var animation:FlxAnimationController;
-
-	// TODO: maybe convert this var to property...
 
 	/**
 	 * The current display state of the sprite including current animation frame,
@@ -283,7 +281,7 @@ class FlxSprite extends FlxObject {
 
 	public var onDraw(default, set):FlxSprite -> Void;
 
-	public function set_onDraw(drawFunc:FlxSprite -> Void):FlxSprite->Void {
+	private function set_onDraw(drawFunc:FlxSprite -> Void):FlxSprite -> Void {
 		__drawOverrided = drawFunc != null;
 		return onDraw = drawFunc;
 	}
@@ -555,8 +553,8 @@ class FlxSprite extends FlxObject {
 	 * @param   key            Optional, set this parameter if you're loading `BitmapData`.
 	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
 	 */
-	public function loadRotatedGraphic(graphic:FlxGraphicAsset, rotations = 16, frame = -1, antiAliasing = false, autoBuffer = false, ?Key:String):FlxSprite {
-		final brushGraphic = FlxG.bitmap.add(graphic, false, Key);
+	public function loadRotatedGraphic(graphic:FlxGraphicAsset, rotations = 16, frame = -1, antiAliasing = false, autoBuffer = false, ?key:String):FlxSprite {
+		final brushGraphic = FlxG.bitmap.add(graphic, false, key);
 		if (brushGraphic == null) return this;
 
 		var brush = brushGraphic.bitmap;
@@ -564,7 +562,7 @@ class FlxSprite extends FlxObject {
 
 		if (frame >= 0) {
 			// we assume that source graphic has one row frame animation with equal width and height
-			final brushSize:Int = brush.height;
+			final brushSize = brush.height;
 			final framesNum = Std.int(brush.width / brushSize);
 			frame = (framesNum > frame || framesNum == 0) ? frame : (frame % framesNum);
 			key += ":" + frame;
@@ -588,7 +586,7 @@ class FlxSprite extends FlxObject {
 		tempGraph.trackingInfo = '$ID.loadRotatedGraphic(${brushGraphic.trackingInfo}, $Rotations, $frame, $antiAliasing, $autoBuffer)';
 		#end
 
-		var max:Int = (brush.height > brush.width) ? brush.height : brush.width;
+		var max = (brush.height > brush.width) ? brush.height : brush.width;
 		max = autoBuffer ? Std.int(max * 1.5) : max;
 
 		frames = FlxTileFrames.fromGraphic(tempGraph, FlxPoint.get(max, max));
@@ -640,15 +638,15 @@ class FlxSprite extends FlxObject {
 	 *
 	 * NOTE: This method updates hitbox size and frame size.
 	 *
-	 * @param   Width    The width of the sprite you want to generate.
-	 * @param   Height   The height of the sprite you want to generate.
-	 * @param   Color    Specifies the color of the generated block (ARGB format).
-	 * @param   Unique   Whether the graphic should be a unique instance in the graphics cache. Default is `false`.
+	 * @param   width    The width of the sprite you want to generate.
+	 * @param   height   The height of the sprite you want to generate.
+	 * @param   color    Specifies the color of the generated block (ARGB format).
+	 * @param   unique   Whether the graphic should be a unique instance in the graphics cache. Default is `false`.
 	 *                   Set this to `true` if you want to modify the `pixels` field without changing the
 	 *                   `pixels` of other sprites with the same `BitmapData`.
-	 * @param   Key      An optional `String` key to identify this graphic in the cache.
-	 *                   If `null`, the key is determined by `Width`, `Height` and `Color`.
-	 *                   If `Unique` is `true` and a graphic with this `Key` already exists,
+	 * @param   key      An optional `String` key to identify this graphic in the cache.
+	 *                   If `null`, the key is determined by `width`, `height` and `color`.
+	 *                   If `unique` is `true` and a graphic with this `key` already exists,
 	 *                   it is used as a prefix to find a new unique name like `"Key3"`.
 	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
 	 */
@@ -671,15 +669,15 @@ class FlxSprite extends FlxObject {
  	 * HaxeFlixel copies the previous reference onto the pixels field instead
  	 * of creating another copy of the image data, to save memory.
  	 *
- 	 * @param   Width    The width of the sprite you want to generate.
- 	 * @param   Height   The height of the sprite you want to generate.
- 	 * @param   Color    Specifies the color of the generated block (ARGB format).
- 	 * @param   Unique   Whether the graphic should be a unique instance in the graphics cache. Default is `false`.
+ 	 * @param   width    The width of the sprite you want to generate.
+ 	 * @param   height   The height of the sprite you want to generate.
+ 	 * @param   color    Specifies the color of the generated block (ARGB format).
+ 	 * @param   unique   Whether the graphic should be a unique instance in the graphics cache. Default is `false`.
  	 *                   Set this to `true` if you want to modify the `pixels` field without changing the
  	 *                   `pixels` of other sprites with the same `BitmapData`.
- 	 * @param   Key      An optional `String` key to identify this graphic in the cache.
- 	 *                   If `null`, the key is determined by `Width`, `Height` and `Color`.
- 	 *                   If `Unique` is `true` and a graphic with this `Key` already exists,
+ 	 * @param   key      An optional `String` key to identify this graphic in the cache.
+ 	 *                   If `null`, the key is determined by `width`, `height` and `color`.
+ 	 *                   If `unique` is `true` and a graphic with this `key` already exists,
  	 *                   it is used as a prefix to find a new unique name like `"Key3"`.
  	 * @return  This `FlxSprite` instance (nice for chaining stuff together, if you're into that).
  	 */
@@ -926,7 +924,7 @@ class FlxSprite extends FlxObject {
 	/**
 	 * This is separated out so it can be easily overridden.
 	 */
-	function updateAnimation(elapsed:Float):Void {
+	private function updateAnimation(elapsed:Float):Void {
 		if (animation.curAnim == null || animation.curAnim.numFrames <= 1) return;
 		animation.update(elapsed);
 	}
@@ -988,7 +986,7 @@ class FlxSprite extends FlxObject {
 	/**
 	 * Checks the previous frame's clipRect compared to the current. If there's changes, apply them
 	 */
-	function checkClipRect() {
+	 private function checkClipRect() {
 		if (frames == null
 		|| (clipRect == null && Math.isNaN(_lastClipRect.x))
 		|| (clipRect != null && clipRect.equals(_lastClipRect)))
@@ -1003,7 +1001,7 @@ class FlxSprite extends FlxObject {
 			_lastClipRect.copyFrom(clipRect);
 	}
 
-	@:noCompletion function drawSimple(camera:FlxCamera):Void {
+	private function drawSimple(camera:FlxCamera):Void {
 		getScreenPosition(_point, camera).subtract(offset);
 
 		if (animation.curAnim != null) _point.subtractPoint(animation.curAnim.offset);
@@ -1013,12 +1011,12 @@ class FlxSprite extends FlxObject {
 		camera.copyPixels(_frame, framePixels, _flashRect, _flashPoint, colorTransform, blend, antialiasing);
 	}
 
-	@:noCompletion function drawComplex(camera:FlxCamera):Void {
+	private function drawComplex(camera:FlxCamera):Void {
 		drawFrameComplex(_frame, camera);
 	}
 
-	function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void {
-		final matrix = this._matrix; // TODO: Just use local?
+	private function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void {
+		final matrix = this._matrix;
 		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX() != camera.flipX, checkFlipY() != camera.flipY);
 		matrix.translate(-origin.x, -origin.y);
 
@@ -1050,18 +1048,11 @@ class FlxSprite extends FlxObject {
 			matrix.ty = Math.floor(matrix.ty);
 		}
 
-		doAdditionalMatrixStuff(_matrix, camera);
-
 		if (layer != null)
 			layer.drawPixels(this, camera, frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 		else
 			camera.drawPixels(frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 	}
-
-	/**
- 	 * Made in case developer wanna finalize stuff with the matrix.
- 	 */
-	public function doAdditionalMatrixStuff(matrix:FlxMatrix, camera:FlxCamera) {}
 
 	/**
 	 * Stamps / draws another `FlxSprite` onto this `FlxSprite`.
@@ -1144,10 +1135,10 @@ class FlxSprite extends FlxObject {
 	}
 
 	/**
-	 * Replaces all pixels with specified `Color` with `NewColor` pixels.
+	 * Replaces all pixels with specified `color` with `NewColor` pixels.
 	 * WARNING: very expensive (especially on big graphics) as it iterates over every single pixel.
 	 *
-	 * @param   color            Color to replace
+	 * @param   color            color to replace
 	 * @param   NewColor         New color
 	 * @param   fetchPositions   Whether we need to store positions of pixels which colors were replaced.
 	 * @return  `Array` with replaced pixels positions
@@ -1183,7 +1174,7 @@ class FlxSprite extends FlxObject {
 		dirty = true;
 	}
 
-	function updateColorTransform():Void {
+	private function updateColorTransform():Void {
 		colorTransform ??= new ColorTransform();
 
 		colorTransform.setMultipliers(color.redFloat, color.greenFloat, color.blueFloat, alpha);
@@ -1194,7 +1185,7 @@ class FlxSprite extends FlxObject {
 	 * Whether this sprite has a color transform, menaing any of the following: less than full
 	 * `alpha`, a `color` tint, or a `colorTransform` whos values are not the default.
 	 */
-	function hasColorTransform() {
+	 private function hasColorTransform() {
 		return alpha != 1 || color.rgb != 0xffffff || colorTransform.hasRGBAOffsets();
 	}
 
@@ -1220,7 +1211,7 @@ class FlxSprite extends FlxObject {
 	/**
 	 * Helper to apply the sprite's color or colorTransform to the specified color
 	 */
-	function transformColor(colorIn:FlxColor):FlxColor {
+	private function transformColor(colorIn:FlxColor):FlxColor {
 		final colorStr = color.toHexString();
 		if (hasColorTransform()) {
 			final ct = colorTransform;
@@ -1229,8 +1220,8 @@ class FlxSprite extends FlxObject {
 				Math.round(colorIn.alpha * alpha));
 		}
 
-		final WHITE_COLOR = 0xffffff;
-		if (color.rgb != WHITE_COLOR) {
+		final whiteColor = 0xFFFFFF;
+		if (color.rgb != whiteColor) {
 			final result = FlxColor.fromRGBFloat(colorIn.redFloat * color.redFloat, colorIn.greenFloat * color.greenFloat,
 				colorIn.blueFloat * color.blueFloat, colorIn.alphaFloat * alpha);
 			return result;
@@ -1395,7 +1386,7 @@ class FlxSprite extends FlxObject {
 		return viewToFrameHelper(viewX, viewY, camera, result);
 	}
 
-	function viewToFrameHelper(viewX:Float, viewY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
+	private function viewToFrameHelper(viewX:Float, viewY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
 		camera ??= this.getDefaultCamera();
 
 		result = camera.viewToWorldPosition(viewX, viewY, scrollFactor, result);
@@ -1695,7 +1686,7 @@ class FlxSprite extends FlxObject {
 		return this.alpha;
 	}
 
-	@:noCompletion function set_color(Color:FlxColor):Int {
+	@:noCompletion function set_color(color:FlxColor):Int {
 		if (this.color == color) return color;
 		this.color = color;
 		updateColorTransform();
@@ -1793,7 +1784,7 @@ class FlxSprite extends FlxObject {
 		return frames;
 	}
 
-	function get_numFrames() {
+	@:noCompletion function get_numFrames() {
 		if (frames != null)
 			return frames.numFrames;
 

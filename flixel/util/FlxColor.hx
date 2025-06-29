@@ -726,7 +726,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	}
 
 	// old version of get_hue(), inaccurate and slow
-	function get_hueOld():Float {
+	private function get_hueOld():Float {
  		// 1.7320508075688772 = Math.sqrt(3)
  		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
 		final hue = (hueRad != 0) ? flixel.math.FlxAngle.TO_DEG * hueRad : 0;

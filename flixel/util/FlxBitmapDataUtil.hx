@@ -13,7 +13,7 @@ import openfl.geom.Rectangle;
  * Just for cross-platform stuff, since not all methods are implemented across all targets.
  */
 class FlxBitmapDataUtil {
-	static var matrix = new FlxMatrix();
+	static final matrix = new FlxMatrix();
 
 	/**
 	 * Performs per-channel blending from a source image to a destination image.

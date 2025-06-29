@@ -31,7 +31,7 @@ class GraphicLogo extends BitmapData {}
 class GraphicVirtualInput extends BitmapData {}
 
 @:file("assets/images/ui/virtual-input.txt")
-class VirtualInputData extends #if nme ByteArray #else ByteArrayData #end {}
+class VirtualInputData extends ByteArrayData {}
 
 typedef FlxTexturePackerJsonAsset = FlxJsonAsset<TexturePackerAtlas>;
 typedef FlxAsepriteJsonAsset = FlxJsonAsset<AseAtlas>;
@@ -39,31 +39,23 @@ typedef FlxSoundAsset = OneOfThree<String, Sound, Class<Sound>>;
 typedef FlxGraphicAsset = OneOfThree<FlxGraphic, BitmapData, String>;
 typedef FlxTilemapGraphicAsset = OneOfFour<FlxFramesCollection, FlxGraphic, BitmapData, String>;
 typedef FlxBitmapFontGraphicAsset = OneOfFour<FlxFrame, FlxGraphic, BitmapData, String>;
-abstract FlxGraphicSource(OneOfThree<BitmapData, Class<Dynamic>, String>) from BitmapData from Class<Dynamic> from String
-{
-	public function resolveBitmapData()
-	{
+abstract FlxGraphicSource(OneOfThree<BitmapData, Class<Dynamic>, String>) from BitmapData from Class<Dynamic> from String {
+	public function resolveBitmapData() {
 		return FlxAssets.resolveBitmapData(cast this);
 	}
 }
 
-abstract FlxAngelCodeAsset(OneOfThree<Xml, String, Bytes>) from Xml from String from Bytes
-{
-	public inline function parse()
-	{
+abstract FlxAngelCodeAsset(OneOfThree<Xml, String, Bytes>) from Xml from String from Bytes {
+	public inline function parse() {
 		return BMFont.parse(cast this);
 	}
 }
 
-abstract FlxXmlAsset(OneOfTwo<Xml, String>) from Xml from String
-{
-	public function getXml()
-	{
-		if ((this is String))
-		{
+abstract FlxXmlAsset(OneOfTwo<Xml, String>) from Xml from String {
+	public function getXml() {
+		if ((this is String)) {
 			final str:String = cast this;
-			if (FlxG.assets.exists(str))
-				return fromPath(str);
+			if (FlxG.assets.exists(str)) return fromPath(str);
 
 			return fromXmlString(str);
 		}
@@ -71,23 +63,18 @@ abstract FlxXmlAsset(OneOfTwo<Xml, String>) from Xml from String
 		return cast(this, Xml);
 	}
 
-	static inline function fromPath<T>(path:String):Xml
-	{
+	static inline function fromPath<T>(path:String):Xml {
 		return FlxG.assets.getXmlUnsafe(path);
 	}
 
-	static inline function fromXmlString<T>(data:String):Xml
-	{
+	static inline function fromXmlString<T>(data:String):Xml {
 		return FlxG.assets.parseXml(data);
 	}
 }
 
-abstract FlxJsonAsset<T>(OneOfTwo<T, String>) from T from String
-{
-	public function getData():T
-	{
-		if ((this is String))
-		{
+abstract FlxJsonAsset<T>(OneOfTwo<T, String>) from T from String {
+	public function getData():T {
+		if ((this is String)) {
 			final str:String = cast this;
 			if (FlxG.assets.exists(str))
 				return fromPath(str);
@@ -98,18 +85,16 @@ abstract FlxJsonAsset<T>(OneOfTwo<T, String>) from T from String
 		return cast this;
 	}
 
-	static inline function fromPath<T>(path:String):T
-	{
+	static inline function fromPath<T>(path:String):T {
 		return cast FlxG.assets.getJsonUnsafe(path);
 	}
 
-	static inline function fromDataString<T>(data:String):T
-	{
+	static inline function fromDataString<T>(data:String):T {
 		return cast FlxG.assets.parseJson(data);
 	}
 }
 
-typedef FlxShader = #if nme Dynamic #else flixel.graphics.tile.FlxGraphicsShader #end;
+typedef FlxShader = flixel.graphics.tile.FlxGraphicsShader;
 #end
 
 class FlxAssets
@@ -119,7 +104,7 @@ class FlxAssets
 	 * `FlxAssets.getSound` which are not common. Currently set to ".ogg"
 	 * for backwards compatibility reasons.
 	 */
-	public static var defaultSoundExtension = "ogg";
+	public static final defaultSoundExtension = "ogg";
 
 	#if (macro || doc_gen)
 	/**

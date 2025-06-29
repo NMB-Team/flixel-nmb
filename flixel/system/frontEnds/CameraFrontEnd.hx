@@ -12,8 +12,7 @@ using flixel.util.FlxArrayUtil;
 /**
  * Accessed via `FlxG.cameras`.
  */
-class CameraFrontEnd
-{
+class CameraFrontEnd {
 	/**
 	 * An array listing FlxCamera objects that are used to draw stuff.
 	 * By default flixel creates one camera the size of the screen.
@@ -33,33 +32,33 @@ class CameraFrontEnd
 	public var bgColor(get, set):FlxColor;
 
 	/** @since 4.2.0 */
-	public var cameraAdded(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var cameraAdded(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/** @since 4.2.0 */
-	public var cameraRemoved(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var cameraRemoved(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/** @since 6.2.0 */
-	public var preCameraResized(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var preCameraResized(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/** @since 4.2.0 */
-	public var cameraResized(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var cameraResized(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/** @since 6.2.0 */
-	public var cameraReset(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var cameraReset(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/** @since 6.2.0 */
-	public var cameraResetPost(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
+	public var cameraResetPost(default, null) = new FlxTypedSignal<FlxCamera -> Void>();
 
 	/**
 	 * Allows you to possibly slightly optimize the rendering process IF
 	 * you are not doing any pre-processing in your game state's draw() call.
 	 */
-	public var useBufferLocking:Bool = false;
+	public var useBufferLocking = false;
 
 	/**
 	 * Internal helper variable for clearing the cameras each frame.
 	 */
-	var _cameraRect:Rectangle = new Rectangle();
+	var _cameraRect = new Rectangle();
 
 	/**
 	 * Add a new camera object to the game.
@@ -71,13 +70,11 @@ class CameraFrontEnd
 	 *                            `FlxBasics` will not render to it unless you add it to their `cameras` list.
 	 * @return	This FlxCamera instance.
 	 */
-	public function add<T:FlxCamera>(newCamera:T, defaultDrawTarget:Bool = true):T
-	{
+	public function add<T:FlxCamera>(newCamera:T, defaultDrawTarget = true):T {
 		FlxG.game.addChildAt(newCamera.flashSprite, FlxG.game.getChildIndex(FlxG.game._inputContainer));
 
 		list.push(newCamera);
-		if (defaultDrawTarget)
-			defaults.push(newCamera);
+		if (defaultDrawTarget) defaults.push(newCamera);
 
 		newCamera.ID = list.length - 1;
 		cameraAdded.dispatch(newCamera);
@@ -96,37 +93,28 @@ class CameraFrontEnd
 	 *                            `FlxBasics` will not render to it unless you add it to their `cameras` list.
 	 * @return	This FlxCamera instance.
 	 */
-	public function insert<T:FlxCamera>(newCamera:T, position:Int, defaultDrawTarget = true):T
-	{
+	public function insert<T:FlxCamera>(newCamera:T, position:Int, defaultDrawTarget = true):T {
 		// negative numbers are relative to the length (match Array.insert's behavior)
-		if (position < 0)
-			position += list.length;
+		if (position < 0) position += list.length;
 
 		// invalid ranges are added (match Array.insert's behavior)
-		if (position >= list.length)
-			return add(newCamera);
+		if (position >= list.length) return add(newCamera);
 
 		final childIndex = FlxG.game.getChildIndex(list[position].flashSprite);
 		FlxG.game.addChildAt(newCamera.flashSprite, childIndex);
 
 		list.insert(position, newCamera);
-		if (defaultDrawTarget)
-			defaults.push(newCamera);
+		if (defaultDrawTarget) defaults.push(newCamera);
 
-		for (i in position...list.length)
-			list[i].ID = i;
+		for (i in position...list.length) list[i].ID = i;
 
 		cameraAdded.dispatch(newCamera);
 		return newCamera;
 	}
 
-	public function removeAtIndex(index:Int, destroy:Bool = true)
-	{
-		var camera:FlxCamera = list[index];
-		if (camera != null)
-		{
-			remove(camera, destroy);
-		}
+	public function removeAtIndex(index:Int, destroy = true) {
+		final camera:FlxCamera = list[index];
+		if (camera != null) remove(camera, destroy);
 	}
 
 	/**
@@ -135,11 +123,9 @@ class CameraFrontEnd
 	 * @param   camera    The camera you want to remove.
 	 * @param   destroy   Whether to call destroy() on the camera, default value is true.
 	 */
-	public function remove(camera:FlxCamera, destroy:Bool = true):Void
-	{
-		final index:Int = list.indexOf(camera);
-		if (index == -1 || camera == null)
-		{
+	public function remove(camera:FlxCamera, destroy = true):Void {
+		final index = list.indexOf(camera);
+		if (index == -1 || camera == null) {
 			FlxG.log.warn("FlxG.cameras.remove(): The camera you attempted to remove is not a part of the game.");
 			return;
 		}
@@ -153,47 +139,37 @@ class CameraFrontEnd
 	 * @param   defaults  The default draw targets. (If null, the first camera will be used as default.)
 	 * @param   destroy   Whether to destroy the removed cameras. Default value is false.
 	**/
-	public function setOrder(order:Array<FlxCamera>, ?defaults:Null<Array<FlxCamera>>, ?destroy:Bool = false):Void
-	{
-		for (camera in list)
-		{
+	public function setOrder(order:Array<FlxCamera>, ?defaults:Null<Array<FlxCamera>>, ?destroy = false):Void {
+		for (camera in list) {
 			FlxG.game.removeChild(camera.flashSprite);
 
-			if (!order.contains(camera))
-			{
-				if (destroy)
-					camera.destroy();
+			if (!order.contains(camera)) {
+				if (destroy) camera.destroy();
 				cameraRemoved.dispatch(camera);
 			}
 		}
-		var oldList = this.list.copy();
-		this.list.splice(0, this.list.length); // clear but keep references
-		this.defaults.splice(0, this.defaults.length);
 
-		for (i => camera in order)
-		{
-			if (camera == null)
-			{
+		final oldList = this.list.copy();
+		this.list.resize(0); // clear but keep references
+		this.defaults.resize(0);
+
+		for (i => camera in order) {
+			if (camera == null)	{
 				FlxG.log.warn('FlxG.cameras.setOrder(): Camera at index $i is null.');
 				continue;
 			}
 			FlxG.game.addChildAt(camera.flashSprite, FlxG.game.getChildIndex(FlxG.game._inputContainer));
 			camera.ID = list.length;
 			list.push(camera);
-			if (!oldList.contains(camera))
-				cameraAdded.dispatch(camera);
+			if (!oldList.contains(camera)) cameraAdded.dispatch(camera);
 		}
 
-		if (defaults == null && list.length > 0)
-			defaults = [list[0]];
+		if (defaults == null && list.length > 0) defaults = [list[0]];
 
 		if (defaults != null)
-			for (camera in defaults)
-			{
-				if (camera == null)
-					continue;
-				if (list.contains(camera))
-					this.defaults.push(camera);
+			for (camera in defaults) {
+				if (camera == null) continue;
+				if (list.contains(camera)) this.defaults.push(camera);
 			}
 	}
 
@@ -203,30 +179,23 @@ class CameraFrontEnd
 	 * @param   Index     The index of the camera you want to remove.
 	 * @param   Destroy   Whether to call destroy() on the camera, default value is true.
 	 */
-	public function removeAt(index:Int, destroy:Bool = true):Void
-	{
-		if (index < 0 || index >= list.length)
-		{
+	public function removeAt(index:Int, destroy = true):Void {
+		if (index < 0 || index >= list.length) {
 			FlxG.log.warn("FlxG.cameras.removeAt(): The camera you attempted to remove is not a part of the game.");
 			return;
 		}
 
-		var camera = list[index];
+		final camera = list[index];
 
 		FlxG.game.removeChild(camera.flashSprite);
 		list.splice(index, 1);
 		defaults.remove(camera);
 
 		if (FlxG.render.tile)
-		{
 			for (i in 0...list.length)
-			{
 				list[i].ID = i;
-			}
-		}
 
-		if (destroy)
-			camera.destroy();
+		if (destroy) camera.destroy();
 
 		cameraRemoved.dispatch(camera);
 	}
@@ -237,8 +206,7 @@ class CameraFrontEnd
 	 * @param   Camera    The camera you want to find the index of.
 	 * @return  The index of the camera in the list.
 	**/
-	public inline function indexOf(camera:FlxCamera):Int
-	{
+	public inline function indexOf(camera:FlxCamera):Int {
 		return list.indexOf(camera);
 	}
 
@@ -248,8 +216,7 @@ class CameraFrontEnd
 	 * @param   Camera    The camera you want to check for.
 	 * @return  True if the camera is in the list.
 	**/
-	public inline function contains(camera:FlxCamera):Bool
-	{
+	public inline function contains(camera:FlxCamera):Bool {
 		return list.contains(camera);
 	}
 
@@ -262,20 +229,15 @@ class CameraFrontEnd
 	 * @param value  If false, FlxBasics will not render to it unless you add it to their `cameras` list.
 	 * @since 4.9.0
 	 */
-	public function setDefaultDrawTarget(camera:FlxCamera, value:Bool)
-	{
-		if (!list.contains(camera))
-		{
+	public function setDefaultDrawTarget(camera:FlxCamera, value:Bool) {
+		if (!list.contains(camera)) {
 			FlxG.log.warn("FlxG.cameras.setDefaultDrawTarget(): The specified camera is not a part of the game.");
 			return;
 		}
 
-		var index = defaults.indexOf(camera);
-
-		if (value && index == -1)
-			defaults.push(camera);
-		else if (!value)
-			defaults.splice(index, 1);
+		final index = defaults.indexOf(camera);
+		if (value && index == -1) defaults.push(camera);
+		else if (!value) defaults.splice(index, 1);
 	}
 
 	/**
@@ -284,16 +246,13 @@ class CameraFrontEnd
 	 *
 	 * @param	newCamera	Optional; specify a specific camera object to be the new main camera.
 	 */
-	public function reset(?newCamera:FlxCamera):Void
-	{
+	public function reset(?newCamera:FlxCamera):Void {
 		FlxG.camera = null;
 
 		cameraReset.dispatch(newCamera);
-		while (list.length > 0)
-			remove(list[0]);
+		while (list.length > 0) remove(list[0]);
 
-		if (newCamera == null)
-			newCamera = new FlxCamera();
+		newCamera ??= new FlxCamera();
 
 		FlxG.camera = add(newCamera);
 		newCamera.ID = 0;
@@ -305,34 +264,28 @@ class CameraFrontEnd
 	/**
 	 * All screens are filled with this color and gradually return to normal.
 	 *
-	 * @param	Color		The color you want to use.
-	 * @param	Duration	How long it takes for the flash to fade.
-	 * @param	OnComplete	A function you want to run when the flash finishes.
-	 * @param	Force		Force the effect to reset.
+	 * @param	color		The color you want to use.
+	 * @param	duration	How long it takes for the flash to fade.
+	 * @param	onComplete	A function you want to run when the flash finishes.
+	 * @param	force		Force the effect to reset.
 	 */
-	public function flash(Color:FlxColor = FlxColor.WHITE, Duration:Float = 1, ?OnComplete:Void->Void, Force:Bool = false):Void
-	{
+	public function flash(color = FlxColor.WHITE, duration = 1., ?onComplete:Void -> Void, force = false):Void {
 		for (camera in list)
-		{
-			camera.flash(Color, Duration, OnComplete, Force);
-		}
+			camera.flash(color, duration, onComplete, force);
 	}
 
 	/**
 	 * The screen is gradually filled with this color.
 	 *
-	 * @param	Color		The color you want to use.
-	 * @param	Duration	How long it takes for the fade to finish.
-	 * @param 	FadeIn 		True fades from a color, false fades to it.
-	 * @param	OnComplete	A function you want to run when the fade finishes.
-	 * @param	Force		Force the effect to reset.
+	 * @param	color		The color you want to use.
+	 * @param	duration	How long it takes for the fade to finish.
+	 * @param 	fadeIn 		True fades from a color, false fades to it.
+	 * @param	onComplete	A function you want to run when the fade finishes.
+	 * @param	force		Force the effect to reset.
 	 */
-	public function fade(Color:FlxColor = FlxColor.BLACK, Duration:Float = 1, FadeIn:Bool = false, ?OnComplete:Void->Void, Force:Bool = false):Void
-	{
+	public function fade(color = FlxColor.BLACK, duration = 1., fadeIn = false, ?onComplete:Void -> Void, force = false):Void {
 		for (camera in list)
-		{
-			camera.fade(Color, Duration, FadeIn, OnComplete, Force);
-		}
+			camera.fade(color, duration, fadeIn, onComplete, force);
 	}
 
 	/**
@@ -344,17 +297,13 @@ class CameraFrontEnd
 	 * @param	Force		Force the effect to reset (default = true, unlike flash() and fade()!).
 	 * @param	Axes		On what axes to shake. Default value is XY / both.
 	 */
-	public function shake(Intensity:Float = 0.05, Duration:Float = 0.5, ?OnComplete:Void->Void, Force:Bool = true, ?Axes:FlxAxes):Void
-	{
+	public function shake(intensity = .05, duration = .5, ?OnComplete:Void->Void, Force:Bool = true, ?Axes:FlxAxes):Void {
 		for (camera in list)
-		{
-			camera.shake(Intensity, Duration, OnComplete, Force, Axes);
-		}
+			camera.shake(intensity, duration, OnComplete, Force, Axes);
 	}
 
 	@:allow(flixel.FlxG)
-	function new()
-	{
+	private function new() {
 		FlxCamera._defaultCameras = defaults;
 	}
 
@@ -362,84 +311,54 @@ class CameraFrontEnd
 	 * Called by the game object to lock all the camera buffers and clear them for the next draw pass.
 	 */
 	@:allow(flixel.FlxGame)
-	inline function lock():Void
-	{
-		for (camera in list)
-		{
+	inline function lock():Void {
+		for (camera in list) {
 			if (camera == null || !camera.exists || !camera.visible)
-			{
 				continue;
-			}
 
-			if (FlxG.render.blit)
-			{
+			if (FlxG.render.blit) {
 				camera.checkResize();
-
-				if (useBufferLocking)
-				{
-					camera.buffer.lock();
-				}
+				if (useBufferLocking) camera.buffer.lock();
 			}
 
-			if (FlxG.render.tile)
-			{
+			if (FlxG.render.tile) {
 				camera.clearDrawStack();
 				camera.canvas.graphics.clear();
-				// Clearing camera's debug sprite
-				#if FLX_DEBUG
+
+				#if FLX_DEBUG // Clearing camera's debug sprite
 				camera.debugLayer.graphics.clear();
 				#end
 			}
 
-			if (FlxG.render.blit)
-			{
+			if (FlxG.render.blit) {
 				camera.fill(camera.bgColor, camera.useBgAlphaBlending);
 				camera.screen.dirty = true;
-			}
-			else
-			{
+			} else
 				camera.fill(camera.bgColor.rgb, camera.useBgAlphaBlending, camera.bgColor.alphaFloat);
-			}
 		}
 	}
 
 	@:allow(flixel.FlxGame)
-	inline function render():Void
-	{
+	inline function render():Void {
 		if (FlxG.render.tile)
-		{
 			for (camera in list)
-			{
 				if (camera != null && camera.exists && camera.visible)
-				{
 					camera.render();
-				}
-			}
-		}
 	}
 
 	/**
 	 * Called by the game object to draw the special FX and unlock all the camera buffers.
 	 */
 	@:allow(flixel.FlxGame)
-	inline function unlock():Void
-	{
-		for (camera in list)
-		{
+	inline function unlock():Void {
+		for (camera in list) {
 			if ((camera == null) || !camera.exists || !camera.visible)
-			{
 				continue;
-			}
 
 			camera.drawFX();
 
-			if (FlxG.render.blit)
-			{
-				if (useBufferLocking)
-				{
-					camera.buffer.unlock();
-				}
-
+			if (FlxG.render.blit) {
+				if (useBufferLocking) camera.buffer.unlock();
 				camera.screen.dirty = true;
 			}
 		}
@@ -449,41 +368,29 @@ class CameraFrontEnd
 	 * Called by the game object to update the cameras and their tracking/special effects logic.
 	 */
 	@:allow(flixel.FlxGame)
-	inline function update(elapsed:Float):Void
-	{
+	inline function update(elapsed:Float):Void {
 		for (camera in list)
-		{
 			if (camera != null && camera.exists && camera.active)
-			{
 				camera.update(elapsed);
-			}
-		}
 	}
 
 	/**
 	 * Resizes and moves cameras when the game resizes (onResize signal).
 	 */
 	@:allow(flixel.FlxGame)
-	function resize():Void
-	{
+	private function resize():Void {
 		for (camera in list)
-		{
 			camera.onResize();
-		}
 	}
 
-	function get_bgColor():FlxColor
-	{
+	private function get_bgColor():FlxColor {
 		return (FlxG.camera == null) ? FlxColor.BLACK : FlxG.camera.bgColor;
 	}
 
-	function set_bgColor(Color:FlxColor):FlxColor
-	{
+	private function set_bgColor(color:FlxColor):FlxColor {
 		for (camera in list)
-		{
-			camera.bgColor = Color;
-		}
+			camera.bgColor = color;
 
-		return Color;
+		return color;
 	}
 }

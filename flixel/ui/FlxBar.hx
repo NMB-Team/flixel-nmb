@@ -16,8 +16,6 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxGradient;
 import flixel.util.FlxStringUtil;
 
-// TODO: better handling bars with borders (don't take border into account while drawing its front).
-
 /**
  * FlxBar is a quick and easy way to create a graphical bar which can
  * be used as part of your UI/HUD, or positioned next to a sprite.

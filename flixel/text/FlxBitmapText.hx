@@ -295,7 +295,6 @@ class FlxBitmapText extends FlxSprite
 		}
 	}
 
-	// TODO: Make these all local statics when min haxe-ver is 4.3
 	static final bgColorTransformDrawHelper = new ColorTransform();
 	static final borderColorTransformDrawHelper = new ColorTransform();
 	static final textColorTransformDrawHelper = new ColorTransform();
@@ -1290,7 +1289,6 @@ class FlxBitmapText extends FlxSprite
 		}
 	}
 
-	// TODO: Make this a local statics when min haxe-ver is 4.3
 	static final matrixBlitHelper = new FlxMatrix();
 	function blitText(posX:Int, posY:Int, isFront:Bool = true, ?bitmap:BitmapData):Void
 	{
@@ -1672,7 +1670,6 @@ abstract CharList(Array<Float>) from Array<Float>
 		this = [];
 	}
 
-	// TODO: deprecate
 	overload public inline extern function push(item:Float)
 	{
 		this.push(item);
@@ -1699,12 +1696,12 @@ abstract CharList(Array<Float>) from Array<Float>
 		this.resize(0);
 	}
 
-	@:arrayAccess // TODO: deprecate
+	@:arrayAccess
 	public inline function get(index:Int):Float
 	{
 		return this[index];
 	}
-	@:arrayAccess // TODO: deprecate
+	@:arrayAccess
 	public inline function set(index:Int, value:Float):Float
 	{
 		return this[index] = value;

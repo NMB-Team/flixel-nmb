@@ -10,16 +10,13 @@
 	"defineCombinations": [
 		["FLX_JOYSTICK_API"],
 		["FLX_GAMEINPUT_API"],
-		["flash", "web"],
 		["html5", "js", "web"],
 		["desktop", "sys"],
 		["android", "cpp", "mobile"]
 	],
 	"exclude": {
 		"all": [
-			"TestSuite",
-			"/export/",
-			"tests/unit/bin/"
+			"/export/"
 		],
 		"AvoidStarImport": [
 			"flixel.math.FlxRandomTest"
@@ -124,9 +121,6 @@
 		},
 		{
 			"type": "PublicAccessor"
-		},
-		{
-			"type": "RedundantModifier"
 		}
 	]
 }

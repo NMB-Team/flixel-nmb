@@ -823,8 +823,10 @@ class FlxCamera extends FlxBasic {
 					buffer.copyPixels(pixels, sourceRect, _helperPoint, null, null, true);
 				}
 			} else if (frame != null) {
-				// TODO: fix this case for zoom less than initial zoom...
-				frame.paint(buffer, destPoint, true);
+				_helperMatrix.identity();
+				_helperMatrix.translate(destPoint.x + frame.offset.x, destPoint.y + frame.offset.y);
+				if (_useBlitMatrix) _helperMatrix.concat(_blitMatrix);
+				buffer.draw(frame.parent.bitmap, _helperMatrix, null, null, null, smoothing || (antialiasing && FlxG.allowAntialiasing));
 			}
 		} else {
 			_helperMatrix.identity();
@@ -859,7 +861,7 @@ class FlxCamera extends FlxBasic {
 			var tempX:Float, tempY:Float;
 			var i = 0;
 			final bounds = renderRect.set();
-			drawVertices.splice(0, drawVertices.length);
+			drawVertices.resize(0);
 
 			while (i < verticesLength) {
 				tempX = position.x + vertices[i];
@@ -1147,6 +1149,7 @@ class FlxCamera extends FlxBasic {
 		// keep point within bounds
 		scrollPos.x = FlxMath.bound(scrollPos.x, minX, maxX);
 		scrollPos.y = FlxMath.bound(scrollPos.y, minY, maxY);
+
 		return scrollPos;
 	}
 
@@ -1212,7 +1215,7 @@ class FlxCamera extends FlxBasic {
 		// Update the "flash" special effect
 		if (_fxFlashAlpha > 0) {
 			_fxFlashAlpha -= elapsed / _fxFlashDuration;
-			if ((_fxFlashAlpha <= 0) && (_fxFlashComplete != null)) _fxFlashComplete();
+			if (_fxFlashAlpha <= 0 && _fxFlashComplete != null) _fxFlashComplete();
 		}
 	}
 

@@ -65,12 +65,11 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T> {
 	}
 
 	public function putUnsafe(obj:T):Void {
-		// TODO: remove null check and make private?
-		if (obj != null)
-			putHelper(obj);
+		if (obj == null) return;
+		putHelper(obj);
 	}
 
-	function putHelper(obj:T) {
+	private function putHelper(obj:T) {
 		obj.destroy();
 		_pool[_count++] = obj;
 
@@ -151,7 +150,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T> {
 		_leakCount[stack]--;
 	}
 
-	function stackToString(stack:haxe.CallStack.StackItem) {
+	private function stackToString(stack:haxe.CallStack.StackItem) {
 		return switch (stack) {
 			case FilePos(_, file, line, _): '$file[$line]';
 			default: null;

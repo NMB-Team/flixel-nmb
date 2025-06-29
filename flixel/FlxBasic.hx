@@ -218,7 +218,6 @@ class FlxBasic implements IFlxDestroyable {
 	}
 
 	// Only needed for FlxSpriteContainer.SpriteContainer
-	// TODO: remove this when FlxSpriteContainer is removed
 	@:noCompletion function get_container() {
 		return this.container;
 	}

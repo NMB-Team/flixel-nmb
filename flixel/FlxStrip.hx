@@ -1,6 +1,8 @@
 package flixel;
 
 import flixel.graphics.tile.FlxDrawTrianglesItem.DrawData;
+import flixel.util.FlxArrayUtil;
+import flixel.util.FlxStringUtil;
 
 /**
  * A very basic rendering component which uses `drawTriangles()`.
@@ -15,34 +17,33 @@ class FlxStrip extends FlxSprite {
 	/**
 	 * A `Vector` of floats where each pair of numbers is treated as a coordinate location (an x, y pair).
 	 */
-	public var vertices = new DrawData<Float>();
+	public var vertices:DrawData<Float> = [];
 
 	/**
 	 * A `Vector` of integers or indexes, where every three indexes define a triangle.
 	 */
-	public var indices = new DrawData<Int>();
+	public var indices:DrawData<Int> = [];
 
 	/**
 	 * A `Vector` of normalized coordinates used to apply texture mapping.
 	 */
-	public var uvtData = new DrawData<Float>();
+	public var uvtData:DrawData<Float> = [];
 
-	public var colors = new DrawData<Int>();
+	public var colors:DrawData<Int> = [];
 
 	public var repeat = false;
 
 	override public function destroy():Void {
-		vertices = null;
-		indices = null;
-		uvtData = null;
-		colors = null;
+		vertices = FlxArrayUtil.clearArray(vertices);
+		indices = FlxArrayUtil.clearArray(indices);
+		uvtData = FlxArrayUtil.clearArray(uvtData);
+		colors = FlxArrayUtil.clearArray(colors);
 
 		super.destroy();
 	}
 
-	// TODO: check this for cases when zoom is less than initial zoom...
 	override public function draw():Void {
-		if (alpha == 0 || graphic == null || vertices == null) return;
+		if (alpha <= 0 || graphic == null || FlxStringUtil.isNullOrEmpty(vertices)) return;
 
 		final cameras = getCamerasLegacy();
 		for (camera in cameras) {

@@ -209,7 +209,7 @@ class FlxTimer implements IFlxDestroyable {
 	}
 
 	@:allow(flixel.util.FlxTimerManager)
-	function onLoopFinished():Void {
+	private function onLoopFinished():Void {
 		if (finished) cancel();
 
 		if (onComplete != null) onComplete(this);
@@ -296,7 +296,7 @@ class FlxTimerManager extends FlxBasic {
 	 * @param   timer  The FlxTimer you want to add to the manager.
 	 */
 	@:allow(flixel.util.FlxTimer)
-	function add(timer:FlxTimer):Void {
+	private function add(timer:FlxTimer):Void {
 		_timers.push(timer);
 	}
 
@@ -307,7 +307,7 @@ class FlxTimerManager extends FlxBasic {
 	 * @param   timer  The FlxTimer you want to remove from the manager.
 	 */
 	@:allow(flixel.util.FlxTimer)
-	function remove(timer:FlxTimer):Void {
+	private function remove(timer:FlxTimer):Void {
 		FlxArrayUtil.fastSplice(_timers, timer);
 	}
 

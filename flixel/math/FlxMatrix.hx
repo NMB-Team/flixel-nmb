@@ -7,8 +7,7 @@ import openfl.geom.Matrix;
  * It mostly copies Matrix class, but with some additions for
  * faster rotation by 90 degrees.
  */
-class FlxMatrix extends Matrix
-{
+class FlxMatrix extends Matrix {
 	/**
 	 * Rotates this matrix, but takes the values of sine and cosine,
 	 * so it might be useful when you rotate multiple matrices by the same angle
@@ -16,8 +15,7 @@ class FlxMatrix extends Matrix
 	 * @param	sin	The sine value for rotation angle
 	 * @return	this transformed matrix
 	 */
-	public inline function rotateWithTrig(cos:Float, sin:Float):FlxMatrix
-	{
+	public inline function rotateWithTrig(cos:Float, sin:Float):FlxMatrix {
 		final a1 = a * cos - b * sin;
 		b = a * sin + b * cos;
 		a = a1;
@@ -37,8 +35,7 @@ class FlxMatrix extends Matrix
 	 * Adds 180 degrees to rotation of this matrix
 	 * @return	rotated matrix
 	 */
-	public inline function rotateBy180():FlxMatrix
-	{
+	public inline function rotateBy180():FlxMatrix {
 		this.setTo(-a, -b, -c, -d, -tx, -ty);
 		return this;
 	}
@@ -47,8 +44,7 @@ class FlxMatrix extends Matrix
 	 * Adds 90 degrees to rotation of this matrix
 	 * @return	rotated matrix
 	 */
-	public inline function rotateByPositive90():FlxMatrix
-	{
+	public inline function rotateByPositive90():FlxMatrix {
 		this.setTo(-b, a, -d, c, -ty, tx);
 		return this;
 	}
@@ -57,8 +53,7 @@ class FlxMatrix extends Matrix
 	 * Subtract 90 degrees from rotation of this matrix
 	 * @return	rotated matrix
 	 */
-	public inline function rotateByNegative90():FlxMatrix
-	{
+	public inline function rotateByNegative90():FlxMatrix {
 		this.setTo(b, -a, d, -c, ty, -tx);
 		return this;
 	}
@@ -73,8 +68,7 @@ class FlxMatrix extends Matrix
 	 *
 	 * @since 4.3.0
 	 */
-	public inline function transformX(px:Float, py:Float):Float
-	{
+	public inline function transformX(px:Float, py:Float):Float {
 		return px * a + py * c + tx;
 	}
 
@@ -88,8 +82,7 @@ class FlxMatrix extends Matrix
 	 *
 	 * @since 4.3.0
 	 */
-	public inline function transformY(px:Float, py:Float):Float
-	{
+	public inline function transformY(px:Float, py:Float):Float {
 		return px * b + py * d + ty;
 	}
 }

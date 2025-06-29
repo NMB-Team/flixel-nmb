@@ -231,8 +231,7 @@ class FlxLayer extends FlxBasic {
 		camera._currentDrawItem = drawItem;
 	}
 
-	public override function draw() {
-		// TODO: support multiple cameras
+	override public function draw() {
 		if (_headTiles != null)
 			injectDrawCall(camera, _headTiles);
 	}

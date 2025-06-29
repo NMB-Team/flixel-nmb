@@ -104,10 +104,18 @@ class FlxDestroyUtil {
 			parent.removeChild(child);
 		return null;
 	}
+
+	@:access(openfl.text.TextField)
+	public static inline function removeEventListeners(textField:openfl.text.TextField) {
+		textField.removeEventListener(FocusEvent.FOCUS_IN, textField.this_onFocusIn);
+		textField.removeEventListener(FocusEvent.FOCUS_OUT, textField.this_onFocusOut);
+		textField.removeEventListener(KeyboardEvent.KEY_DOWN, textField.this_onKeyDown);
+		textField.removeEventListener(MouseEvent.MOUSE_DOWN, textField.this_onMouseDown);
+		textField.removeEventListener(MouseEvent.MOUSE_WHEEL, textField.this_onMouseWheel);
+	}
 	#end
 }
 
-interface IFlxDestroyable
-{
+interface IFlxDestroyable {
 	function destroy():Void;
 }

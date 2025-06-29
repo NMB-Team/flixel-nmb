@@ -5,8 +5,7 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 /**
  * @author Zaphod
  */
-class FlxBaseAnimation implements IFlxDestroyable
-{
+class FlxBaseAnimation implements IFlxDestroyable {
 	/**
 	 * Animation controller this animation belongs to
 	 */
@@ -25,37 +24,31 @@ class FlxBaseAnimation implements IFlxDestroyable
 	/**
 	 * Keeps track of the current index into the tile sheet based on animation or rotation.
 	 */
-	public var curIndex(default, set):Int = 0;
+	public var curIndex(default, set) = 0;
 
-	function set_curIndex(Value:Int):Int
-	{
-		curIndex = Value;
+	inline function set_curIndex(value:Int):Int {
+		curIndex = value;
 
 		if (parent != null && parent._curAnim == this)
-		{
-			parent.frameIndex = Value;
-		}
+			parent.frameIndex = value;
 
-		return Value;
+		return value;
 	}
 
-	public function new(Parent:FlxAnimationController, Name:String, ?Prefix:Null<String>)
-	{
-		parent = Parent;
-		name = Name;
-		prefix = Prefix;
+	public function new(parent:FlxAnimationController, name:String, ?prefix:Null<String>) {
+		this.parent = parent;
+		this.name = name;
+		this.prefix = prefix;
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		parent = null;
 		name = null;
 	}
 
 	public function update(elapsed:Float):Void {}
 
-	public function clone(Parent:FlxAnimationController):FlxBaseAnimation
-	{
+	public function clone(Parent:FlxAnimationController):FlxBaseAnimation {
 		return null;
 	}
 }

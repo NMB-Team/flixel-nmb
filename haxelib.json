@@ -2,10 +2,10 @@
 	"name": "flixel",
 	"url" : "https://github.com/HaxeFlixel/flixel",
 	"license": "MIT",
-	"tags": ["game", "openfl", "flash", "html5", "cpp", "android", "ios", "cross"],
+	"tags": ["game", "openfl", "html5", "cpp", "android", "ios", "cross"],
 	"description": "HaxeFlixel is a 2D game engine based on OpenFL that delivers cross-platform games.",
-	"version": "6.3.0",
+	"version": "6.4.0",
 	"releasenote": "Prevent more BMFont xml crashes",
-	"contributors": ["haxeflixel", "Gama11", "GeoKureli"],
+	"contributors": ["haxeflixel", "Gama11", "GeoKureli", "D_TWO_TWO"],
 	"dependencies": {}
 }

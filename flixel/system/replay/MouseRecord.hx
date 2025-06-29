@@ -5,8 +5,7 @@ import flixel.input.FlxInput.FlxInputState;
 /**
  * A helper class for the frame records, part of the replay/demo/recording system.
  */
-class MouseRecord
-{
+class MouseRecord {
 	public var x(default, null):Int;
 	public var y(default, null):Int;
 
@@ -23,13 +22,12 @@ class MouseRecord
 	/**
 	 * Instantiate a new mouse input record.
 	 *
-	 * @param   X        The main X value of the mouse in screen space.
-	 * @param   Y        The main Y value of the mouse in screen space.
-	 * @param   Button   The state of the left mouse button.
-	 * @param   Wheel    The state of the mouse wheel.
+	 * @param   x        The main X value of the mouse in screen space.
+	 * @param   y        The main Y value of the mouse in screen space.
+	 * @param   button   The state of the left mouse button.
+	 * @param   wheel    The state of the mouse wheel.
 	 */
-	public function new(x:Int, y:Int, button:FlxInputState, wheel:Int)
-	{
+	public function new(x:Int, y:Int, button:FlxInputState, wheel:Int) {
 		this.x = x;
 		this.y = y;
 		this.button = button;

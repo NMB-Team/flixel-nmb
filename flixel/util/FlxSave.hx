@@ -312,7 +312,7 @@ class FlxSave implements IFlxDestroyable {
 	 *
 	 * @return	Whether the shared object was bound yet.
 	 */
-	function checkStatus():Bool {
+	private function checkStatus():Bool {
 		switch (status) {
 			case BOUND(name, path): return true;
 			case EMPTY: FlxG.log.warn("You must call save.bind() before you can read or write data.");
@@ -327,7 +327,7 @@ class FlxSave implements IFlxDestroyable {
 		return false;
 	}
 
-	function get_name() {
+	private function get_name() {
 		return switch (status) {
 			// can't use the pattern var `name` or it will break in 4.0.5
 			case BOUND(n, _): n;
@@ -335,7 +335,7 @@ class FlxSave implements IFlxDestroyable {
 		}
 	}
 
-	function get_path() {
+	private function get_path() {
 		return switch (status) {
 			// can't use the pattern var `path` or it will break in 4.0.5
 			case BOUND(_, p): p;
@@ -434,8 +434,7 @@ private class FlxSharedObject extends SharedObject {
 		return fullPath;
 	}
 
-	static function onExit(_)
-	{
+	static function onExit(_) {
 		for (sharedObject in all)
 			sharedObject.flush();
 	}
@@ -443,8 +442,7 @@ private class FlxSharedObject extends SharedObject {
 	/**
 	 * Returns the company name listed in the Project.xml
 	 */
-	static function getDefaultLocalPath()
-	{
+	static function getDefaultLocalPath() {
 		final meta = openfl.Lib.current.stage.application.meta;
 		var path = meta["company"];
 		if (path == null || path == "")

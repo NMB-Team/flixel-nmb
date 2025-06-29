@@ -11,8 +11,7 @@ using flixel.util.FlxArrayUtil;
  * This class is used internally by `flixel.system.macros.FlxAssets`
  * @see `flixel.system.macros.FlxAssets`
  */
-class FlxAssetPaths
-{
+class FlxAssetPaths {
 	/**
 	 * Searches through the specified directory and adds a static public field for every file found.
 	 *
@@ -25,11 +24,8 @@ class FlxAssetPaths
 	 *                          name with an array of every file in the directory
 	 * @return  The fields are added to the class using this build macro
 	 */
-	public static function buildFileReferences(directory = "assets/", subDirectories = false, ?include:EReg, ?exclude:EReg,
-			?rename:String->Null<String>, listField = "allFiles"):Array<Field>
-	{
-		if (!directory.endsWith("/"))
-			directory += "/";
+	public static function buildFileReferences(directory = "assets/", subDirectories = false, ?include:EReg, ?exclude:EReg, ?rename:String -> Null<String>, listField = "allFiles"):Array<Field> {
+		if (!directory.endsWith("/")) directory += "/";
 
 		Context.registerModuleDependency(Context.getLocalModule(), directory);
 
@@ -40,35 +36,26 @@ class FlxAssetPaths
 
 		// create static list of all files
 		final allFiles = [];
-		for (fileRef in fileReferences)
-			allFiles.push(macro $i{fileRef.name});
+		for (fileRef in fileReferences) allFiles.push(macro $i{fileRef.name});
 
 		// warns on any duplicates
 		removeDuplicates(fileReferences);
 
 		final fields = Context.getBuildFields();
 		var listConflictingPath:String = null;
-		for (fileRef in fileReferences)
-		{
+		for (fileRef in fileReferences) {
 			// create new fields based on file references!
 			fields.push(fileRef.createField());
 
 			// make sure no fields conflict with the list field name
-			if (listField != "" && listConflictingPath == null)
-			{
+			if (listField != "" && listConflictingPath == null) {
 				if (fileRef.name == listField)
 					listConflictingPath = fileRef.value;
 			}
 		}
 
-		if (listField != "")
-		{
-			if (listConflictingPath != null)
-			{
-				Context.warning('Could not add field "$listField" due to conflicting file "$listConflictingPath"', Context.currentPos());
-			}
-			else
-			{
+		if (listField != "") {
+			if (listConflictingPath == null) {
 				// add an array with every file
 				fields.push({
 					name: listField,
@@ -77,7 +64,8 @@ class FlxAssetPaths
 					kind: FieldType.FVar(macro:Array<String>, macro $a{allFiles}),
 					pos: Context.currentPos()
 				});
-			}
+			} else
+				Context.warning('Could not add field "$listField" due to conflicting file "$listConflictingPath"', Context.currentPos());
 		}
 
 		return fields;
@@ -90,8 +78,7 @@ class FlxAssetPaths
 	 * @param   include         Regular Expression used to allow files based by name
 	 * @param   exclude         Regular Expression used to omit files based by name
 	 */
-	static inline function getFileReferences(directory:String, subDirectories = false, ?include:EReg, ?exclude:EReg):Array<FileReference>
-	{
+	static inline function getFileReferences(directory:String, subDirectories = false, ?include:EReg, ?exclude:EReg):Array<FileReference> {
 		return addFileReferences([], directory, subDirectories, include, exclude);
 	}
 
@@ -105,32 +92,21 @@ class FlxAssetPaths
 	 * @param   include         Regular Expression used to allow files based by name
 	 * @param   exclude         Regular Expression used to omit files based by name
 	 */
-	static function addFileReferences(fileReferences:Array<FileReference>, directory:String, subDirectories = false, ?include:EReg, ?exclude:EReg):Array<FileReference>
-	{
-		var resolvedPath = #if (ios || tvos) "../assets/" + directory #else directory #end;
-		var directoryInfo = FileSystem.readDirectory(resolvedPath);
-		for (name in directoryInfo)
-		{
-			var path = resolvedPath + name;
+	static function addFileReferences(fileReferences:Array<FileReference>, directory:String, subDirectories = false, ?include:EReg, ?exclude:EReg):Array<FileReference> {
+		final resolvedPath = #if (ios || tvos) "../assets/" + directory #else directory #end;
+		final directoryInfo = FileSystem.readDirectory(resolvedPath);
+		for (name in directoryInfo) {
+			final path = resolvedPath + name;
 
-			if (!FileSystem.isDirectory(path))
-			{
+			if (!FileSystem.isDirectory(path)) {
 				// ignore invisible files
-				if (name.startsWith("."))
-					continue;
-
-				if (include != null && !include.match(path))
-					continue;
-
-				if (exclude != null && exclude.match(path))
-					continue;
+				if (name.startsWith(".")) continue;
+				if (include != null && !include.match(path)) continue;
+				if (exclude != null && exclude.match(path)) continue;
 
 				fileReferences.push(new FileReference(path));
-			}
-			else if (subDirectories)
-			{
+			} else if (subDirectories)
 				addFileReferences(fileReferences, directory + name + "/", true, include, exclude);
-			}
 		}
 
 		return fileReferences;
@@ -139,18 +115,15 @@ class FlxAssetPaths
 	/**
 	 * Creates a name for each file, removes null and warns on invalid names
 	 */
-	static function nameFileReferences(fileReferences:Array<FileReference>, ?rename:String->Null<String>)
-	{
+	static function nameFileReferences(fileReferences:Array<FileReference>, ?rename:String -> Null<String>) {
 		var i = fileReferences.length;
-		while (i-- > 0)
-		{
+		while (i-- > 0) {
 			final fileRef = fileReferences[i];
 
 			// create field name
 			fileRef.createName(rename);
 
-			if (fileRef.name == null)
-				// remove if null name
+			if (fileRef.name == null) // remove if null name
 				fileReferences.splice(i, 1);
 		}
 	}
@@ -158,11 +131,9 @@ class FlxAssetPaths
 	/**
 	 * Searches for, removes and warns of all duplicate field names
 	 */
-	static function removeDuplicates(fileReferences:Array<FileReference>)
-	{
-		var ignoredFiles = new Map<String, Array<FileReference>>();
-		function addIgnored(file:FileReference)
-		{
+	static function removeDuplicates(fileReferences:Array<FileReference>) {
+		final ignoredFiles = new Map<String, Array<FileReference>>();
+		function addIgnored(file:FileReference) {
 			if (!ignoredFiles.exists(file.name))
 				ignoredFiles[file.name] = [file];
 			else
@@ -171,17 +142,14 @@ class FlxAssetPaths
 
 		// loop backward so we can delete duplicates
 		var i = fileReferences.length;
-		while (i-- > 0)
-		{
+		while (i-- > 0) {
 			final file = fileReferences[i];
 			var j = fileReferences.length;
-			while (j-- > 0)
-			{
+			while (j-- > 0) {
 				final otherFile = fileReferences[j];
 				final sameName = i != j && otherFile.name == file.name;
 				// ignore the file nested deeper
-				if (sameName && otherFile.value.split("/").length <= file.value.split("/").length)
-				{
+				if (sameName && otherFile.value.split("/").length <= file.value.split("/").length) {
 					fileReferences.splice(i, 1);
 					addIgnored(file);
 					break;
@@ -191,15 +159,11 @@ class FlxAssetPaths
 
 		// Show warnings for ignored files, if were not doing unit tests
 		#if !FLX_UNIT_TEST
-		for (name=>files in ignoredFiles)
-		{
-			if (files.length == 1)
-			{
+		for (name => files in ignoredFiles) {
+			if (files.length == 1) {
 				final file = files[0];
 				file.warn('Duplicate files named "$name" ignoring "${file.value}"');
-			}
-			else
-			{
+			} else {
 				Context.warning('Multiple files named "$name"', Context.currentPos());
 				for (file in files)
 					file.warn('... ignoring "${file.value}"');
@@ -209,12 +173,10 @@ class FlxAssetPaths
 	}
 }
 
-private class FileReference
-{
-	static var valid = ~/^[_A-Za-z]\w*$/;
+private class FileReference {
+	static final valid = ~/^[_A-Za-z]\w*$/;
 
-	static function defaultNamer(path:String)
-	{
+	static function defaultNamer(path:String) {
 		return path.split("/").pop();
 	}
 
@@ -222,8 +184,7 @@ private class FileReference
 	public var documentation(default, null):String;
 	public var name(default, null):String = null;
 
-	public function new(value:String)
-	{
+	public function new(value:String) {
 		this.value = value;
 		this.documentation = "`\"" + value + "\"` (auto generated).";
 	}
@@ -232,14 +193,11 @@ private class FileReference
 	 * Creates the name for this field using the supplied method and the path.
 	 * @param   namer  Function that takes a path and returns a haxe field name.
 	 */
-	public function createName(?namer:(String)->Null<String>)
-	{
-		if (namer == null)
-			namer = defaultNamer;
+	public function createName(?namer:(String)->Null<String>) {
+		namer ??= defaultNamer;
 
 		name = namer(value);
-		if (name == null)
-			return;
+		if (name == null) return;
 
 		validateName();
 	}
@@ -247,21 +205,18 @@ private class FileReference
 	/**
 	 * Replaces hyphens, spaces and periods, and warns if the resulting name is not a valid haxe identifier.
 	 */
-	public function validateName()
-	{
+	public function validateName() {
 		// replace some forbidden names to underscores, since variables cannot have these symbols.
 		name = name.split("-").join("_").split(" ").join("_").split(".").join("__");
 
 		// warn if the name is invalid
-		if (!valid.match(name)) // #1796
-		{
+		if (!valid.match(name)) { // #1796 
 			warnAsset('Invalid name: $name for file: $value', value);
 			name = null;
 		}
 	}
 
-	public function createField():Field
-	{
+	public function createField():Field {
 		return {
 			name: name,
 			doc: documentation,
@@ -271,13 +226,11 @@ private class FileReference
 		};
 	}
 
-	public inline function warn(msg:String)
-	{
+	public inline function warn(msg:String) {
 		warnAsset(msg, value);
 	}
 
-	public static inline function warnAsset(msg:String, filePath:String)
-	{
+	public static inline function warnAsset(msg:String, filePath:String) {
 		Context.warning(msg, Context.makePosition({min: 0, max: 0, file: filePath}));
 	}
 }

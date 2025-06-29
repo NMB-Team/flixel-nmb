@@ -14,8 +14,7 @@ import openfl.geom.Point;
  * Automatically accounts for parallax scrolling, etc.
  */
 @:allow(flixel.input.touch.FlxTouchManager)
-class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInput
-{
+class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInput {
 	/**
 	 * The _unique_ ID of this touch. You should not make not any further assumptions
 	 * about this value - IDs are not guaranteed to start from 0 or ascend in order.
@@ -37,10 +36,9 @@ class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInpu
 	var flashPoint = new Point();
 
 	public var justPressedPosition(default, null) = FlxPoint.get();
-	public var justPressedTimeInTicks(default, null):Float = -1;
+	public var justPressedTimeInTicks(default, null) = -1.;
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		input = null;
 		justPressedPosition = FlxDestroyUtil.put(justPressedPosition);
 		flashPoint = null;
@@ -58,13 +56,12 @@ class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInpu
 	}
 
 	/**
-	 * @param	X			stageX touch coordinate
-	 * @param	Y			stageX touch coordinate
-	 * @param	PointID		touchPointID of the touch
+	 * @param	x			stageX touch coordinate
+	 * @param	y			stageX touch coordinate
+	 * @param	pointID		touchPointID of the touch
 	 * @param	pressure	A value between 0.0 and 1.0 indicating force of the contact with the device. If the device does not support detecting the pressure, the value is 1.0.
 	 */
-	function new(x:Int = 0, y:Int = 0, pointID:Int = 0, pressure:Float = 0)
-	{
+	private function new(x = 0, y = 0, pointID = 0, pressure = .0) {
 		super();
 
 		input = new FlxInput(pointID);
@@ -75,59 +72,49 @@ class FlxTouch extends FlxPointer implements IFlxDestroyable implements IFlxInpu
 	/**
 	 * Called by the internal game loop to update the just pressed/just released flags.
 	 */
-	function update():Void
-	{
+	private function update():Void {
 		input.update();
 
-		if (justPressed)
-		{
+		if (justPressed) {
 			justPressedPosition.set(viewX, viewY);
 			justPressedTimeInTicks = FlxG.game.ticks;
 		}
 		#if FLX_POINTER_INPUT
 		else if (justReleased)
-		{
 			FlxG.swipes.push(new FlxSwipe(touchPointID, justPressedPosition.copyTo(), getViewPosition(), justPressedTimeInTicks));
-		}
 		#end
 	}
 
 	/**
 	 * Function for updating touch coordinates. Called by the TouchManager.
 	 *
-	 * @param	X	stageX touch coordinate
-	 * @param	Y	stageY touch coordinate
+	 * @param	x	stageX touch coordinate
+	 * @param	y	stageY touch coordinate
 	 */
-	function setXY(X:Int, Y:Int):Void
-	{
-		flashPoint.setTo(X, Y);
+	private function setXY(x:Int, y:Int):Void {
+		flashPoint.setTo(x, y);
 		flashPoint = FlxG.game.globalToLocal(flashPoint);
 
 		setRawPositionUnsafe(flashPoint.x, flashPoint.y);
 	}
 
-	inline function get_touchPointID():Int
-	{
+	inline function get_touchPointID():Int {
 		return input.ID;
 	}
 
-	inline function get_justReleased():Bool
-	{
+	inline function get_justReleased():Bool {
 		return input.justReleased;
 	}
 
-	inline function get_released():Bool
-	{
+	inline function get_released():Bool {
 		return input.released;
 	}
 
-	inline function get_pressed():Bool
-	{
+	inline function get_pressed():Bool {
 		return input.pressed;
 	}
 
-	inline function get_justPressed():Bool
-	{
+	inline function get_justPressed():Bool {
 		return input.justPressed;
 	}
 }

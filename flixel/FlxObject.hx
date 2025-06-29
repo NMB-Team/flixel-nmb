@@ -1135,12 +1135,12 @@ class FlxObject extends FlxBasic {
 		endDrawDebug(camera);
 	}
 
-	function drawDebugBoundingBox(gfx:Graphics, rect:FlxRect, allowCollisions:FlxDirectionFlags, partial:Bool) {
+	private function drawDebugBoundingBox(gfx:Graphics, rect:FlxRect, allowCollisions:FlxDirectionFlags, partial:Bool) {
 		final color = getDebugBoundingBoxColor(allowCollisions);
 		drawDebugBoundingBoxColor(gfx, rect, color);
 	}
 
-	function getDebugBoundingBoxColor(allowCollisions:FlxDirectionFlags) {
+	private function getDebugBoundingBoxColor(allowCollisions:FlxDirectionFlags) {
 		if (debugBoundingBoxColor != null)
 			return debugBoundingBoxColor;
 
@@ -1153,7 +1153,7 @@ class FlxObject extends FlxBasic {
 		return debugBoundingBoxColorPartial;
 	}
 
-	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor) {
+	private function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor) {
 		color.alphaFloat = .75;
 		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1);
 	}
@@ -1173,7 +1173,7 @@ class FlxObject extends FlxBasic {
 	#end
 
 	@:access(flixel.FlxCamera)
-	function getBoundingBox(camera:FlxCamera):FlxRect {
+	private function getBoundingBox(camera:FlxCamera):FlxRect {
 		getScreenPosition(_point, camera);
 
 		_rect.set(_point.x, _point.y, width, height);

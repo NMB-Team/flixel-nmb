@@ -159,7 +159,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 
 		// find the "repeat" option and skip unused data
 		var repeatLine:Int = (lines[3].indexOf("repeat:") > -1) ? 3 : 4;
-		lines.splice(0, repeatLine + 1);
+		lines.resize(0);
 
 		var numElementsPerImage:Int = 7;
 		var numImages:Int = Std.int(lines.length / numElementsPerImage);

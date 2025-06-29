@@ -7,8 +7,7 @@ import flixel.util.FlxStringUtil;
 /**
  * Accessed via `FlxG.inputs`.
  */
-class InputFrontEnd
-{
+class InputFrontEnd {
 	/**
 	 * A read-only list of all inputs.
 	 */
@@ -18,7 +17,7 @@ class InputFrontEnd
 	 * Whether inputs are reset on state switches.
 	 * Disable if you need persistent input states across states.
 	 */
-	public var resetOnStateSwitch:Bool = true;
+	public var resetOnStateSwitch = true;
 
 	/**
 	 * Add an input to the system, unless the same instance was already added
@@ -26,11 +25,8 @@ class InputFrontEnd
 	#if FLX_GENERIC
 	@:generic
 	#end
-	public function addInput<T:IFlxInputManager>(input:T):T
-	{
-		if (!list.contains(input))
-			list.push(input);
-
+	public function addInput<T:IFlxInputManager>(input:T):T {
+		if (!list.contains(input)) list.push(input);
 		return input;
 	}
 
@@ -40,16 +36,11 @@ class InputFrontEnd
 	#if FLX_GENERIC
 	@:generic
 	#end
-	public function addUniqueType<T:IFlxInputManager>(input:T):T
-	{
+	public function addUniqueType<T:IFlxInputManager>(input:T):T {
 		// Don't add repeat types
 		for (i in list)
-		{
 			if (FlxStringUtil.sameClassName(input, i, false))
-			{
 				return input;
-			}
-		}
 
 		list.push(input);
 		return input;
@@ -64,8 +55,7 @@ class InputFrontEnd
 	#if FLX_GENERIC
 	@:generic
 	#end
-	public inline function remove<T:IFlxInputManager>(input:T):Bool
-	{
+	public inline function remove<T:IFlxInputManager>(input:T):Bool {
 		return list.remove(input);
 	}
 
@@ -80,72 +70,51 @@ class InputFrontEnd
 	#if FLX_GENERIC
 	@:generic
 	#end
-	public function replace<T:IFlxInputManager>(oldInput:T, newInput:T, destroyOld = false):Null<T>
-	{
+	public function replace<T:IFlxInputManager>(oldInput:T, newInput:T, destroyOld = false):Null<T> {
 		final index = list.indexOf(oldInput);
-		if (index == -1)
-			return null;
+		if (index == -1) return null;
 
-		if (destroyOld)
-			oldInput.destroy();
+		if (destroyOld) oldInput.destroy();
 
 		list[index] = newInput;
 		return newInput;
 	}
 
-	public function reset():Void
-	{
+	public function reset():Void {
 		for (input in list)
-		{
 			input.reset();
-		}
 	}
 
 	@:allow(flixel.FlxG)
-	function new() {}
+	private function new() {}
 
 	@:allow(flixel.FlxGame)
-	inline function update():Void
-	{
+	inline function update():Void {
 		for (input in list)
-		{
 			input.update();
-		}
 	}
 
 	@:allow(flixel.FlxGame)
-	inline function onFocus():Void
-	{
+	inline function onFocus():Void {
 		for (input in list)
-		{
 			input.onFocus();
-		}
 	}
 
 	@:allow(flixel.FlxGame)
-	inline function onFocusLost():Void
-	{
+	inline function onFocusLost():Void {
 		for (input in list)
-		{
 			input.onFocusLost();
-		}
 	}
 
 	@:allow(flixel.FlxGame)
 	@:allow(flixel.FlxState.resetSubState)
-	function onStateSwitch():Void
-	{
+	private function onStateSwitch():Void {
 		if (resetOnStateSwitch)
-		{
 			reset();
-		}
 	}
 
-	function destroy():Void
-	{
+	private function destroy():Void {
 		for (input in list)
-		{
 			input = FlxDestroyUtil.destroy(input);
-		}
 	}
 }

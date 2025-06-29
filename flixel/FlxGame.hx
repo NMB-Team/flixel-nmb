@@ -312,7 +312,7 @@ class FlxGame extends Sprite {
 	/**
 	 * Used to instantiate the guts of the flixel game object once we have a valid reference to the root.
 	 */
-	function create(_):Void {
+	private function create(_):Void {
 		if (stage == null) return;
 
 		removeEventListener(Event.ADDED_TO_STAGE, create);
@@ -377,7 +377,7 @@ class FlxGame extends Sprite {
 		Assets.addEventListener(Event.CHANGE, FlxG.bitmap.onAssetsReload);
 	}
 
-	function onFocus(_):Void {
+	private function onFocus(_):Void {
 		#if mobile
 		onResize(_); // just check if device orientation has been changed
 		#end
@@ -404,7 +404,7 @@ class FlxGame extends Sprite {
 		FlxG.inputs.onFocus();
 	}
 
-	function onFocusLost(event:Event):Void {
+	private function onFocusLost(event:Event):Void {
 		_lostFocus = true;
 		FlxG.signals.focusLost.dispatch();
 
@@ -435,7 +435,7 @@ class FlxGame extends Sprite {
 		resizeGame(width, height);
 	}
 
-	function resizeGame(width:Int, height:Int):Void {
+	private function resizeGame(width:Int, height:Int):Void {
 		FlxG.resizeGame(width, height);
 
 		_state?.onResize(width, height);
@@ -459,7 +459,7 @@ class FlxGame extends Sprite {
 	/**
 	 * Handles the `onEnterFrame` call and figures out how many updates and draw calls to do.
 	 */
-	function onEnterFrame(_):Void {
+	private function onEnterFrame(_):Void {
 		ticks = getTicks();
 		_elapsedMS = ticks - _total;
 		_total = ticks;
@@ -539,7 +539,7 @@ class FlxGame extends Sprite {
 	 * this function handles actual destroying the old state and related processes,
 	 * and calls creates on the new state and plugs it into the game object.
 	 */
-	function switchState():Void {
+	private function switchState():Void {
 		// Basic reset stuff
 		FlxG.cameras.reset();
 		FlxG.inputs.onStateSwitch();
@@ -587,8 +587,7 @@ class FlxGame extends Sprite {
 		FlxG.signals.postStateSwitch.dispatch();
 	}
 
-	function gameStart():Void
-	{
+	private function gameStart():Void {
 		FlxG.signals.postGameStart.dispatch();
 		_gameJustStarted = false;
 	}
@@ -599,7 +598,7 @@ class FlxGame extends Sprite {
 	 * the appropriate number of times each frame.
 	 * This block handles state changes, replays, all that good stuff.
 	 */
-	function step():Void {
+	private function step():Void {
 		if (_resetGame) { // Handle game reset request
 			resetGame();
 			_resetGame = false;
@@ -618,7 +617,7 @@ class FlxGame extends Sprite {
 		#end
 	}
 
-	function handleReplayRequests():Void {
+	private function handleReplayRequests():Void {
 		#if FLX_RECORD
 		// Handle replay-related requests
 		if (_recordingRequested) {
@@ -648,7 +647,7 @@ class FlxGame extends Sprite {
 	 * This function is called by `step()` and updates the actual game state.
 	 * May be called multiple times per "frame" or draw call.
 	 */
-	function update():Void {
+	private function update():Void {
 		if (_nextState != null) switchState();
 
 		#if FLX_DEBUG
@@ -688,7 +687,7 @@ class FlxGame extends Sprite {
 		setFiltersSuper(filtersEnabled ? _filters : null);
 	}
 
-	function updateElapsed():Void {
+	private function updateElapsed():Void {
 		if (FlxG.fixedTimestep) {
 			FlxG.elapsed = Math.max(FlxG.timeScale * _stepSeconds, 0); // fixed timestep
 			FlxG.rawElapsed = _stepSeconds;
@@ -701,7 +700,7 @@ class FlxGame extends Sprite {
 		}
 	}
 
-	function updateInput():Void {
+	private function updateInput():Void {
 		#if FLX_RECORD
 		if (replaying) {
 			_replay.playNextFrame();
@@ -753,7 +752,7 @@ class FlxGame extends Sprite {
 	/**
 	 * Goes through the game state and draws all the game objects and special effects.
 	 */
-	function draw():Void {
+	private function draw():Void {
 		#if FLX_DEBUG
 		if (FlxG.debugger.visible)
 			ticks = getTicks();
@@ -769,7 +768,7 @@ class FlxGame extends Sprite {
 			renderFrame();
 	}
 
-	function renderFrame():Void {
+	private function renderFrame():Void {
 		FlxG.signals.preDraw.dispatch();
 
 		if (FlxG.render.tile) FlxDrawBaseItem.drawCalls = 0;

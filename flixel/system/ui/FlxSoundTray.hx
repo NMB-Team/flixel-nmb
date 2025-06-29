@@ -92,7 +92,7 @@ class FlxSoundTray extends Sprite {
 		addChild(text);
 		text.text = "VOLUME";
 		text.y = 16;
-		removeEventListeners(text);
+		flixel.util.FlxDestroyUtil.removeEventListeners(text);
 
 		_baseBitmapData = new BitmapData(1, 1, false, FlxColor.WHITE);
 		_reloadBars();
@@ -206,15 +206,6 @@ class FlxSoundTray extends Sprite {
 	public function screenCenter():Void {
 		scaleX = scaleY = _defaultScale;
 		x = ((Lib.current.stage.stageWidth - _width * _defaultScale) * .5 - FlxG.game.x);
-	}
-
-	@:access(openfl.text.TextField)
-	inline static function removeEventListeners(textField:openfl.text.TextField) {
-		textField.removeEventListener(FocusEvent.FOCUS_IN, textField.this_onFocusIn);
-		textField.removeEventListener(FocusEvent.FOCUS_OUT, textField.this_onFocusOut);
-		textField.removeEventListener(KeyboardEvent.KEY_DOWN, textField.this_onKeyDown);
-		textField.removeEventListener(MouseEvent.MOUSE_DOWN, textField.this_onMouseDown);
-		textField.removeEventListener(MouseEvent.MOUSE_WHEEL, textField.this_onMouseWheel);
 	}
 }
 #end

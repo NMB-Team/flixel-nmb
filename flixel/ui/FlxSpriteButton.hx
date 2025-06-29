@@ -50,7 +50,7 @@ class FlxSpriteButton extends FlxTypedButton<FlxSprite> implements IFlxInput {
 			final labelKey = text.graphic.key;
 			text.destroy();
 
-			if (label == null) label = new FlxSprite();
+			label ??= new FlxSprite();
 
 			final labelGraphic = FlxG.bitmap.add(labelBitmap, false, labelKey);
 			label.frames = FlxImageFrame.fromGraphic(labelGraphic);

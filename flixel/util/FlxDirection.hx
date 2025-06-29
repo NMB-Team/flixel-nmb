@@ -28,11 +28,11 @@ enum abstract FlxDirection(Int) {
 		}
 	}
 
-	inline public function toInt() {
+	public inline function toInt() {
 		return this;
 	}
 
-	public inline static function fromInt(value:Int):FlxDirection{
+	public static inline function fromInt(value:Int):FlxDirection {
 		return new FlxDirection(value);
 	}
 }

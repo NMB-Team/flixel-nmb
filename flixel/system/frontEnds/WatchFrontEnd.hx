@@ -8,8 +8,7 @@ import flixel.system.debug.console.ConsoleUtil;
 /**
  * Accessed via `FlxG.watch`.
  */
-class WatchFrontEnd
-{
+class WatchFrontEnd {
 	#if FLX_DEBUG
 	public var window(get, never):flixel.system.debug.watch.Watch;
 	inline function get_window() return FlxG.game.debugger.watch;
@@ -25,8 +24,7 @@ class WatchFrontEnd
 	 * @param	field		The name of the variable you want to watch, in quotes, as a string: e.g. "speed".
 	 * @param	displayName	Optional, display your own string instead of the class name + variable name: e.g. "enemy count".
 	 */
-	public inline function add(object:Dynamic, field:String, ?displayName:String):Void
-	{
+	public inline function add(object:Dynamic, field:String, ?displayName:String):Void {
 		#if FLX_DEBUG
 		window.add(displayName, FIELD(object, field));
 		#end
@@ -38,8 +36,7 @@ class WatchFrontEnd
 	 * @param	object	A reference to any object in your game, e.g. Player or Robot or this.
 	 * @param	field	The name of the variable you want to watch, in quotes, as a string: e.g. "speed".
 	 */
-	public inline function remove(object:Dynamic, field:String):Void
-	{
+	public inline function remove(object:Dynamic, field:String):Void {
 		#if FLX_DEBUG
 		window.remove(null, FIELD(object, field));
 		#end
@@ -53,8 +50,7 @@ class WatchFrontEnd
 	 * @param	displayName	The name of the quickWatch entry, for example `"mousePressed"`.
 	 * @param	value		The new value for this entry, for example `FlxG.mouse.pressed`.
 	 */
-	public inline function addQuick(displayName:String, value:Dynamic):Void
-	{
+	public inline function addQuick(displayName:String, value:Dynamic):Void {
 		#if FLX_DEBUG
 		window.add(displayName, QUICK(Std.string(value)));
 		#end
@@ -65,8 +61,7 @@ class WatchFrontEnd
 	 *
 	 * @param	displayName	The name of the quickWatch entry you want to remove.
 	 */
-	public inline function removeQuick(displayName:String):Void
-	{
+	public inline function removeQuick(displayName:String):Void {
 		#if FLX_DEBUG
 		window.remove(displayName, QUICK(null));
 		#end
@@ -80,8 +75,7 @@ class WatchFrontEnd
 	 * @param   displayName   Optional, display your own string instead of the expression string: e.g. "enemy count".
 	 * @since   4.1.0
 	 */
-	public function addExpression(expression:String, ?displayName:String):Void
-	{
+	public function addExpression(expression:String, ?displayName:String):Void {
 		#if FLX_DEBUG
 		var parsedExpr = null;
 		#if hscript
@@ -97,22 +91,19 @@ class WatchFrontEnd
 	 * @param   displayName   The display name of the registered expression, if you supplied one, or the Haxe expression that you want to remove, in string form.
 	 * @since   4.1.0
 	 */
-	public function removeExpression(displayName:String):Void
-	{
+	public function removeExpression(displayName:String):Void {
 		#if FLX_DEBUG
 		window.remove(displayName, null);
 		#end
 	}
 
-	public function addFunction(displayName:String, func:()->Dynamic):Void
-	{
+	public function addFunction(displayName:String, func:() -> Dynamic):Void {
 		#if FLX_DEBUG
 		window.add(displayName, FUNCTION(func));
 		#end
 	}
 
-	public function removeFunction(displayName:String):Void
-	{
+	public function removeFunction(displayName:String):Void {
 		#if FLX_DEBUG
 		window.remove(displayName, null);
 		#end
@@ -122,8 +113,7 @@ class WatchFrontEnd
 	 * Add the mouse coords to the watch window. Useful for quickly
 	 * getting coordinates for object placement during prototyping!
 	 */
-	public inline function addMouse():Void
-	{
+	public inline function addMouse():Void {
 		#if FLX_DEBUG
 		add(FlxG, "mouse", "Mouse Position");
 		#end
@@ -132,8 +122,7 @@ class WatchFrontEnd
 	/**
 	 * Removes the mouse coords from the watch window.
 	 */
-	public inline function removeMouse():Void
-	{
+	public inline function removeMouse():Void {
 		#if FLX_DEBUG
 		remove(FlxG, "mouse");
 		#end

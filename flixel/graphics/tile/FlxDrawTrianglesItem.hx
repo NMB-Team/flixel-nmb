@@ -109,11 +109,9 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 		verticesPosition = 0;
 		indicesPosition = 0;
 		colorsPosition = 0;
-		alphas.splice(0, alphas.length);
-		if (colorMultipliers != null)
-			colorMultipliers.splice(0, colorMultipliers.length);
-		if (colorOffsets != null)
-			colorOffsets.splice(0, colorOffsets.length);
+		alphas.resize(0);
+		colorMultipliers?.resize(0);
+		colorOffsets?.resize(0);
 	}
 
 	override public function dispose():Void

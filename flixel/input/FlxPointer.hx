@@ -5,12 +5,11 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxStringUtil;
 
-class FlxPointer
-{
+class FlxPointer {
 	/** The position in the world */
-	public var x(default, null):Int = 0;
+	public var x(default, null) = 0;
 	/** The position in the world */
-	public var y(default, null):Int = 0;
+	public var y(default, null) = 0;
 
 	/**
 	 * The world position relative to the main camera's scroll position, `cam.viewMarginX` or
@@ -18,14 +17,14 @@ class FlxPointer
 	 *
 	 * @since 5.9.0
 	 */
-	public var viewX(default, null):Int = 0;
+	public var viewX(default, null) = 0;
 	/**
 	 * The world position relative to the main camera's scroll position, `cam.viewMarginY` or
 	 * `cam.viewMarginTop` is the top edge of the camera and `cam.viewMarginBottom` is the bottom
 	 *
 	 * @since 5.9.0
 	 */
-	public var viewY(default, null):Int = 0;
+	public var viewY(default, null) = 0;
 
 	/**
 	 * The position relative to the `FlxGame`'s position in the window,
@@ -33,19 +32,19 @@ class FlxPointer
 	 *
 	 * @since 5.9.0
 	 */
-	public var gameX(default, null):Int = 0;
+	public var gameX(default, null) = 0;
 	/**
 	 * The position relative to the `FlxGame`'s position in the window,
 	 * where `0` is the top edge of the game and `FlxG.height` is the bottom
 	 *
 	 * @since 5.9.0
 	 */
-	public var gameY(default, null):Int = 0;
+	public var gameY(default, null) = 0;
 
-	var _rawX(default, null):Float = 0;
-	var _rawY(default, null):Float = 0;
+	var _rawX(default, null) = .0;
+	var _rawY(default, null) = .0;
 
-	static var _cachedPoint:FlxPoint = new FlxPoint();
+	static var _cachedPoint = new FlxPoint();
 
 	public function new() {}
 
@@ -57,10 +56,8 @@ class FlxPointer
 	 * @param   camera  If unspecified, `FlxG.camera` is used, instead
 	 * @param   result  An existing point to store the results, if unspecified, one is created
 	 */
-	public function getWorldPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint
-	{
-		if (camera == null)
-			camera = FlxG.camera;
+	public function getWorldPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
+		camera ??= FlxG.camera;
 
 		final p = getViewPosition(camera, FlxPoint.weak());
 		return camera.viewToWorldPosition(p, 1, 1, result);
@@ -75,11 +72,8 @@ class FlxPointer
 	 * @param   result  An existing point to store the results, if unspecified, one is created
 	 * @since 5.9.0
 	 */
-	public function getGamePosition(?result:FlxPoint):FlxPoint
-	{
-		if (result == null)
-			return FlxPoint.get();
-
+	public function getGamePosition(?result:FlxPoint):FlxPoint {
+		if (result == null) return FlxPoint.get();
 		return result.set(Std.int(_rawX), Std.int(_rawY));
 	}
 
@@ -93,21 +87,16 @@ class FlxPointer
 	 * @param   camera  If unspecified, `FlxG.camera` is used, instead
 	 * @param   result  An existing point to store the results, if unspecified, one is created
 	 */
-	public function getViewPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint
-	{
-		if (camera == null)
-			camera = FlxG.camera;
-
+	public function getViewPosition(?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
+		camera ??= FlxG.camera;
 		return camera.gameToViewPosition(gameX, gameY, result);
 	}
 
 	/**
 	 * Returns a FlxPoint with this input's x and y.
 	 */
-	public function getPosition(?result:FlxPoint):FlxPoint
-	{
-		if (result == null)
-			return FlxPoint.get(x, y);
+	public function getPosition(?result:FlxPoint):FlxPoint {
+		if (result == null) return FlxPoint.get(x, y);
 		return result.set(x, y);
 	}
 
@@ -121,20 +110,16 @@ class FlxPointer
 	 * @return 	Whether or not the two objects overlap.
 	 */
 	@:access(flixel.group.FlxTypedGroup.resolveGroup)
-	public function overlaps(objectOrGroup:FlxBasic, ?camera:FlxCamera):Bool
-	{
+	public function overlaps(objectOrGroup:FlxBasic, ?camera:FlxCamera):Bool {
 		final group = FlxTypedGroup.resolveGroup(objectOrGroup);
-		if (group != null)
-		{
+		if (group != null) {
 			for (basic in group.members)
-			{
 				if (basic != null && overlaps(basic, camera))
-				{
 					return true;
-				}
-			}
+
 			return false;
 		}
+
 		// check object
 		getWorldPosition(camera, _cachedPoint);
 		final object = cast (objectOrGroup, FlxObject);
@@ -146,8 +131,7 @@ class FlxPointer
 	 * this unless you are trying to manually dispatch low-level mouse / touch events to the stage.
 	 * @since 5.9.0
 	 */
-	public function setRawPositionUnsafe(x:Float, y:Float)
-	{
+	public function setRawPositionUnsafe(x:Float, y:Float) {
 		_rawX = x / FlxG.scaleMode.scale.x;
 		_rawY = y / FlxG.scaleMode.scale.y;
 
@@ -158,8 +142,7 @@ class FlxPointer
 	 * Helper function to update the cursor used by update() and playback().
 	 * Updates the x, y, viewX, and viewY variables based on the default camera.
 	 */
-	function updatePositions():Void
-	{
+	private function updatePositions():Void {
 		getGamePosition(_cachedPoint);
 		gameX = Std.int(_cachedPoint.x);
 		gameY = Std.int(_cachedPoint.y);
@@ -173,8 +156,7 @@ class FlxPointer
 		y = Std.int(_cachedPoint.y);
 	}
 
-	public function toString():String
-	{
+	public function toString():String {
 		return FlxStringUtil.getDebugString([LabelValuePair.weak("x", x), LabelValuePair.weak("y", y)]);
 	}
 }

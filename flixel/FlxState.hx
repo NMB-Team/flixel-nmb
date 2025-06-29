@@ -234,7 +234,7 @@ class FlxState extends FlxGroup {
 	}
 
 	@:allow(flixel.FlxGame)
-	function tryUpdate(elapsed:Float):Void {
+	private function tryUpdate(elapsed:Float):Void {
 		if (persistentUpdate || subState == null)
 			update(elapsed);
 

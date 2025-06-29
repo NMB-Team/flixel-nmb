@@ -18,12 +18,11 @@ using flixel.util.FlxArrayUtil;
 /**
  * Accessed via `FlxG.debugger`.
  */
-class DebuggerFrontEnd
-{
+class DebuggerFrontEnd {
 	/**
 	 * The amount of decimals Floats are rounded to in the debugger.
 	 */
-	public var precision:Int = 3;
+	public var precision = 3;
 
 	#if FLX_KEYBOARD
 	/**
@@ -36,20 +35,20 @@ class DebuggerFrontEnd
 	/**
 	 * Whether to draw the hitboxes of FlxObjects.
 	 */
-	public var drawDebug(default, set):Bool = false;
+	public var drawDebug(default, set) = false;
 
 	/**
 	 * Dispatched when `drawDebug` is changed.
 	 */
-	public var drawDebugChanged(default, null):FlxSignal = new FlxSignal();
+	public var drawDebugChanged(default, null) = new FlxSignal();
 
 	/**
 	 * Dispatched when `visible` is changed.
 	 * @since 4.1.0
 	 */
-	public var visibilityChanged(default, null):FlxSignal = new FlxSignal();
+	public var visibilityChanged(default, null) = new FlxSignal();
 
-	public var visible(default, set):Bool = false;
+	public var visible(default, set) = false;
 
 	#if FLX_DEBUG
 	/** Helper for adding and removing debug tools */
@@ -60,8 +59,7 @@ class DebuggerFrontEnd
 	#end
 
 	@:allow(flixel.FlxG)
-	function new()
-	{
+	private function new() {
 		#if FLX_DEBUG
 		tools = new DebugToolsFrontEnd();
 		windows = new DebugWindowsFrontEnd();
@@ -71,20 +69,18 @@ class DebuggerFrontEnd
 	/**
 	 * Change the way the debugger's windows are laid out.
 	 *
-	 * @param	Layout	The layout codes can be found in FlxDebugger, for example FlxDebugger.MICRO
+	 * @param	layout	The layout codes can be found in FlxDebugger, for example FlxDebugger.MICRO
 	 */
-	public inline function setLayout(Layout:FlxDebuggerLayout):Void
-	{
+	public inline function setLayout(layout:FlxDebuggerLayout):Void {
 		#if FLX_DEBUG
-		FlxG.game.debugger.setLayout(Layout);
+		FlxG.game.debugger.setLayout(layout);
 		#end
 	}
 
 	/**
 	 * Just resets the debugger windows to whatever the last selected layout was (STANDARD by default).
 	 */
-	public inline function resetLayout():Void
-	{
+	public inline function resetLayout():Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.resetLayout();
 		#end
@@ -93,18 +89,16 @@ class DebuggerFrontEnd
 	/**
 	 * Create and add a new debugger button.
 	 *
-	 * @param   Position       Either LEFT, CENTER or RIGHT.
-	 * @param   Icon           The icon to use for the button
-	 * @param   UpHandler      The function to be called when the button is pressed.
-	 * @param   ToggleMode     Whether this is a toggle button or not.
-	 * @param   UpdateLayout   Whether to update the button layout.
+	 * @param   position       Either LEFT, CENTER or RIGHT.
+	 * @param   icon           The icon to use for the button
+	 * @param   upHandler      The function to be called when the button is pressed.
+	 * @param   toggleMode     Whether this is a toggle button or not.
+	 * @param   updateLayout   Whether to update the button layout.
 	 * @return  The added button.
 	 */
-	public function addButton(Alignment:FlxHorizontalAlign, Icon:BitmapData, UpHandler:Void->Void, ToggleMode:Bool = false,
-			UpdateLayout:Bool = true):FlxSystemButton
-	{
+	public function addButton(alignment:FlxHorizontalAlign, icon:BitmapData, upHandler:Void -> Void, toggleMode = false, updateLayout = true):FlxSystemButton {
 		#if FLX_DEBUG
-		return FlxG.game.debugger.addButton(Alignment, Icon, UpHandler, ToggleMode, UpdateLayout);
+		return FlxG.game.debugger.addButton(alignment, icon, upHandler, toggleMode, updateLayout);
 		#else
 		return null;
 		#end
@@ -114,88 +108,77 @@ class DebuggerFrontEnd
 	 * Creates a new tracker window if there exists a tracking profile for the class / class of the object.
 	 * By default, flixel classes like FlxBasic, FlxRect and FlxPoint are supported.
 	 *
-	 * @param	ObjectOrClass	The object or class to track
-	 * @param	WindowTitle	Title of the tracker window, uses the class name by default
+	 * @param	objectOrClass	The object or class to track
+	 * @param	windowTitle	Title of the tracker window, uses the class name by default
 	 */
-	public function track(ObjectOrClass:Dynamic, ?WindowTitle:String):Window
-	{
+	public function track(objectOrClass:Dynamic, ?windowTitle:String):Window {
 		#if FLX_DEBUG
-		if (Tracker.objectsBeingTracked.contains(ObjectOrClass))
+		if (Tracker.objectsBeingTracked.contains(objectOrClass))
 			return null;
 
-		var profile = Tracker.findProfile(ObjectOrClass);
-		if (profile == null)
-		{
-			FlxG.log.error("Could not find a tracking profile for object of class '" + ObjectOrClass.getClassName(true) + "'.");
+		final profile = Tracker.findProfile(objectOrClass);
+		if (profile == null) {
+			FlxG.log.error("Could not find a tracking profile for object of class '" + objectOrClass.getClassName(true) + "'.");
 			return null;
-		}
-		else
-			return FlxG.game.debugger.addWindow(new Tracker(profile, ObjectOrClass, WindowTitle));
+		} else
+			return FlxG.game.debugger.addWindow(new Tracker(profile, objectOrClass, windowTitle));
 		#end
+
 		return null;
 	}
 
 	/**
 	 * Adds a new TrackerProfile for track(). This also overrides existing profiles.
 	 *
-	 * @param	Profile	The TrackerProfile
+	 * @param	profile	The TrackerProfile
 	 */
-	public inline function addTrackerProfile(Profile:TrackerProfile):Void
-	{
+	public inline function addTrackerProfile(profile:TrackerProfile):Void {
 		#if FLX_DEBUG
-		Tracker.addProfile(Profile);
+		Tracker.addProfile(profile);
 		#end
 	}
 
 	/**
 	 * Removes and destroys a button from the debugger.
 	 *
-	 * @param	Button			The FlxSystemButton instance to remove.
-	 * @param	UpdateLayout	Whether to update the button layout.
+	 * @param	button			The FlxSystemButton instance to remove.
+	 * @param	updateLayout	Whether to update the button layout.
 	 */
-	public function removeButton(Button:FlxSystemButton, UpdateLayout:Bool = true):Void
-	{
+	public function removeButton(button:FlxSystemButton, updateLayout = true):Void {
 		#if FLX_DEBUG
-		FlxG.game.debugger.removeButton(Button, UpdateLayout);
+		FlxG.game.debugger.removeButton(button, updateLayout);
 		#end
 	}
 
-	function set_drawDebug(Value:Bool):Bool
-	{
-		if (drawDebug == Value)
-			return drawDebug;
+	private function set_drawDebug(value:Bool):Bool {
+		if (drawDebug == value) return drawDebug;
+		drawDebug = value;
 
-		drawDebug = Value;
 		#if FLX_DEBUG
 		drawDebugChanged.dispatch();
 		#end
+
 		return drawDebug;
 	}
 
 	@:access(flixel.FlxGame.onFocus)
-	function set_visible(Value:Bool):Bool
-	{
-		if (visible == Value)
-			return visible;
-
-		visible = Value;
+	private function set_visible(value:Bool):Bool {
+		if (visible == value) return visible;
+		visible = value;
 
 		#if FLX_DEBUG
-		FlxG.game.debugger.visible = Value;
-		FlxG.game.debugger.tabChildren = Value;
+		FlxG.game.debugger.visible = value;
+		FlxG.game.debugger.tabChildren = value;
 
 		// if the debugger is non-visible, then we need to focus on game sprite,
 		// so the game still will be able to capture key presses
-		if (!Value)
-		{
+		if (!value) {
 			FlxG.stage.focus = null;
 
 			#if FLX_MOUSE
 			FlxG.mouse.enabled = true;
 			#end
-		}
-		else
-		{
+		} else {
 			#if FLX_MOUSE
 			// Debugger is visible, allow mouse input in the game only if the
 			// interaction tool is not in use.
@@ -212,46 +195,39 @@ class DebuggerFrontEnd
 
 #if FLX_DEBUG
 @:allow(flixel.system.frontEnds.DebuggerFrontEnd)
-class DebugToolsFrontEnd
-{
+class DebugToolsFrontEnd {
 	public var activeTool(get, never):Tool;
 	inline function get_activeTool() return interaction.activeTool;
 
 	var interaction(get, never):Interaction;
 	inline function get_interaction() return FlxG.game.debugger.interaction;
 
-	function new() {}
+	private function new() {}
 
-	public function add(tool)
-	{
+	public function add(tool) {
 		interaction.addTool(tool);
 	}
 
-	public function remove(tool)
-	{
+	public function remove(tool) {
 		interaction.removeTool(tool);
 	}
 }
 
 @:allow(flixel.system.frontEnds.DebuggerFrontEnd)
-class DebugWindowsFrontEnd
-{
+class DebugWindowsFrontEnd {
 	var debugger(get, never):FlxDebugger;
 	inline function get_debugger() return FlxG.game.debugger;
 
-	function new() {}
+	private function new() {}
 
-	public function add(window, ?button)
-	{
+	public function add(window, ?button) {
 		debugger.addWindow(window);
 		debugger.addWindowToggleButton(window, button);
 	}
 
-	public function remove(window)
-	{
+	public function remove(window) {
 		debugger.removeWindow(window);
-		if (window.toggleButton != null)
-			debugger.removeButton(window.toggleButton);
+		if (window.toggleButton != null) debugger.removeButton(window.toggleButton);
 	}
 }
 #end

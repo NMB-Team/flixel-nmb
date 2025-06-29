@@ -4,8 +4,7 @@ import flixel.FlxG.FlxRenderMethod as RenderMethod;
 import flixel.FlxG;
 import openfl.display.Stage;
 
-class RenderFrontEnd
-{
+class RenderFrontEnd {
 	public var method:FlxRenderMethod;
 	public var blit(default, null):Bool;
 	public var tile(default, null):Bool;
@@ -15,8 +14,7 @@ class RenderFrontEnd
 	public function new() {}
 
 	@:allow(flixel.FlxG)
-	function init()
-	{
+	private function init() {
 		method = BLITTING;
 
 		#if (!lime_legacy)
@@ -38,17 +36,14 @@ class RenderFrontEnd
 		FlxObject.defaultPixelPerfectPosition = blit;
 	}
 
-	public function setPixelMode(value:FlxPixelMode)
-	{
+	public function setPixelMode(value:FlxPixelMode) {
 		this.pixelMode = value;
-		switch value
-		{
+		switch value {
 			case CUSTOM: // do nothing
 			case PIXELATED:
 				FlxSprite.defaultAntialiasing = false;
 
-				if (FlxG.state != null)
-					FlxG.stage.quality = LOW;
+				if (FlxG.state != null) FlxG.stage.quality = LOW;
 
 				#if html5
 				lime.app.Application.current.window.element.style.setProperty("image-rendering", "pixelated");
@@ -56,8 +51,7 @@ class RenderFrontEnd
 			case SMOOTH:
 				FlxSprite.defaultAntialiasing = true;
 
-				if (FlxG.state != null)
-					FlxG.stage.quality = HIGH;
+				if (FlxG.state != null) FlxG.stage.quality = HIGH;
 
 				#if html5
 				lime.app.Application.current.window.element.style.removeProperty("image-rendering");
@@ -66,8 +60,7 @@ class RenderFrontEnd
 	}
 }
 
-enum FlxPixelMode
-{
+enum FlxPixelMode {
 	/**
 	 * Enables various features that result in crisp pixels, namely:
 	 * - Changes `FlxSprite.defaultAntialiasing` to `false`

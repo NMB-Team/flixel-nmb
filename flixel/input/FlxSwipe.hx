@@ -8,8 +8,7 @@ import flixel.util.FlxStringUtil;
 
 @:allow(flixel.input.mouse.FlxMouseButton)
 @:allow(flixel.input.touch.FlxTouch)
-class FlxSwipe implements IFlxDestroyable
-{
+class FlxSwipe implements IFlxDestroyable {
 	/**
 	 * Either LEFT_MOUSE, MIDDLE_MOUSE or RIGHT_MOUSE,
 	 * or the touchPointID of a FlxTouch.
@@ -27,23 +26,20 @@ class FlxSwipe implements IFlxDestroyable
 	var _startTimeInTicks:Float;
 	var _endTimeInTicks:Float;
 
-	function new(ID:Int, StartPosition:FlxPoint, EndPosition:FlxPoint, StartTimeInTicks:Float)
-	{
+	private function new(ID:Int, startPosition:FlxPoint, endPosition:FlxPoint, startTimeInTicks:Float) {
 		this.ID = ID;
-		startPosition = StartPosition;
-		endPosition = EndPosition;
-		_startTimeInTicks = StartTimeInTicks;
+		this.startPosition = startPosition;
+		this.endPosition = endPosition;
+		_startTimeInTicks = startTimeInTicks;
 		_endTimeInTicks = FlxG.game.ticks;
 	}
 
-	public function destroy()
-	{
+	public function destroy() {
 		startPosition = FlxDestroyUtil.put(startPosition);
 		endPosition = FlxDestroyUtil.put(endPosition);
 	}
 
-	inline function toString():String
-	{
+	inline function toString():String {
 		return FlxStringUtil.getDebugString([
 			LabelValuePair.weak("ID", ID),
 			LabelValuePair.weak("start", startPosition),
@@ -54,23 +50,19 @@ class FlxSwipe implements IFlxDestroyable
 		]);
 	}
 
-	inline function get_distance():Float
-	{
+	inline function get_distance():Float {
 		return FlxMath.vectorLength(startPosition.x - endPosition.x, startPosition.y - endPosition.y);
 	}
 
-	inline function get_degrees():Float
-	{
+	inline function get_degrees():Float {
 		return startPosition.degreesTo(endPosition);
 	}
 
-	inline function get_radians():Float
-	{
+	inline function get_radians():Float {
 		return startPosition.radiansTo(endPosition);
 	}
 
-	inline function get_duration():Float
-	{
+	inline function get_duration():Float {
 		return (_endTimeInTicks - _startTimeInTicks) * .001;
 	}
 }

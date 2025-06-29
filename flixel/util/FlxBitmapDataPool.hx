@@ -28,7 +28,7 @@ class FlxBitmapDataPool {
 	static var _head:FlxBitmapDataPoolNode = null;
 	static var _tail:FlxBitmapDataPoolNode = null;
 
-	static var _rect = new Rectangle();
+	static final _rect = new Rectangle();
 
 	/** 
 	 * Returns a BitmapData with the specified parameters.
@@ -117,7 +117,7 @@ class FlxBitmapDataPool {
 	static function set_maxLength(value:Int):Int {
 		if (maxLength != value) {
 			var node = _tail;
-			while ((node != null) && (length > value)) {
+			while (node != null && length > value) {
 				var bmd = node.bmd;
 				bmd = FlxDestroyUtil.dispose(bmd);
 

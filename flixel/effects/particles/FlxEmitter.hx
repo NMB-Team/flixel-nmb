@@ -345,7 +345,7 @@ class FlxTypedEmitter<T:FlxSprite & IFlxParticle> extends FlxTypedGroup<T> {
 		} else if (_waitForKill) {
 			_timer += elapsed;
 
-			if ((lifespan.max > 0) && (_timer > lifespan.max)) {
+			if (lifespan.max > 0 && _timer > lifespan.max) {
 				kill();
 				return;
 			}

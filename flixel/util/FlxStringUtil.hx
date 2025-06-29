@@ -79,7 +79,7 @@ class FlxStringUtil {
 	 * Checks if a single-character string is a letter character.
 	 * The check is Unicode-aware, so it works with accented letters, etc.
 	 */
-	inline static function isLetter(c:String) {
+	public static function isLetter(c:String) {
 		final ascii = StringTools.fastCodeAt(c, 0);
 		return (ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122) || (ascii >= 192 && ascii <= 214) || (ascii >= 216 && ascii <= 246)
 			|| (ascii >= 248 && ascii <= 255);

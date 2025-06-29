@@ -104,10 +104,7 @@ class ConsoleCommands {
 
 		if (obj == null) return;
 
-		if (mousePos) {
-			obj.x = FlxG.game.mouseX;
-			obj.y = FlxG.game.mouseY;
-		}
+		if (mousePos) obj.setPosition(FlxG.game.mouseX, FlxG.game.mouseY);
 
 		FlxG.state.add(obj);
 

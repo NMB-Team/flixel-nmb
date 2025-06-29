@@ -1,7 +1,6 @@
 package flixel.input;
 
-interface IFlxInput
-{
+interface IFlxInput {
 	var justReleased(get, never):Bool;
 	var released(get, never):Bool;
 	var pressed(get, never):Bool;

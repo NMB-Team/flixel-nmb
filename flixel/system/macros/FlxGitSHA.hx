@@ -11,24 +11,19 @@ using StringTools;
 /**
  * Heavily inspired by HaxePunk's HaxeLibInfo.hx
  */
-class FlxGitSHA
-{
-	public static function buildGitSHA(library:String):Array<Field>
-	{
-		var fields:Array<Field> = Context.getBuildFields();
+class FlxGitSHA {
+	public static function buildGitSHA(library:String):Array<Field> {
+		final fields:Array<Field> = Context.getBuildFields();
 		var libraryPath:String;
-		var sha:String = "";
+		var sha = "";
 
 		// don't run git or haxelib in display mode (during completion) -
 		// just slows things down, we don't need the actual SHA value there
 		#if !display
-		try
-		{
+		try {
 			libraryPath = getLibraryPath(library);
 			sha = getGitSHA(libraryPath);
-		}
-		catch (_:Dynamic)
-		{
+		} catch (_:Dynamic) {
 			// make sure the build isn't cancelled if a Sys call fails
 		}
 		#end
@@ -45,58 +40,45 @@ class FlxGitSHA
 		return fields;
 	}
 
-	public static function getLibraryPath(library:String):String
-	{
-		var output = getProcessOutput("haxelib", ["path", library]);
+	public static function getLibraryPath(library:String):String {
+		final output = getProcessOutput("haxelib", ["path", library]);
 
 		var result = "";
-		var lines = output.split("\n");
+		final lines = output.split("\n");
 
 		for (i in 1...lines.length)
-		{
 			if (lines[i].startsWith('-D $library'))
-			{
 				result = lines[i - 1].trim();
-			}
-		}
 
 		return Path.normalize(result);
 	}
 
-	public static function getGitSHA(path:String):String
-	{
-		var oldWd = Sys.getCwd();
+	public static function getGitSHA(path:String):String {
+		final oldWd = Sys.getCwd();
 
 		Sys.setCwd(path);
-		var output = getProcessOutput("git", ["rev-parse", "HEAD", "--show-toplevel"]).split("\n");
+		final output = getProcessOutput("git", ["rev-parse", "HEAD", "--show-toplevel"]).split("\n");
 		var sha = output[0];
-		var gitPath = Path.normalize(output[1]);
-		var shaRegex = ~/[a-f0-9]{40}/g;
-		if (!shaRegex.match(sha) || path != gitPath)
-			sha = "";
+		final gitPath = Path.normalize(output[1]);
+		final shaRegex = ~/[a-f0-9]{40}/g;
+		if (!shaRegex.match(sha) || path != gitPath) sha = "";
 
 		Sys.setCwd(oldWd);
 		return sha;
 	}
 
-	public static function getProcessOutput(cmd:String, args:Array<String>):String
-	{
-		try
-		{
-			var process = new Process(cmd, args);
+	public static function getProcessOutput(cmd:String, args:Array<String>):String {
+		try {
+			final process = new Process(cmd, args);
 			var output = "";
 
-			try
-			{
+			try {
 				output = process.stdout.readAll().toString();
-			}
-			catch (_:Dynamic) {}
+			} catch (_:Dynamic) {}
 
 			process.close();
 			return output;
-		}
-		catch (_:Dynamic)
-		{
+		} catch (_:Dynamic) {
 			return "";
 		}
 	}

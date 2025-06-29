@@ -143,8 +143,7 @@ class FlxParticle extends FlxSprite implements IFlxParticle {
 	override public function update(elapsed:Float):Void {
 		if (age < lifespan) age += elapsed;
 
-		if (age >= lifespan && lifespan != 0) kill();
-		else {
+		if (age < lifespan || lifespan == 0) {
 			_delta = elapsed / lifespan;
 			percent = age / lifespan;
 
@@ -173,7 +172,8 @@ class FlxParticle extends FlxSprite implements IFlxParticle {
 
 			if (elasticityRange.active)
 				elasticity += (elasticityRange.end - elasticityRange.start) * _delta;
-		}
+		} else
+			kill();
 
 		super.update(elapsed);
 	}

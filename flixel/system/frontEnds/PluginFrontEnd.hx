@@ -11,8 +11,7 @@ import flixel.util.FlxTimer;
 /**
  * Accessed via `FlxG.plugins`.
  */
-class PluginFrontEnd
-{
+class PluginFrontEnd {
 	/**
 	 * An array container for plugins.
 	 */
@@ -22,7 +21,7 @@ class PluginFrontEnd
 	 * If `true`, then plugins will be drawn over the current state instead of under it.
 	 * @since 5.7.0
 	 */
-	public var drawOnTop:Bool = false;
+	public var drawOnTop = false;
 
 	/**
 	 * Adds a new plugin to the global plugin array, does not check for existing instances of this type.
@@ -31,8 +30,7 @@ class PluginFrontEnd
 	 * @param   plugin  Any object that extends FlxBasic. Useful for managers and other things.
 	 * @return  The same plugin you passed in.
 	 */
-	public function addPlugin<T:FlxBasic>(plugin:T):T
-	{
+	public function addPlugin<T:FlxBasic>(plugin:T):T {
 		// No repeats found
 		list.push(plugin);
 		return plugin;
@@ -45,14 +43,10 @@ class PluginFrontEnd
 	 * @param   plugin  Any object that extends FlxBasic. Useful for managers and other things.
 	 * @return  The same plugin you passed in.
 	 */
-	public function addIfUniqueType<T:FlxBasic>(plugin:T):T
-	{
-		// Check for repeats
-		for (p in list)
-		{
+	public function addIfUniqueType<T:FlxBasic>(plugin:T):T {
+		for (p in list) // Check for repeats
 			if (FlxStringUtil.sameClassName(plugin, p))
 				return plugin;
-		}
 
 		// No repeats found
 		list.push(plugin);
@@ -66,15 +60,10 @@ class PluginFrontEnd
 	 *                See the `FlxPath` or `FlxTimer` constructors for example usage.
 	 * @return  The plugin object, or null if no matching plugin was found.
 	 */
-	public function get<T:FlxBasic>(type:Class<T>):T
-	{
+	public function get<T:FlxBasic>(type:Class<T>):T {
 		for (plugin in list)
-		{
 			if (Std.isOfType(plugin, type))
-			{
 				return cast plugin;
-			}
-		}
 
 		return null;
 	}
@@ -85,21 +74,17 @@ class PluginFrontEnd
 	 * @param   plugin  The plugin instance you want to remove.
 	 * @return  The same plugin you passed in.
 	 */
-	public inline function remove<T:FlxBasic>(plugin:T):T
-	{
+	public inline function remove<T:FlxBasic>(plugin:T):T {
 		list.remove(plugin);
 		return plugin;
 	}
 
-	public function removeAllByType(type:Class<FlxBasic>):Bool
-	{
-		var results:Bool = false;
+	public function removeAllByType(type:Class<FlxBasic>):Bool {
+		var results = false;
 
 		var i = list.length;
-		while (i-- > 0)
-		{
-			if (Std.isOfType(list[i], type))
-			{
+		while (i-- > 0) {
+			if (Std.isOfType(list[i], type)) {
 				list.splice(i, 1);
 				results = true;
 			}
@@ -109,8 +94,7 @@ class PluginFrontEnd
 	}
 
 	@:allow(flixel.FlxG)
-	function new()
-	{
+	private function new() {
 		addPlugin(FlxTimer.globalManager = new FlxTimerManager());
 		addPlugin(FlxTween.globalManager = new FlxTweenManager());
 		addPlugin(FlxMouseEvent.globalManager = new FlxMouseEventManager());
@@ -121,29 +105,19 @@ class PluginFrontEnd
 	 * Used by the game object to call update() on all the plugins.
 	 */
 	@:allow(flixel.FlxGame)
-	inline function update(elapsed:Float):Void
-	{
+	inline function update(elapsed:Float):Void{
 		for (plugin in list)
-		{
 			if (plugin.exists && plugin.active)
-			{
 				plugin.update(elapsed);
-			}
-		}
 	}
 
 	/**
 	 * Used by the game object to call draw() on all the plugins.
 	 */
 	@:allow(flixel.FlxGame)
-	inline function draw():Void
-	{
+	inline function draw():Void {
 		for (plugin in list)
-		{
 			if (plugin.exists && plugin.visible)
-			{
 				plugin.draw();
-			}
-		}
 	}
 }

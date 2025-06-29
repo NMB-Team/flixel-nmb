@@ -31,12 +31,12 @@ class FlxBitmapTextButton extends FlxTypedButton<FlxBitmapText> {
 	override function resetHelpers() {
 		super.resetHelpers();
 
-		if (label != null) label.width = width;
+		label?.width = width;
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (label != null) label.update(elapsed);
+		label?.update(elapsed);
 	}
 }

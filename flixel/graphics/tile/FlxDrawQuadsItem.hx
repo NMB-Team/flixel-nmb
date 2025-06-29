@@ -36,11 +36,9 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 		super.reset();
 		rects.length = 0;
 		transforms.length = 0;
-		alphas.splice(0, alphas.length);
-		if (colorMultipliers != null)
-			colorMultipliers.splice(0, colorMultipliers.length);
-		if (colorOffsets != null)
-			colorOffsets.splice(0, colorOffsets.length);
+		alphas.resize(0);
+		colorMultipliers?.resize(0);
+		colorOffsets?.resize(0);
 	}
 
 	override public function dispose():Void
@@ -127,7 +125,7 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 
 		// TODO: catch this error when the dev actually messes up, not in the draw phase
 		if (shader == null && graphics.isDestroyed)
-			throw 'Attempted to render an invalid FlxDrawItem, did you destroy a cached sprite?';
+			FlxG.log.critical('Attempted to render an invalid FlxDrawItem, did you destroy a cached sprite?');
 
 		final shader = shader != null ? shader : graphics.shader;
 		shader.bitmap.input = graphics.bitmap;

@@ -5,12 +5,11 @@ import flixel.FlxG;
 /**
  * Accessed via `FlxG.console`.
  */
-class ConsoleFrontEnd
-{
+class ConsoleFrontEnd {
 	/**
 	 * Whether the console should auto-pause or not when it's focused.
 	 */
-	public var autoPause:Bool = true;
+	public var autoPause = true;
 
 	/**
 	 * Whether the console should `step()` the game after a command is entered.
@@ -18,7 +17,7 @@ class ConsoleFrontEnd
 	 * Use the `step()` command to step the game from the console.
 	 * @since 4.2.0
 	 */
-	public var stepAfterCommand:Bool = true;
+	public var stepAfterCommand = true;
 
 	/**
 	 * Register a new function to use in any command.
@@ -26,8 +25,7 @@ class ConsoleFrontEnd
 	 * @param   alias  The name with which you want to access the function.
 	 * @param   func   The function to register.
 	 */
-	public inline function registerFunction(alias:String, func:Dynamic):Void
-	{
+	public inline function registerFunction(alias:String, func:Dynamic):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.registerFunction(alias, func);
 		#end
@@ -39,8 +37,7 @@ class ConsoleFrontEnd
 	 * @param   alias   The name with which you want to access the object.
 	 * @param   object  The object to register.
 	 */
-	public inline function registerObject(alias:String, object:Dynamic):Void
-	{
+	public inline function registerObject(alias:String, object:Dynamic):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.registerObject(alias, object);
 		#end
@@ -54,8 +51,7 @@ class ConsoleFrontEnd
 	 * @param   object  The object to remove.
 	 * @since 5.4.0
 	 */
-	public inline function removeObject(object:Dynamic)
-	{
+	public inline function removeObject(object:Dynamic) {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.removeObject(object);
 		#end
@@ -69,8 +65,7 @@ class ConsoleFrontEnd
 	 * @param   func  The object to remove.
 	 * @since 5.4.0
 	 */
-	public inline function removeFunction(func:Dynamic)
-	{
+	public inline function removeFunction(func:Dynamic) {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.removeFunction(func);
 		#end
@@ -82,8 +77,7 @@ class ConsoleFrontEnd
 	 * @param   alias  The alias to remove.
 	 * @since 5.4.0
 	 */
-	public inline function removeByAlias(alias:String)
-	{
+	public inline function removeByAlias(alias:String) {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.removeByAlias(alias);
 		#end
@@ -94,8 +88,7 @@ class ConsoleFrontEnd
 	 *
 	 * @param   c  The class to register.
 	 */
-	public inline function registerClass(c:Class<Dynamic>):Void
-	{
+	public inline function registerClass(c:Class<Dynamic>):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.registerClass(c);
 		#end
@@ -107,8 +100,7 @@ class ConsoleFrontEnd
 	 * @param   c  The class to remove.
 	 * @since 5.4.0
 	 */
-	public inline function removeClass(c:Class<Dynamic>):Void
-	{
+	public inline function removeClass(c:Class<Dynamic>):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.removeClass(c);
 		#end
@@ -120,8 +112,7 @@ class ConsoleFrontEnd
 	 * @param   e  The enum to register.
 	 * @since 4.4.0
 	 */
-	public inline function registerEnum(e:Enum<Dynamic>):Void
-	{
+	public inline function registerEnum(e:Enum<Dynamic>):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.registerEnum(e);
 		#end
@@ -133,13 +124,12 @@ class ConsoleFrontEnd
 	 * @param   e  The enum to remove.
 	 * @since 5.4.0
 	 */
-	public inline function removeEnum(e:Enum<Dynamic>):Void
-	{
+	public inline function removeEnum(e:Enum<Dynamic>):Void {
 		#if FLX_DEBUG
 		FlxG.game.debugger.console.removeEnum(e);
 		#end
 	}
 
 	@:allow(flixel.FlxG)
-	function new() {}
+	private function new() {}
 }

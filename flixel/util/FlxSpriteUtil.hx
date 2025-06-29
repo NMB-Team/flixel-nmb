@@ -23,9 +23,6 @@ import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 
-// TODO: pad(): Pad the sprite out with empty pixels left/right/above/below it
-// TODO: rotateClockwise(): Takes the bitmapData from the given source FlxSprite and rotates it 90 degrees clockwise
-
 /**
  * Some handy functions for FlxSprite (FlxObject) manipulation, mostly drawing-related.
  * Note that stage quality impacts the results of the draw() functions -
@@ -39,6 +36,49 @@ class FlxSpriteUtil {
 	public static var flashGfxSprite(default, null) = new Sprite();
 
 	public static var flashGfx(default, null) = flashGfxSprite.graphics;
+
+	/**
+	 * Pads a sprite with transparent pixels on each side.
+	 *
+	 * @param	sprite	The FlxSprite to pad.
+	 * @param	left	How many pixels to add to the left.
+	 * @param	right	How many pixels to add to the right.
+	 * @param	top		How many pixels to add to the top.
+	 * @param	bottom	How many pixels to add to the bottom.
+	 * @return 	The padded FlxSprite for chaining.
+	 */
+	public static function pad(sprite:FlxSprite, left = 0, right = 0, top = 0, bottom = 0):FlxSprite {
+		final oldPixels = sprite.pixels;
+		final newWidth = Std.int(oldPixels.width + left + right);
+		final newHeight = Std.int(oldPixels.height + top + bottom);
+
+		final newPixels = new BitmapData(newWidth, newHeight, true, 0x00000000);
+		newPixels.copyPixels(oldPixels, oldPixels.rect, new Point(left, top));
+
+		sprite.pixels = newPixels;
+		return sprite;
+	}
+
+	/**
+	 * Rotates the sprite's pixels 90 degrees clockwise.
+	 *
+	 * @param	sprite	The FlxSprite to rotate.
+	 * @return 	The rotated FlxSprite for chaining.
+	 */
+	public static function rotateClockwise(sprite:FlxSprite):FlxSprite {
+		final oldPixels = sprite.pixels;
+		final newPixels = new BitmapData(oldPixels.height, oldPixels.width, true, 0x00000000);
+
+		final matrix = new Matrix();
+		matrix.translate(-oldPixels.width * .5, -oldPixels.height * .5);
+		matrix.rotate(Math.PI * .5);
+		matrix.translate(oldPixels.height * .5, oldPixels.width * .5);
+
+		newPixels.draw(oldPixels, matrix, null, null, null, true);
+
+		sprite.pixels = newPixels;
+		return sprite;
+	}
 
 	/**
 	 * Takes two source images (typically from Embedded bitmaps) and puts the resulting image into the output FlxSprite.
@@ -124,10 +164,8 @@ class FlxSpriteUtil {
 	 * @return	The FlxSprite for chaining
 	 */
 	public static function bound(sprite:FlxSprite, minX = .0, maxX = .0, minY = .0, maxY = .0):FlxSprite {
-		if (maxX <= 0)
-			maxX = FlxG.width;
-		if (maxY <= 0)
-			maxY = FlxG.height;
+		if (maxX <= 0) maxX = FlxG.width;
+		if (maxY <= 0) maxY = FlxG.height;
 
 		maxX -= sprite.frameWidth;
 		maxY -= sprite.frameHeight;
