@@ -147,8 +147,6 @@ class FlxG
 	 */
 	public static var onMobile(get, never):Bool;
 
-	public static var renderMethod(default, null):FlxRenderMethod;
-
 	/**
 	 * Whether or not antialiasing is allowed.
 	 *
