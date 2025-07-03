@@ -4,18 +4,14 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.gamepad.id.PSVitaID;
 import flixel.input.gamepad.mappings.FlxGamepadMapping;
 
-class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
-{
-	override function initValues():Void
-	{
+class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID> {
+	override function initValues():Void {
 		leftStick = PSVitaID.LEFT_ANALOG_STICK;
 		rightStick = PSVitaID.RIGHT_ANALOG_STICK;
 	}
 
-	override function getID(rawID:PSVitaID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	override function getID(rawID:PSVitaID):FlxGamepadInputID {
+		return switch (rawID) {
 			case PSVitaID.X: A;
 			case PSVitaID.CIRCLE: B;
 			case PSVitaID.SQUARE: X;
@@ -40,10 +36,8 @@ class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
 		}
 	}
 
-	override function getRawID(ID:FlxGamepadInputID):PSVitaID
-	{
-		return switch (ID)
-		{
+	override function getRawID(ID:FlxGamepadInputID):PSVitaID {
+		return switch (ID) {
 			case A: PSVitaID.X;
 			case B: PSVitaID.CIRCLE;
 			case X: PSVitaID.SQUARE;
@@ -68,10 +62,8 @@ class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
 		}
 	}
 
-	override function getInputLabel(id:FlxGamepadInputID)
-	{
-		return switch (id)
-		{
+	override function getInputLabel(id:FlxGamepadInputID) {
+		return switch (id) {
 			case A: "x";
 			case B: "circle";
 			case X: "square";
@@ -85,13 +77,11 @@ class PSVitaMapping extends FlxTypedGamepadMapping<PSVitaID>
 		}
 	}
 
-	override function getMappedInput(id:FlxGamepadInputID)
-	{
+	override function getMappedInput(id:FlxGamepadInputID) {
 		return FlxGamepadMappedInput.PS_VITA(getRawID(id));
 	}
 
-	override function isAxisFlipped(axisID:Int):Bool
-	{
+	override function isAxisFlipped(axisID:Int):Bool {
 		return axisID == PSVitaID.LEFT_ANALOG_STICK.y || axisID == PSVitaID.RIGHT_ANALOG_STICK.y;
 	}
 }

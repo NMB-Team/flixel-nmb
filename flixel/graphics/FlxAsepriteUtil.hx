@@ -9,8 +9,7 @@ import flixel.system.FlxAssets;
 /**
  * Collection of helpers that deal with Aseprite files. Namely the json files exported for sprite sheets.
  */
-class FlxAsepriteUtil
-{
+class FlxAsepriteUtil {
 	/**
 	 * Helper for parsing Aseprite atlas json files. Reads frames via `FlxAtlasFrames.fromAseprite`.
 	 *
@@ -23,8 +22,7 @@ class FlxAsepriteUtil
 	 * @see flixel.graphics.FlxAsepriteUtil.AseAtlasMeta
 	 * @since 5.4.0
 	 */
-	public static inline function loadAseAtlas(sprite:FlxSprite, graphic, data:FlxAsepriteJsonAsset)
-	{
+	public static inline function loadAseAtlas(sprite:FlxSprite, graphic, data:FlxAsepriteJsonAsset) {
 		sprite.frames = FlxAtlasFrames.fromAseprite(graphic, data);
 		return sprite;
 	}
@@ -53,8 +51,7 @@ class FlxAsepriteUtil
 	 * @see flixel.graphics.FlxAsepriteUtil.AseAtlasMeta
 	 * @since 5.4.0
 	 */
-	public static inline function loadAseAtlasAndTagsByPrefix(sprite, graphic, data:FlxAsepriteJsonAsset, tagSuffix = ":", ?excludeTags)
-	{
+	public static inline function loadAseAtlasAndTagsByPrefix(sprite, graphic, data:FlxAsepriteJsonAsset, tagSuffix = ":", ?excludeTags) {
 		data = data.getData();
 		loadAseAtlas(sprite, graphic, data);
 		return addAseAtlasTagsByPrefix(sprite, data, tagSuffix, excludeTags);
@@ -83,8 +80,7 @@ class FlxAsepriteUtil
 	 * @see flixel.graphics.FlxAsepriteUtil.AseAtlasMeta
 	 * @since 5.4.0
 	 */
-	public static inline function addAseAtlasTagsByPrefix(sprite:FlxSprite, data, tagSuffix = ":", ?excludeTags)
-	{
+	public static inline function addAseAtlasTagsByPrefix(sprite:FlxSprite, data, tagSuffix = ":", ?excludeTags) {
 		addByPrefixHelper(sprite.animation, data, tagSuffix, excludeTags);
 		return sprite;
 	}
@@ -92,22 +88,18 @@ class FlxAsepriteUtil
 	// TODO: overload addAseAtlasTagsByPrefix to take FlxAnimationController?
 	// This might mess with codeclimate
 
-	static function addByPrefixHelper(animations:FlxAnimationController, data:FlxAsepriteJsonAsset, tagSuffix = ":", excludeTags:Null<Array<String>>)
-	{
+	static function addByPrefixHelper(animations:FlxAnimationController, data:FlxAsepriteJsonAsset, tagSuffix = ":", excludeTags:Null<Array<String>>) {
 		final aseData = data.getData();
-		for (tag in aseData.meta.frameTags)
-		{
+		for (tag in aseData.meta.frameTags) {
 			final name = tag.name;
-			if (excludeTags == null || !excludeTags.contains(name))
-			{
+			if (excludeTags == null || !excludeTags.contains(name)) {
 				final expectedFrames = tag.to - tag.from + 1;
 				animations.addByPrefix(name, name + tagSuffix, 30, tag.repeat.loops);
 				// Animations aren't added if no frames are found
 				final anim = animations.getByName(name);
 				setFramesDirection(anim.frames, tag.direction);
 				final actualFrames = anim == null ? 0 : anim.numFrames;
-				if (actualFrames != expectedFrames)
-				{
+				if (actualFrames != expectedFrames) {
 					FlxG.log.warn('Tag "$name" expected $expectedFrames frames but found '
 						+ '$actualFrames. Was the atlas exported with "Ignore Empty"/--ignore-empty'
 						+ ', or are there multiple tags on a single frame?');
@@ -134,8 +126,7 @@ class FlxAsepriteUtil
 	 * @see flixel.graphics.FlxAsepriteUtil.AseAtlasMeta
 	 * @since 5.4.0
 	 */
-	public static inline function loadAseAtlasAndTagsByIndex(sprite:FlxSprite, graphic, data:FlxAsepriteJsonAsset, ?excludeTags)
-	{
+	public static inline function loadAseAtlasAndTagsByIndex(sprite:FlxSprite, graphic, data:FlxAsepriteJsonAsset, ?excludeTags) {
 		data = data.getData();
 		loadAseAtlas(sprite, graphic, data);
 		return addAseAtlasTagsByIndex(sprite, data, excludeTags);
@@ -158,8 +149,7 @@ class FlxAsepriteUtil
 	 * @see flixel.graphics.FlxAsepriteUtil.AseAtlasMeta
 	 * @since 5.4.0
 	 */
-	public static inline function addAseAtlasTagsByIndex(sprite:FlxSprite, data:FlxAsepriteJsonAsset, ?excludeTags)
-	{
+	public static inline function addAseAtlasTagsByIndex(sprite:FlxSprite, data:FlxAsepriteJsonAsset, ?excludeTags) {
 		addByIndexHelper(sprite.animation, data, excludeTags);
 		return sprite;
 	}
@@ -167,14 +157,11 @@ class FlxAsepriteUtil
 	// TODO: overload addAseAtlasTagsByIndex to take FlxAnimationController?
 	// This might mess with codeclimate
 
-	static function addByIndexHelper(animations:FlxAnimationController, data:FlxAsepriteJsonAsset, excludeTags:Null<Array<String>>)
-	{
+	static function addByIndexHelper(animations:FlxAnimationController, data:FlxAsepriteJsonAsset, excludeTags:Null<Array<String>>) {
 		final aseData = data.getData();
 		final maxFrameNumber = animations.numFrames - 1;
-		for (frameTag in aseData.meta.frameTags)
-		{
-			if (frameTag.to > maxFrameNumber)
-			{
+		for (frameTag in aseData.meta.frameTags) {
+			if (frameTag.to > maxFrameNumber) {
 				FlxG.log.warn('Tag "${frameTag.name}" `to` field (${frameTag.to}) exceeds the max '
 					+ 'frame number ($maxFrameNumber). Some animations may not be loaded correctly. '
 					+ 'Was the atlas exported with "Ignore Empty"/--ignore-empty?');
@@ -189,16 +176,12 @@ class FlxAsepriteUtil
 		}
 	}
 
-	static function setFramesDirection(frames:Array<Int>, direction:AseAtlasTagDirection)
-	{
-		switch(direction)
-		{
+	static function setFramesDirection(frames:Array<Int>, direction:AseAtlasTagDirection) {
+		switch(direction) {
 			case FORWARD:// do nothing
 			case REVERSE:
-
 				frames.reverse();
 			case PINGPONG | PINGPONG_REVERSE:
-
 				if (direction == PINGPONG_REVERSE)
 					frames.reverse();
 

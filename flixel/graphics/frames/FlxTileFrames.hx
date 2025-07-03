@@ -14,8 +14,7 @@ import flixel.util.FlxDestroyUtil;
 /**
  * Spritesheet frame collection. It is used for tilemaps and animated sprites.
  */
-class FlxTileFrames extends FlxFramesCollection
-{
+class FlxTileFrames extends FlxFramesCollection {
 	/**
 	 * Atlas frame from which this frame collection had been generated.
 	 * Could be `null` if this collection generated from rectangle.
@@ -37,20 +36,18 @@ class FlxTileFrames extends FlxFramesCollection
 	 */
 	var tileSpacing:FlxPoint;
 
-	public var numRows:Int = 0;
+	public var numRows = 0;
 
-	public var numCols:Int = 0;
+	public var numCols = 0;
 
-	function new(parent:FlxGraphic, ?border:FlxPoint)
-	{
+	private function new(parent:FlxGraphic, ?border:FlxPoint) {
 		super(parent, FlxFrameCollectionType.TILES, border);
 	}
 
 	/**
 	 * Gets frame by its "position" in spritesheet.
 	 */
-	public inline function getByTilePosition(column:Int, row:Int):FlxFrame
-	{
+	public inline function getByTilePosition(column:Int, row:Int):FlxFrame {
 		return frames[row * numCols + column];
 	}
 
@@ -67,34 +64,27 @@ class FlxTileFrames extends FlxFramesCollection
 	 *                        the whole image will be used for spritesheet generation.
 	 * @return   Newly created spritesheet.
 	 */
-	public static function fromBitmapAddSpacesAndBorders(source:FlxGraphicAsset, tileSize:FlxPoint, ?tileSpacing:FlxPoint, ?tileBorder:FlxPoint,
-			?region:FlxRect):FlxTileFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source, false);
-		if (graphic == null)
-			return null;
+	public static function fromBitmapAddSpacesAndBorders(source:FlxGraphicAsset, tileSize:FlxPoint, ?tileSpacing:FlxPoint, ?tileBorder:FlxPoint, ?region:FlxRect):FlxTileFrames {
+		final graphic = FlxG.bitmap.add(source, false);
+		if (graphic == null) return null;
 
-		var key:String = FlxG.bitmap.getKeyWithSpacesAndBorders(graphic.key, tileSize, tileSpacing, tileBorder, region);
-		var result:FlxGraphic = FlxG.bitmap.get(key);
-		if (result == null)
-		{
-			var bitmap:BitmapData = FlxBitmapDataUtil.addSpacesAndBorders(graphic.bitmap, tileSize, tileSpacing, tileBorder, region);
+		final key = FlxG.bitmap.getKeyWithSpacesAndBorders(graphic.key, tileSize, tileSpacing, tileBorder, region);
+		var result = FlxG.bitmap.get(key);
+		if (result == null) {
+			final bitmap = FlxBitmapDataUtil.addSpacesAndBorders(graphic.bitmap, tileSize, tileSpacing, tileBorder, region);
 			result = FlxG.bitmap.add(bitmap, false, key);
 		}
 
-		var borderX:Int = 0;
-		var borderY:Int = 0;
+		var borderX = 0;
+		var borderY = 0;
 
-		if (tileBorder != null)
-		{
+		if (tileBorder != null) {
 			borderX = Std.int(tileBorder.x);
 			borderY = Std.int(tileBorder.y);
 		}
 
-		var tileFrames:FlxTileFrames = FlxTileFrames.fromGraphic(result, FlxPoint.get().addPoint(tileSize).add(2 * borderX, 2 * borderY), null, tileSpacing);
-
-		if (tileBorder == null)
-			return tileFrames;
+		final tileFrames = FlxTileFrames.fromGraphic(result, FlxPoint.get().addPoint(tileSize).add(2 * borderX, 2 * borderY), null, tileSpacing);
+		if (tileBorder == null) return tileFrames;
 
 		return tileFrames.addBorder(tileBorder);
 	}
@@ -110,9 +100,8 @@ class FlxTileFrames extends FlxFramesCollection
 	 * @param   tileBorder    Border to add around tiles (helps to avoid "tearing" problem).
 	 * @return  Newly created spritesheet.
 	 */
-	public static function fromFrameAddSpacesAndBorders(frame:FlxFrame, tileSize:FlxPoint, ?tileSpacing:FlxPoint, ?tileBorder:FlxPoint):FlxTileFrames
-	{
-		var bitmap:BitmapData = frame.paint();
+	public static function fromFrameAddSpacesAndBorders(frame:FlxFrame, tileSize:FlxPoint, ?tileSpacing:FlxPoint, ?tileBorder:FlxPoint):FlxTileFrames {
+		final bitmap = frame.paint();
 		return FlxTileFrames.fromBitmapAddSpacesAndBorders(bitmap, tileSize, tileSpacing, tileBorder);
 	}
 
@@ -127,13 +116,11 @@ class FlxTileFrames extends FlxFramesCollection
 	 *                        Default value is `null`, which means no offsets between tiles.
 	 * @return  Newly created spritesheet frame collection.
 	 */
-	public static function fromFrame(frame:FlxFrame, tileSize:FlxPoint, ?tileSpacing:FlxPoint):FlxTileFrames
-	{
-		var graphic:FlxGraphic = frame.parent;
+	public static function fromFrame(frame:FlxFrame, tileSize:FlxPoint, ?tileSpacing:FlxPoint):FlxTileFrames {
+		final graphic = frame.parent;
 		// find TileFrames object, if there is one already
-		var tileFrames:FlxTileFrames = FlxTileFrames.findFrame(graphic, tileSize, null, frame, tileSpacing);
-		if (tileFrames != null)
-			return tileFrames;
+		var tileFrames = FlxTileFrames.findFrame(graphic, tileSize, null, frame, tileSpacing);
+		if (tileFrames != null) return tileFrames;
 
 		// or create it, if there is no such object
 		tileSpacing = (tileSpacing != null) ? tileSpacing : FlxPoint.get(0, 0);
@@ -147,23 +134,20 @@ class FlxTileFrames extends FlxFramesCollection
 		tileSpacing.floor();
 		tileSize.floor();
 
-		var spacedWidth:Float = tileSize.x + tileSpacing.x;
-		var spacedHeight:Float = tileSize.y + tileSpacing.y;
+		final spacedWidth = tileSize.x + tileSpacing.x;
+		final spacedHeight = tileSize.y + tileSpacing.y;
 
-		var numRows:Int = (tileSize.y == 0) ? 1 : Std.int((frame.sourceSize.y + tileSpacing.y) / spacedHeight);
-		var numCols:Int = (tileSize.x == 0) ? 1 : Std.int((frame.sourceSize.x + tileSpacing.x) / spacedWidth);
+		final numRows = (tileSize.y == 0) ? 1 : Std.int((frame.sourceSize.y + tileSpacing.y) / spacedHeight);
+		final numCols = (tileSize.x == 0) ? 1 : Std.int((frame.sourceSize.x + tileSpacing.x) / spacedWidth);
 
-		var helperRect:FlxRect = FlxRect.get(0, 0, tileSize.x, tileSize.y);
+		var helperRect = FlxRect.get(0, 0, tileSize.x, tileSize.y);
 
 		for (j in 0...numRows)
-		{
-			for (i in 0...numCols)
-			{
+			for (i in 0...numCols) {
 				helperRect.x = spacedWidth * i;
 				helperRect.y = spacedHeight * j;
 				tileFrames.pushFrame(frame.subFrameTo(helperRect));
 			}
-		}
 
 		helperRect = FlxDestroyUtil.put(helperRect);
 
@@ -175,40 +159,31 @@ class FlxTileFrames extends FlxFramesCollection
 	/**
 	 * Just generates tile frames collection from specified array of frames.
 	 *
-	 * @param   Frames   `Array` of frames to generate tile frames from.
+	 * @param   frames   `Array` of frames to generate tile frames from.
 	 *                   They all should have the same source size and parent graphic.
 	 *                   If not then `null` will be returned.
 	 * @return  Generated collection of frames.
 	 */
-	public static function fromFrames(Frames:Array<FlxFrame>):FlxTileFrames
-	{
-		var firstFrame:FlxFrame = Frames[0];
-		var graphic:FlxGraphic = firstFrame.parent;
+	public static function fromFrames(frames:Array<FlxFrame>):FlxTileFrames {
+		final firstFrame = frames[0];
+		final graphic = firstFrame.parent;
 
-		for (frame in Frames)
-		{
+		for (frame in frames)
 			if (frame.parent != firstFrame.parent || !frame.sourceSize.equals(firstFrame.sourceSize))
-			{
-				// frames doesn't have the same size and parent graphic
-				return null;
-			}
-		}
+				return null; // frames doesn't have the same size and parent graphic
 
-		var tileFrames:FlxTileFrames = new FlxTileFrames(graphic);
+		final tileFrames = new FlxTileFrames(graphic);
 
 		tileFrames.region = null;
 		tileFrames.atlasFrame = null;
 		tileFrames.tileSize = FlxPoint.get().copyFrom(firstFrame.sourceSize);
 		tileFrames.tileSpacing = FlxPoint.get(0, 0);
-		tileFrames.numCols = Frames.length;
+		tileFrames.numCols = frames.length;
 		tileFrames.numRows = 1;
 
-		for (frame in Frames)
-		{
+		for (frame in frames) {
 			tileFrames.frames.push(frame);
-
-			if (frame.name != null)
-				tileFrames.framesByName.set(frame.name, frame);
+			if (frame.name != null) tileFrames.framesByName.set(frame.name, frame);
 		}
 
 		return tileFrames;
@@ -219,27 +194,23 @@ class FlxTileFrames extends FlxFramesCollection
 	 * a common name (e.g. `"tiles-"`) and differ in indices (e.g. `"001"`, `"002"`, etc.).
 	 * This method is similar to `FlxAnimationController`'s `addByPrefix()`.
 	 *
-	 * @param    Frames   Collection of atlas frames to generate tiles from.
-	 * @param    Prefix   Common beginning of image names in atlas (e.g. `"tiles-"`).
+	 * @param    frames   Collection of atlas frames to generate tiles from.
+	 * @param    prefix   Common beginning of image names in atlas (e.g. `"tiles-"`).
 	 * @return   Generated tile frames collection.
 	 */
-	public static function fromAtlasByPrefix(Frames:FlxAtlasFrames, Prefix:String):FlxTileFrames
-	{
-		var framesToAdd = new Array<FlxFrame>();
+	public static function fromAtlasByPrefix(frames:FlxAtlasFrames, prefix:String):FlxTileFrames {
+		final framesToAdd = new Array<FlxFrame>();
 
-		for (frame in Frames.frames)
-		{
-			if (StringTools.startsWith(frame.name, Prefix))
+		for (frame in frames.frames)
+			if (StringTools.startsWith(frame.name, prefix))
 				framesToAdd.push(frame);
-		}
 
-		if (framesToAdd.length > 0)
-		{
-			var name:String = framesToAdd[0].name;
-			var postIndex:Int = name.indexOf(".", Prefix.length);
-			var suffix:String = name.substring(postIndex == -1 ? name.length : postIndex, name.length);
+		if (framesToAdd.length > 0) {
+			final name = framesToAdd[0].name;
+			final postIndex = name.indexOf(".", prefix.length);
+			final suffix = name.substring(postIndex == -1 ? name.length : postIndex, name.length);
 
-			FlxFrame.sortFrames(framesToAdd, Prefix, suffix);
+			FlxFrame.sortFrames(framesToAdd, prefix, suffix);
 			return FlxTileFrames.fromFrames(framesToAdd);
 		}
 
@@ -257,26 +228,17 @@ class FlxTileFrames extends FlxFramesCollection
 	 *                        Default value is `null`, which means no offsets between tiles.
 	 * @return  Newly created spritesheet frame collection.
 	 */
-	public static function fromGraphic(graphic:FlxGraphic, tileSize:FlxPoint, ?region:FlxRect, ?tileSpacing:FlxPoint):FlxTileFrames
-	{
+	public static function fromGraphic(graphic:FlxGraphic, tileSize:FlxPoint, ?region:FlxRect, ?tileSpacing:FlxPoint):FlxTileFrames {
 		// find TileFrames object, if there is one already
-		var tileFrames:FlxTileFrames = FlxTileFrames.findFrame(graphic, tileSize, region, null, tileSpacing);
-		if (tileFrames != null)
-			return tileFrames;
+		var tileFrames = FlxTileFrames.findFrame(graphic, tileSize, region, null, tileSpacing);
+		if (tileFrames != null) return tileFrames;
 
 		// or create it, if there is no such object
-		if (region == null)
-		{
+		if (region != null) {
+			if (region.width == 0) region.width = graphic.width - region.x;
+			if (region.height == 0) region.height = graphic.height - region.y;
+		} else
 			region = FlxRect.get(0, 0, graphic.width, graphic.height);
-		}
-		else
-		{
-			if (region.width == 0)
-				region.width = graphic.width - region.x;
-
-			if (region.height == 0)
-				region.height = graphic.height - region.y;
-		}
 
 		tileSpacing = (tileSpacing != null) ? tileSpacing : FlxPoint.get(0, 0);
 
@@ -290,22 +252,19 @@ class FlxTileFrames extends FlxFramesCollection
 		tileSpacing.floor();
 		tileSize.floor();
 
-		var spacedWidth:Float = tileSize.x + tileSpacing.x;
-		var spacedHeight:Float = tileSize.y + tileSpacing.y;
+		final spacedWidth = tileSize.x + tileSpacing.x;
+		final spacedHeight = tileSize.y + tileSpacing.y;
 
-		var numRows:Int = (tileSize.y == 0) ? 1 : Std.int((region.height + tileSpacing.y) / spacedHeight);
-		var numCols:Int = (tileSize.x == 0) ? 1 : Std.int((region.width + tileSpacing.x) / spacedWidth);
+		final numRows = (tileSize.y == 0) ? 1 : Std.int((region.height + tileSpacing.y) / spacedHeight);
+		final numCols = (tileSize.x == 0) ? 1 : Std.int((region.width + tileSpacing.x) / spacedWidth);
 
 		var tileRect:FlxRect;
 
 		for (j in 0...numRows)
-		{
-			for (i in 0...numCols)
-			{
+			for (i in 0...numCols) {
 				tileRect = FlxRect.get(region.x + i * spacedWidth, region.y + j * spacedHeight, tileSize.x, tileSize.y);
 				tileFrames.addSpriteSheetFrame(tileRect);
 			}
-		}
 
 		tileFrames.numCols = numCols;
 		tileFrames.numRows = numRows;
@@ -323,11 +282,9 @@ class FlxTileFrames extends FlxFramesCollection
 	 *                        Default value is `null`, which means no offsets between tiles.
 	 * @return  Newly created spritesheet frame collection.
 	 */
-	public static function fromRectangle(source:FlxGraphicAsset, tileSize:FlxPoint, ?region:FlxRect, ?tileSpacing:FlxPoint):FlxTileFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source, false);
-		if (graphic == null)
-			return null;
+	public static function fromRectangle(source:FlxGraphicAsset, tileSize:FlxPoint, ?region:FlxRect, ?tileSpacing:FlxPoint):FlxTileFrames {
+		final graphic = FlxG.bitmap.add(source, false);
+		if (graphic == null) return null;
 		return fromGraphic(graphic, tileSize, region, tileSpacing);
 	}
 
@@ -337,7 +294,7 @@ class FlxTileFrames extends FlxFramesCollection
 	 * The order of bitmaps in the array is important.
 	 *
 	 * ```haxe
-	 * var combinedFrames = FlxTileFrames.combineTileSets(bitmaps, FlxPoint.get(16, 16));
+	 * final combinedFrames = FlxTileFrames.combineTileSets(bitmaps, FlxPoint.get(16, 16));
 	 * tilemap.loadMapFromCSV(mapData, combinedFrames);
 	 * ```
 	 *
@@ -351,13 +308,9 @@ class FlxTileFrames extends FlxFramesCollection
 	 * @param   tileSize   The size of tiles (tilesets should have tiles of the same size).
 	 * @return  Atlas frames collection, which you can load in tilemaps or sprites:
 	 */
-	public static function combineTileSets(bitmaps:Array<BitmapData>, tileSize:FlxPoint, ?spacing:FlxPoint, ?border:FlxPoint):FlxTileFrames
-	{
-		var framesCollections:Array<FlxTileFrames> = [];
-
-		for (bitmap in bitmaps)
-			framesCollections.push(FlxTileFrames.fromRectangle(bitmap, tileSize));
-
+	public static function combineTileSets(bitmaps:Array<BitmapData>, tileSize:FlxPoint, ?spacing:FlxPoint, ?border:FlxPoint):FlxTileFrames {
+		final framesCollections:Array<FlxTileFrames> = [];
+		for (bitmap in bitmaps) framesCollections.push(FlxTileFrames.fromRectangle(bitmap, tileSize));
 		return combineTileFrames(framesCollections, spacing, border);
 	}
 
@@ -367,7 +320,7 @@ class FlxTileFrames extends FlxFramesCollection
 	 *
 	 *
 	 * ```haxe
-	 * var combinedFrames = FlxTileFrames.combineTileFrames(tileframes);
+	 * final combinedFrames = FlxTileFrames.combineTileFrames(tileframes);
 	 * tilemap.loadMapFromCSV(mapData, combinedFrames);
 	 * ```
 	 *
@@ -380,52 +333,48 @@ class FlxTileFrames extends FlxFramesCollection
 	 * @param   tileframes   Tile frames collection to combine tiles from.
 	 * @return  Atlas frames collection, which you can load in tilemaps or sprites:
 	 */
-	public static function combineTileFrames(tileframes:Array<FlxTileFrames>, ?spacing:FlxPoint, ?border:FlxPoint):FlxTileFrames
-	{
+	public static function combineTileFrames(tileframes:Array<FlxTileFrames>, ?spacing:FlxPoint, ?border:FlxPoint):FlxTileFrames {
 		// we need to calculate the size of result bitmap first
-		var totalArea:Int = 0;
-		var rows:Int = 0;
-		var cols:Int = 0;
+		var totalArea = 0;
+		var rows = 0;
+		var cols = 0;
 
-		var tileWidth:Int = Std.int(tileframes[0].frames[0].sourceSize.x);
-		var tileHeight:Int = Std.int(tileframes[0].frames[0].sourceSize.y);
+		var tileWidth = Std.int(tileframes[0].frames[0].sourceSize.x);
+		var tileHeight = Std.int(tileframes[0].frames[0].sourceSize.y);
 
-		var spaceX:Int = 0;
-		var spaceY:Int = 0;
+		var spaceX = 0;
+		var spaceY = 0;
 
-		if (spacing != null)
-		{
+		if (spacing != null) {
 			spaceX = Std.int(spacing.x);
 			spaceY = Std.int(spacing.y);
 		}
 
-		var borderX:Int = 0;
-		var borderY:Int = 0;
+		var borderX = 0;
+		var borderY = 0;
 
-		if (border != null)
-		{
+		if (border != null) {
 			borderX = Std.int(border.x);
 			borderY = Std.int(border.y);
 		}
 
-		for (collection in tileframes)
-		{
+		for (collection in tileframes) {
 			cols = collection.numCols;
 			rows = collection.numRows;
 			totalArea += Std.int(cols * (tileWidth + 2 * borderX) * rows * (tileHeight + 2 * borderY));
 		}
 
-		var side:Float = Math.sqrt(totalArea);
+		final side = Math.sqrt(totalArea);
 		cols = Std.int(side / (tileWidth + 2 * borderX));
 		rows = Math.ceil(totalArea / (cols * (tileWidth + 2 * borderX) * (tileHeight + 2 * borderY)));
-		var width:Int = Std.int(cols * (tileWidth + 2 * borderX)) + (cols - 1) * spaceX;
-		var height:Int = Std.int(rows * (tileHeight + 2 * borderY)) + (rows - 1) * spaceY;
+		final width = Std.int(cols * (tileWidth + 2 * borderX)) + (cols - 1) * spaceX;
+		final height = Std.int(rows * (tileHeight + 2 * borderY)) + (rows - 1) * spaceY;
 
 		// now we'll create result atlas and will blit every tile on it.
-		var combined:BitmapData = new BitmapData(width, height, true, FlxColor.TRANSPARENT);
-		var graphic:FlxGraphic = FlxG.bitmap.add(combined);
-		var result:FlxTileFrames = new FlxTileFrames(graphic);
-		var destPoint:Point = new Point(borderX, borderY);
+		final combined = new BitmapData(width, height, true, FlxColor.TRANSPARENT);
+		final graphic = FlxG.bitmap.add(combined);
+		final result = new FlxTileFrames(graphic);
+		final destPoint = new Point(borderX, borderY);
 
 		result.region = FlxRect.get(0, 0, width, height);
 		result.atlasFrame = null;
@@ -435,21 +384,18 @@ class FlxTileFrames extends FlxFramesCollection
 		result.numRows = rows;
 		// paint frames on result canvas with spaces between frames
 		for (collection in tileframes)
-		{
-			for (frame in collection.frames)
-			{
+			for (frame in collection.frames) {
 				frame.paint(combined, destPoint, true);
 
 				result.addAtlasFrame(FlxRect.get(destPoint.x, destPoint.y, tileWidth, tileHeight), FlxPoint.get(tileWidth, tileHeight), FlxPoint.get(0, 0));
 				destPoint.x += tileWidth + 2 * borderX + spaceX;
 
-				if (destPoint.x >= combined.width)
-				{
+				if (destPoint.x >= combined.width) {
 					destPoint.x = borderX;
 					destPoint.y += tileHeight + 2 * borderY + spaceY;
 				}
 			}
-		}
+
 		// and copy pixels around frames
 		FlxBitmapDataUtil.copyBorderPixels(combined, tileWidth, tileHeight, spaceX, spaceY, borderX, borderY, cols, rows);
 		return result;
@@ -467,16 +413,12 @@ class FlxTileFrames extends FlxFramesCollection
 	 * @return  `FlxTileFrames` object which corresponds to specified arguments.
 	 *          Could be null if there is no such `FlxTileFrames`.
 	 */
-	public static function findFrame(graphic:FlxGraphic, tileSize:FlxPoint, ?region:FlxRect, ?atlasFrame:FlxFrame, ?tileSpacing:FlxPoint,
-			?border:FlxPoint):FlxTileFrames
-	{
-		var tileFrames:Array<FlxTileFrames> = cast graphic.getFramesCollections(FlxFrameCollectionType.TILES);
+	public static function findFrame(graphic:FlxGraphic, tileSize:FlxPoint, ?region:FlxRect, ?atlasFrame:FlxFrame, ?tileSpacing:FlxPoint, ?border:FlxPoint):FlxTileFrames {
+		final tileFrames:Array<FlxTileFrames> = cast graphic.getFramesCollections(FlxFrameCollectionType.TILES);
 
 		for (sheet in tileFrames)
-		{
 			if (sheet.equals(tileSize, region, null, tileSpacing, border))
 				return sheet;
-		}
 
 		return null;
 	}
@@ -484,32 +426,16 @@ class FlxTileFrames extends FlxFramesCollection
 	/**
 	 * TileFrames comparison method. For internal use.
 	 */
-	public function equals(tileSize:FlxPoint, ?region:FlxRect, ?atlasFrame:FlxFrame, ?tileSpacing:FlxPoint, ?border:FlxPoint):Bool
-	{
-		if (this.region == null && this.atlasFrame == null)
-		{
-			return false;
-		}
+	public function equals(tileSize:FlxPoint, ?region:FlxRect, ?atlasFrame:FlxFrame, ?tileSpacing:FlxPoint, ?border:FlxPoint):Bool {
+		if (this.region == null && this.atlasFrame == null) return false;
 
-		if (atlasFrame != null)
-		{
-			region = atlasFrame.frame;
-		}
+		if (atlasFrame != null) region = atlasFrame.frame;
 
-		if (region == null)
-			region = FlxRect.weak(0, 0, parent.width, parent.height);
+		region ??= FlxRect.weak(0, 0, parent.width, parent.height);
+		tileSpacing ??= FlxPoint.weak();
+		border ??= FlxPoint.weak();
 
-		if (tileSpacing == null)
-			tileSpacing = FlxPoint.weak();
-
-		if (border == null)
-			border = FlxPoint.weak();
-
-		return this.atlasFrame == atlasFrame
-			&& this.region.equals(region)
-			&& this.tileSize.equals(tileSize)
-			&& this.tileSpacing.equals(tileSpacing)
-			&& this.border.equals(border);
+		return this.atlasFrame == atlasFrame && this.region.equals(region) && this.tileSize.equals(tileSize) && this.tileSpacing.equals(tileSpacing) && this.border.equals(border);
 	}
 
 	override public function addBorder(border:FlxPoint):FlxTileFrames

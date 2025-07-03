@@ -13,16 +13,14 @@ import openfl.display.BitmapData;
  * Single-frame collection.
  * Could be useful for non-animated sprites.
  */
-class FlxImageFrame extends FlxFramesCollection
-{
+class FlxImageFrame extends FlxFramesCollection {
 	/**
 	 * Single frame of this frame collection.
 	 * Added this var for faster access, so you don't need to type something like: `imageFrame.frames[0]`
 	 */
 	public var frame(get, never):FlxFrame;
 
-	function new(parent:FlxGraphic, ?border:FlxPoint)
-	{
+	private function new(parent:FlxGraphic, ?border:FlxPoint) {
 		super(parent, FlxFrameCollectionType.IMAGE, border);
 	}
 
@@ -34,15 +32,12 @@ class FlxImageFrame extends FlxFramesCollection
 	 *                      (only `width` and `height` of the `frameRect` need to be set properly).
 	 * @return  Newly created `FlxImageFrame` object with empty frame of specified size.
 	 */
-	public static function fromEmptyFrame(graphic:FlxGraphic, frameRect:FlxRect):FlxImageFrame
-	{
-		if (graphic == null || frameRect == null)
-			return null;
+	public static function fromEmptyFrame(graphic:FlxGraphic, frameRect:FlxRect):FlxImageFrame {
+		if (graphic == null || frameRect == null) return null;
 
 		// find ImageFrame, if there is one already
 		var imageFrame = FlxImageFrame.findEmptyFrame(graphic, frameRect);
-		if (imageFrame != null)
-			return imageFrame;
+		if (imageFrame != null) return imageFrame;
 
 		// or create it, if there is no such object
 		imageFrame = new FlxImageFrame(graphic);
@@ -56,14 +51,12 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   source   `FlxFrame` to generate `FlxImageFrame` from.
 	 * @return  Created `FlxImageFrame` object.
 	 */
-	public static function fromFrame(source:FlxFrame):FlxImageFrame
-	{
-		var graphic:FlxGraphic = source.parent;
-		var rect:FlxRect = source.frame;
+	public static function fromFrame(source:FlxFrame):FlxImageFrame {
+		final graphic = source.parent;
+		final rect = source.frame;
 
-		var imageFrame:FlxImageFrame = FlxImageFrame.findFrame(graphic, rect);
-		if (imageFrame != null)
-			return imageFrame;
+		var imageFrame = FlxImageFrame.findFrame(graphic, rect);
+		if (imageFrame != null) return imageFrame;
 
 		imageFrame = new FlxImageFrame(graphic);
 		imageFrame.addSpriteSheetFrame(rect.copyTo(FlxRect.get()));
@@ -76,8 +69,7 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   source   image graphic for the `FlxImageFrame`.
 	 * @return  Newly created `FlxImageFrame` object for specified graphic.
 	 */
-	public static function fromImage(source:FlxGraphicAsset):FlxImageFrame
-	{
+	public static function fromImage(source:FlxGraphicAsset):FlxImageFrame {
 		return fromRectangle(source, null);
 	}
 
@@ -88,42 +80,29 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   region    Region of image to create the `FlxImageFrame` for.
 	 * @return  Newly created `FlxImageFrame` object for the specified region of `FlxGraphic` object.
 	 */
-	public static function fromGraphic(graphic:FlxGraphic, ?region:FlxRect):FlxImageFrame
-	{
+	public static function fromGraphic(graphic:FlxGraphic, ?region:FlxRect):FlxImageFrame {
 		// TODO: look into this
-		if (graphic == null || graphic.isDestroyed)
-			return null;
+		if (graphic == null || graphic.isDestroyed) return null;
 
 		// find ImageFrame, if there is one already
 		final checkRegion = FlxRect.get(0, 0, graphic.width, graphic.height);
-		if (region != null)
-			region.copyTo(checkRegion);
+		region?.copyTo(checkRegion);
 
-		final imageFrame:FlxImageFrame = FlxImageFrame.findFrame(graphic, checkRegion);
+		final imageFrame = FlxImageFrame.findFrame(graphic, checkRegion);
 		checkRegion.put();
-		if (imageFrame != null)
-		{
-			if (region != null)
-				region.putWeak();
-
+		if (imageFrame != null) {
+			region?.putWeak();
 			return imageFrame;
 		}
 
 		// or create it, if there is no such object
 		final imageFrame = new FlxImageFrame(graphic);
 
-		if (region == null)
-		{
+		if (region != null) {
+			if (region.width == 0) region.width = graphic.width - region.x;
+			if (region.height == 0) region.height = graphic.height - region.y;
+		} else
 			region = FlxRect.weak(0, 0, graphic.width, graphic.height);
-		}
-		else
-		{
-			if (region.width == 0)
-				region.width = graphic.width - region.x;
-
-			if (region.height == 0)
-				region.height = graphic.height - region.y;
-		}
 
 		imageFrame.addSpriteSheetFrame(region);
 		return imageFrame;
@@ -136,9 +115,8 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   region   Region of the image to create the `FlxImageFrame` for.
 	 * @return  Newly created `FlxImageFrame` object for specified region of image.
 	 */
-	public static function fromRectangle(source:FlxGraphicAsset, ?region:FlxRect):FlxImageFrame
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source, false);
+	public static function fromRectangle(source:FlxGraphicAsset, ?region:FlxRect):FlxImageFrame {
+		final graphic = FlxG.bitmap.add(source, false);
 		return fromGraphic(graphic, region);
 	}
 
@@ -152,21 +130,18 @@ class FlxImageFrame extends FlxFramesCollection
 	 *                   whole image will be used for it.
 	 * @return  Newly created image frame collection.
 	 */
-	public static function fromBitmapAddSpacesAndBorders(source:FlxGraphicAsset, border:FlxPoint, ?region:FlxRect):FlxImageFrame
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source, false);
-		if (graphic == null)
-			return null;
+	public static function fromBitmapAddSpacesAndBorders(source:FlxGraphicAsset, border:FlxPoint, ?region:FlxRect):FlxImageFrame {
+		final graphic = FlxG.bitmap.add(source, false);
+		if (graphic == null) return null;
 
-		var key:String = FlxG.bitmap.getKeyWithSpacesAndBorders(graphic.key, null, null, border, region);
-		var result:FlxGraphic = FlxG.bitmap.get(key);
-		if (result == null)
-		{
-			var bitmap:BitmapData = FlxBitmapDataUtil.addSpacesAndBorders(graphic.bitmap, null, null, border, region);
+		final key = FlxG.bitmap.getKeyWithSpacesAndBorders(graphic.key, null, null, border, region);
+		var result = FlxG.bitmap.get(key);
+		if (result == null) {
+			final bitmap = FlxBitmapDataUtil.addSpacesAndBorders(graphic.bitmap, null, null, border, region);
 			result = FlxG.bitmap.add(bitmap, false, key);
 		}
 
-		var imageFrame:FlxImageFrame = FlxImageFrame.fromGraphic(graphic);
+		final imageFrame = FlxImageFrame.fromGraphic(graphic);
 		return imageFrame.addBorder(border);
 	}
 
@@ -178,9 +153,8 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   border   Border to add around frame image (helps to avoid "tearing" problem).
 	 * @return  Newly created image frame collection.
 	 */
-	public static function fromFrameAddSpacesAndBorders(frame:FlxFrame, border:FlxPoint):FlxImageFrame
-	{
-		var bitmap:BitmapData = frame.paint();
+	public static function fromFrameAddSpacesAndBorders(frame:FlxFrame, border:FlxPoint):FlxImageFrame {
+		final bitmap = frame.paint();
 		return FlxImageFrame.fromBitmapAddSpacesAndBorders(bitmap, border);
 	}
 
@@ -193,28 +167,24 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @return   `FlxImageFrame` object which corresponds to specified rectangle.
 	 *           Could be `null` if there is no such `FlxImageFrame`.
 	 */
-	public static function findFrame(graphic:FlxGraphic, frameRect:FlxRect, ?frameBorder:FlxPoint):FlxImageFrame
-	{
-		if (frameBorder == null)
-			frameBorder = FlxPoint.weak();
+	public static function findFrame(graphic:FlxGraphic, frameRect:FlxRect, ?frameBorder:FlxPoint):FlxImageFrame {
+		frameBorder ??= FlxPoint.weak();
 
-		var imageFrames:Array<FlxImageFrame> = cast graphic.getFramesCollections(FlxFrameCollectionType.IMAGE);
+		final imageFrames:Array<FlxImageFrame> = cast graphic.getFramesCollections(FlxFrameCollectionType.IMAGE);
 		for (imageFrame in imageFrames)
-		{
 			if (imageFrame.equals(frameRect, frameBorder) && imageFrame.frame.type != FlxFrameType.EMPTY)
 				return imageFrame;
-		}
 
 		frameBorder.putWeak();
 		frameRect.putWeak();
+
 		return null;
 	}
 
 	/**
 	 * `FlxImageFrame` comparison method. For internal use.
 	 */
-	inline function equals(rect:FlxRect, border:FlxPoint):Bool
-	{
+	inline function equals(rect:FlxRect, border:FlxPoint):Bool {
 		return rect.equals(frame.frame) && border.equals(this.border);
 	}
 
@@ -225,13 +195,11 @@ class FlxImageFrame extends FlxFramesCollection
 	 * @param   frameRect   The size of empty frame to search for.
 	 * @return  `FlxImageFrame` with empty frame.
 	 */
-	public static function findEmptyFrame(graphic:FlxGraphic, frameRect:FlxRect):FlxImageFrame
-	{
-		var imageFrames:Array<FlxImageFrame> = cast graphic.getFramesCollections(FlxFrameCollectionType.IMAGE);
+	public static function findEmptyFrame(graphic:FlxGraphic, frameRect:FlxRect):FlxImageFrame {
+		final imageFrames:Array<FlxImageFrame> = cast graphic.getFramesCollections(FlxFrameCollectionType.IMAGE);
 
-		for (imageFrame in imageFrames)
-		{
-			var frame = imageFrame.frame;
+		for (imageFrame in imageFrames) {
+			final frame = imageFrame.frame;
 			if (frame.sourceSize.x == frameRect.width && frame.sourceSize.y == frameRect.height && frame.type == FlxFrameType.EMPTY)
 				return imageFrame;
 		}
@@ -239,21 +207,18 @@ class FlxImageFrame extends FlxFramesCollection
 		return null;
 	}
 
-	override public function addBorder(border:FlxPoint):FlxImageFrame
-	{
-		var resultBorder:FlxPoint = FlxPoint.weak().add(this.border).add(border);
+	override public function addBorder(border:FlxPoint):FlxImageFrame {
+		final resultBorder = FlxPoint.weak().add(this.border).add(border);
 
-		var imageFrame:FlxImageFrame = FlxImageFrame.findFrame(parent, frame.frame, resultBorder);
-		if (imageFrame != null)
-			return imageFrame;
+		var imageFrame = FlxImageFrame.findFrame(parent, frame.frame, resultBorder);
+		if (imageFrame != null) return imageFrame;
 
 		imageFrame = new FlxImageFrame(parent, resultBorder);
 		imageFrame.pushFrame(frame.setBorderTo(border));
 		return imageFrame;
 	}
 
-	function get_frame():FlxFrame
-	{
+	private function get_frame():FlxFrame {
 		return frames[0];
 	}
 }

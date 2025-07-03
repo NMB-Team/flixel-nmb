@@ -26,17 +26,16 @@ class FlxTileblock extends FlxSprite
 	 * @param   width   The width of the block.
 	 * @param   height  The height of the block.
 	 */
-	public function new(x:Int, y:Int, width:Int, height:Int)
-	{
+	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
+
 		makeGraphic(width, height, FlxColor.TRANSPARENT, true);
-		active = false;
+
+		active = moves = false;
 		immovable = true;
-		moves = false;
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		tileSprite = FlxDestroyUtil.destroy(tileSprite);
 		super.destroy();
 	}
@@ -48,61 +47,46 @@ class FlxTileblock extends FlxSprite
 	 * @param   empties     The number of "empty" tiles to add to the auto-fill algorithm (e.g. 8 tiles + 4 empties = 1/3 of block will be open holes).
 	 * @return  This tile block.
 	 */
-	public function loadFrames(tileFrames:FlxTileFrames, empties:Int = 0):FlxTileblock
-	{
-		if (tileFrames == null)
-		{
-			return this;
-		}
+	public function loadFrames(tileFrames:FlxTileFrames, empties = 0):FlxTileblock {
+		if (tileFrames == null) return this;
 
 		// First create a tile brush
 		tileSprite = (tileSprite == null) ? new FlxSprite() : tileSprite;
 		tileSprite.frames = tileFrames;
-		var spriteWidth:Int = Std.int(tileSprite.width);
-		var spriteHeight:Int = Std.int(tileSprite.height);
-		var total:Int = tileSprite.numFrames + empties;
+
+		final spriteWidth = Std.int(tileSprite.width);
+		final spriteHeight = Std.int(tileSprite.height);
+		final total = tileSprite.numFrames + empties;
 
 		// Then prep the "canvas" as it were (just double checking that the size is on tile boundaries)
-		var regen:Bool = false;
+		var regen = false;
 
-		if (width % tileSprite.width != 0)
-		{
+		if (width % tileSprite.width != 0) {
 			width = Std.int((width / spriteWidth + 1)) * spriteWidth;
 			regen = true;
 		}
 
-		if (height % tileSprite.height != 0)
-		{
+		if (height % tileSprite.height != 0) {
 			height = Std.int((height / spriteHeight + 1)) * spriteHeight;
 			regen = true;
 		}
 
-		if (regen)
-		{
-			makeGraphic(Std.int(width), Std.int(height), 0, true);
-		}
-		else
-		{
-			FlxSpriteUtil.fill(this, 0);
-		}
+		if (regen) makeGraphic(Std.int(width), Std.int(height), 0, true);
+		else FlxSpriteUtil.fill(this, 0);
 
 		// Stamp random tiles onto the canvas
-		var row:Int = 0;
-		var column:Int;
-		var destinationX:Int;
-		var destinationY:Int = 0;
-		var widthInTiles:Int = Std.int(width / spriteWidth);
-		var heightInTiles:Int = Std.int(height / spriteHeight);
+		var row = 0;
+		var column:Int, destinationX:Int;
+		var destinationY = 0;
 
-		while (row < heightInTiles)
-		{
-			destinationX = 0;
-			column = 0;
+		final widthInTiles = Std.int(width / spriteWidth);
+		final heightInTiles = Std.int(height / spriteHeight);
 
-			while (column < widthInTiles)
-			{
-				if (FlxG.random.float() * total > empties)
-				{
+		while (row < heightInTiles) {
+			destinationX = column = 0;
+
+			while (column < widthInTiles) {
+				if (FlxG.random.float() * total > empties) {
 					tileSprite.animation.randomFrame();
 					tileSprite.drawFrame();
 					stamp(tileSprite, destinationX, destinationY);
@@ -129,37 +113,27 @@ class FlxTileblock extends FlxSprite
 	 * @param   empties      The number of "empty" tiles to add to the auto-fill algorithm (e.g. 8 tiles + 4 empties = 1/3 of block will be open holes).
 	 * @return  This tile block.
 	 */
-	public function loadTiles(tileGraphic:FlxGraphicAsset, tileWidth = 0, tileHeight = 0, empties = 0):FlxTileblock
-	{
-		if (tileGraphic == null)
-		{
-			return this;
-		}
+	public function loadTiles(tileGraphic:FlxGraphicAsset, tileWidth = 0, tileHeight = 0, empties = 0):FlxTileblock {
+		if (tileGraphic == null) return this;
 
-		var graph:FlxGraphic = FlxG.bitmap.add(tileGraphic);
-		if (graph == null)
-		{
-			return this;
-		}
+		final graph = FlxG.bitmap.add(tileGraphic);
+		if (graph == null) return this;
 
-		if (tileWidth == 0)
-		{
+		if (tileWidth == 0) {
 			tileWidth = graph.height;
 			tileWidth = (tileWidth > graph.width) ? graph.width : tileWidth;
 		}
 
-		if (tileHeight == 0)
-		{
+		if (tileHeight == 0) {
 			tileHeight = tileWidth;
 			tileHeight = (tileHeight > graph.height) ? graph.height : tileHeight;
 		}
 
-		var tileFrames:FlxTileFrames = FlxTileFrames.fromGraphic(graph, FlxPoint.get(tileWidth, tileHeight));
+		final tileFrames = FlxTileFrames.fromGraphic(graph, FlxPoint.get(tileWidth, tileHeight));
 		return this.loadFrames(tileFrames, empties);
 	}
 
-	public function setTile(x:Int, y:Int, index:Int):Void
-	{
+	public function setTile(x:Int, y:Int, index:Int):Void {
 		tileSprite.animation.frameIndex = index;
 		stamp(tileSprite, x * Std.int(tileSprite.width), y * Std.int(tileSprite.height));
 		dirty = true;

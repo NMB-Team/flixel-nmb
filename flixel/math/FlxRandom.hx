@@ -25,7 +25,7 @@ class FlxRandom {
 	 * @param	initialSeed  The first seed of this FlxRandom object. If ignored, a random seed will be generated.
 	 */
 	public function new(?initialSeed:Int) {
-		if (initialSeed != null) initialSeed = initialSeed;
+		if (initialSeed != null) this.initialSeed = initialSeed;
 		else resetInitialSeed();
 	}
 
@@ -136,7 +136,7 @@ class FlxRandom {
 		}
 
 		_hasFloatNormalSpare = true;
-		
+
 		final u = generate() / MODULUS;
 		final v = generate() / MODULUS;
 
@@ -253,13 +253,13 @@ class FlxRandom {
 
 		final length = objects.length;
 
-		final weights = weightsArray != null ? weightsArray : [for (_ in 0...length) 1];
+		final weights = weightsArray != null ? weightsArray : [for (_ in 0...length) 1.];
 		final start = FlxMath.bound(startIndex, 0, length - 1);
 		final end = FlxMath.bound(endIndex != null ? endIndex : length - 1, 0, length - 1);
 
-		final from = Math.min(start, end);
-		final to = Math.max(start, end);
-		
+		final from = Std.int(Math.min(start, end));
+		final to = Std.int(Math.min(Math.max(start, end), weightsArray.length - 1));
+
 		final subWeights = [for (i in from...to + 1) weights[i]];
 		final pickedIndex = weightedPick(subWeights);
 
@@ -298,17 +298,17 @@ class FlxRandom {
 	public function color(?min:FlxColor, ?max:FlxColor, ?alpha:Int, greyScale = false):FlxColor {
 		final rMin = min?.red ?? 0;
 		final rMax = max?.red ?? 255;
-		
+
 		final red = int(rMin, rMax);
-		
+
 		final green = greyScale ? red : int(min?.green ?? 0, max?.green ?? 255);
-		
+
 		final blue = greyScale ? red : int(min?.blue ?? 0, max?.blue ?? 255);
-		
+
 		final aMin = min?.alpha ?? 0;
 		final aMax = max?.alpha ?? 255;
 		final finalAlpha = alpha != null ? alpha : int(aMin, aMax);
-		
+
 		return FlxColor.fromRGB(red, green, blue, finalAlpha);
 	}
 

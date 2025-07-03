@@ -2,40 +2,28 @@ package flixel.graphics.atlas;
 
 import haxe.DynamicAccess;
 
-typedef AtlasBase<T> =
-{
-	frames:T
-}
+typedef AtlasBase<T> = {frames:T}
 
 /**
  * Size struct use for atlas json parsing, { w:Float, h:Float }
  */
-typedef AtlasSize =
-{
-	w:Int,
-	h:Int
-};
+typedef AtlasSize = {w:Int, h:Int};
 
 /**
  * Position struct use for atlas json parsing, { x:Float, y:Float }
  */
-typedef AtlasPos =
-{
-	x:Int,
-	y:Int
-};
+typedef AtlasPos = {x:Int, y:Int};
 
 /**
  * Rectangle struct use for atlas json parsing, { x:Float, y:Float, w:Float, h:Float }
  */
 typedef AtlasRect = AtlasPos & AtlasSize;
 
-typedef AtlasFrame =
-{
+typedef AtlasFrame =  {
 	/**
 	 * The name of this frame, ommitted if using a hashed atlas
 	 */
-	@:optional var filename:String;
+	var ?filename:String;
 
 	/**
 	 * Should always be false
@@ -64,35 +52,25 @@ typedef AtlasFrame =
 	var spriteSourceSize:AtlasRect;
 }
 
-abstract HashOrArray<T>(Dynamic) from DynamicAccess<T> from Array<T>
-{
-	public inline function isArray()
-	{
+abstract HashOrArray<T>(Dynamic) from DynamicAccess<T> from Array<T> {
+	public inline function isArray() {
 		return (this is Array);
 	}
 
-	public inline function isHash()
-	{
+	public inline function isHash() {
 		return !isArray();
 	}
 
-	@:to
-	public inline function toArray():Array<T>
-	{
+	@:to public inline function toArray():Array<T> {
 		return this;
 	}
 
-	@:to
-	public inline function toHash():DynamicAccess<T>
-	{
+	@:to public inline function toHash():DynamicAccess<T> {
 		return this;
 	}
 
-	public inline function iterator():Iterator<T>
-	{
-		if (isArray())
-			return toArray().iterator();
-		else
-			return toHash().iterator();
+	public inline function iterator():Iterator<T> {
+		if (isArray()) return toArray().iterator();
+		else return toHash().iterator();
 	}
 }

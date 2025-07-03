@@ -24,9 +24,7 @@ class FlxVelocity {
 
 		if (maxTime > 0) {
 			final d = FlxMath.distanceBetween(source, dest);
-
-			// We know how many pixels we need to move, but how fast?
-			speed = Std.int(d / (maxTime * .001));
+			speed = Std.int(d / (maxTime * .001)); // We know how many pixels we need to move, but how fast?
 		}
 
 		source.velocity.set(Math.cos(a) * speed, Math.sin(a) * speed);
@@ -63,9 +61,7 @@ class FlxVelocity {
 
 		if (maxTime > 0) {
 			final d = FlxMath.distanceToMouse(source);
-
-			// We know how many pixels we need to move, but how fast?
-			speed = Std.int(d / (maxTime * .001));
+			speed = Std.int(d / (maxTime * .001)); // We know how many pixels we need to move, but how fast?
 		}
 
 		source.velocity.set(Math.cos(a) * speed, Math.sin(a) * speed);
@@ -88,9 +84,7 @@ class FlxVelocity {
 
 		if (maxTime > 0) {
 			final d = FlxMath.distanceToTouch(source, touch);
-
-			// We know how many pixels we need to move, but how fast?
-			speed = Std.int(d / (maxTime * .001));
+			speed = Std.int(d / (maxTime * .001)); // We know how many pixels we need to move, but how fast?
 		}
 
 		source.velocity.set(Math.cos(a) * speed, Math.sin(a) * speed);
@@ -146,9 +140,7 @@ class FlxVelocity {
 
 		if (maxTime > 0) {
 			final d = FlxMath.distanceToPoint(source, target);
-
-			// We know how many pixels we need to move, but how fast?
-			speed = Std.int(d / (maxTime * .001));
+			speed = Std.int(d / (maxTime * .001)); // We know how many pixels we need to move, but how fast?
 		}
 
 		source.velocity.set(Math.cos(a) * speed, Math.sin(a) * speed);

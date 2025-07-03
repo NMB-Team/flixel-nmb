@@ -18,109 +18,108 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
 	* MAC: the PS4 controller seemed to work perfectly without anything special installed, and was not detected in the 360Controller
 	* control panel, so it might just work right out of the box!
  */
-enum abstract PS4ID(Int) to Int
-{
+enum abstract PS4ID(Int) to Int {
 	#if FLX_GAMEINPUT_API
 	// #if (html5 || windows || mac || linux)
-	var X = 6;
-	var CIRCLE = 7;
-	var SQUARE = 8;
-	var TRIANGLE = 9;
-	var PS = 11;
-	var OPTIONS = 12;
-	var LEFT_STICK_CLICK = 13;
-	var RIGHT_STICK_CLICK = 14;
-	var L1 = 15;
-	var R1 = 16;
+	final X = 6;
+	final CIRCLE = 7;
+	final SQUARE = 8;
+	final TRIANGLE = 9;
+	final PS = 11;
+	final OPTIONS = 12;
+	final LEFT_STICK_CLICK = 13;
+	final RIGHT_STICK_CLICK = 14;
+	final L1 = 15;
+	final R1 = 16;
 
 	#if ps4
-	var TOUCHPAD_CLICK = 10; // On an actual PS4, share is reserved by the system, and the touchpad click can serve more or less as a replacement for the "back/select" button
+	final TOUCHPAD_CLICK = 10; // On an actual PS4, share is reserved by the system, and the touchpad click can serve more or less as a replacement for the "back/select" button
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 3;
 
-	var LEFT_STICK_UP = 32;
-	var LEFT_STICK_DOWN = 33;
-	var LEFT_STICK_LEFT = 34;
-	var LEFT_STICK_RIGHT = 35;
+	final LEFT_STICK_UP = 32;
+	final LEFT_STICK_DOWN = 33;
+	final LEFT_STICK_LEFT = 34;
+	final LEFT_STICK_RIGHT = 35;
 
-	var RIGHT_STICK_UP = 36;
-	var RIGHT_STICK_DOWN = 37;
-	var RIGHT_STICK_LEFT = 38;
-	var RIGHT_STICK_RIGHT = 39;
+	final RIGHT_STICK_UP = 36;
+	final RIGHT_STICK_DOWN = 37;
+	final RIGHT_STICK_LEFT = 38;
+	final RIGHT_STICK_RIGHT = 39;
 
-	var SHARE = 40; // Not accessible on an actual PS4, just setting it to a dummy value
+	final SHARE = 40; // Not accessible on an actual PS4, just setting it to a dummy value
 	#else
-	var SHARE = 10; // This is only accessible when not using an actual Playstation 4, otherwise it's reserved by the system
+	final SHARE = 10; // This is only accessible when not using an actual Playstation 4, otherwise it's reserved by the system
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 3;
 
-	var LEFT_STICK_UP = 22;
-	var LEFT_STICK_DOWN = 23;
-	var LEFT_STICK_LEFT = 24;
-	var LEFT_STICK_RIGHT = 25;
+	final LEFT_STICK_UP = 22;
+	final LEFT_STICK_DOWN = 23;
+	final LEFT_STICK_LEFT = 24;
+	final LEFT_STICK_RIGHT = 25;
 
-	var RIGHT_STICK_UP = 26;
-	var RIGHT_STICK_DOWN = 27;
-	var RIGHT_STICK_LEFT = 28;
-	var RIGHT_STICK_RIGHT = 29;
+	final RIGHT_STICK_UP = 26;
+	final RIGHT_STICK_DOWN = 27;
+	final RIGHT_STICK_LEFT = 28;
+	final RIGHT_STICK_RIGHT = 29;
 
-	var TOUCHPAD_CLICK = 30; // I don't believe this is normally accessible on PC, just setting it to a dummy value
+	final TOUCHPAD_CLICK = 30; // I don't believe this is normally accessible on PC, just setting it to a dummy value
 	#end
-	var L2 = 4;
-	var R2 = 5;
+	final L2 = 4;
+	final R2 = 5;
 
-	var DPAD_UP = 17;
-	var DPAD_DOWN = 18;
-	var DPAD_LEFT = 19;
-	var DPAD_RIGHT = 20;
+	final DPAD_UP = 17;
+	final DPAD_DOWN = 18;
+	final DPAD_LEFT = 19;
+	final DPAD_RIGHT = 20;
 
 	// On linux the drivers we're testing with just make the PS4 controller look like an XInput device,
 	// So strictly speaking these ID's will probably not be used, but the compiler needs something or
 	// else it will not compile on Linux
 	#else // "legacy"
-	var SQUARE = 0;
-	var X = 1;
-	var CIRCLE = 2;
-	var TRIANGLE = 3;
-	var L1 = 4;
-	var R1 = 5;
+	final SQUARE = 0;
+	final X = 1;
+	final CIRCLE = 2;
+	final TRIANGLE = 3;
+	final L1 = 4;
+	final R1 = 5;
 
-	var SHARE = 8;
-	var OPTIONS = 9;
-	var LEFT_STICK_CLICK = 10;
-	var RIGHT_STICK_CLICK = 11;
-	var PS = 12;
-	var TOUCHPAD_CLICK = 13;
+	final SHARE = 8;
+	final OPTIONS = 9;
+	final LEFT_STICK_CLICK = 10;
+	final RIGHT_STICK_CLICK = 11;
+	final PS = 12;
+	final TOUCHPAD_CLICK = 13;
 
-	var L2 = 3;
-	var R2 = 4;
+	final L2 = 3;
+	final R2 = 4;
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 5;
 
-	var LEFT_STICK_UP = 27;
-	var LEFT_STICK_DOWN = 28;
-	var LEFT_STICK_LEFT = 29;
-	var LEFT_STICK_RIGHT = 30;
+	final LEFT_STICK_UP = 27;
+	final LEFT_STICK_DOWN = 28;
+	final LEFT_STICK_LEFT = 29;
+	final LEFT_STICK_RIGHT = 30;
 
-	var RIGHT_STICK_UP = 31;
-	var RIGHT_STICK_DOWN = 32;
-	var RIGHT_STICK_LEFT = 33;
-	var RIGHT_STICK_RIGHT = 34;
+	final RIGHT_STICK_UP = 31;
+	final RIGHT_STICK_DOWN = 32;
+	final RIGHT_STICK_LEFT = 33;
+	final RIGHT_STICK_RIGHT = 34;
 
 	// "fake" IDs, we manually watch for hat axis changes and then send events using these otherwise unused joystick button codes
-	var DPAD_LEFT = 15;
-	var DPAD_RIGHT = 16;
-	var DPAD_DOWN = 17;
-	var DPAD_UP = 18;
+	final DPAD_LEFT = 15;
+	final DPAD_RIGHT = 16;
+	final DPAD_DOWN = 17;
+	final DPAD_UP = 18;
 	#end
 
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<PS4ID>(LEFT_X, LEFT_Y, {
@@ -137,3 +136,4 @@ enum abstract PS4ID(Int) to Int
 		right: RIGHT_STICK_RIGHT
 	});
 }
+

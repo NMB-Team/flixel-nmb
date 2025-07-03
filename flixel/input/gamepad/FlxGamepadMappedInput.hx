@@ -18,8 +18,7 @@ import flixel.input.gamepad.id.XInputID;
  * @since 5.9.0
  */
 @:using(flixel.input.gamepad.FlxGamepadMappedInput.FlxGamepadMappedInputTools)
-enum FlxGamepadMappedInput
-{
+enum FlxGamepadMappedInput {
 	LOGITECH(id:LogitechID);
 	MAYFLASH_WII(id:MayflashWiiRemoteID);
 	MFI(id:MFiID);
@@ -34,12 +33,9 @@ enum FlxGamepadMappedInput
 	UNKNOWN(id:FlxGamepadInputID);
 }
 
-private class FlxGamepadMappedInputTools
-{
-	public static inline function toModel(input:FlxGamepadMappedInput):FlxGamepadModel
-	{
-		return switch input
-		{
+private class FlxGamepadMappedInputTools {
+	public static inline function toModel(input:FlxGamepadMappedInput):FlxGamepadModel {
+		return switch input {
 			case FlxGamepadMappedInput.OUYA(_): FlxGamepadModel.OUYA;
 			case FlxGamepadMappedInput.PS4(_): FlxGamepadModel.PS4;
 			case FlxGamepadMappedInput.PS_VITA(_): FlxGamepadModel.PSVITA;

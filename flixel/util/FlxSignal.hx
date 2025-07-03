@@ -105,9 +105,10 @@ private class FlxBaseSignal<T> implements IFlxSignal<T> {
 
 		final handler = getHandler(listener);
 		if (handler == null) return;
+
 		removeHandler(handler);
 	}
-	
+
 	inline function removeHandler(handler:FlxSignalHandler<T>):Void {
 		if (!processingListeners) {
 			handlers.remove(handler);
@@ -131,7 +132,7 @@ private class FlxBaseSignal<T> implements IFlxSignal<T> {
 		pendingRemove = null;
 	}
 
-	function registerListener(listener:T, dispatchOnce:Bool):FlxSignalHandler<T> {
+	private function registerListener(listener:T, dispatchOnce:Bool):FlxSignalHandler<T> {
 		var handler = getHandler(listener);
 
 		if (handler == null) {
@@ -142,13 +143,13 @@ private class FlxBaseSignal<T> implements IFlxSignal<T> {
 			// If the listener was previously added, definitely don't add it again.
 			// But throw an exception if their once values differ.
 			if (handler.dispatchOnce != dispatchOnce)
-				FlxG.log.critical("You cannot addOnce() then add() the same listener without removing the relationship first.");
+				throw "You cannot addOnce() then add() the same listener without removing the relationship first.";
 			else
 				return handler;
 		}
 	}
 
-	function getHandler(listener:T):FlxSignalHandler<T> {
+	private function getHandler(listener:T):FlxSignalHandler<T> {
 		for (handler in handlers) {
 			if (#if hl Reflect.compareMethods(handler.listener, listener) #else handler.listener == listener #end)
 				return handler; // Listener was already registered.

@@ -24,34 +24,29 @@ import openfl.errors.Error;
  *
  * @author TiagoLr (~~~ ProG4mr ~~~)
  */
-class FlxMouseEventManager extends FlxBasic
-{
+class FlxMouseEventManager extends FlxBasic {
 	var _list:Array<FlxMouseEvent<FlxObject>> = [];
 	var _overList:Array<FlxMouseEvent<FlxObject>> = [];
 	var _downList:Array<FlxMouseEvent<FlxObject>> = [];
 	var _clickList:Array<FlxMouseEvent<FlxObject>> = [];
 
-	var mouseClickedTime:Float = -1;
+	var mouseClickedTime = -1.;
 
-	@:noCompletion
-	var _point:FlxPoint = FlxPoint.get();
+	@:noCompletion var _point = FlxPoint.get();
 
 	/**
 	 * The maximum amount of time between two clicks that is considered a double click, in milliseconds.
 	 * @since 4.4.0
 	 */
-	public var maxDoubleClickDelay:Float = 500;
+	public var maxDoubleClickDelay = 500.;
 
 	public var limitedTouchesCount = -1;
 
-	public function new()
-	{
+	public function new() {
 		super();
 
-		if (_list != null)
-		{
-			clearRegistry();
-		}
+		if (_list != null) clearRegistry();
+
 		_list = new Array<FlxMouseEvent<FlxObject>>();
 		_overList = new Array<FlxMouseEvent<FlxObject>>();
 		_downList = new Array<FlxMouseEvent<FlxObject>>();
@@ -60,201 +55,121 @@ class FlxMouseEventManager extends FlxBasic
 		FlxG.signals.preStateSwitch.add(removeAll);
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		clearRegistry();
 		_point = FlxDestroyUtil.put(_point);
 		FlxG.signals.preStateSwitch.remove(removeAll);
 		super.destroy();
 	}
 
-	override public function update(elapsed:Float):Void
-	{
+	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 
-		var currentOverObjects = new Array<FlxMouseEvent<FlxObject>>();
+		final currentOverObjects = new Array<FlxMouseEvent<FlxObject>>();
 
-		for (event in _list)
-		{
-			if (!event.object.alive || !event.object.exists || !event.object.visible || !event.mouseEnabled)
-			{
-				continue;
-			}
+		for (event in _list) {
+			if (!event.object.alive || !event.object.exists || !event.object.visible || !event.mouseEnabled) continue;
 
-			if (checkOverlap(event))
-			{
+			if (checkOverlap(event)) {
 				currentOverObjects.push(event);
-
-				if (!event.mouseChildren)
-				{
-					break;
-				}
+				if (!event.mouseChildren) break;
 			}
 		}
 
 		// MouseOut - Look for objects that lost mouse over.
 		for (over in _overList)
-		{
 			if (over.onMouseOut != null)
-			{
 				// slightly different logic here - objects whose exists or visible
 				// property has been set to false should also receive a mouse out!
 				if (!over.object.exists || !over.object.visible || get(over.object, currentOverObjects) == null)
-				{
 					over.onMouseOut(over.object);
-				}
-			}
-		}
 
 		// MouseOver - Look for new objects with mouse over.
 		for (current in currentOverObjects)
-		{
 			if (current.onMouseOver != null)
-			{
 				if (current.object.exists && current.object.visible && get(current.object, _overList) == null)
-				{
 					current.onMouseOver(current.object);
-				}
-			}
-		}
 
 		#if FLX_MOUSE
 		// If mouse input is not enabled globally, prevent all tracked objects from responding to
 		// down/click/doubleclick/up events until mouse input is re-enabled.
-		if (!FlxG.mouse.enabled)
-			return;
+		if (!FlxG.mouse.enabled) return;
 
 		// MouseMove - Look for objects with mouse over that have mouseMove callbacks
 		if (FlxG.mouse.justMoved)
-		{
 			for (current in currentOverObjects)
-			{
 				if (current.onMouseMove != null && current.object.exists && current.object.visible)
-				{
 					current.onMouseMove(current.object);
-				}
-			}
-		}
 
 		// MouseDown - Look for objects with mouse over when user presses mouse button.
 		for (current in currentOverObjects)
-		{
 			if (current.onMouseDown != null && current.object.exists && current.object.visible)
-			{
 				for (buttonID in current.mouseButtons)
-				{
 					if (FlxMouseButton.getByID(buttonID).justPressed)
-					{
 						current.onMouseDown(current.object);
-					}
-				}
-			}
-		}
 
 		// MouseClick/MouseDoubleClick - Look for objects with mouse down first.
 		if (FlxG.mouse.justPressed)
-		{
 			for (current in currentOverObjects)
-			{
 				if ((current.onMouseClick != null || current.onMouseDoubleClick != null)
 					&& current.object.exists
 					&& current.object.visible)
 				{
 					_downList.push(current);
 				}
-			}
-		}
 
 		// MouseUp - Look for objects with mouse over when user releases mouse button.
 		for (current in currentOverObjects)
-		{
 			if (current.onMouseUp != null && current.object.exists && current.object.visible)
-			{
 				for (buttonID in current.mouseButtons)
-				{
 					if (FlxMouseButton.getByID(buttonID).justReleased)
-					{
 						current.onMouseUp(current.object);
-					}
-				}
-			}
-		}
 
 		// MouseClick - Look for objects that had mouse down and now have mouse over when the user releases the mouse button.
 		// DoubleClick - Look for objects that were recently clicked and have just been clicked again.
 		if (_clickList.length > 0 && FlxG.game.ticks - mouseClickedTime > maxDoubleClickDelay)
-		{
 			_clickList = [];
-		}
 
-		if (FlxG.mouse.justReleased)
-		{
+		if (FlxG.mouse.justReleased) {
 			mouseClickedTime = FlxG.game.ticks;
 
-			var previousClickedObjects = _clickList;
+			final previousClickedObjects = _clickList;
 
-			if (_clickList.length > 0)
-			{
-				_clickList = [];
-			}
+			if (_clickList.length > 0) _clickList = [];
 
-			for (down in _downList)
-			{
+			for (down in _downList) {
 				if (down.object != null
 					&& down.object.exists
 					&& down.object.visible
 					&& get(down.object, currentOverObjects) != null)
 				{
 					if (down.onMouseClick != null)
-					{
 						down.onMouseClick(down.object);
-					}
 
-					if (down.onMouseDoubleClick != null)
-					{
+					if (down.onMouseDoubleClick != null) {
 						if (get(down.object, previousClickedObjects) != null)
-						{
 							down.onMouseDoubleClick(down.object);
-						}
 						else
-						{
 							_clickList.push(down);
-						}
 					}
 				}
 			}
 		}
 
-		if (_downList.length > 0 && !FlxG.mouse.pressed)
-		{
-			// if the user just released the mouse OR if the user released the mouse while the window was tabbed out
-			_downList = [];
-		}
+		if (_downList.length > 0 && !FlxG.mouse.pressed) _downList = []; // if the user just released the mouse OR if the user released the mouse while the window was tabbed out
 
 		// MouseWheel - Look for objects with mouse over when user spins the mouse wheel.
 		if (FlxG.mouse.wheel != 0)
-		{
 			for (current in currentOverObjects)
-			{
 				if (current.onMouseWheel != null && current.object.exists && current.object.visible)
-				{
 					current.onMouseWheel(current.object);
-				}
-			}
-		}
 		#end
 
 		_overList = currentOverObjects;
 	}
 
-	function addEvent<T:FlxObject>(event:FlxMouseEvent<T>):FlxMouseEvent<T>
-	{
-		if (!event.mouseChildren)
-		{
-			_list.unshift(cast event);
-		}
-		else
-		{
+	private function addEvent<T:FlxObject>(event:FlxMouseEvent<T>):FlxMouseEvent<T> {
+		if (event.mouseChildren) {
 			// place mouseChildren=true objects immediately after =false ones
 			var index = 0;
 
@@ -262,7 +177,8 @@ class FlxMouseEventManager extends FlxBasic
 				index++;
 
 			_list.insert(index, cast event);
-		}
+		} else
+			_list.unshift(cast event);
 
 		return event;
 	}
@@ -283,10 +199,8 @@ class FlxMouseEventManager extends FlxBasic
 	 * @param   pixelPerfect    If true, the collision check will be pixel-perfect. Only works for FlxSprites.
 	 * @param   mouseButtons    The mouse buttons that can trigger callbacks. Left only by default.
 	 */
-	public function add<T:FlxObject>(object:T, ?onMouseDown:T->Void, ?onMouseUp:T->Void, ?onMouseOver:T->Void, ?onMouseOut:T->Void,
-			mouseChildren = false, mouseEnabled = true, pixelPerfect = true, ?mouseButtons:Array<FlxMouseButtonID>):T
-	{
-		var event = new FlxMouseEvent<T>(object, onMouseDown, onMouseUp, onMouseOver, onMouseOut, mouseChildren, mouseEnabled, pixelPerfect, mouseButtons);
+	public function add<T:FlxObject>(object:T, ?onMouseDown:T -> Void, ?onMouseUp:T -> Void, ?onMouseOver:T -> Void, ?onMouseOut:T -> Void, mouseChildren = false, mouseEnabled = true, pixelPerfect = true, ?mouseButtons:Array<FlxMouseButtonID>):T {
+		final event = new FlxMouseEvent<T>(object, onMouseDown, onMouseUp, onMouseOver, onMouseOut, mouseChildren, mouseEnabled, pixelPerfect, mouseButtons);
 		addEvent(event);
 
 		return object;
@@ -295,31 +209,23 @@ class FlxMouseEventManager extends FlxBasic
 	/**
 	 * Removes a registered object from the registry.
 	 */
-	public function remove<T:FlxObject>(object:T):T
-	{
+	public function remove<T:FlxObject>(object:T):T {
 		for (event in _list)
-		{
-			if (event.object == object)
-			{
+			if (event.object == object) {
 				event.destroy();
 				_list.remove(event);
 			}
-		}
+
 		return object;
 	}
 
 	/**
 	 * Removes all registered objects from the registry.
 	 */
-	public function removeAll():Void
-	{
+	public function removeAll():Void {
 		if (_list != null)
-		{
 			for (event in _list)
-			{
 				event.destroy();
-			}
-		}
 
 		_list.resize(0);
 		_overList = [];
@@ -334,9 +240,8 @@ class FlxMouseEventManager extends FlxBasic
 	 * It may also be called if the objects are not registered by the same order they are
 	 * added to `FlxGroup`.
 	 */
-	public function reorder():Void
-	{
-		var orderedObjects = new Array<FlxMouseEvent<FlxObject>>();
+	public function reorder():Void {
+		final orderedObjects = new Array<FlxMouseEvent<FlxObject>>();
 
 		traverseFlxGroup(FlxG.state, orderedObjects);
 
@@ -352,14 +257,9 @@ class FlxMouseEventManager extends FlxBasic
 	 * @param   onMouseDown   Callback when mouse is pressed down over this object.
 	 *                        Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public function setMouseDownCallback<T:FlxObject>(object:T, onMouseDown:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseDown = onMouseDown;
-		}
+	public function setMouseDownCallback<T:FlxObject>(object:T, onMouseDown:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseDown = onMouseDown;
 	}
 
 	/**
@@ -368,14 +268,9 @@ class FlxMouseEventManager extends FlxBasic
 	 * @param   onMouseUp   Callback when mouse is released over this object.
 	 *                      Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public function setMouseUpCallback<T:FlxObject>(object:T, onMouseUp:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseUp = onMouseUp;
-		}
+	public function setMouseUpCallback<T:FlxObject>(object:T, onMouseUp:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseUp = onMouseUp;
 	}
 
 	/**
@@ -385,14 +280,9 @@ class FlxMouseEventManager extends FlxBasic
 	 *                      	Must have Object as argument - e.g. `onMouseClick(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public function setMouseClickCallback<T:FlxObject>(object:T, onMouseClick:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseClick = onMouseClick;
-		}
+	public function setMouseClickCallback<T:FlxObject>(object:T, onMouseClick:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseClick = onMouseClick;
 	}
 
 	/**
@@ -402,14 +292,9 @@ class FlxMouseEventManager extends FlxBasic
 	 *                      			Must have Object as argument - e.g. `onMouseDoubleClick(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public function setMouseDoubleClickCallback<T:FlxObject>(object:T, onMouseDoubleClick:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseDoubleClick = onMouseDoubleClick;
-		}
+	public function setMouseDoubleClickCallback<T:FlxObject>(object:T, onMouseDoubleClick:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseDoubleClick = onMouseDoubleClick;
 	}
 
 	/**
@@ -418,30 +303,20 @@ class FlxMouseEventManager extends FlxBasic
 	 * @param   onMouseOver   Callback when mouse is over this object.
 	 *                        Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public function setMouseOverCallback<T:FlxObject>(object:T, onMouseOver:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseOver = onMouseOver;
-		}
+	public function setMouseOverCallback<T:FlxObject>(object:T, onMouseOver:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseOver = onMouseOver;
 	}
 
 	/**
 	 * Sets the mouseOut callback associated with an object.
 	 *
-	 * @param   onMouseOver   Callback when mouse is moved out of this object.
+	 * @param   onMouseOut   Callback when mouse is moved out of this object.
 	 *                        Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public function setMouseOutCallback<T:FlxObject>(object:T, onMouseOut:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseOut = onMouseOut;
-		}
+	public function setMouseOutCallback<T:FlxObject>(object:T, onMouseOut:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseOut = onMouseOut;
 	}
 
 	/**
@@ -451,14 +326,9 @@ class FlxMouseEventManager extends FlxBasic
 	 *                        Must have Object as argument - e.g. `onMouseMove(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public function setMouseMoveCallback<T:FlxObject>(object:T, onMouseMove:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseMove = onMouseMove;
-		}
+	public function setMouseMoveCallback<T:FlxObject>(object:T, onMouseMove:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseMove = onMouseMove;
 	}
 
 	/**
@@ -468,14 +338,9 @@ class FlxMouseEventManager extends FlxBasic
 	 *                        Must have Object as argument - e.g. `onMouseWheel(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public function setMouseWheelCallback<T:FlxObject>(object:T, onMouseWheel:T->Void):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.onMouseWheel = onMouseWheel;
-		}
+	public function setMouseWheelCallback<T:FlxObject>(object:T, onMouseWheel:T -> Void):Void {
+		final event = get(object);
+		if (event != null) event.onMouseWheel = onMouseWheel;
 	}
 
 	/**
@@ -483,31 +348,21 @@ class FlxMouseEventManager extends FlxBasic
 	 *
 	 * @param   MouseEnabled   Whether this object will be tested for mouse events.
 	 */
-	public function setObjectMouseEnabled<T:FlxObject>(object:T, MouseEnabled:Bool):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.mouseEnabled = MouseEnabled;
-		}
+	public function setObjectMouseEnabled<T:FlxObject>(object:T, mouseEnabled:Bool):Void {
+		final event = get(object);
+		if (event != null) event.mouseEnabled = mouseEnabled;
 	}
 
 	/**
 	 * Checks if a registered object is mouseEnabled.
 	 */
-	public function isObjectMouseEnabled<T:FlxObject>(object:T):Bool
-	{
-		var event = get(object);
+	public function isObjectMouseEnabled<T:FlxObject>(object:T):Bool {
+		final event = get(object);
 
 		if (event != null)
-		{
 			return event.mouseEnabled;
-		}
 		else
-		{
 			return false;
-		}
 	}
 
 	/**
@@ -515,179 +370,117 @@ class FlxMouseEventManager extends FlxBasic
 	 *
 	 * @param   mouseChildren   Whether this object will allow other overlapping object to receive mouse events.
 	 */
-	public function setObjectMouseChildren<T:FlxObject>(object:T, mouseChildren:Bool):Void
-	{
-		var event = get(object);
+	public function setObjectMouseChildren<T:FlxObject>(object:T, mouseChildren:Bool):Void {
+		final event = get(object);
 
-		if (event != null)
-		{
+		if (event != null) {
 			event.mouseChildren = mouseChildren;
 			_list.remove(cast event);
 
-			if (!mouseChildren)
-			{
-				_list.unshift(cast event);
-			}
-			else
-			{
+			if (mouseChildren) {
 				var index = 0;
 
 				while (index < _list.length && !_list[index].mouseChildren)
 					index++;
 
 				_list.insert(index, cast event);
-			}
+			} else
+				_list.unshift(cast event);
 		}
 	}
 
 	/**
 	 * Checks if an object allows mouseChildren.
 	 */
-	public function isObjectMouseChildren<T:FlxObject>(object:T):Bool
-	{
-		var event = get(object);
+	public function isObjectMouseChildren<T:FlxObject>(object:T):Bool {
+		final event = get(object);
 
 		if (event != null)
-		{
 			return event.mouseChildren;
-		}
 		else
-		{
 			throw new Error("FlxMouseEventManager , isObjectMouseChildren() : object not found");
-		}
 	}
 
 	/**
 	 * @param   MouseButtons    The mouse buttons that can trigger callbacks. Left only by default.
 	 */
-	public function setObjectMouseButtons<T:FlxObject>(object:T, mouseButtons:Array<FlxMouseButtonID>):Void
-	{
-		var event = get(object);
-
-		if (event != null)
-		{
-			event.mouseButtons = mouseButtons;
-		}
+	public function setObjectMouseButtons<T:FlxObject>(object:T, mouseButtons:Array<FlxMouseButtonID>):Void {
+		final event = get(object);
+		if (event != null) event.mouseButtons = mouseButtons;
 	}
 
 	@:access(flixel.group.FlxTypedGroup.resolveGroup)
-	function traverseFlxGroup(group:FlxTypedGroup<Dynamic>, orderedObjects:Array<FlxMouseEvent<Dynamic>>):Void
-	{
-		for (basic in group.members)
-		{
-			var group = FlxTypedGroup.resolveGroup(basic);
-			if (group != null)
-			{
-				traverseFlxGroup(group, orderedObjects);
-			}
-			if ((basic is FlxObject))
-			{
-				var event = get(cast basic);
+	private function traverseFlxGroup(group:FlxTypedGroup<Dynamic>, orderedObjects:Array<FlxMouseEvent<Dynamic>>):Void {
+		for (basic in group.members) {
+			final group = FlxTypedGroup.resolveGroup(basic);
+			if (group != null) traverseFlxGroup(group, orderedObjects);
 
-				if (event != null)
-				{
-					orderedObjects.push(event);
-				}
+			if ((basic is FlxObject)) {
+				final event = get(cast basic);
+				if (event != null) orderedObjects.push(event);
 			}
 		}
 	}
 
-	function get<T:FlxObject>(object:T, ?list:Array<FlxMouseEvent<FlxObject>>):FlxMouseEvent<T>
-	{
-		if (list == null)
-		{
-			list = _list;
-		}
+	private function get<T:FlxObject>(object:T, ?list:Array<FlxMouseEvent<FlxObject>>):FlxMouseEvent<T> {
+		list ??= _list;
 
 		for (event in list)
-		{
 			if (event.object == object)
-			{
 				return cast event;
-			}
-		}
 
 		return null;
 	}
 
-	function sortByMouseChildren(event1:FlxMouseEvent<FlxObject>, event2:FlxMouseEvent<FlxObject>):Int
-	{
-		if (event1.mouseChildren == event2.mouseChildren)
-		{
-			return 0;
-		}
-
-		if (!event1.mouseChildren)
-		{
-			return -1;
-		}
+	private function sortByMouseChildren(event1:FlxMouseEvent<FlxObject>, event2:FlxMouseEvent<FlxObject>):Int {
+		if (event1.mouseChildren == event2.mouseChildren) return 0;
+		if (!event1.mouseChildren) return -1;
 
 		return 1;
 	}
 
-	function clearRegistry():Void
-	{
+	private function clearRegistry():Void {
 		_overList = null;
 		_downList = null;
 		_clickList = null;
 		_list = FlxDestroyUtil.destroyArray(_list);
 	}
 
-	function checkOverlap<T:FlxObject>(event:FlxMouseEvent<T>):Bool
-	{
+	private function checkOverlap<T:FlxObject>(event:FlxMouseEvent<T>):Bool {
 		#if FLX_TOUCH
 		var touch;
 		final totalTouchesLength = limitedTouchesCount == -1 ? FlxG.touches.list.length : FlxMath.minInt(limitedTouchesCount, FlxG.touches.list.length);
 		#end
 
-		for (camera in event.object.getCameras())
-		{
+		for (camera in event.object.getCameras()) {
 			#if FLX_MOUSE
 			_point = FlxG.mouse.getViewPosition(camera, _point);
-			if (camera.containsPoint(_point))
-			{
+			if (camera.containsPoint(_point)) {
 				_point = FlxG.mouse.getWorldPosition(camera, _point);
-
-				if (checkOverlapWithPoint(event, _point, camera))
-				{
-					return true;
-				}
+				if (checkOverlapWithPoint(event, _point, camera)) return true;
 			}
 			#end
 
 			#if FLX_TOUCH
 			if (totalTouchesLength > 0)
-			{
-				for (i in 0...totalTouchesLength)
-				{
+				for (i in 0...totalTouchesLength) {
 					touch = FlxG.touches.list[i];
 					_point = touch.getViewPosition(camera, _point);
-					if (camera.containsPoint(_point))
-					{
+					if (camera.containsPoint(_point)) {
 						_point = touch.getWorldPosition(camera, _point);
-
-						if (checkOverlapWithPoint(event, _point, camera))
-						{
-							return true;
-						}
+						if (checkOverlapWithPoint(event, _point, camera)) return true;
 					}
 				}
-			}
 			#end
 		}
 
 		return false;
 	}
 
-	inline function checkOverlapWithPoint<T:FlxObject>(event:FlxMouseEvent<T>, point:FlxPoint, camera:FlxCamera):Bool
-	{
-		if (event.pixelPerfect && (event.sprite != null))
-		{
+	inline function checkOverlapWithPoint<T:FlxObject>(event:FlxMouseEvent<T>, point:FlxPoint, camera:FlxCamera):Bool {
+		if (event.pixelPerfect && event.sprite != null)
 			return event.sprite.pixelsOverlapPoint(point, 0x01, camera);
-		}
 		else
-		{
 			return event.object.overlapsPoint(point, true, camera);
-		}
 	}
 }

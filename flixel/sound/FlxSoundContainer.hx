@@ -33,74 +33,54 @@ class FlxSoundContainer extends FlxTypedContainer<FlxSound> {
 	 */
 	public var playing(default, null):Bool;
 
-	public function play(forceRestart:Bool = false, startTime:Float = 0.0, ?endTime:Float) {
-		for (member in members) {
-			member?.play(forceRestart, startTime, endTime);
-		}
+	public function play(forceRestart = false, startTime = .0, ?endTime:Float) {
+		for (member in members) member?.play(forceRestart, startTime, endTime);
 		playing = true;
 	}
 
 	public function stop() {
-		for (member in members) {
-			member?.stop();
-		}
+		for (member in members) member?.stop();
 		playing = false;
 	}
 
 	public function resume() {
-		for (member in members) {
-			member?.resume();
-		}
+		for (member in members) member?.resume();
 		playing = true;
 	}
 
 	public function pause() {
-		for (member in members) {
-			member?.pause();
-		}
+		for (member in members) member?.pause();
 		playing = false;
 	}
 
-	function set_volume(volume:Float):Float {
+	private function set_volume(volume:Float):Float {
 		this.volume = volume;
-		for (sound in members) {
-			if(sound != null){
-				sound.volume = volume;
-			}
-		}
+		for (sound in members) sound?.volume = volume;
+
 		return volume;
 	}
 
-	function set_time(time:Float):Float {
+	private function set_time(time:Float):Float {
 		this.time = time;
-		for (sound in members) {
-			if(sound != null){
-				sound.time = time;
-			}
-		}
+		for (sound in members) sound?.time = time;
+
 		return time;
 	}
 
 	#if FLX_PITCH
-	function set_pitch(pitch:Float):Float {
+	private function set_pitch(pitch:Float):Float {
 		this.pitch = pitch;
-		for (sound in members) {
-			if(sound != null){
+		for (sound in members) sound?.pitch = pitch;
 
-			sound.pitch = pitch;
-			}
-		}
 		return pitch;
 	}
 	#end
 
-	function get_maxLength():Float {
-		var m:Float = 0.0;
-		for (sound in members) {
-			if (sound != null && sound.length > m) {
-				m = sound.length;
-			}
-		}
+	private function get_maxLength():Float {
+		var m = .0;
+		for (sound in members)
+			if (sound != null && sound.length > m) m = sound.length;
+
 		return m;
 	}
 

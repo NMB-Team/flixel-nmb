@@ -14,7 +14,13 @@
 				"-lib",
 				"openfl",
 				"-lib",
-				"lime"
+				"lime",
+				"--macro",
+				"flixel.system.macros.FlxDefines.run()",
+				"-js",
+				"foo.js",
+				"--remap",
+				"flash:openfl"
 			]
 		}
 	],

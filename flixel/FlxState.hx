@@ -183,7 +183,7 @@ class FlxState extends FlxGroup {
 	}
 
 	override function destroy():Void {
-		_constructor = function():FlxState FlxG.log.critical("Attempting to resetState while the current state is destroyed");
+		_constructor = function():FlxState throw "Attempting to resetState while the current state is destroyed";
 		FlxDestroyUtil.destroy(_subStateOpened);
 		FlxDestroyUtil.destroy(_subStateClosed);
 
@@ -254,8 +254,8 @@ class FlxState extends FlxGroup {
 		return FlxG.cameras.bgColor = value;
 	}
 
-	@:noCompletion function get_subStateOpened():FlxTypedSignal<FlxSubState->Void> {
-		_subStateOpened ??= new FlxTypedSignal<FlxSubState->Void>();
+	@:noCompletion function get_subStateOpened():FlxTypedSignal<FlxSubState -> Void> {
+		_subStateOpened ??= new FlxTypedSignal<FlxSubState -> Void>();
 		return _subStateOpened;
 	}
 

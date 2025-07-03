@@ -136,8 +136,8 @@ class FlxLayer extends FlxBasic {
 		itemToReturn.nextTyped = _headTriangles;
 		_headTriangles = itemToReturn;
 
-		if (_headOfDrawStack == null)
-			_headOfDrawStack = itemToReturn;
+
+		_headOfDrawStack ??= itemToReturn;
 
 		if (_currentDrawItem != null)
 			_currentDrawItem.next = itemToReturn;

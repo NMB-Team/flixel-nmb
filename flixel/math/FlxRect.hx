@@ -646,10 +646,10 @@ class FlxRect implements IFlxPooled {
 	inline function destroy() return this.destroy();
 	inline function setSize(w, h) return this.setSize(w, h);
 	inline function setPosition(x, y) return this.setPosition(x, y);
-	inline function set(x = 0.0, y = 0.0, w = 0.0, h = 0.0) return this.set(x, y, w, h);
+	inline function set(x = .0, y = .0, w = .0, h = .0) return this.set(x, y, w, h);
 	inline function setBounds(x1, y1, x2, y2) return this.setBounds(x1, y1, x2, y2);
 	inline function setAbs(x, y, w, h) return this.setAbs(x, y, w, h);
-	inline function setBoundsAbs(x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0) return this.setBoundsAbs(x1, y1, x2, y2);
+	inline function setBoundsAbs(x1 = .0, y1 = .0, x2 = .0, y2 = .0) return this.setBoundsAbs(x1, y1, x2, y2);
 	inline function copyFrom(rect) return this.copyFrom(rect);
 	inline function copyFromFlash(rect) return this.copyFromFlash(rect);
 	inline function union(rect) return this.union(rect);

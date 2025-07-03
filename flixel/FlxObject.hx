@@ -116,8 +116,7 @@ class FlxObject extends FlxBasic {
 	 */
 	static function processCheckTilemap(object1:FlxObject, object2:FlxObject, func:(FlxObject, FlxObject) -> Bool, ?position:FlxPoint, isCollision = true):Bool {
 		// two immovable objects cannot collide
-		if (isCollision && object1.immovable && object2.immovable)
-			return false;
+		if (isCollision && object1.immovable && object2.immovable) return false;
 
 		// If one of the objects is a tilemap, just pass it off.
 		if (object1.flixelType == TILEMAP) {
@@ -364,7 +363,7 @@ class FlxObject extends FlxBasic {
 	 * greater than a certain maximum (linked to `SEPARATE_BIAS`). Default is `true`, handy for `separateX` code.
 	 */
 	public static function computeOverlapX(object1:FlxObject, object2:FlxObject, checkMaxOverlap = true):Float {
-		var overlap = 0;
+		var overlap = .0;
 		// First, get the two object deltas
 		final delta1 = object1.x - object1.last.x;
 		final delta2 = object2.x - object2.last.x;
@@ -432,8 +431,8 @@ class FlxObject extends FlxBasic {
 
 		if (delta1 != delta2) {
 			// Check if the Y hulls actually overlap
-			final delta1Abs:Float = (delta1 > 0) ? delta1 : -delta1;
-			final delta2Abs:Float = (delta2 > 0) ? delta2 : -delta2;
+			final delta1Abs = (delta1 > 0) ? delta1 : -delta1;
+			final delta2Abs = (delta2 > 0) ? delta2 : -delta2;
 
 			final rect1 = FlxRect.get(object1.last.x, object1.y - (delta1 > 0 ? delta1 : 0), object1.width, object1.height + delta1Abs);
 			final rect2 = FlxRect.get(object2.last.x, object2.y - (delta2 > 0 ? delta2 : 0), object2.width, object2.height + delta2Abs);

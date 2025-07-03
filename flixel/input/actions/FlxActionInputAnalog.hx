@@ -14,75 +14,75 @@ import steamwrap.api.Controller.ControllerAnalogActionData;
 /**
  * @since 4.6.0
  */
-enum abstract FlxAnalogState(Int) from Int
-{
-	var JUST_STOPPED = cast FlxInputState.JUST_RELEASED; // became 0 on this frame
-	var STOPPED = cast FlxInputState.RELEASED; // is 0
-	var MOVED = cast FlxInputState.PRESSED; // is !0
-	var JUST_MOVED = cast FlxInputState.JUST_PRESSED; // became !0 on this frame
+enum abstract FlxAnalogState(Int) from Int {
+	final JUST_STOPPED = cast FlxInputState.JUST_RELEASED; // became 0 on this frame
+	final STOPPED = cast FlxInputState.RELEASED; // is 0
+	final MOVED = cast FlxInputState.PRESSED; // is !0
+	final JUST_MOVED = cast FlxInputState.JUST_PRESSED; // became !0 on this frame
 
 	public var moved(get, never):Bool;
-	inline function get_moved() return this == MOVED || justMoved;
+	inline function get_moved() {
+		return this == MOVED || justMoved;
+	}
+
 	public var justMoved(get, never):Bool;
-	inline function get_justMoved() return this == JUST_MOVED;
+	inline function get_justMoved() {
+		return this == JUST_MOVED;
+	}
+
 	public var justStopped(get, never):Bool;
-	inline function get_justStopped() return this == JUST_STOPPED;
+	inline function get_justStopped() {
+		return this == JUST_STOPPED;
+	}
+
 	public var stopped(get, never):Bool;
-	inline function get_stopped() return this == STOPPED || justStopped;
+	inline function get_stopped() {
+		return this == STOPPED || justStopped;
+	}
 }
 
 /**
  * @since 4.6.0
  */
-class FlxActionInputAnalogClickAndDragMouseMotion extends FlxActionInputAnalogMouseMotion
-{
+class FlxActionInputAnalogClickAndDragMouseMotion extends FlxActionInputAnalogMouseMotion {
 	var button:FlxMouseButtonID;
 
 	/**
 	 * Mouse input -- same as FlxActionInputAnalogMouseMotion, but requires a particular mouse button to be PRESSED
 	 * Very useful for e.g. panning a map or canvas around
-	 * @param	ButtonID	Button identifier (FlxMouseButtonID.LEFT / MIDDLE / RIGHT)
-	 * @param	Trigger	What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
-	 * @param	Axis	which axes to monitor for triggering: X, Y, EITHER, or BOTH
-	 * @param	PixelsPerUnit	How many pixels of movement = 1.0 in analog motion (lower: more sensitive, higher: less sensitive)
-	 * @param	DeadZone	Minimum analog value before motion will be reported
-	 * @param	InvertY	Invert the Y axis
-	 * @param	InvertX	Invert the X axis
+	 * @param	buttonID	Button identifier (FlxMouseButtonID.LEFT / MIDDLE / RIGHT)
+	 * @param	trigger	What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
+	 * @param	axis	which axes to monitor for triggering: X, Y, EITHER, or BOTH
+	 * @param	pixelsPerUnit	How many pixels of movement = 1.0 in analog motion (lower: more sensitive, higher: less sensitive)
+	 * @param	deadZone	Minimum analog value before motion will be reported
+	 * @param	invertY	Invert the Y axis
+	 * @param	invertX	Invert the X axis
 	 */
-	public function new(ButtonID:FlxMouseButtonID, Trigger:FlxAnalogState, Axis:FlxAnalogAxis = FlxAnalogAxis.EITHER, PixelsPerUnit:Int = 10,
-			DeadZone:Float = 0.1, InvertY:Bool = false, InvertX:Bool = false)
-	{
-		super(Trigger, Axis, PixelsPerUnit, DeadZone, InvertY, InvertX);
-		button = ButtonID;
+	public function new(buttonID:FlxMouseButtonID, trigger:FlxAnalogState, axis = FlxAnalogAxis.EITHER, pixelsPerUnit = 10, deadZone = .1, invertY = false, invertX = false) {
+		super(trigger, axis, pixelsPerUnit, deadZone, invertY, invertX);
+		button = buttonID;
 	}
 
-	override function updateValues(X:Float, Y:Float):Void
-	{
+	override function updateValues(x:Float, y:Float):Void {
 		var pass = false;
 		#if !FLX_NO_MOUSE
-		pass = switch (button)
-		{
+		pass = switch (button) {
 			case FlxMouseButtonID.LEFT: FlxG.mouse.pressed;
 			case FlxMouseButtonID.RIGHT: FlxG.mouse.pressedRight;
 			case FlxMouseButtonID.MIDDLE: FlxG.mouse.pressedMiddle;
 		}
 		#end
-		if (!pass)
-		{
-			X = 0;
-			Y = 0;
-		}
-		super.updateValues(X, Y);
+		if (!pass) x = y = 0;
+		super.updateValues(x, y);
 	}
 }
 
 /**
  * @since 4.6.0
  */
-class FlxActionInputAnalogMouseMotion extends FlxActionInputAnalog
-{
-	var lastX:Float = 0;
-	var lastY:Float = 0;
+class FlxActionInputAnalogMouseMotion extends FlxActionInputAnalog {
+	var lastX = .0;
+	var lastY = .0;
 	var pixelsPerUnit:Int;
 	var deadZone:Float;
 	var invertX:Bool;
@@ -90,52 +90,44 @@ class FlxActionInputAnalogMouseMotion extends FlxActionInputAnalog
 
 	/**
 	 * Mouse input -- X/Y is the RELATIVE motion of the mouse since the last frame
-	 * @param	Trigger	What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
-	 * @param	Axis	which axes to monitor for triggering: X, Y, EITHER, or BOTH
-	 * @param	PixelsPerUnit	How many pixels of movement = 1.0 in analog motion (lower: more sensitive, higher: less sensitive)
-	 * @param	DeadZone	Minimum analog value before motion will be reported
-	 * @param	InvertY	Invert the Y axis
-	 * @param	InvertX	Invert the X axis
+	 * @param	trigger	What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
+	 * @param	axis	which axes to monitor for triggering: X, Y, EITHER, or BOTH
+	 * @param	pixelsPerUnit	How many pixels of movement = 1.0 in analog motion (lower: more sensitive, higher: less sensitive)
+	 * @param	deadZone	Minimum analog value before motion will be reported
+	 * @param	invertY	Invert the Y axis
+	 * @param	invertX	Invert the X axis
 	 */
-	public function new(Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER, PixelsPerUnit:Int = 10, DeadZone:Float = 0.1, InvertY:Bool = false,
-			InvertX:Bool = false)
-	{
-		pixelsPerUnit = PixelsPerUnit;
-		if (pixelsPerUnit < 1)
-			pixelsPerUnit = 1;
-		deadZone = DeadZone;
-		invertX = InvertX;
-		invertY = InvertY;
-		super(FlxInputDevice.MOUSE, -1, Trigger, Axis);
+	public function new(trigger:FlxAnalogState, axis:FlxAnalogAxis = EITHER, pixelsPerUnit = 10, deadZone = .1, invertY = false, invertX = false) {
+		this.pixelsPerUnit = pixelsPerUnit;
+		if (this.pixelsPerUnit < 1) this.pixelsPerUnit = 1;
+		this.deadZone = deadZone;
+		this.invertX = invertX;
+		this.invertY = invertY;
+
+		super(FlxInputDevice.MOUSE, -1, trigger, axis);
 	}
 
-	override public function update():Void
-	{
+	override public function update():Void {
 		#if !FLX_NO_MOUSE
 		updateXYPosition(FlxG.mouse.x, FlxG.mouse.y);
 		#end
 	}
 
-	function updateXYPosition(X:Float, Y:Float):Void
-	{
-		var xDiff = X - lastX;
-		var yDiff = Y - lastY;
+	private function updateXYPosition(x:Float, y:Float):Void {
+		var xDiff = x - lastX;
+		var yDiff = y - lastY;
 
-		lastX = X;
-		lastY = Y;
+		lastX = x;
+		lastY = y;
 
-		if (invertX)
-			xDiff *= -1;
-		if (invertY)
-			yDiff *= -1;
+		if (invertX) xDiff *= -1;
+		if (invertY) yDiff *= -1;
 
 		xDiff /= (pixelsPerUnit);
 		yDiff /= (pixelsPerUnit);
 
-		if (Math.abs(xDiff) < deadZone)
-			xDiff = 0;
-		if (Math.abs(yDiff) < deadZone)
-			yDiff = 0;
+		if (Math.abs(xDiff) < deadZone) xDiff = 0;
+		if (Math.abs(yDiff) < deadZone) yDiff = 0;
 
 		updateValues(xDiff, yDiff);
 	}
@@ -144,90 +136,62 @@ class FlxActionInputAnalogMouseMotion extends FlxActionInputAnalog
 /**
  * @since 4.6.0
  */
-class FlxActionInputAnalogMousePosition extends FlxActionInputAnalog
-{
+class FlxActionInputAnalogMousePosition extends FlxActionInputAnalog {
 	/**
 	 * Mouse input -- X/Y is the mouse's absolute screen position
 	 * @param	Trigger What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
 	 * @param	Axis which axes to monitor for triggering: X, Y, EITHER, or BOTH
 	 */
-	public function new(Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER)
-	{
-		super(FlxInputDevice.MOUSE, -1, Trigger, Axis);
+	public function new(trigger:FlxAnalogState, axis:FlxAnalogAxis = EITHER) {
+		super(FlxInputDevice.MOUSE, -1, trigger, axis);
 	}
 
-	override public function update():Void
-	{
+	override public function update():Void {
 		#if !FLX_NO_MOUSE
 		updateValues(FlxG.mouse.x, FlxG.mouse.y);
 		#end
 	}
 
-	override function updateValues(X:Float, Y:Float):Void
-	{
-		if (X != x)
-		{
-			xMoved.press();
-		}
-		else
-		{
-			xMoved.release();
-		}
+	override function updateValues(x:Float, y:Float):Void {
+		if (x != this.x) xMoved.press();
+		else xMoved.release();
 
-		if (Y != y)
-		{
-			yMoved.press();
-		}
-		else
-		{
-			yMoved.release();
-		}
+		if (y != this.y) yMoved.press();
+		else yMoved.release();
 
-		x = X;
-		y = Y;
+		this.x = x;
+		this.y = y;
 	}
 }
 
 /**
  * @since 4.6.0
  */
-class FlxActionInputAnalogGamepad extends FlxActionInputAnalog
-{
+class FlxActionInputAnalogGamepad extends FlxActionInputAnalog {
 	/**
 	 * Gamepad action input for analog (trigger, joystick, touchpad, etc) events
-	 * @param	InputID "universal" gamepad input ID (LEFT_TRIGGER, RIGHT_ANALOG_STICK, TILT_PITCH, etc)
-	 * @param	Trigger What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
-	 * @param	Axis which axes to monitor for triggering: X, Y, EITHER, or BOTH
-	 * @param	GamepadID specific gamepad ID, or FlxInputDeviceID.FIRST_ACTIVE / ALL
+	 * @param	inputID "universal" gamepad input ID (LEFT_TRIGGER, RIGHT_ANALOG_STICK, TILT_PITCH, etc)
+	 * @param	trigger What state triggers this action (MOVED, JUST_MOVED, STOPPED, JUST_STOPPED)
+	 * @param	axis which axes to monitor for triggering: X, Y, EITHER, or BOTH
+	 * @param	gamepadID specific gamepad ID, or FlxInputDeviceID.FIRST_ACTIVE / ALL
 	 */
-	public function new(InputID:FlxGamepadInputID, Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER, GamepadID:Int = FlxInputDeviceID.FIRST_ACTIVE)
-	{
-		super(FlxInputDevice.GAMEPAD, InputID, Trigger, Axis, GamepadID);
+	public function new(inputID:FlxGamepadInputID, trigger:FlxAnalogState, axis:FlxAnalogAxis = EITHER, gamepadID:Int = FlxInputDeviceID.FIRST_ACTIVE) {
+		super(FlxInputDevice.GAMEPAD, inputID, trigger, axis, gamepadID);
 	}
 
-	override public function update():Void
-	{
-		if (deviceID == FlxInputDeviceID.ALL)
-		{
-			return; // analog data is only meaningful on an individual device
-		}
+	override public function update():Void {
+		if (deviceID == FlxInputDeviceID.ALL) return; // analog data is only meaningful on an individual device
 
 		#if !FLX_NO_GAMEPAD
 		var gamepad:FlxGamepad = null;
 
 		if (deviceID == FlxInputDeviceID.FIRST_ACTIVE)
-		{
 			gamepad = FlxG.gamepads.getFirstActiveGamepad();
-		}
 		else if (deviceID >= 0)
-		{
 			gamepad = FlxG.gamepads.getByID(deviceID);
-		}
 
-		if (gamepad != null)
-		{
-			switch (inputID)
-			{
+		if (gamepad != null) {
+			switch (inputID) {
 				case FlxGamepadInputID.LEFT_ANALOG_STICK:
 					updateValues(gamepad.analog.value.LEFT_STICK_X, gamepad.analog.value.LEFT_STICK_Y);
 
@@ -247,14 +211,11 @@ class FlxActionInputAnalogGamepad extends FlxActionInputAnalog
 					updateValues(gamepad.analog.value.POINTER_Y, 0);
 
 				case FlxGamepadInputID.DPAD:
-					updateValues(gamepad.pressed.DPAD_LEFT ? -1.0 : gamepad.pressed.DPAD_RIGHT ? 1.0 : 0.0,
-						gamepad.pressed.DPAD_UP ? -1.0 : gamepad.pressed.DPAD_DOWN ? 1.0 : 0.0);
+					updateValues(gamepad.pressed.DPAD_LEFT ? -1 : gamepad.pressed.DPAD_RIGHT ? 1 : 0,
+						gamepad.pressed.DPAD_UP ? -1 : gamepad.pressed.DPAD_DOWN ? 1 : 0);
 			}
-		}
-		else
-		{
+		} else
 			updateValues(0, 0);
-		}
 		#end
 	}
 }
@@ -262,36 +223,29 @@ class FlxActionInputAnalogGamepad extends FlxActionInputAnalog
 /**
  * @since 4.6.0
  */
-class FlxActionInputAnalogSteam extends FlxActionInputAnalog
-{
+class FlxActionInputAnalogSteam extends FlxActionInputAnalog {
 	/**
 	 * Steam Controller action input for analog (trigger, joystick, touchpad, etc) events
-	 * @param	ActionHandle handle received from FlxSteamController.getAnalogActionHandle()
-	 * @param	Trigger what state triggers this action (MOVING, JUST_MOVED, STOPPED, JUST_STOPPED)
-	 * @param	Axis which axes to monitor for triggering: X, Y, EITHER, or BOTH
-	 * @param	DeviceHandle handle received from FlxSteamController.getConnectedControllers(), or FlxInputDeviceID.ALL / FlxInputDeviceID.FIRST_ACTIVE
+	 * @param	actionHandle handle received from FlxSteamController.getAnalogActionHandle()
+	 * @param	trigger what state triggers this action (MOVING, JUST_MOVED, STOPPED, JUST_STOPPED)
+	 * @param	axis which axes to monitor for triggering: X, Y, EITHER, or BOTH
+	 * @param	deviceHandle handle received from FlxSteamController.getConnectedControllers(), or FlxInputDeviceID.ALL / FlxInputDeviceID.FIRST_ACTIVE
 	 */
 	@:allow(flixel.input.actions.FlxActionSet)
-	function new(ActionHandle:Int, Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER, DeviceID:Int = FlxInputDeviceID.ALL)
-	{
-		super(FlxInputDevice.STEAM_CONTROLLER, ActionHandle, Trigger, Axis, DeviceID);
+	function new(actionHandle:Int, trigger:FlxAnalogState, axis:FlxAnalogAxis = EITHER, deviceID:Int = FlxInputDeviceID.ALL) {
+		super(FlxInputDevice.STEAM_CONTROLLER, actionHandle, trigger, axis, deviceID);
 		#if FLX_NO_STEAM
 		FlxG.log.warn("steamwrap library not installed; steam inputs will be ignored.");
 		#end
 	}
 
-	override public function update():Void
-	{
+	override public function update():Void {
 		#if FLX_STEAMWRAP
 		var handle = deviceID;
 		if (handle == FlxInputDeviceID.NONE)
-		{
 			return;
-		}
 		else if (deviceID == FlxInputDeviceID.FIRST_ACTIVE)
-		{
 			handle = FlxSteamController.getFirstActiveHandle();
-		}
 
 		analogActionData = FlxSteamController.getAnalogActionData(handle, inputID, analogActionData);
 		updateValues(analogActionData.x, analogActionData.y);
@@ -299,7 +253,7 @@ class FlxActionInputAnalogSteam extends FlxActionInputAnalog
 	}
 
 	#if FLX_STEAMWRAP
-	private static var analogActionData:ControllerAnalogActionData = new ControllerAnalogActionData();
+	private static var analogActionData = new ControllerAnalogActionData();
 	#end
 }
 
@@ -307,30 +261,28 @@ class FlxActionInputAnalogSteam extends FlxActionInputAnalog
  * @since 4.6.0
  */
 @:access(flixel.input.actions.FlxAction)
-class FlxActionInputAnalog extends FlxActionInput
-{
+class FlxActionInputAnalog extends FlxActionInput {
 	public var axis(default, null):FlxAnalogAxis;
 
-	public var x(default, null):Float = 0;
-	public var y(default, null):Float = 0;
+	public var x(default, null) = .0;
+	public var y(default, null) = .0;
 	public var xMoved(default, null):FlxInput<Int>;
 	public var yMoved(default, null):FlxInput<Int>;
 
 	static inline var A_X = true;
 	static inline var A_Y = false;
 
-	function new(Device:FlxInputDevice, InputID:Int, Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER, DeviceID:Int = FlxInputDeviceID.FIRST_ACTIVE)
-	{
-		super(FlxInputType.ANALOG, Device, InputID, cast Trigger, DeviceID);
-		axis = Axis;
+	private function new(device:FlxInputDevice, inputID:Int, trigger:FlxAnalogState, axis:FlxAnalogAxis = EITHER, deviceID:Int = FlxInputDeviceID.FIRST_ACTIVE) {
+		super(FlxInputType.ANALOG, device, inputID, cast trigger, deviceID);
+
+		this.axis = axis;
+
 		xMoved = new FlxInput<Int>(0);
 		yMoved = new FlxInput<Int>(1);
 	}
 
-	override public function check(Action:FlxAction):Bool
-	{
-		var returnVal = switch (axis)
-		{
+	override public function check(action:FlxAction):Bool {
+		final returnVal = switch (axis) {
 			case X: compareState(trigger, xMoved.current);
 			case Y: compareState(trigger, yMoved.current);
 			case BOTH: compareState(trigger, xMoved.current) && compareState(trigger, yMoved.current);
@@ -353,55 +305,37 @@ class FlxActionInputAnalog extends FlxActionInput
 				}
 		}
 
-		if (returnVal)
-		{
-			if (Action._x == null)
-				Action._x = x;
-			if (Action._y == null)
-				Action._y = y;
+		if (returnVal) {
+			action._x ??= x;
+			action._y ??= y;
 		}
 
 		return returnVal;
 	}
 
-	function checkAxis(isX:Bool, state:FlxInputState):Bool
-	{
-		var input = isX ? xMoved : yMoved;
+	private function checkAxis(isX:Bool, state:FlxInputState):Bool {
+		final input = isX ? xMoved : yMoved;
 		return compareState(state, input.current);
 	}
 
-	function updateValues(X:Float, Y:Float):Void
-	{
-		if (X != 0)
-		{
-			xMoved.press();
-		}
-		else
-		{
-			xMoved.release();
-		}
+	private function updateValues(x:Float, y:Float):Void {
+		if (x != 0) xMoved.press();
+		else xMoved.release();
 
-		if (Y != 0)
-		{
-			yMoved.press();
-		}
-		else
-		{
-			yMoved.release();
-		}
+		if (y != 0) yMoved.press();
+		else yMoved.release();
 
-		x = X;
-		y = Y;
+		this.x = x;
+		this.y = y;
 	}
 }
 
 /**
  * @since 4.6.0
  */
-enum abstract FlxAnalogAxis(Int) from Int
-{
-	var X = 0;
-	var Y = 1;
-	var BOTH = 2;
-	var EITHER = 3;
+enum abstract FlxAnalogAxis(Int) from Int{
+	final X = 0;
+	final Y = 1;
+	final BOTH = 2;
+	final EITHER = 3;
 }

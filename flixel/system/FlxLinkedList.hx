@@ -8,32 +8,28 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  * Useful for optimizing time-critical or highly repetitive tasks!
  * See FlxQuadTree for how to use it, IF YOU DARE.
  */
-class FlxLinkedList implements IFlxDestroyable
-{
+class FlxLinkedList implements IFlxDestroyable {
 	/**
 	 * Pooling mechanism, when FlxLinkedLists are destroyed, they get added
 	 * to this collection, and when they get recycled they get removed.
 	 */
-	public static var _NUM_CACHED_FLX_LIST:Int = 0;
+	public static var _NUM_CACHED_FLX_LIST = 0;
 
 	static var _cachedListsHead:FlxLinkedList;
 
 	/**
 	 * Recycle a cached Linked List, or creates a new one if needed.
 	 */
-	public static function recycle():FlxLinkedList
-	{
-		if (_cachedListsHead != null)
-		{
-			var cachedList:FlxLinkedList = _cachedListsHead;
+	public static function recycle():FlxLinkedList {
+		if (_cachedListsHead != null) {
+			final cachedList = _cachedListsHead;
 			_cachedListsHead = _cachedListsHead.next;
 			_NUM_CACHED_FLX_LIST--;
 
 			cachedList.exists = true;
 			cachedList.next = null;
 			return cachedList;
-		}
-		else
+		} else
 			return new FlxLinkedList();
 	}
 
@@ -41,16 +37,15 @@ class FlxLinkedList implements IFlxDestroyable
 	 * Clear cached List nodes. You might want to do this when loading new levels
 	 * (probably not though, no need to clear cache unless you run into memory problems).
 	 */
-	public static function clearCache():Void
-	{
+	public static function clearCache():Void {
 		// null out next pointers to help out garbage collector
-		while (_cachedListsHead != null)
-		{
-			var node = _cachedListsHead;
+		while (_cachedListsHead != null) {
+			final node = _cachedListsHead;
 			_cachedListsHead = _cachedListsHead.next;
 			node.object = null;
 			node.next = null;
 		}
+
 		_NUM_CACHED_FLX_LIST = 0;
 	}
 
@@ -64,27 +59,22 @@ class FlxLinkedList implements IFlxDestroyable
 	 */
 	public var next:FlxLinkedList;
 
-	public var exists:Bool = true;
+	public var exists = true;
 
 	/**
 	 * Private, use recycle instead.
 	 */
-	function new() {}
+	private function new() {}
 
 	/**
 	 * Clean up memory.
 	 */
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		// ensure we haven't been destroyed already
-		if (!exists)
-			return;
+		if (!exists) return;
 
 		object = null;
-		if (next != null)
-		{
-			next.destroy();
-		}
+		next?.destroy();
 		exists = false;
 
 		// Deposit this list into the linked list for reusal.

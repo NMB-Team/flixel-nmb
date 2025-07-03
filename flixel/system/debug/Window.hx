@@ -220,7 +220,7 @@ class Window extends Sprite {
 			saveWindowVisibility();
 		#end
 
-		toggleButton?.toggled = !visible;
+		if (toggleButton != null) toggleButton.toggled = !visible;
 
 		if (visible && _alwaysOnTop) putOnTop();
 	}

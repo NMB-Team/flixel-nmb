@@ -41,7 +41,7 @@ class FlxAngle {
 	 * @param frequency 	The frequency of the sine and cosine table data
 	 * @return	Returns the cosine/sine table in a FlxSinCos
 	 */
-	public static macro function sinCosGenerator(length = 360, sinAmplitude = 1., cosAmplitude = 1., frequency = 1.):Expr {
+	public static macro function sinCosGenerator(length:Int = 360, sinAmplitude:Float = 1., cosAmplitude:Float = 1., frequency:Float = 1.):Expr {
 		final table = {cos: [], sin: []};
 
 		for (c in 0...length) {
@@ -165,6 +165,24 @@ class FlxAngle {
 	public static function angleBetween(spriteA:FlxSprite, spriteB:FlxSprite, asDegrees = false):Float {
 		final dx = (spriteB.x + spriteB.origin.x) - (spriteA.x + spriteA.origin.x);
 		final dy = (spriteB.y + spriteB.origin.y) - (spriteA.y + spriteA.origin.y);
+
+		return angleFromOrigin(dx, dy, asDegrees);
+	}
+
+	/**
+	 * Find the angle between two FlxPoints.
+	 *
+	 * @param	pointA		The FlxPoint to test from
+	 * @param	pointB		The FlxPoint to angle PointA towards
+	 * @param	asDegrees	If you need the value in degrees instead of radians, set to true
+	 * @return	The angle (in radians unless AsDegrees is true)
+	 */
+	public static function angleBetweenPoints(pointA:FlxPoint, pointB:FlxPoint, asDegrees = false):Float {
+		final dx = pointB.x - pointA.x;
+		final dy = pointB.y - pointA.y;
+
+		pointA.putWeak();
+		pointB.putWeak();
 
 		return angleFromOrigin(dx, dy, asDegrees);
 	}

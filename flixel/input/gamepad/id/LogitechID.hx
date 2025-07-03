@@ -5,39 +5,38 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
 /**
  * IDs for Logitech controllers (key codes based on Cordless Rumblepad 2)
  */
-enum abstract LogitechID(Int) to Int
-{
-	var ONE = 0;
-	var TWO = 1;
-	var THREE = 2;
-	var FOUR = 3;
-	var FIVE = 4;
-	var SIX = 5;
-	var SEVEN = 6;
-	var EIGHT = 7;
-	var NINE = 8;
-	var TEN = 9;
-	var LEFT_STICK_CLICK = 10;
-	var RIGHT_STICK_CLICK = 11;
+enum abstract LogitechID(Int) to Int {
+	final ONE = 0;
+	final TWO = 1;
+	final THREE = 2;
+	final FOUR = 3;
+	final FIVE = 4;
+	final SIX = 5;
+	final SEVEN = 6;
+	final EIGHT = 7;
+	final NINE = 8;
+	final TEN = 9;
+	final LEFT_STICK_CLICK = 10;
+	final RIGHT_STICK_CLICK = 11;
 
 	// "fake" IDs, we manually watch for hat axis changes and then send events using these otherwise unused joystick button codes
-	var DPAD_UP = 16;
-	var DPAD_DOWN = 17;
-	var DPAD_LEFT = 18;
-	var DPAD_RIGHT = 19;
+	final DPAD_UP = 16;
+	final DPAD_DOWN = 17;
+	final DPAD_LEFT = 18;
+	final DPAD_RIGHT = 19;
 
 	// TODO: Someone needs to look this up and define it! (NOTE: not all logitech controllers have this)
-	var LOGITECH = -5;
+	final LOGITECH = -5;
 
-	var LEFT_STICK_UP = 24;
-	var LEFT_STICK_DOWN = 25;
-	var LEFT_STICK_LEFT = 26;
-	var LEFT_STICK_RIGHT = 27;
+	final LEFT_STICK_UP = 24;
+	final LEFT_STICK_DOWN = 25;
+	final LEFT_STICK_LEFT = 26;
+	final LEFT_STICK_RIGHT = 27;
 
-	var RIGHT_STICK_UP = 28;
-	var RIGHT_STICK_DOWN = 29;
-	var RIGHT_STICK_LEFT = 30;
-	var RIGHT_STICK_RIGHT = 31;
+	final RIGHT_STICK_UP = 28;
+	final RIGHT_STICK_DOWN = 29;
+	final RIGHT_STICK_LEFT = 30;
+	final RIGHT_STICK_RIGHT = 31;
 
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<LogitechID>(0, 1, {
 		up: LEFT_STICK_UP,

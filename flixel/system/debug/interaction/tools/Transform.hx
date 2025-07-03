@@ -40,11 +40,11 @@ class Transform extends Tool {
 		setButton(Icon.transform);
 		setCursor(Icon.transform);
 
-		final OFFSET = -5;
-		brain.registerCustomCursor(ROTATE, Icon.rotate, OFFSET, OFFSET);
-		brain.registerCustomCursor(SCALE_X, Icon.scaleX, OFFSET, OFFSET);
-		brain.registerCustomCursor(SCALE_Y, Icon.scaleY, OFFSET, OFFSET);
-		brain.registerCustomCursor(SCALE_XY, Icon.scaleXY, OFFSET, OFFSET);
+		final offset = -5;
+		brain.registerCustomCursor(ROTATE, Icon.rotate, offset, offset);
+		brain.registerCustomCursor(SCALE_X, Icon.scaleX, offset, offset);
+		brain.registerCustomCursor(SCALE_Y, Icon.scaleY, offset, offset);
+		brain.registerCustomCursor(SCALE_XY, Icon.scaleXY, offset, offset);
 
 		FlxG.signals.preStateSwitch.add(() -> {
 			tooltip.hide();
@@ -84,7 +84,7 @@ class Transform extends Tool {
 	private function startAction(type:TransformType):Void {
 		final target = switch state {
 			case SELECTED(target): target;
-			case found: FlxG.log.critical('Unexpected state: $found');
+			case found: throw 'Unexpected state: $found';
 		}
 
 		final action = switch (type) {
@@ -132,8 +132,8 @@ class Transform extends Tool {
 				final mouseStart = FlxPoint.get(mouseStartX, mouseStartY).subtract(target.x + target.origin.x, target.y + target.origin.y);
 				final mouse = _brain.flixelPointer.copyTo().subtract(target.x + target.origin.x, target.y + target.origin.y);
 
-				inline function cos(degrees:Float) return FlxMath.fastCos(FlxAngle.TO_RAD * degrees);
-				inline function sin(degrees:Float) return FlxMath.fastSin(FlxAngle.TO_RAD * degrees);
+				inline function cos(degrees:Float) return Math.cos(FlxAngle.TO_RAD * degrees);
+				inline function sin(degrees:Float) return Math.sin(FlxAngle.TO_RAD * degrees);
 				inline function int(num:Float) return Std.int(num);
 				function dec(num:Float, dec = 2) {
 					final prefix = (num > 0 ? "" : "-") + (num < 1 ? "0" : "");

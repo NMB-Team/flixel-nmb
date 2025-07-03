@@ -414,7 +414,7 @@ class FlxBitmapDataUtil {
 		final halfBrushWidth = Std.int(brushWidth * .5);
 		final halfBrushHeight = Std.int(brushHeight * .5);
 		final midpointX = Std.int(max * .5);
-		final midpointY = Std.int(max * .5);
+		var midpointY = Std.int(max * .5);
 
 		while (row < rows) {
 			column = 0;

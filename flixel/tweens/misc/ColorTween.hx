@@ -9,8 +9,7 @@ import flixel.util.typeLimit.OneOfTwo;
  * Tweens a color's red, green, and blue properties
  * independently. Can also tween an alpha value.
  */
-class ColorTween extends FlxTween
-{
+class ColorTween extends FlxTween {
 	public var color(default, null):FlxColor;
 
 	var startColor:FlxColor;
@@ -24,8 +23,7 @@ class ColorTween extends FlxTween
 	/**
 	 * Clean up references
 	 */
-	override public function destroy()
-	{
+	override public function destroy() {
 		super.destroy();
 		sprite = null;
 	}
@@ -33,36 +31,33 @@ class ColorTween extends FlxTween
 	/**
 	 * Tweens the color to a new color and an alpha to a new alpha.
 	 *
-	 * @param	Duration		Duration of the tween.
-	 * @param	FromColor		Start color.
-	 * @param	ToColor			End color.
-	 * @param	Sprite			Optional sprite object whose color to tween.
+	 * @param	duration		Duration of the tween.
+	 * @param	fromColor		Start color.
+	 * @param	toColor			End color.
+	 * @param	sprite			Optional sprite object whose color to tween.
 	 * @return	The ColorTween.
 	 */
-	public function tween(Duration:Float, FromColor:FlxColor, ToColor:FlxColor, ?Sprite:FlxSprite):ColorTween
-	{
-		color = startColor = FromColor;
-		endColor = ToColor;
-		duration = Duration;
-		sprite = Sprite;
+	public function tween(duration:Float, fromColor:FlxColor, toColor:FlxColor, ?sprite:FlxSprite):ColorTween {
+		color = startColor = fromColor;
+		this.endColor = toColor;
+		this.duration = duration;
+		this.sprite = sprite;
+
 		start();
 		return this;
 	}
 
-	override function update(elapsed:Float):Void
-	{
+	override function update(elapsed:Float):Void {
 		super.update(elapsed);
 		color = FlxColor.interpolate(startColor, endColor, scale);
 
-		if (sprite != null)
-		{
+		if (sprite != null) {
 			sprite.color = color;
 			sprite.alpha = color.alphaFloat;
 		}
 	}
 
-	override function isTweenOf(object:Dynamic, ?field:OneOfTwo<String, Int>):Bool
-	{
+	override function isTweenOf(object:Dynamic, ?field:OneOfTwo<String, Int>):Bool {
 		return sprite == object && (field == null || field == "color");
 	}
 }

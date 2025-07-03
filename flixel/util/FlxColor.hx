@@ -96,92 +96,92 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Create a color from the least significant four bytes of an Int
 	 *
-	 * @param	value And Int with bytes in the format 0xAARRGGBB
+	 * @param	Value And Int with bytes in the format 0xAARRGGBB
 	 * @return	The color as a FlxColor
 	 */
-	public static inline function fromInt(value:Int):FlxColor {
-		return new FlxColor(value);
+	public static inline function fromInt(Value:Int):FlxColor {
+		return new FlxColor(Value);
 	}
 
 	/**
 	 * Generate a color from integer RGB values (0 to 255)
 	 *
-	 * @param red	The red value of the color from 0 to 255
-	 * @param green	The green value of the color from 0 to 255
-	 * @param blue	The green value of the color from 0 to 255
-	 * @param alpha	How opaque the color should be, from 0 to 255
+	 * @param Red	The red value of the color from 0 to 255
+	 * @param Green	The green value of the color from 0 to 255
+	 * @param Blue	The green value of the color from 0 to 255
+	 * @param Alpha	How opaque the color should be, from 0 to 255
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromRGB(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
+	public static inline function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
 		var color = new FlxColor();
-		return color.setRGB(red, green, blue, alpha);
+		return color.setRGB(Red, Green, Blue, Alpha);
 	}
 
-	public static inline function fromRGBFast(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
+	public static inline function fromRGBFast(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
 		var color = new FlxColor();
-		return color.setRGBFast(red, green, blue, alpha);
+		return color.setRGBFast(Red, Green, Blue, Alpha);
 	}
 
-	public static inline function fromRGBUnsafe(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
+	public static inline function fromRGBUnsafe(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
 		var color = new FlxColor();
-		return color.setRGBUnsafe(red, green, blue, alpha);
+		return color.setRGBUnsafe(Red, Green, Blue, Alpha);
 	}
 
 	/**
 	 * Generate a color from float RGB values (0 to 1)
 	 *
-	 * @param red	The red value of the color from 0 to 1
-	 * @param green	The green value of the color from 0 to 1
-	 * @param blue	The green value of the color from 0 to 1
-	 * @param alpha	How opaque the color should be, from 0 to 1
+	 * @param Red	The red value of the color from 0 to 1
+	 * @param Green	The green value of the color from 0 to 1
+	 * @param Blue	The green value of the color from 0 to 1
+	 * @param Alpha	How opaque the color should be, from 0 to 1
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromRGBFloat(red:Float, green:Float, blue:Float, alpha = 1.):FlxColor {
+	public static inline function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor {
 		var color = new FlxColor();
-		return color.setRGBFloat(red, green, blue, alpha);
+		return color.setRGBFloat(Red, Green, Blue, Alpha);
 	}
 
 	/**
 	 * Generate a color from CMYK values (0 to 1)
 	 *
-	 * @param cyan		The cyan value of the color from 0 to 1
-	 * @param magenta	The magenta value of the color from 0 to 1
-	 * @param yellow	The yellow value of the color from 0 to 1
-	 * @param black		The black value of the color from 0 to 1
-	 * @param alpha		How opaque the color should be, from 0 to 1
+	 * @param Cyan		The cyan value of the color from 0 to 1
+	 * @param Magenta	The magenta value of the color from 0 to 1
+	 * @param Yellow	The yellow value of the color from 0 to 1
+	 * @param Black		The black value of the color from 0 to 1
+	 * @param Alpha		How opaque the color should be, from 0 to 1
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromCMYK(cyan:Float, magenta:Float, yellow:Float, black:Float, alpha = 1.):FlxColor {
+	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):FlxColor {
 		var color = new FlxColor();
-		return color.setCMYK(cyan, magenta, yellow, black, alpha);
+		return color.setCMYK(Cyan, Magenta, Yellow, Black, Alpha);
 	}
 
 	/**
 	 * Generate a color from HSB (aka HSV) components.
 	 *
-	 * @param	hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-	 * @param	alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+	 * @param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
+	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 	 * @return	The color as a FlxColor
 	 */
-	public static function fromHSB(hue:Float, saturation:Float, brightness:Float, alpha = 1.):FlxColor {
+	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):FlxColor {
 		var color = new FlxColor();
-		return color.setHSB(hue, saturation, brightness, alpha);
+		return color.setHSB(Hue, Saturation, Brightness, Alpha);
 	}
 
 	/**
 	 * Generate a color from HSL components.
 	 *
-	 * @param	hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	lightness	A number between 0 and 1, indicating the lightness of the color
-	 * @param	alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+	 * @param	Lightness	A number between 0 and 1, indicating the lightness of the color
+	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 	 * @return	The color as a FlxColor
 	 */
-	public static inline function fromHSL(hue:Float, saturation:Float, lightness:Float, alpha = 1.):FlxColor {
+	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):FlxColor {
 		var color = new FlxColor();
-		return color.setHSL(hue, saturation, lightness, alpha);
+		return color.setHSL(Hue, Saturation, Lightness, Alpha);
 	}
 
 	/**
@@ -206,14 +206,14 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		if (COLOR_REGEX.match(str)) {
 			final hexColor:String = "0x" + COLOR_REGEX.matched(2);
 			result = new FlxColor(Std.parseInt(hexColor));
-			if (hexColor.length == 8)
-				result.alphaFloat = 1;
+			if (hexColor.length == 8) result.alphaFloat = 1;
 		} else {
 			str = str.toUpperCase();
 			if (colorLookup.exists(str)) result = new FlxColor(colorLookup.get(str)); // for better result checking
 
 			for (key in colorLookup.keys())
-				if (key.toUpperCase() == str) {
+				if (key.toUpperCase() == str)
+				{
 					result = new FlxColor(colorLookup.get(key));
 					break;
 				}
@@ -225,26 +225,26 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Get HSB color wheel values in an array which will be 360 elements in size
 	 *
-	 * @param	alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
+	 * @param	Alpha Alpha value for each color of the color wheel, between 0 (transparent) and 255 (opaque)
 	 * @return	HSB color wheel as Array of FlxColors
 	 */
-	public static function getHSBColorWheel(alpha = 255):Array<FlxColor> {
-		return [for (c in 0...360) fromHSB(c, 1.0, 1.0, alpha)];
+	public static function getHSBColorWheel(Alpha:Int = 255):Array<FlxColor> {
+		return [for (c in 0...360) fromHSB(c, 1.0, 1.0, Alpha)];
 	}
 
 	/**
 	 * Get an interpolated color based on two different colors.
 	 *
-	 * @param 	color1 The first color
-	 * @param 	color2 The second color
-	 * @param 	factor Value from 0 to 1 representing how much to shift color1 toward color2
+	 * @param 	Color1 The first color
+	 * @param 	Color2 The second color
+	 * @param 	Factor Value from 0 to 1 representing how much to shift Color1 toward Color2
 	 * @return	The interpolated color
 	 */
-	public static inline function interpolate(color1:FlxColor, color2:FlxColor, factor = .5):FlxColor {
-		final r = Std.int((color2.red - color1.red) * factor + color1.red);
-		final g = Std.int((color2.green - color1.green) * factor + color1.green);
-		final b = Std.int((color2.blue - color1.blue) * factor + color1.blue);
-		final a = Std.int((color2.alpha - color1.alpha) * factor + color1.alpha);
+	public static inline function interpolate(Color1:FlxColor, Color2:FlxColor, Factor:Float = 0.5):FlxColor {
+		final r:Int = Std.int((Color2.red - Color1.red) * Factor + Color1.red);
+		final g:Int = Std.int((Color2.green - Color1.green) * Factor + Color1.green);
+		final b:Int = Std.int((Color2.blue - Color1.blue) * Factor + Color1.blue);
+		final a:Int = Std.int((Color2.alpha - Color1.alpha) * Factor + Color1.alpha);
 
 		return fromRGB(r, g, b, a);
 	}
@@ -252,19 +252,19 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Create a gradient from one color to another
 	 *
-	 * @param color1 The color to shift from
-	 * @param color2 The color to shift to
-	 * @param steps How many colors the gradient should have
-	 * @param ease An optional easing function, such as those provided in FlxEase
-	 * @return An array of colors of length steps, shifting from color1 to color2
+	 * @param Color1 The color to shift from
+	 * @param Color2 The color to shift to
+	 * @param Steps How many colors the gradient should have
+	 * @param Ease An optional easing function, such as those provided in FlxEase
+	 * @return An array of colors of length Steps, shifting from Color1 to Color2
 	 */
-	public static function gradient(color1:FlxColor, color2:FlxColor, steps:Int, ?ease:EaseFunction):Array<FlxColor> {
+	public static function gradient(Color1:FlxColor, Color2:FlxColor, Steps:Int, ?Ease:EaseFunction):Array<FlxColor> {
 		final output = new Array<FlxColor>();
 
-		ease ??= FlxEase.linear;
+		Ease ??= FlxEase.linear;
 
-		for (step in 0...steps)
-			output[step] = interpolate(color1, color2, ease(step / (steps - 1)));
+		for (step in 0...Steps)
+			output[step] = interpolate(Color1, Color2, Ease(step / (Steps - 1)));
 
 		return output;
 	}
@@ -315,12 +315,12 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	 * Returns an Analogous Color Harmony for the given color.
 	 * An Analogous harmony are hues adjacent to each other on the color wheel
 	 *
-	 * @param	threshold Control how adjacent the colors will be (default +- 30 degrees)
+	 * @param	Threshold Control how adjacent the colors will be (default +- 30 degrees)
 	 * @return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
 	 */
-	public inline function getAnalogousHarmony(threshold = 30):Harmony {
-		final warmer = fromHSB(FlxMath.wrapMax(Std.int(hue) - threshold, 350), saturation, brightness, alphaFloat);
-		final colder = fromHSB(FlxMath.wrapMax(Std.int(hue) + threshold, 350), saturation, brightness, alphaFloat);
+	public inline function getAnalogousHarmony(Threshold:Int = 30):Harmony {
+		final warmer:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) - Threshold, 350), saturation, brightness, alphaFloat);
+		final colder:Int = fromHSB(FlxMath.wrapMax(Std.int(hue) + Threshold, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -329,13 +329,13 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	 * Returns an Split Complement Color Harmony for this color.
 	 * A Split Complement harmony are the two hues on either side of the color's Complement
 	 *
-	 * @param	threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
+	 * @param	Threshold Control how adjacent the colors will be to the Complement (default +- 30 degrees)
 	 * @return 	Object containing 3 properties: original (the original color), warmer (the warmer analogous color) and colder (the colder analogous color)
 	 */
-	public inline function getSplitComplementHarmony(threshold = 30):Harmony {
-		final oppositeHue = FlxMath.wrapMax(Std.int(hue) + 180, 350);
-		final warmer:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue - threshold, 350), saturation, brightness, alphaFloat);
-		final colder:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue + threshold, 350), saturation, brightness, alphaFloat);
+	public inline function getSplitComplementHarmony(Threshold:Int = 30):Harmony {
+		final oppositeHue:Int = FlxMath.wrapMax(Std.int(hue) + 180, 350);
+		final warmer:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue - Threshold, 350), saturation, brightness, alphaFloat);
+		final colder:FlxColor = fromHSB(FlxMath.wrapMax(oppositeHue + Threshold, 350), saturation, brightness, alphaFloat);
 
 		return {original: this, warmer: warmer, colder: colder};
 	}
@@ -356,12 +356,12 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Return a String representation of the color in the format
 	 *
-	 * @param alpha Whether to include the alpha value in the hex string
-	 * @param prefix Whether to include "0x" prefix at start of string
+	 * @param Alpha Whether to include the alpha value in the hex string
+	 * @param Prefix Whether to include "0x" prefix at start of string
 	 * @return	A string of length 10 in the format 0xAARRGGBB
 	 */
-	public inline function toHexString(alpha = true, prefix = true):String {
-		return (prefix ? "0x" : "") + (alpha ? StringTools.hex(alpha, 2) : "") + StringTools.hex(red, 2) + StringTools.hex(green, 2) + StringTools.hex(blue, 2);
+	public inline function toHexString(Alpha:Bool = true, Prefix:Bool = true):String {
+		return (Prefix ? "0x" : "") + (Alpha ? StringTools.hex(alpha, 2) : "") + StringTools.hex(red, 2) + StringTools.hex(green, 2) + StringTools.hex(blue, 2);
 	}
 
 	/**
@@ -380,7 +380,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	 */
 	public function getColorInfo():String {
 		// Hex format
-		var result = toHexString() + "\n";
+		var result:String = toHexString() + "\n";
 		// RGB format
 		result += "Alpha: " + alpha + " Red: " + red + " Green: " + green + " Blue: " + blue + "\n";
 		// HSB/HSL info
@@ -393,28 +393,26 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Get a darkened version of this color
 	 *
-	 * @param	factor Value from 0 to 1 of how much to progress toward black.
+	 * @param	Factor Value from 0 to 1 of how much to progress toward black.
 	 * @return 	A darkened version of this color
 	 */
-	public function getDarkened(factor = .2):FlxColor {
-		factor = FlxMath.bound(factor, 0, 1);
-
+	public function getDarkened(Factor:Float = 0.2):FlxColor {
+		Factor = FlxMath.bound(Factor, 0, 1);
 		var output:FlxColor = this;
-		output.lightness = output.lightness * (1 - factor);
+		output.lightness = output.lightness * (1 - Factor);
 		return output;
 	}
 
 	/**
 	 * Get a lightened version of this color
 	 *
-	 * @param	factor Value from 0 to 1 of how much to progress toward white.
+	 * @param	Factor Value from 0 to 1 of how much to progress toward white.
 	 * @return 	A lightened version of this color
 	 */
-	public inline function getLightened(factor = .2):FlxColor {
-		factor = FlxMath.bound(factor, 0, 1);
-
+	public inline function getLightened(Factor:Float = 0.2):FlxColor {
+		Factor = FlxMath.bound(Factor, 0, 1);
 		var output:FlxColor = this;
-		output.lightness = output.lightness + (1 - lightness) * factor;
+		output.lightness = output.lightness + (1 - lightness) * Factor;
 		return output;
 	}
 
@@ -433,112 +431,112 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 	/**
 	 * Set RGB values as integers (0 to 255)
 	 *
-	 * @param red	The red value of the color from 0 to 255
-	 * @param green	The green value of the color from 0 to 255
-	 * @param blue	The blue value of the color from 0 to 255
-	 * @param alpha	How opaque the color should be, from 0 to 255
+	 * @param Red	The red value of the color from 0 to 255
+	 * @param Green	The green value of the color from 0 to 255
+	 * @param Blue	The green value of the color from 0 to 255
+	 * @param Alpha	How opaque the color should be, from 0 to 255
 	 * @return This color
 	 */
-	public inline function setRGB(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
-		this = (boundChannel(red) & 0xFF) << 16 | (boundChannel(green) & 0xFF) << 8 | (boundChannel(blue) & 0xFF) | (boundChannel(alpha) & 0xFF) << 24;
+	public inline function setRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
+		this = (boundChannel(Red) & 0xFF) << 16 | (boundChannel(Green) & 0xFF) << 8 | (boundChannel(Blue) & 0xFF) | (boundChannel(Alpha) & 0xFF) << 24;
 		return this;
 	}
 
-	public inline function setRGBFast(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
-		this = (red & 0xFF) << 16 | (green & 0xFF) << 8 | (blue & 0xFF) | (alpha & 0xFF) << 24;
+	public inline function setRGBFast(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
+		this = (Red & 0xFF) << 16 | (Green & 0xFF) << 8 | (Blue & 0xFF) | (Alpha & 0xFF) << 24;
 		return this;
 	}
 
-	public inline function setRGBUnsafe(red:Int, green:Int, blue:Int, alpha = 255):FlxColor {
-		this = (red) << 16 | (green) << 8 | (blue) | (alpha) << 24;
+	public inline function setRGBUnsafe(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor {
+		this = (Red) << 16 | (Green) << 8 | (Blue) | (Alpha) << 24;
 		return this;
 	}
 
 	/**
 	 * Set RGB values as floats (0 to 1)
 	 *
-	 * @param red	The red value of the color from 0 to 1
-	 * @param green	The green value of the color from 0 to 1
-	 * @param blue	The blue value of the color from 0 to 1
-	 * @param alpha	How opaque the color should be, from 0 to 1
+	 * @param Red	The red value of the color from 0 to 1
+	 * @param Green	The green value of the color from 0 to 1
+	 * @param Blue	The green value of the color from 0 to 1
+	 * @param Alpha	How opaque the color should be, from 0 to 1
 	 * @return This color
 	 */
-	public inline function setRGBFloat(red:Float, green:Float, blue:Float, alpha = 1.):FlxColor {
-		this = setRGB(Std.int(red * 255), Std.int(green * 255), Std.int(blue * 255), Std.int(alpha * 255));
+	public inline function setRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor {
+		this = setRGB(Std.int(Red * 255), Std.int(Green * 255), Std.int(Blue * 255), Std.int(Alpha * 255));
 		return this;
 	}
 
 	/**
 	 * Set CMYK values as floats (0 to 1)
 	 *
-	 * @param cyan		The cyan value of the color from 0 to 1
-	 * @param magenta	The magenta value of the color from 0 to 1
-	 * @param yellow	The yellow value of the color from 0 to 1
-	 * @param black		The black value of the color from 0 to 1
-	 * @param alpha		How opaque the color should be, from 0 to 1
+	 * @param Cyan		The cyan value of the color from 0 to 1
+	 * @param Magenta	The magenta value of the color from 0 to 1
+	 * @param Yellow	The yellow value of the color from 0 to 1
+	 * @param Black		The black value of the color from 0 to 1
+	 * @param Alpha		How opaque the color should be, from 0 to 1
 	 * @return This color
 	 */
-	public inline function setCMYK(cyan:Float, magenta:Float, yellow:Float, black:Float, alpha:Float = 1):FlxColor {
-		redFloat = (1 - cyan) * (1 - black);
-		greenFloat = (1 - magenta) * (1 - black);
-		blueFloat = (1 - yellow) * (1 - black);
-		alphaFloat = alpha;
+	public inline function setCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):FlxColor {
+		redFloat = (1 - Cyan) * (1 - Black);
+		greenFloat = (1 - Magenta) * (1 - Black);
+		blueFloat = (1 - Yellow) * (1 - Black);
+		alphaFloat = Alpha;
 		return this;
 	}
 
 	/**
 	 * Set HSB (aka HSV) components
 	 *
-	 * @param	hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
-	 * @param	alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
+	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+	 * @param	Brightness	(aka Value) A number between 0 and 1, indicating how bright the color should be.  0 is black, 1 is full bright.
+	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 	 * @return	This color
 	 */
-	public inline function setHSB(hue:Float, saturation:Float, brightness:Float, alpha = 1.):FlxColor {
-		final chroma = brightness * saturation;
-		final match = brightness - chroma;
-		return setHueChromaMatch(hue, chroma, match, alpha);
+	public inline function setHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha = 1.):FlxColor {
+		final chroma = Brightness * Saturation;
+		final match = Brightness - chroma;
+		return setHueChromaMatch(Hue, chroma, match, Alpha);
 	}
 
 	/**
 	 * Set HSL components.
 	 *
-	 * @param	hue			A number between 0 and 360, indicating position on a color strip or wheel.
-	 * @param	saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
-	 * @param	lightness	A number between 0 and 1, indicating the lightness of the color
-	 * @param	alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
+	 * @param	Hue			A number between 0 and 360, indicating position on a color strip or wheel.
+	 * @param	Saturation	A number between 0 and 1, indicating how colorful or gray the color should be.  0 is gray, 1 is vibrant.
+	 * @param	Lightness	A number between 0 and 1, indicating the lightness of the color
+	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255
 	 * @return	This color
 	 */
-	public inline function setHSL(hue:Float, saturation:Float, lightness:Float, alpha = 1.):FlxColor {
-		final chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
-		final match = lightness - chroma * .5;
-		return setHueChromaMatch(hue, chroma, match, alpha);
+	public inline function setHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha = 1.):FlxColor {
+		final chroma = (1 - Math.abs(2 * Lightness - 1)) * Saturation;
+		final match = Lightness - chroma * .5;
+		return setHueChromaMatch(Hue, chroma, match, Alpha);
 	}
 
 	/**
 	 * Private utility function to perform common operations between setHSB and setHSL
 	 */
-	inline function setHueChromaMatch(hue:Float, chroma:Float, match:Float, alpha:Float):FlxColor {
-		hue %= 360;
-		final hueD = hue / 60;
-		final mid = chroma * (1 - Math.abs(hueD % 2 - 1)) + match;
-		chroma += match;
+	inline function setHueChromaMatch(Hue:Float, Chroma:Float, Match:Float, Alpha:Float):FlxColor {
+		Hue %= 360;
+		final hueD = Hue / 60;
+		final mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
+		Chroma += Match;
 
 		switch (Std.int(hueD)) {
-			case 0: setRGBFloat(chroma, mid, match, alpha);
-			case 1: setRGBFloat(mid, chroma, match, alpha);
-			case 2: setRGBFloat(match, chroma, mid, alpha);
-			case 3: setRGBFloat(match, mid, chroma, alpha);
-			case 4: setRGBFloat(mid, match, chroma, alpha);
-			case 5: setRGBFloat(chroma, match, mid, alpha);
+			case 0: setRGBFloat(Chroma, mid, Match, Alpha);
+			case 1: setRGBFloat(mid, Chroma, Match, Alpha);
+			case 2: setRGBFloat(Match, Chroma, mid, Alpha);
+			case 3: setRGBFloat(Match, mid, Chroma, Alpha);
+			case 4: setRGBFloat(mid, Match, Chroma, Alpha);
+			case 5: setRGBFloat(Chroma, Match, mid, Alpha);
 		}
 
 		return this;
 	}
 
-	public function new(value = 0) {
-		this = value;
+	public function new(Value:Int = 0) {
+		this = Value;
 	}
 
 	inline function getThis():Int {
@@ -593,64 +591,64 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		return alpha / 255;
 	}
 
-	inline function set_red(value:Int):Int {
-		this = (this & 0xFF00FFFF) | (boundChannel(value)) << 16;
-		return value;
+	inline function set_red(Value:Int):Int {
+		this = (this & 0xFF00FFFF) | (boundChannel(Value)) << 16;
+		return Value;
 	}
 
-	inline function set_green(value:Int):Int {
-		this = (this & 0xFFFF00FF) | (boundChannel(value)) << 8;
-		return value;
+	inline function set_green(Value:Int):Int {
+		this = (this & 0xFFFF00FF) | (boundChannel(Value)) << 8;
+		return Value;
 	}
 
-	inline function set_blue(value:Int):Int {
-		this = (this & 0xFFFFFF00) | (boundChannel(value));
-		return value;
+	inline function set_blue(Value:Int):Int {
+		this = (this & 0xFFFFFF00) | (boundChannel(Value));
+		return Value;
 	}
 
-	inline function set_alpha(value:Int):Int {
-		this = (this & 0x00FFFFFF) | (boundChannel(value)) << 24;
-		return value;
+	inline function set_alpha(Value:Int):Int {
+		this = (this & 0x00FFFFFF) | (boundChannel(Value)) << 24;
+		return Value;
 	}
 
-	inline function set_redFast(value:Int):Int {
-		this = (this & 0xFF00FFFF) | ((value & 0xFF)) << 16;
-		return value;
+	inline function set_redFast(Value:Int):Int {
+		this = (this & 0xFF00FFFF) | ((Value & 0xFF)) << 16;
+		return Value;
 	}
 
-	inline function set_greenFast(value:Int):Int {
-		this = (this & 0xFFFF00FF) | ((value & 0xFF) << 8);
-		return value;
+	inline function set_greenFast(Value:Int):Int {
+		this = (this & 0xFFFF00FF) | ((Value & 0xFF) << 8);
+		return Value;
 	}
 
-	inline function set_blueFast(value:Int):Int {
-		this = (this & 0xFFFFFF00) | ((value & 0xFF));
-		return value;
+	inline function set_blueFast(Value:Int):Int {
+		this = (this & 0xFFFFFF00) | ((Value & 0xFF));
+		return Value;
 	}
 
-	inline function set_alphaFast(value:Int):Int {
-		this = (this & 0xFF000000) | ((value & 0xFF) << 24);
-		return value;
+	inline function set_alphaFast(Value:Int):Int {
+		this = (this & 0xFF000000) | ((Value & 0xFF) << 24);
+		return Value;
 	}
 
-	inline function set_redFloat(value:Float):Float {
-		red = Math.round(value * 255);
-		return value;
+	inline function set_redFloat(Value:Float):Float {
+		red = Math.round(Value * 255);
+		return Value;
 	}
 
-	inline function set_greenFloat(value:Float):Float {
-		green = Math.round(value * 255);
-		return value;
+	inline function set_greenFloat(Value:Float):Float {
+		green = Math.round(Value * 255);
+		return Value;
 	}
 
-	inline function set_blueFloat(value:Float):Float {
-		blue = Math.round(value * 255);
-		return value;
+	inline function set_blueFloat(Value:Float):Float {
+		blue = Math.round(Value * 255);
+		return Value;
 	}
 
-	inline function set_alphaFloat(value:Float):Float {
-		alpha = Math.round(value * 255);
-		return value;
+	inline function set_alphaFloat(Value:Float):Float {
+		alpha = Math.round(Value * 255);
+		return Value;
 	}
 
 	inline function get_cyan():Float {
@@ -662,7 +660,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		return (1 - r - blck) / bri;
 	}
 
-	inline function get_magenta():Float {
+	inline function get_magenta():Float	{
 		final r = redFloat;
 		final g = greenFloat;
 		final b = blueFloat;
@@ -684,27 +682,27 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		return 1 - brightness;
 	}
 
-	inline function set_cyan(value:Float):Float {
-		setCMYK(value, magenta, yellow, black, alphaFloat);
-		return value;
+	inline function set_cyan(Value:Float):Float {
+		setCMYK(Value, magenta, yellow, black, alphaFloat);
+		return Value;
 	}
 
-	inline function set_magenta(value:Float):Float {
-		setCMYK(cyan, value, yellow, black, alphaFloat);
-		return value;
+	inline function set_magenta(Value:Float):Float {
+		setCMYK(cyan, Value, yellow, black, alphaFloat);
+		return Value;
 	}
 
-	inline function set_yellow(value:Float):Float {
-		setCMYK(cyan, magenta, value, black, alphaFloat);
-		return value;
+	inline function set_yellow(Value:Float):Float {
+		setCMYK(cyan, magenta, Value, black, alphaFloat);
+		return Value;
 	}
 
-	inline function set_black(value:Float):Float {
-		setCMYK(cyan, magenta, yellow, value, alphaFloat);
-		return value;
+	inline function set_black(Value:Float):Float {
+		setCMYK(cyan, magenta, yellow, Value, alphaFloat);
+		return Value;
 	}
 
-	function get_hue():Float {
+	private function get_hue():Float {
 		final r = redFloat;
 		final g = greenFloat;
 		final b = blueFloat;
@@ -714,11 +712,15 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 
 		var h = .0;
 
-		if (max != min) {
+		if (max != min)
+		{
 			final d = max - min;
-			if (max == r) h = (g - b) / d + (g < b ? 6 : 0);
-			else if (max == g) h = (b - r) / d + 2;
-			else if (max == b) h = (r - g) / d + 4;
+			if (max == r)
+				h = (g - b) / d + (g < b ? 6 : 0);
+			else if (max == g)
+				h = (b - r) / d + 2;
+			else if (max == b)
+				h = (r - g) / d + 4;
 			h /= 6;
 		}
 
@@ -727,8 +729,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 
 	// old version of get_hue(), inaccurate and slow
 	private function get_hueOld():Float {
- 		// 1.7320508075688772 = Math.sqrt(3)
- 		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
+		// 1.7320508075688772 = Math.sqrt(3)
+		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
 		final hue = (hueRad != 0) ? flixel.math.FlxAngle.TO_DEG * hueRad : 0;
 		return hue < 0 ? hue + 360 : hue;
 	}
@@ -759,24 +761,24 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		return (max + min) * .5;
 	}
 
-	inline function set_hue(value:Float):Float {
-		setHSB(value, saturation, brightness, alphaFloat);
-		return value;
+	inline function set_hue(Value:Float):Float {
+		setHSB(Value, saturation, brightness, alphaFloat);
+		return Value;
 	}
 
-	inline function set_saturation(value:Float):Float {
-		setHSB(hue, value, brightness, alphaFloat);
-		return value;
+	inline function set_saturation(Value:Float):Float {
+		setHSB(hue, Value, brightness, alphaFloat);
+		return Value;
 	}
 
-	inline function set_brightness(value:Float):Float {
-		setHSB(hue, saturation, value, alphaFloat);
-		return value;
+	inline function set_brightness(Value:Float):Float {
+		setHSB(hue, saturation, Value, alphaFloat);
+		return Value;
 	}
 
-	inline function set_lightness(value:Float):Float {
-		setHSL(hue, saturation, value, alphaFloat);
-		return value;
+	inline function set_lightness(Value:Float):Float {
+		setHSL(hue, saturation, Value, alphaFloat);
+		return Value;
 	}
 
 	inline function set_rgb(value:FlxColor):FlxColor {
@@ -796,12 +798,12 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt {
 		return Math.min(redFloat, Math.min(greenFloat, blueFloat));
 	}
 
-	inline function boundChannel(value:Int):Int {
+	inline function boundChannel(Value:Int):Int {
 		#if cpp
-		final v = value;
+		final v:Int = Value;
 		return untyped __cpp__("((({0}) > 0xff) ? 0xff : (({0}) < 0) ? 0 : ({0}))", v);
 		#else
-		return value > 0xff ? 0xff : value < 0 ? 0 : value;
+		return Value > 0xff ? 0xff : Value < 0 ? 0 : Value;
 		#end
 	}
 }

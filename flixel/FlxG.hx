@@ -148,11 +148,6 @@ class FlxG {
 
 	public static var renderMethod(default, null):FlxRenderMethod;
 
-	@:deprecated("FlxG.renderBlit is deprecated, use FlxG.render.blit, instead")
-	public static var renderBlit(default, null):Bool;
-	@:deprecated("FlxG.renderTile is deprecated, use FlxG.render.tile, instead")
-	public static var renderTile(default, null):Bool;
-
 	/**
 	 * Whether or not antialiasing is allowed.
 	 *
@@ -200,7 +195,7 @@ class FlxG {
 	 * HaxeFlixel includes several available scale modes, which are located in `flixel.system.scaleModes`.
 	 * However, you may also create a class which extends `BaseScaleMode`, and override its behavior according to your needs.
 	 */
-	public static var scaleMode(default, set) = new RatioScaleMode();
+	public static var scaleMode(default, set):BaseScaleMode = new RatioScaleMode();
 
 	/**
 	 * Use this to toggle between fullscreen and normal mode. Works on CPP.
@@ -212,21 +207,21 @@ class FlxG {
 	 * The dimensions of the game world, used by the quad tree for collisions and overlap checks.
 	 * Use `.set()` instead of creating a new object!
 	 */
-	public static var worldBounds(default, null) = new FlxRect();
+	public static var worldBounds(default, null):FlxRect = new FlxRect();
 
 	#if FLX_SAVE
 	/**
 	 * A `FlxSave` used internally by flixel to save sound preferences and
 	 * the history of the console window, but no reason you can't use it for your own stuff too!
 	 */
-	public static var save(default, null) = new FlxSave();
+	public static var save(default, null):FlxSave = new FlxSave();
 	#end
 
 	/**
 	 * A `FlxRandom` object which can be used to generate random numbers.
 	 * Also used by Flixel internally.
 	 */
-	public static var random(default, null) = new FlxRandom();
+	public static var random(default, null):FlxRandom = new FlxRandom();
 
 	#if FLX_MOUSE
 	/**
@@ -283,33 +278,33 @@ class FlxG {
 	/**
 	 * Has some HTML5-specific things like browser detection, browser dimensions etc...
 	 */
-	public static var html5(default, null) = new HTML5FrontEnd();
+	public static var html5(default, null):HTML5FrontEnd = new HTML5FrontEnd();
 	#end
 
 	/**
 	 * Mostly used internally, but you can use it too to reset inputs and create input classes of your own.
 	 */
-	public static var inputs(default, null) = new InputFrontEnd();
+	public static var inputs(default, null):InputFrontEnd = new InputFrontEnd();
 
 	/**
 	 * Used to register functions and objects or add new commands to the console window.
 	 */
-	public static var console(default, null) = new ConsoleFrontEnd();
+	public static var console(default, null):ConsoleFrontEnd = new ConsoleFrontEnd();
 
 	/**
 	 * Used to add messages to the log window or enable `trace()` redirection.
 	 */
-	public static var log(default, null) = new LogFrontEnd();
+	public static var log(default, null):LogFrontEnd = new LogFrontEnd();
 
 	/**
 	 * Used to add images to the bitmap log window.
 	 */
-	public static var bitmapLog(default, null) = new BitmapLogFrontEnd();
+	public static var bitmapLog(default, null):BitmapLogFrontEnd = new BitmapLogFrontEnd();
 
 	/**
 	 * Used to add or remove things to / from the watch window.
 	 */
-	public static var watch(default, null) = new WatchFrontEnd();
+	public static var watch(default, null):WatchFrontEnd = new WatchFrontEnd();
 
 	/**
 	 * Used to change the render mode (tile/blit), set the render pixel mode and more.
@@ -320,7 +315,7 @@ class FlxG {
 	 * Used it to show / hide the debugger, change its layout,
 	 * activate debug drawing or change the key used to toggle it.
 	 */
-	public static var debugger(default, null) = new DebuggerFrontEnd();
+	public static var debugger(default, null):DebuggerFrontEnd = new DebuggerFrontEnd();
 
 	/**
 	 * Contains all the functions needed for recording and replaying.
@@ -330,12 +325,12 @@ class FlxG {
 	/**
 	 * Contains things related to bitmaps, for example regarding the `BitmapData` cache and the cache itself.
 	 */
-	public static var bitmap(default, null) = new BitmapFrontEnd();
+	public static var bitmap(default, null):BitmapFrontEnd = new BitmapFrontEnd();
 
 	/**
 	 * Contains things related to cameras, a list of all cameras and several effects like `flash()` or `fade()`.
 	 */
-	public static var cameras(default, null) = new CameraFrontEnd();
+	public static var cameras(default, null):CameraFrontEnd = new CameraFrontEnd();
 
 	/**
 	 * Contains a list of all plugins and the functions required to `add()`, `remove()` them etc.
@@ -360,13 +355,13 @@ class FlxG {
 	/**
 	 * Contains system-wide signals like `gameResized` or `preStateSwitch`.
 	 */
-	public static var signals(default, null) = new SignalFrontEnd();
+	public static var signals(default, null):SignalFrontEnd = new SignalFrontEnd();
 
 	/**
 	 * Contains helper functions relating to retrieving assets
 	 * @since 5.9.0
 	 */
-	public static var assets(default, null) = new AssetFrontEnd();
+	public static var assets(default, null):AssetFrontEnd = new AssetFrontEnd();
 
 	/**
 	 * Resizes the game within the window by reapplying the current scale mode.
@@ -582,7 +577,6 @@ class FlxG {
 	 * Called by `FlxGame` to set up `FlxG` during `FlxGame`'s constructor.
 	 */
 	@:allow(flixel.FlxGame.new)
-	@:haxe.warning("-WDeprecated")
 	static function init(game:FlxGame, width:Int, height:Int):Void {
 		if (width < 0) width = -width;
 		if (height < 0) height = -height;
@@ -593,8 +587,6 @@ class FlxG {
 
 		render.init();
 		renderMethod = render.method;
-		renderBlit = renderMethod == BLITTING;
-		renderTile = renderMethod == DRAW_TILES;
 
 		FlxG.initialWidth = width;
 		FlxG.initialHeight = height;

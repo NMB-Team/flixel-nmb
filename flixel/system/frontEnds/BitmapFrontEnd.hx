@@ -70,15 +70,15 @@ class BitmapFrontEnd {
 	/**
 	 * Generates a new BitmapData object (a colored rectangle) and caches it.
 	 *
-	 * @param	Width	How wide the rectangle should be.
-	 * @param	Height	How high the rectangle should be.
-	 * @param	Color	What color the rectangle should be (0xAARRGGBB)
-	 * @param	Unique	Ensures that the bitmap data uses a new slot in the cache.
-	 * @param	Key		Force the cache to use a specific Key to index the bitmap.
+	 * @param	width	How wide the rectangle should be.
+	 * @param	height	How high the rectangle should be.
+	 * @param	color	What color the rectangle should be (0xAARRGGBB)
+	 * @param	unique	Ensures that the bitmap data uses a new slot in the cache.
+	 * @param	key		Force the cache to use a specific Key to index the bitmap.
 	 * @return	The BitmapData we just created.
 	 */
-	public function create(Width:Int, Height:Int, Color:FlxColor, Unique:Bool = false, ?Key:String):FlxGraphic {
-		return FlxGraphic.fromRectangle(Width, Height, Color, Unique, Key);
+	public function create(width:Int, height:Int, color:FlxColor, unique = false, ?key:String):FlxGraphic {
+		return FlxGraphic.fromRectangle(width, height, color, unique, key);
 	}
 
 	/**
@@ -89,10 +89,11 @@ class BitmapFrontEnd {
  	 * @return  The FlxGraphic we just created.
 	 */
 	public function add(graphic:FlxGraphicAsset, unique = false, ?key:String):FlxGraphic {
-		if ((graphic is FlxGraphic))
+		if ((graphic is FlxGraphic)) {
 			return FlxGraphic.fromGraphic(cast graphic, unique, key);
-		else if ((graphic is BitmapData))
+		} else if ((graphic is BitmapData)) {
 			return FlxGraphic.fromBitmapData(cast graphic, unique, key);
+		}
 
 		// String case
 		return FlxGraphic.fromAssetKey(Std.string(graphic), unique, key);
@@ -117,7 +118,7 @@ class BitmapFrontEnd {
 	 */
 	public inline function get(key:String):FlxGraphic {
 		final graphic = _cache.get(key);
-		graphic?.mustDestroy = false;
+		if (graphic != null) graphic.mustDestroy = false;
 		return _cache.get(key);
 	}
 
@@ -233,10 +234,10 @@ class BitmapFrontEnd {
 	}
 
 	@:allow(flixel.graphics.FlxGraphic)
-	var __doNotDelete = false;
+	var doNotDelete = false;
 
-	var __countCache:Array<FlxGraphic> = [];
-	var __cacheCopy:Map<String, FlxGraphic> = [];
+	var countCache:Array<FlxGraphic> = [];
+	var cacheCopy:Map<String, FlxGraphic> = [];
 
 	/**
 	 * Clears image cache (and destroys those images).
@@ -248,14 +249,14 @@ class BitmapFrontEnd {
 			return;
 		}
 
-		__doNotDelete = false;
+		doNotDelete = false;
 
-		for (g in __countCache) g.decreasseToUseCount(10);
+		for (g in countCache) g.decreasseToUseCount(10);
 
-		__countCache = [];
+		countCache = [];
 
-		for (key in __cacheCopy.keys())	{
-			final obj = __cacheCopy.get(key);
+		for (key in cacheCopy.keys())	{
+			final obj = cacheCopy.get(key);
 			final objN = get(key);
 			if (objN != null && objN != obj) obj.destroy();
 
@@ -265,7 +266,7 @@ class BitmapFrontEnd {
 			}
 		}
 
-		__cacheCopy = [];
+		cacheCopy = [];
 	}
 
 	/**
@@ -274,22 +275,22 @@ class BitmapFrontEnd {
 	public function mapCacheAsDestroyable() {
 		_cache ??= new Map();
 
-		__countCache = [];
+		countCache = [];
 
-		__doNotDelete = true;
-		__cacheCopy = [];
+		doNotDelete = true;
+		cacheCopy = [];
 		for (k => e in _cache) {
 			if (e == null) continue;
 
 			if (e.assetsKey != null) {
-				__countCache.push(e);
+				countCache.push(e);
 				e.addToUseCount(10);
 			} else if (e.destroyOnNoUse) {
-				FlxG.bitmap.removeByKey(k);
+				removeByKey(k);
 				continue;
 			}
 			e.mustDestroy = true;
-			__cacheCopy.set(k, e);
+			cacheCopy.set(k, e);
 		}
 	}
 
@@ -341,7 +342,7 @@ class BitmapFrontEnd {
 	private function get_whitePixel():FlxFrame {
 		if (_whitePixel == null) {
 			final bd = new BitmapData(10, 10, true, FlxColor.WHITE);
-			final graphic = FlxG.bitmap.add(bd, true, "whitePixels");
+			final graphic = add(bd, true, "whitePixels");
 			graphic.persist = true;
 			_whitePixel = graphic.imageFrame.frame;
 		}

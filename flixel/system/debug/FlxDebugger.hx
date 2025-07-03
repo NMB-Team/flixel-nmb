@@ -173,20 +173,35 @@ class FlxDebugger extends openfl.display.Sprite {
 
 		_topBar = FlxDestroyUtil.removeChild(this, _topBar);
 
-		if (log != null) removeChild(log);
-		log = FlxDestroyUtil.destroy(log);
+		if (log != null) {
+			removeChild(log);
+			log.destroy();
+			log = null;
+		}
 
-		if (watch != null) removeChild(watch);
-		watch = FlxDestroyUtil.destroy(watch);
+		if (watch != null) {
+			removeChild(watch);
+			watch.destroy();
+			watch = null;
+		}
 
-		if (bitmapLog != null) removeChild(bitmapLog);
-		bitmapLog = FlxDestroyUtil.destroy(bitmapLog);
+		if (bitmapLog != null) {
+			removeChild(bitmapLog);
+			bitmapLog.destroy();
+			bitmapLog = null;
+		}
 
-		if (stats != null) removeChild(stats);
-		stats = FlxDestroyUtil.destroy(stats);
+		if (stats != null) {
+			removeChild(stats);
+			stats.destroy();
+			stats = null;
+		}
 
-		if (console != null) removeChild(console);
-		console = FlxDestroyUtil.destroy(console);
+		if (console != null) {
+			removeChild(console);
+			console.destroy();
+			console = null;
+		}
 
 		_windows = FlxArrayUtil.clearArray(_windows);
 
@@ -483,7 +498,7 @@ class FlxDebugger extends openfl.display.Sprite {
 
 	inline function openGitHub():Void {
 		var url = "https://github.com/dtwotwo/flixel-dtwotwo";
-		if (!flixel.util.FlxStringUtil.isNullOrEmpty(sha)) url += '/commit/${FlxVersion.sha}';
+		if (!flixel.util.FlxStringUtil.isNullOrEmpty(FlxVersion.sha)) url += '/commit/${FlxVersion.sha}';
 		FlxG.openURL(url);
 	}
 	#end

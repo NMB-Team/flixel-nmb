@@ -4,6 +4,9 @@ import flixel.util.FlxPool.IFlxPooled;
 import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
+import openfl.events.FocusEvent;
+import openfl.events.KeyboardEvent;
+import openfl.events.MouseEvent;
 
 @:access(openfl.display.BitmapData)
 class FlxDestroyUtil {

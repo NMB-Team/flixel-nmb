@@ -11,8 +11,7 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  *
  * @author larsiusprime
  */
-enum abstract WiiRemoteID(Int) to Int
-{
+enum abstract WiiRemoteID(Int) to Int {
 	/**
 	 * Things to add:
 	 * - Accelerometer (in both remote and nunchuk)
@@ -23,158 +22,158 @@ enum abstract WiiRemoteID(Int) to Int
 	 */
 	#if FLX_JOYSTICK_API
 	// Standard Wii Remote inputs:
-	var REMOTE_ONE = 0;
-	var REMOTE_TWO = 1;
-	var REMOTE_A = 2;
-	var REMOTE_B = 3;
-	var REMOTE_PLUS = 4;
-	var REMOTE_MINUS = 5;
-	var REMOTE_HOME = 6;
+	final REMOTE_ONE = 0;
+	final REMOTE_TWO = 1;
+	final REMOTE_A = 2;
+	final REMOTE_B = 3;
+	final REMOTE_PLUS = 4;
+	final REMOTE_MINUS = 5;
+	final REMOTE_HOME = 6;
 
 	// Nunchuk attachment:
-	var NUNCHUK_A = 0;
-	var NUNCHUK_B = 1;
-	var NUNCHUK_C = 2;
-	var NUNCHUK_Z = 3;
-	var NUNCHUK_ONE = 4;
-	var NUNCHUK_TWO = 5;
-	var NUNCHUK_PLUS = 6;
-	var NUNCHUK_MINUS = 7;
-	var NUNCHUK_HOME = 8;
+	final NUNCHUK_A = 0;
+	final NUNCHUK_B = 1;
+	final NUNCHUK_C = 2;
+	final NUNCHUK_Z = 3;
+	final NUNCHUK_ONE = 4;
+	final NUNCHUK_TWO = 5;
+	final NUNCHUK_PLUS = 6;
+	final NUNCHUK_MINUS = 7;
+	final NUNCHUK_HOME = 8;
 
 	// classic controller attachment:
-	var CLASSIC_A = 0;
-	var CLASSIC_B = 1;
-	var CLASSIC_Y = 2;
-	var CLASSIC_X = 3;
-	var CLASSIC_L = 4;
-	var CLASSIC_R = 5;
-	var CLASSIC_ZL = 6;
-	var CLASSIC_ZR = 7;
-	var CLASSIC_START = 8;
-	var CLASSIC_SELECT = 9;
-	var CLASSIC_HOME = 10;
-	var CLASSIC_ONE = 11;
-	var CLASSIC_TWO = 12;
+	final CLASSIC_A = 0;
+	final CLASSIC_B = 1;
+	final CLASSIC_Y = 2;
+	final CLASSIC_X = 3;
+	final CLASSIC_L = 4;
+	final CLASSIC_R = 5;
+	final CLASSIC_ZL = 6;
+	final CLASSIC_ZR = 7;
+	final CLASSIC_START = 8;
+	final CLASSIC_SELECT = 9;
+	final CLASSIC_HOME = 10;
+	final CLASSIC_ONE = 11;
+	final CLASSIC_TWO = 12;
 
-	var REMOTE_TILT_PITCH = 2;
-	var REMOTE_TILT_ROLL = 3;
+	final REMOTE_TILT_PITCH = 2;
+	final REMOTE_TILT_ROLL = 3;
 
-	var NUNCHUK_TILT_PITCH = 3;
-	var NUNCHUK_TILT_ROLL = 2;
+	final NUNCHUK_TILT_PITCH = 3;
+	final NUNCHUK_TILT_ROLL = 2;
 
-	var REMOTE_NULL_AXIS = 4;
-	var NUNCHUK_NULL_AXIS = 4;
+	final REMOTE_NULL_AXIS = 4;
+	final NUNCHUK_NULL_AXIS = 4;
 
-	var LEFT_STICK_UP = 32;
-	var LEFT_STICK_DOWN = 33;
-	var LEFT_STICK_LEFT = 34;
-	var LEFT_STICK_RIGHT = 35;
+	final LEFT_STICK_UP = 32;
+	final LEFT_STICK_DOWN = 33;
+	final LEFT_STICK_LEFT = 34;
+	final LEFT_STICK_RIGHT = 35;
 
-	var RIGHT_STICK_UP = 36;
-	var RIGHT_STICK_DOWN = 37;
-	var RIGHT_STICK_LEFT = 38;
-	var RIGHT_STICK_RIGHT = 39;
+	final RIGHT_STICK_UP = 36;
+	final RIGHT_STICK_DOWN = 37;
+	final RIGHT_STICK_LEFT = 38;
+	final RIGHT_STICK_RIGHT = 39;
 
 	// these aren't real axes, they're simulated when the right digital buttons are pushed
-	var LEFT_TRIGGER_FAKE = 4;
-	var RIGHT_TRIGGER_FAKE = 5;
+	final LEFT_TRIGGER_FAKE = 4;
+	final RIGHT_TRIGGER_FAKE = 5;
 
 	// "fake" ID's
-	var REMOTE_DPAD_UP = 14;
-	var REMOTE_DPAD_DOWN = 15;
-	var REMOTE_DPAD_LEFT = 16;
-	var REMOTE_DPAD_RIGHT = 17;
+	final REMOTE_DPAD_UP = 14;
+	final REMOTE_DPAD_DOWN = 15;
+	final REMOTE_DPAD_LEFT = 16;
+	final REMOTE_DPAD_RIGHT = 17;
 
-	var REMOTE_DPAD_X = 18;
-	var REMOTE_DPAD_Y = 19;
+	final REMOTE_DPAD_X = 18;
+	final REMOTE_DPAD_Y = 19;
 
-	var CLASSIC_DPAD_DOWN = 24;
-	var CLASSIC_DPAD_UP = 25;
-	var CLASSIC_DPAD_LEFT = 26;
-	var CLASSIC_DPAD_RIGHT = 27;
+	final CLASSIC_DPAD_DOWN = 24;
+	final CLASSIC_DPAD_UP = 25;
+	final CLASSIC_DPAD_LEFT = 26;
+	final CLASSIC_DPAD_RIGHT = 27;
 
-	var NUNCHUK_DPAD_DOWN = 28;
-	var NUNCHUK_DPAD_UP = 29;
-	var NUNCHUK_DPAD_LEFT = 30;
-	var NUNCHUK_DPAD_RIGHT = 31;
+	final NUNCHUK_DPAD_DOWN = 28;
+	final NUNCHUK_DPAD_UP = 29;
+	final NUNCHUK_DPAD_LEFT = 30;
+	final NUNCHUK_DPAD_RIGHT = 31;
 	#else // gamepad API
 	// Standard Wii Remote inputs:
-	var REMOTE_ONE = 9;
-	var REMOTE_TWO = 10;
-	var REMOTE_A = 11;
-	var REMOTE_B = 12;
-	var REMOTE_PLUS = 13;
-	var REMOTE_MINUS = 14;
-	var REMOTE_HOME = 15;
+	final REMOTE_ONE = 9;
+	final REMOTE_TWO = 10;
+	final REMOTE_A = 11;
+	final REMOTE_B = 12;
+	final REMOTE_PLUS = 13;
+	final REMOTE_MINUS = 14;
+	final REMOTE_HOME = 15;
 
 	// Nunchuk attachment:
-	var NUNCHUK_A = 9;
-	var NUNCHUK_B = 10;
-	var NUNCHUK_C = 11;
-	var NUNCHUK_Z = 12;
-	var NUNCHUK_ONE = 13;
-	var NUNCHUK_TWO = 14;
-	var NUNCHUK_PLUS = 15;
-	var NUNCHUK_MINUS = 16;
-	var NUNCHUK_HOME = 17;
+	final NUNCHUK_A = 9;
+	final NUNCHUK_B = 10;
+	final NUNCHUK_C = 11;
+	final NUNCHUK_Z = 12;
+	final NUNCHUK_ONE = 13;
+	final NUNCHUK_TWO = 14;
+	final NUNCHUK_PLUS = 15;
+	final NUNCHUK_MINUS = 16;
+	final NUNCHUK_HOME = 17;
 
-	var NUNCHUK_DPAD_UP = 5;
-	var NUNCHUK_DPAD_DOWN = 6;
-	var NUNCHUK_DPAD_LEFT = 7;
-	var NUNCHUK_DPAD_RIGHT = 8;
+	final NUNCHUK_DPAD_UP = 5;
+	final NUNCHUK_DPAD_DOWN = 6;
+	final NUNCHUK_DPAD_LEFT = 7;
+	final NUNCHUK_DPAD_RIGHT = 8;
 
 	// classic controller attachment:
-	var CLASSIC_A = 9;
-	var CLASSIC_B = 10;
-	var CLASSIC_Y = 11;
-	var CLASSIC_X = 12;
-	var CLASSIC_L = 13;
-	var CLASSIC_R = 14;
-	var CLASSIC_ZL = 15;
-	var CLASSIC_ZR = 16;
-	var CLASSIC_START = 17;
-	var CLASSIC_SELECT = 18;
-	var CLASSIC_HOME = 19;
-	var CLASSIC_ONE = 20;
-	var CLASSIC_TWO = 21;
+	final CLASSIC_A = 9;
+	final CLASSIC_B = 10;
+	final CLASSIC_Y = 11;
+	final CLASSIC_X = 12;
+	final CLASSIC_L = 13;
+	final CLASSIC_R = 14;
+	final CLASSIC_ZL = 15;
+	final CLASSIC_ZR = 16;
+	final CLASSIC_START = 17;
+	final CLASSIC_SELECT = 18;
+	final CLASSIC_HOME = 19;
+	final CLASSIC_ONE = 20;
+	final CLASSIC_TWO = 21;
 
-	var CLASSIC_DPAD_UP = 5;
-	var CLASSIC_DPAD_DOWN = 6;
-	var CLASSIC_DPAD_LEFT = 7;
-	var CLASSIC_DPAD_RIGHT = 8;
+	final CLASSIC_DPAD_UP = 5;
+	final CLASSIC_DPAD_DOWN = 6;
+	final CLASSIC_DPAD_LEFT = 7;
+	final CLASSIC_DPAD_RIGHT = 8;
 
-	var REMOTE_TILT_PITCH = 2;
-	var REMOTE_TILT_ROLL = 3;
+	final REMOTE_TILT_PITCH = 2;
+	final REMOTE_TILT_ROLL = 3;
 
-	var NUNCHUK_TILT_PITCH = 3;
-	var NUNCHUK_TILT_ROLL = 2;
+	final NUNCHUK_TILT_PITCH = 3;
+	final NUNCHUK_TILT_ROLL = 2;
 
-	var REMOTE_NULL_AXIS = 4;
-	var NUNCHUK_NULL_AXIS = 4;
+	final REMOTE_NULL_AXIS = 4;
+	final NUNCHUK_NULL_AXIS = 4;
 
-	var LEFT_STICK_UP = 28;
-	var LEFT_STICK_DOWN = 29;
-	var LEFT_STICK_LEFT = 30;
-	var LEFT_STICK_RIGHT = 31;
+	final LEFT_STICK_UP = 28;
+	final LEFT_STICK_DOWN = 29;
+	final LEFT_STICK_LEFT = 30;
+	final LEFT_STICK_RIGHT = 31;
 
-	var RIGHT_STICK_UP = 32;
-	var RIGHT_STICK_DOWN = 33;
-	var RIGHT_STICK_LEFT = 34;
-	var RIGHT_STICK_RIGHT = 35;
+	final RIGHT_STICK_UP = 32;
+	final RIGHT_STICK_DOWN = 33;
+	final RIGHT_STICK_LEFT = 34;
+	final RIGHT_STICK_RIGHT = 35;
 
 	// these aren't real axes, they're simulated when the right digital buttons are pushed
-	var LEFT_TRIGGER_FAKE = 4;
-	var RIGHT_TRIGGER_FAKE = 5;
+	final LEFT_TRIGGER_FAKE = 4;
+	final RIGHT_TRIGGER_FAKE = 5;
 
 	// "fake" ID's
-	var REMOTE_DPAD_UP = 22;
-	var REMOTE_DPAD_DOWN = 23;
-	var REMOTE_DPAD_LEFT = 24;
-	var REMOTE_DPAD_RIGHT = 25;
+	final REMOTE_DPAD_UP = 22;
+	final REMOTE_DPAD_DOWN = 23;
+	final REMOTE_DPAD_LEFT = 24;
+	final REMOTE_DPAD_RIGHT = 25;
 
-	var REMOTE_DPAD_X = 26;
-	var REMOTE_DPAD_Y = 27;
+	final REMOTE_DPAD_X = 26;
+	final REMOTE_DPAD_Y = 27;
 	#end
 
 	// Yes, the WiiRemote DPAD is treated as ANALOG for some reason...
@@ -184,7 +183,7 @@ enum abstract WiiRemoteID(Int) to Int
 		down: REMOTE_DPAD_DOWN,
 		left: REMOTE_DPAD_LEFT,
 		right: REMOTE_DPAD_RIGHT,
-		threshold: 0.5,
+		threshold: .5,
 		mode: ONLY_DIGITAL
 	});
 
@@ -208,3 +207,4 @@ enum abstract WiiRemoteID(Int) to Int
 		right: RIGHT_STICK_RIGHT
 	});
 }
+

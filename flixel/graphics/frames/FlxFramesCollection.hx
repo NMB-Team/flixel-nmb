@@ -13,8 +13,7 @@ import flixel.util.FlxStringUtil;
 /**
  * Base class for all frame collections.
  */
-class FlxFramesCollection implements IFlxDestroyable
-{
+class FlxFramesCollection implements IFlxDestroyable {
 	/**
 	 * Array with all frames of this collection.
 	 */
@@ -47,16 +46,14 @@ class FlxFramesCollection implements IFlxDestroyable
 	 */
 	public var border(default, null):FlxPoint;
 
-	public function new(parent:FlxGraphic, ?type:FlxFrameCollectionType, ?border:FlxPoint)
-	{
+	public function new(parent:FlxGraphic, ?type:FlxFrameCollectionType, ?border:FlxPoint) {
 		this.parent = parent;
 		this.type = type;
 		this.border = (border == null) ? FlxPoint.get() : border;
 		frames = [];
 		framesByName = new Map<String, FlxFrame>();
 
-		if (parent != null)
-			parent.addFrameCollection(this);
+		parent?.addFrameCollection(this);
 	}
 
 	/**
@@ -65,8 +62,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   name   The name of the frame to find.
 	 * @return  Frame with specified name (if there is one).
 	 */
-	public inline function getByName(name:String):FlxFrame
-	{
+	public inline function getByName(name:String):FlxFrame {
 		return framesByName.get(name);
 	}
 
@@ -76,8 +72,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   name   The name of the frame to find.
 	 * @return  Whether the collection has frame with the specified name.
 	 */
-	public inline function exists(name:String):Bool
-	{
+	public inline function exists(name:String):Bool {
 		return framesByName.exists(name);
 	}
 
@@ -87,8 +82,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   index   Index of the frame in the frames array.
 	 * @return  Frame with specified index in this frames collection (if there is one).
 	 */
-	public inline function getByIndex(index:Int):FlxFrame
-	{
+	public inline function getByIndex(index:Int):FlxFrame {
 		return frames[index];
 	}
 
@@ -98,13 +92,10 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   name  Name of the frame.
 	 * @return  Index of the frame with specified name.
 	 */
-	public function getIndexByName(name:String):Int
-	{
+	public function getIndexByName(name:String):Int {
 		for (i in 0...frames.length)
-		{
 			if (frames[i].name == name)
 				return i;
-		}
 
 		return -1;
 	}
@@ -115,13 +106,11 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   frame   Frame to find.
 	 * @return  Index of the specified frame.
 	 */
-	public inline function getFrameIndex(frame:FlxFrame):Int
-	{
+	public inline function getFrameIndex(frame:FlxFrame):Int {
 		return frames.indexOf(frame);
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		frames = FlxDestroyUtil.destroyArray(frames);
 		border = FlxDestroyUtil.put(border);
 		framesByName = null;
@@ -136,9 +125,8 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   size   Dimensions of the frame to add.
 	 * @return  Newly added empty frame.
 	 */
-	public function addEmptyFrame(size:FlxRect):FlxFrame
-	{
-		var frame = new FlxFrame(parent);
+	public function addEmptyFrame(size:FlxRect):FlxFrame {
+		final frame = new FlxFrame(parent);
 		frame.type = FlxFrameType.EMPTY;
 		frame.frame = FlxRect.get();
 		frame.sourceSize.set(size.width, size.height);
@@ -152,10 +140,9 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   region   Region of image which new frame will display.
 	 * @return  Newly created `FlxFrame` object for specified region of image.
 	 */
-	public function addSpriteSheetFrame(region:FlxRect):FlxFrame
-	{
-		// Ensure region not a weak rect
-		region = FlxRect.get().copyFrom(region);
+	public function addSpriteSheetFrame(region:FlxRect):FlxFrame {
+		region = FlxRect.get().copyFrom(region); // Ensure region not a weak rect
+
 		final frame = new FlxFrame(parent);
 		frame.frame = checkFrame(region);
 		frame.sourceSize.set(region.width, region.height);
@@ -179,13 +166,10 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param	duration	 The duration of this frame in seconds. If 0, the anim controller will decide the duration.
 	 * @return  Newly created and added frame object.
 	 */
-	public function addAtlasFrame(frame:FlxRect, sourceSize:FlxPoint, offset:FlxPoint, ?name:String, angle:FlxFrameAngle = 0, flipX = false, flipY = false,
-			duration = 0.0):FlxFrame
-	{
-		if (name != null && exists(name))
-			return getByName(name);
+	public function addAtlasFrame(frame:FlxRect, sourceSize:FlxPoint, offset:FlxPoint, ?name:String, angle:FlxFrameAngle = 0, flipX = false, flipY = false, duration = .0):FlxFrame {
+		if (name != null && exists(name)) return getByName(name);
 
-		var texFrame:FlxFrame = new FlxFrame(parent, angle, flipX, flipY, duration);
+		final texFrame = new FlxFrame(parent, angle, flipX, flipY, duration);
 		texFrame.name = name;
 		texFrame.sourceSize.set(sourceSize.x, sourceSize.y);
 		texFrame.offset.set(offset.x, offset.y);
@@ -203,10 +187,9 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   prefix  The name prefix to look for.
 	 * @since 5.3.0
 	 */
-	public function getAllByPrefix(prefix:String)
-	{
+	public function getAllByPrefix(prefix:String) {
 		final list = new Array<FlxFrame>();
-		forEachByPrefix(prefix, (frame)->list.push(frame), false);
+		forEachByPrefix(prefix, frame -> list.push(frame), false);
 		return list;
 	}
 
@@ -220,20 +203,15 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   prefix  The name prefix to look for.
 	 * @since 5.3.0
 	 */
-	public inline function forEachByPrefix(prefix:String, func:(FlxFrame)->Void, warnIfEmpty = true, ?warningMsg:String)
-	{
+	public inline function forEachByPrefix(prefix:String, func:(FlxFrame) -> Void, warnIfEmpty = true, ?warningMsg:String) {
 		var warn = warnIfEmpty;
 		for (name => frame in framesByName)
-		{
-			if (name.indexOf(prefix) == 0)
-			{
+			if (name.indexOf(prefix) == 0) {
 				warn = false;
 				func(frame);
 			}
-		}
 
-		if (warn)
-			FlxG.log.warn(warningMsg != null ? warningMsg : 'no frames found with the prefix "$prefix"');
+		if (warn) FlxG.log.warn(warningMsg != null ? warningMsg : 'no frames found with the prefix "$prefix"');
 	}
 
 	/**
@@ -247,12 +225,9 @@ class FlxFramesCollection implements IFlxDestroyable
 	 *
 	 * @since 5.3.0
 	 */
-	public function setFrameOffset(name:String, offsetX:Float, offsetY:Float)
-	{
-		if (exists(name))
-			getByName(name).offset.set(offsetX, offsetY);
-		else
-			FlxG.log.warn('No frame called $name');
+	public function setFrameOffset(name:String, offsetX:Float, offsetY:Float) {
+		if (exists(name)) getByName(name).offset.set(offsetX, offsetY);
+		else FlxG.log.warn('No frame called $name');
 	}
 
 	/**
@@ -266,12 +241,9 @@ class FlxFramesCollection implements IFlxDestroyable
 	 *
 	 * @since 5.3.0
 	 */
-	public function addFrameOffset(name:String, offsetX:Float, offsetY:Float)
-	{
-		if (exists(name))
-			getByName(name).offset.add(offsetX, offsetY);
-		else
-			FlxG.log.warn('No frame called $name');
+	public function addFrameOffset(name:String, offsetX:Float, offsetY:Float)  {
+		if (exists(name)) getByName(name).offset.add(offsetX, offsetY);
+		else FlxG.log.warn('No frame called $name');
 	}
 
 	/**
@@ -285,9 +257,8 @@ class FlxFramesCollection implements IFlxDestroyable
 	 *
 	 * @since 5.3.0
 	 */
-	public function setFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true)
-	{
-		forEachByPrefix(prefix, (frame)->{ frame.offset.set(offsetX, offsetY); }, warnIfEmpty);
+	public function setFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true) {
+		forEachByPrefix(prefix, frame -> frame.offset.set(offsetX, offsetY), warnIfEmpty);
 	}
 
 	/**
@@ -301,9 +272,8 @@ class FlxFramesCollection implements IFlxDestroyable
 	 *
 	 * @since 5.3.0
 	 */
-	public function addFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true)
-	{
-		forEachByPrefix(prefix, (frame)->{ frame.offset.add(offsetX, offsetY); }, warnIfEmpty);
+	public function addFramesOffsetByPrefix(prefix:String, offsetX:Float, offsetY:Float, warnIfEmpty = true) {
+		forEachByPrefix(prefix, frame -> frame.offset.add(offsetX, offsetY), warnIfEmpty);
 	}
 
 	/**
@@ -316,12 +286,9 @@ class FlxFramesCollection implements IFlxDestroyable
 	 *
 	 * @since 5.3.0
 	 */
-	public function setFrameDuration(name:String, duration:Float)
-	{
-		if (exists(name))
-			getByName(name).duration = duration;
-		else
-			FlxG.log.warn('No frame called $name');
+	public function setFrameDuration(name:String, duration:Float) {
+		if (exists(name)) getByName(name).duration = duration;
+		else FlxG.log.warn('No frame called $name');
 	}
 
 	/**
@@ -331,13 +298,12 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   name    Optional frame name for debugging info.
 	 * @return  Checked and trimmed frame rectangle.
 	 */
-	function checkFrame(frame:FlxRect, ?name:String):FlxRect
-	{
-		var x:Float = FlxMath.bound(frame.x, 0, parent.width);
-		var y:Float = FlxMath.bound(frame.y, 0, parent.height);
+	private function checkFrame(frame:FlxRect, ?name:String):FlxRect {
+		final x = FlxMath.bound(frame.x, 0, parent.width);
+		final y = FlxMath.bound(frame.y, 0, parent.height);
 
-		var r:Float = FlxMath.bound(frame.right, 0, parent.width);
-		var b:Float = FlxMath.bound(frame.bottom, 0, parent.height);
+		final r = FlxMath.bound(frame.right, 0, parent.width);
+		final b = FlxMath.bound(frame.bottom, 0, parent.height);
 
 		frame.set(x, y, r - x, b - y);
 
@@ -354,17 +320,14 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   overwriteHash  If true, any new frames with matching names will replace old ones.
 	 * @return  Added frame.
 	 */
-	public function pushFrame(frameObj:FlxFrame, overwriteHash = false):FlxFrame
-	{
-		final name:String = frameObj.name;
-		if (name != null && exists(name) && !overwriteHash)
-			return getByName(name);
+	public function pushFrame(frameObj:FlxFrame, overwriteHash = false):FlxFrame {
+		final name = frameObj.name;
+		if (name != null && exists(name) && !overwriteHash) return getByName(name);
 
 		frames.push(frameObj);
 		frameObj.cacheFrameMatrix();
 
-		if (name != null)
-			framesByName.set(name, frameObj);
+		if (name != null) framesByName.set(name, frameObj);
 
 		return frameObj;
 	}
@@ -375,19 +338,16 @@ class FlxFramesCollection implements IFlxDestroyable
 	 * @param   border   How much space trim around the frames.
 	 * @return  Generated frames collection.
 	 */
-	public function addBorder(border:FlxPoint):FlxFramesCollection
-	{
-		throw "To be overriden in subclasses";
+	public function addBorder(border:FlxPoint):FlxFramesCollection {
+		FlxG.log.critical("To be overriden in subclasses");
 		return null;
 	}
 
-	public function toString():String
-	{
+	public function toString():String {
 		return FlxStringUtil.getDebugString([LabelValuePair.weak("frames", frames), LabelValuePair.weak("type", type)]);
 	}
 
-	inline function get_numFrames():Int
-	{
+	inline function get_numFrames():Int {
 		return frames.length;
 	}
 }
@@ -396,8 +356,7 @@ class FlxFramesCollection implements IFlxDestroyable
  * An enumeration of all types of frame collections.
  * Added for faster type detection with less usage of casting.
  */
-enum FlxFrameCollectionType
-{
+enum FlxFrameCollectionType {
 	IMAGE;
 	TILES;
 	ATLAS;

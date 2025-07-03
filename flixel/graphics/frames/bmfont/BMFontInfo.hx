@@ -9,10 +9,8 @@ import haxe.io.BytesInput;
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
-@:structInit
 @:allow(flixel.graphics.frames.bmfont.BMFont)
-class BMFontInfo
-{
+@:structInit class BMFontInfo {
 	/** font name */
 	public var face:String;
 	public var size:Int;
@@ -25,13 +23,11 @@ class BMFontInfo
 	public var aa:Int;
 	public var padding:BMFontPadding = {};
 	public var spacing:BMFontSpacing = {};
-	public var outline:Int = 0;
-	public var fixedHeight:Bool = false;
+	public var outline = 0;
+	public var fixedHeight = false;
 
-	static function fromXml(infoNode:BMFontXml):BMFontInfo
-	{
-		final info:BMFontInfo =
-		{
+	static function fromXml(infoNode:BMFontXml):BMFontInfo {
+		final info:BMFontInfo = {
 			face: infoNode.att.string("face"),
 			size: infoNode.att.int("size"),
 			bold: infoNode.att.boolSafe("bold", false),
@@ -45,16 +41,13 @@ class BMFontInfo
 			fixedHeight: infoNode.att.boolSafe("fixedHeight", false)
 		}
 
-		if (infoNode.has("padding"))
-			info.padding = BMFontPadding.fromString(infoNode.att.string("padding"));
-		if (infoNode.has("spacing"))
-			info.spacing = BMFontSpacing.fromString(infoNode.att.string("spacing"));
+		if (infoNode.has("padding")) info.padding = BMFontPadding.fromString(infoNode.att.string("padding"));
+		if (infoNode.has("spacing")) info.spacing = BMFontSpacing.fromString(infoNode.att.string("spacing"));
 
 		return info;
 	}
 
-	static function fromText(infoText:String):BMFontInfo
-	{
+	static function fromText(infoText:String):BMFontInfo {
 		var face:String = null;
 		var size = -1;
 		var bold = false;
@@ -69,11 +62,8 @@ class BMFontInfo
 		var outline = 0;
 		var fixedHeight = false;
 
-		BMFontUtil.forEachAttribute(infoText,
-			function(key:String, value:String)
-			{
-				switch key
-				{
+		BMFontUtil.forEachAttribute(infoText, (key:String, value:String) -> {
+				switch key {
 					case 'face': face = value;
 					case 'size': size = Std.parseInt(value);
 					case 'bold': bold = value != '0';
@@ -91,8 +81,7 @@ class BMFontInfo
 			}
 		);
 
-		return
-		{
+		return {
 			face: face,
 			size: size,
 			bold: bold,
@@ -109,14 +98,12 @@ class BMFontInfo
 		};
 	}
 
-	static function fromBytes(bytes:BytesInput)
-	{
+	static function fromBytes(bytes:BytesInput) {
 		final blockSize = bytes.readInt32();
 		final size = bytes.readInt16();
 		final bitField = bytes.readByte();
 		final charsetByte = bytes.readByte();
-		final fontInfo:BMFontInfo =
-		{
+		final fontInfo:BMFontInfo =	{
 			size: size,
 			smooth: (bitField & 0x80) != 0,
 			unicode: (bitField & (0x80 >> 1)) != 0,
@@ -136,27 +123,22 @@ class BMFontInfo
 	}
 }
 
-@:structInit
-class BMFontPadding
-{
-	public var up:Int = 0;
-	public var right:Int = 0;
-	public var down:Int = 0;
-	public var left:Int = 0;
+@:structInit class BMFontPadding {
+	public var up = 0;
+	public var right = 0;
+	public var down = 0;
+	public var left = 0;
 
-	public inline function new(up = 0, right = 0, down = 0, left = 0)
-	{
+	public inline function new(up = 0, right = 0, down = 0, left = 0) {
 		this.up = up;
 		this.right = right;
 		this.down = down;
 		this.left = left;
 	}
 
-	public static inline function fromString(data:String):BMFontPadding
-	{
+	public static inline function fromString(data:String):BMFontPadding {
 		final values = data.split(',');
-		return
-		{
+		return {
 			up: Std.parseInt(values[0]),
 			right: Std.parseInt(values[1]),
 			down: Std.parseInt(values[2]),
@@ -164,10 +146,8 @@ class BMFontPadding
 		};
 	}
 
-	public static inline function fromBytes(bytes:BytesInput):BMFontPadding
-	{
-		return
-		{
+	public static inline function fromBytes(bytes:BytesInput):BMFontPadding {
+		return {
 			up: bytes.readByte(),
 			right: bytes.readByte(),
 			down: bytes.readByte(),
@@ -176,26 +156,21 @@ class BMFontPadding
 	}
 }
 
-@:structInit
-class BMFontSpacing
-{
-	public var x:Int = 0;
-	public var y:Int = 0;
+@:structInit class BMFontSpacing {
+	public var x = 0;
+	public var y = 0;
 
-	public inline function new(x = 0, y = 0)
-	{
+	public inline function new(x = 0, y = 0) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public static function fromString(data:String):BMFontSpacing
-	{
+	public static function fromString(data:String):BMFontSpacing {
 		final values = data.split(',');
-		return { x: Std.parseInt(values[0]), y: Std.parseInt(values[1]) };
+		return {x: Std.parseInt(values[0]), y: Std.parseInt(values[1])};
 	}
 
-	public static inline function fromBytes(bytes:BytesInput):BMFontSpacing
-	{
-		return { x: bytes.readByte(), y: bytes.readByte() };
+	public static inline function fromBytes(bytes:BytesInput):BMFontSpacing {
+		return {x: bytes.readByte(), y: bytes.readByte()};
 	}
 }

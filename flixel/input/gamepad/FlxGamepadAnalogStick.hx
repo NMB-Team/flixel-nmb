@@ -4,8 +4,7 @@ import flixel.util.FlxStringUtil;
 
 typedef FlxGamepadAnalogStick = FlxTypedGamepadAnalogStick<Int>;
 
-class FlxTypedGamepadAnalogStick<TInputID:Int>
-{
+class FlxTypedGamepadAnalogStick<TInputID:Int> {
 	public var x(default, null):Int;
 	public var y(default, null):Int;
 
@@ -32,42 +31,28 @@ class FlxTypedGamepadAnalogStick<TInputID:Int>
 	/**
 	 * the absolute value the dpad must be greater than before digital inputs are sent
 	 */
-	public var digitalThreshold(default, null):Float = 0.5;
+	public var digitalThreshold(default, null) = .5;
 
 	/**
 	 * when analog inputs are received, how to process them digitally
 	 */
 	public var mode(default, null):FlxAnalogToDigitalMode = BOTH;
 
-	public function new(x:Int, y:Int, ?settings:FlxGamepadAnalogStickSettings<TInputID>)
-	{
+	public function new(x:Int, y:Int, ?settings:FlxGamepadAnalogStickSettings<TInputID>) {
 		this.x = x;
 		this.y = y;
 
-		if (settings != null)
-		{
-			if (settings.mode != null)
-				mode = settings.mode;
-
-			if (settings.up != null)
-				rawUp = settings.up;
-
-			if (settings.down != null)
-				rawDown = settings.down;
-
-			if (settings.left != null)
-				rawLeft = settings.left;
-
-			if (settings.right != null)
-				rawRight = settings.right;
-
-			if (settings.threshold != null)
-				digitalThreshold = settings.threshold;
+		if (settings != null) {
+			if (settings.mode != null) mode = settings.mode;
+			if (settings.up != null) rawUp = settings.up;
+			if (settings.down != null) rawDown = settings.down;
+			if (settings.left != null) rawLeft = settings.left;
+			if (settings.right != null) rawRight = settings.right;
+			if (settings.threshold != null) digitalThreshold = settings.threshold;
 		}
 	}
 
-	public function toString():String
-	{
+	public function toString():String {
 		return FlxStringUtil.getDebugString([
 			LabelValuePair.weak("x", x),
 			LabelValuePair.weak("y", y),
@@ -81,8 +66,7 @@ class FlxTypedGamepadAnalogStick<TInputID:Int>
 	}
 }
 
-typedef FlxGamepadAnalogStickSettings<TInputID:Int> =
-{
+typedef FlxGamepadAnalogStickSettings<TInputID:Int> = {
 	?up:TInputID,
 	?down:TInputID,
 	?left:TInputID,
@@ -91,8 +75,7 @@ typedef FlxGamepadAnalogStickSettings<TInputID:Int> =
 	?mode:FlxAnalogToDigitalMode
 }
 
-enum FlxAnalogToDigitalMode
-{
+enum FlxAnalogToDigitalMode {
 	/**
 	 * Send both digital and analog events when the analog stick is moved
 	 */

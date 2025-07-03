@@ -330,8 +330,7 @@ class FlxSprite extends FlxObject {
 	/**
 	 * The actual frame used for sprite rendering
 	 */
-	@:noCompletion
-	var _frame:FlxFrame;
+	@:noCompletion var _frame:FlxFrame;
 
 	/**
 	 * Graphic of `_frame`. Used in tile render mode, when `useFramePixels` is `true`.
@@ -583,7 +582,7 @@ class FlxSprite extends FlxObject {
 		}
 
 		#if FLX_TRACK_GRAPHICS
-		tempGraph.trackingInfo = '$ID.loadRotatedGraphic(${brushGraphic.trackingInfo}, $Rotations, $frame, $antiAliasing, $autoBuffer)';
+		tempGraph.trackingInfo = '$ID.loadRotatedGraphic(${brushGraphic.trackingInfo}, $rotations, $frame, $antiAliasing, $autoBuffer)';
 		#end
 
 		var max = (brush.height > brush.width) ? brush.height : brush.width;
@@ -986,7 +985,7 @@ class FlxSprite extends FlxObject {
 	/**
 	 * Checks the previous frame's clipRect compared to the current. If there's changes, apply them
 	 */
-	 private function checkClipRect() {
+	private function checkClipRect() {
 		if (frames == null
 		|| (clipRect == null && Math.isNaN(_lastClipRect.x))
 		|| (clipRect != null && clipRect.equals(_lastClipRect)))
@@ -1022,8 +1021,8 @@ class FlxSprite extends FlxObject {
 
 		if (frameOffsetAngle != null && frameOffsetAngle != angle) {
 			final angleOff = (frameOffsetAngle - angle) * FlxAngle.TO_RAD;
-			final cos = FlxMath.fastCos(angleOff);
-			final sin = FlxMath.fastSin(angleOff);
+			final cos = Math.cos(angleOff);
+			final sin = Math.sin(angleOff);
 			// cos doesnt need to be negated
 			_matrix.rotateWithTrig(cos, -sin);
 			_matrix.translate(-frameOffset.x, -frameOffset.y);
@@ -1185,7 +1184,7 @@ class FlxSprite extends FlxObject {
 	 * Whether this sprite has a color transform, menaing any of the following: less than full
 	 * `alpha`, a `color` tint, or a `colorTransform` whos values are not the default.
 	 */
-	 private function hasColorTransform() {
+	private function hasColorTransform() {
 		return alpha != 1 || color.rgb != 0xffffff || colorTransform.hasRGBAOffsets();
 	}
 
@@ -1300,7 +1299,7 @@ class FlxSprite extends FlxObject {
 		return worldToFrameHelper(worldX, worldY, camera, result);
 	}
 
-	function worldToFrameHelper(worldX:Float, worldY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
+	private function worldToFrameHelper(worldX:Float, worldY:Float, ?camera:FlxCamera, ?result:FlxPoint):FlxPoint {
 		camera ??= getDefaultCamera();
 
 		// get the screen pos without scrollFactor, then get the world, WITH scrollFactor
@@ -1336,7 +1335,7 @@ class FlxSprite extends FlxObject {
 		return worldToFrameSimpleHelper(worldX, worldY, result);
 	}
 
-	function worldToFrameSimpleHelper(worldX:Float, worldY:Float, ?result:FlxPoint):FlxPoint {
+	private function worldToFrameSimpleHelper(worldX:Float, worldY:Float, ?result:FlxPoint):FlxPoint {
 		result ??= FlxPoint.get();
 
 		result.set(worldX - x, worldY - y);
@@ -1706,8 +1705,8 @@ class FlxSprite extends FlxObject {
 	@:noCompletion inline function updateTrig():Void {
 		if (_angleChanged) {
 			final radians = angle * FlxAngle.TO_RAD;
-			_sinAngle = FlxMath.fastSin(radians);
-			_cosAngle = FlxMath.fastCos(radians);
+			_sinAngle = Math.sin(radians);
+			_cosAngle = Math.cos(radians);
 			_angleChanged = false;
 		}
 	}
@@ -1860,8 +1859,8 @@ interface IFlxSprite extends IFlxBasic {
 	var drag(default, null):FlxPoint;
 	var scrollFactor(default, null):FlxPoint;
 
-	function reset(X:Float, Y:Float):Void;
-	function setPosition(X = .0, Y = 0.):Void;
+	function reset(x:Float, y:Float):Void;
+	function setPosition(X:Float = .0, Y:Float = .0):Void;
 }
 
 typedef FlxSpriteFacingFlipDynamic = {x:Bool, y:Bool}

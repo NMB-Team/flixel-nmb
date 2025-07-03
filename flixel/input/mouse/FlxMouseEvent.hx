@@ -28,8 +28,7 @@ import flixel.util.FlxDestroyUtil;
  * @see [FlxMouseEvent Demo](https://haxeflixel.com/demos/FlxMouseEvent/)
  * @since 5.0.0
  */
-class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
-{
+class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable {
 	/**
 	 * The global [`FlxMouseEventManager`](https://api.haxeflixel.com/flixel/input/mouse/FlxMouseEventManager.html)
 	 * instance to which `FlxMouseEvent` provides access.
@@ -52,26 +51,21 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * @param   pixelPerfect    If true, the collision check will be pixel-perfect. Only works for FlxSprites.
 	 * @param   mouseButtons    The mouse buttons that can trigger callbacks. Left only by default.
 	 */
-	public static inline function add<T:FlxObject>(object:T, ?onMouseDown:T->Void, ?onMouseUp:T->Void, ?onMouseOver:T->Void, ?onMouseOut:T->Void,
-			mouseChildren = false, mouseEnabled = true, pixelPerfect = true, ?mouseButtons:Array<FlxMouseButtonID>):T
-	{
-		return globalManager.add(object, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
-			mouseChildren, mouseEnabled, pixelPerfect, mouseButtons);
+	public static inline function add<T:FlxObject>(object:T, ?onMouseDown:T -> Void, ?onMouseUp:T -> Void, ?onMouseOver:T -> Void, ?onMouseOut:T -> Void, mouseChildren = false, mouseEnabled = true, pixelPerfect = true, ?mouseButtons:Array<FlxMouseButtonID>):T {
+		return globalManager.add(object, onMouseDown, onMouseUp, onMouseOver, onMouseOut, mouseChildren, mouseEnabled, pixelPerfect, mouseButtons);
 	}
 
 	/**
 	 * Removes a registered object from the registry.
 	 */
-	public static inline function remove<T:FlxObject>(object:T):T
-	{
+	public static inline function remove<T:FlxObject>(object:T):T {
 		return globalManager.remove(object);
 	}
 
 	/**
 	 * Removes all registered objects from the registry.
 	 */
-	public static inline function removeAll():Void
-	{
+	public static inline function removeAll():Void {
 		globalManager.removeAll();
 	}
 
@@ -82,8 +76,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * It may also be called if the objects are not registered by the same order they are
 	 * added to `FlxGroup`.
 	 */
-	public static inline function reorder():Void
-	{
+	public static inline function reorder():Void {
 		globalManager.reorder();
 	}
 
@@ -93,8 +86,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * @param   onMouseDown   Callback when mouse is pressed down over this object.
 	 *                          Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public static inline function setMouseDownCallback<T:FlxObject>(object:T, onMouseDown:T->Void):Void
-	{
+	public static inline function setMouseDownCallback<T:FlxObject>(object:T, onMouseDown:T -> Void):Void {
 		globalManager.setMouseDownCallback(object, onMouseDown);
 	}
 
@@ -104,8 +96,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * @param   onMouseUp   Callback when mouse is released over this object.
 	 *                      Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public static inline function setMouseUpCallback<T:FlxObject>(object:T, onMouseUp:T->Void):Void
-	{
+	public static inline function setMouseUpCallback<T:FlxObject>(object:T, onMouseUp:T -> Void):Void {
 		globalManager.setMouseUpCallback(object, onMouseUp);
 	}
 
@@ -116,8 +107,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *                          Must have Object as argument - e.g. `onMouseClick(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public static inline function setMouseClickCallback<T:FlxObject>(object:T, onMouseClick:T->Void):Void
-	{
+	public static inline function setMouseClickCallback<T:FlxObject>(object:T, onMouseClick:T -> Void):Void {
 		globalManager.setMouseClickCallback(object, onMouseClick);
 	}
 
@@ -128,8 +118,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *                               Must have Object as argument - e.g. `onMouseDoubleClick(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public static inline function setMouseDoubleClickCallback<T:FlxObject>(object:T, onMouseDoubleClick:T->Void):Void
-	{
+	public static inline function setMouseDoubleClickCallback<T:FlxObject>(object:T, onMouseDoubleClick:T -> Void):Void {
 		globalManager.setMouseDoubleClickCallback(object, onMouseDoubleClick);
 	}
 
@@ -139,8 +128,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * @param   onMouseOver   Callback when mouse is over this object.
 	 *                        Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public static inline function setMouseOverCallback<T:FlxObject>(object:T, onMouseOver:T->Void):Void
-	{
+	public static inline function setMouseOverCallback<T:FlxObject>(object:T, onMouseOver:T -> Void):Void {
 		globalManager.setMouseOverCallback(object, onMouseOver);
 	}
 
@@ -150,8 +138,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 * @param   OnMouseOver   Callback when mouse is moved out of this object.
 	 *                        Must have Object as argument - e.g. `onMouseDown(object:FlxObject)`.
 	 */
-	public static inline function setMouseOutCallback<T:FlxObject>(object:T, onMouseOut:T->Void):Void
-	{
+	public static inline function setMouseOutCallback<T:FlxObject>(object:T, onMouseOut:T -> Void):Void {
 		globalManager.setMouseOutCallback(object, onMouseOut);
 	}
 
@@ -162,8 +149,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *                        Must have Object as argument - e.g. `onMouseMove(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public static inline function setMouseMoveCallback<T:FlxObject>(object:T, onMouseMove:T->Void):Void
-	{
+	public static inline function setMouseMoveCallback<T:FlxObject>(object:T, onMouseMove:T -> Void):Void {
 		globalManager.setMouseMoveCallback(object, onMouseMove);
 	}
 
@@ -174,8 +160,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *                        Must have Object as argument - e.g. `onMouseWheel(object:FlxObject)`.
 	 * @since 4.4.0
 	 */
-	public static inline function setMouseWheelCallback<T:FlxObject>(object:T, onMouseWheel:T->Void):Void
-	{
+	public static inline function setMouseWheelCallback<T:FlxObject>(object:T, onMouseWheel:T -> Void):Void {
 		globalManager.setMouseWheelCallback(object, onMouseWheel);
 	}
 
@@ -184,16 +169,14 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *
 	 * @param   mouseEnabled   Whether this object will be tested for mouse events.
 	 */
-	public static inline function setObjectMouseEnabled<T:FlxObject>(object:T, mouseEnabled:Bool):Void
-	{
+	public static inline function setObjectMouseEnabled<T:FlxObject>(object:T, mouseEnabled:Bool):Void {
 		globalManager.setObjectMouseEnabled(object, mouseEnabled);
 	}
 
 	/**
 	 * Checks if a registered object is mouseEnabled.
 	 */
-	public static inline function isObjectMouseEnabled<T:FlxObject>(object:T):Bool
-	{
+	public static inline function isObjectMouseEnabled<T:FlxObject>(object:T):Bool {
 		return globalManager.isObjectMouseEnabled(object);
 	}
 
@@ -202,36 +185,33 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	 *
 	 * @param   mouseChildren   Whether this object will allow other overlapping object to receive mouse events.
 	 */
-	public static inline function setObjectMouseChildren<T:FlxObject>(object:T, mouseChildren:Bool):Void
-	{
+	public static inline function setObjectMouseChildren<T:FlxObject>(object:T, mouseChildren:Bool):Void {
 		globalManager.setObjectMouseChildren(object, mouseChildren);
 	}
 
 	/**
 	 * Checks if an object allows mouseChildren.
 	 */
-	public static inline function isObjectMouseChildren<T:FlxObject>(object:T):Bool
-	{
+	public static inline function isObjectMouseChildren<T:FlxObject>(object:T):Bool {
 		return globalManager.isObjectMouseChildren(object);
 	}
 
 	/**
 	 * @param   mouseButtons    The mouse buttons that can trigger callbacks. Left only by default.
 	 */
-	public static inline function setObjectMouseButtons<T:FlxObject>(object:T, mouseButtons:Array<FlxMouseButtonID>):Void
-	{
+	public static inline function setObjectMouseButtons<T:FlxObject>(object:T, mouseButtons:Array<FlxMouseButtonID>):Void {
 		globalManager.setObjectMouseButtons(object, mouseButtons);
 	}
 
 	public var object:FlxObject;
-	public var onMouseDown:T->Void;
-	public var onMouseUp:T->Void;
-	public var onMouseClick:T->Void;
-	public var onMouseDoubleClick:T->Void;
-	public var onMouseOver:T->Void;
-	public var onMouseOut:T->Void;
-	public var onMouseMove:T->Void;
-	public var onMouseWheel:T->Void;
+	public var onMouseDown:T -> Void;
+	public var onMouseUp:T -> Void;
+	public var onMouseClick:T -> Void;
+	public var onMouseDoubleClick:T -> Void;
+	public var onMouseOver:T -> Void;
+	public var onMouseOut:T -> Void;
+	public var onMouseMove:T -> Void;
+	public var onMouseWheel:T -> Void;
 	public var mouseChildren:Bool;
 	public var mouseEnabled:Bool;
 	public var pixelPerfect:Bool;
@@ -240,9 +220,7 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 	public var currentMouseButton:Null<FlxMouseButtonID>;
 
 	@:allow(flixel.input.mouse.FlxMouseEventManager)
-	function new(object:T, onMouseDown:T->Void, onMouseUp:T->Void, onMouseOver:T->Void, onMouseOut:T->Void,
-		mouseChildren:Bool, mouseEnabled:Bool, pixelPerfect:Bool, mouseButtons:Null<Array<FlxMouseButtonID>>)
-	{
+	private function new(object:T, onMouseDown:T -> Void, onMouseUp:T -> Void, onMouseOver:T->Void, onMouseOut:T -> Void, mouseChildren:Bool, mouseEnabled:Bool, pixelPerfect:Bool, mouseButtons:Null<Array<FlxMouseButtonID>>) {
 		this.object = object;
 		this.onMouseDown = onMouseDown;
 		this.onMouseUp = onMouseUp;
@@ -254,13 +232,10 @@ class FlxMouseEvent<T:FlxObject> implements IFlxDestroyable
 		this.mouseButtons = (mouseButtons == null) ? [FlxMouseButtonID.LEFT] : mouseButtons;
 
 		if ((object is FlxSprite))
-		{
 			sprite = cast object;
-		}
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		object = null;
 		sprite = null;
 		onMouseDown = null;

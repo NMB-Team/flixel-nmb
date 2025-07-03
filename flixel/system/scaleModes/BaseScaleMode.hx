@@ -36,22 +36,22 @@ class BaseScaleMode {
 		updateGamePosition();
 	}
 
-	function updateGameSize(width:Int, height:Int):Void {
+	private function updateGameSize(width:Int, height:Int):Void {
 		gameSize.set(width, height);
 	}
 
-	function updateDeviceSize(width:Int, height:Int):Void {
+	private function updateDeviceSize(width:Int, height:Int):Void {
 		deviceSize.set(width, height);
 	}
 
-	function updateScaleOffset():Void {
+	private function updateScaleOffset():Void {
 		scale.x = gameSize.x / FlxG.width;
 		scale.y = gameSize.y / FlxG.height;
 		updateOffsetX();
 		updateOffsetY();
 	}
 
-	function updateOffsetX():Void {
+	private function updateOffsetX():Void {
 		offset.x = switch (horizontalAlign) {
 			case FlxHorizontalAlign.LEFT: 0;
 			case FlxHorizontalAlign.CENTER: Math.ceil((deviceSize.x - gameSize.x) * .5);
@@ -59,7 +59,7 @@ class BaseScaleMode {
 		}
 	}
 
-	function updateOffsetY():Void {
+	private function updateOffsetY():Void {
 		offset.y = switch (verticalAlign) {
 			case FlxVerticalAlign.TOP: 0;
 			case FlxVerticalAlign.CENTER: Math.ceil((deviceSize.y - gameSize.y) * .5);
@@ -67,14 +67,14 @@ class BaseScaleMode {
 		}
 	}
 
-	function updateGamePosition():Void {
+	private function updateGamePosition():Void {
 		if (FlxG.game == null) return;
 
 		FlxG.game.x = offset.x;
 		FlxG.game.y = offset.y;
 	}
 
-	function set_horizontalAlign(value:FlxHorizontalAlign):FlxHorizontalAlign {
+	private function set_horizontalAlign(value:FlxHorizontalAlign):FlxHorizontalAlign {
 		horizontalAlign = value;
 		if (offset != null) {
 			updateOffsetX();
@@ -83,7 +83,7 @@ class BaseScaleMode {
 		return value;
 	}
 
-	function set_verticalAlign(value:FlxVerticalAlign):FlxVerticalAlign {
+	private function set_verticalAlign(value:FlxVerticalAlign):FlxVerticalAlign {
 		verticalAlign = value;
 		if (offset != null) {
 			updateOffsetY();

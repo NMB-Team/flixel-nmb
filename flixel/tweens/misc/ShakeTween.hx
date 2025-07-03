@@ -8,8 +8,7 @@ import flixel.util.typeLimit.OneOfTwo;
 /**
  * Shake effect for a FlxSprite
  */
-class ShakeTween extends FlxTween
-{
+class ShakeTween extends FlxTween {
 	/**
 	 * Percentage representing the maximum distance that the object can move while shaking.
 	 */
@@ -33,25 +32,25 @@ class ShakeTween extends FlxTween
 	/**
 	 * A simple shake effect for FlxSprite.
 	 *
-	 * @param	Sprite       Sprite to shake.
-	 * @param   Intensity    Percentage representing the maximum distance
-	 *                       that the sprite can move while shaking.
-	 * @param   Duration     The length in seconds that the shaking effect should last.
-	 * @param   Axes         On what axes to shake. Default value is `FlxAxes.XY` / both.
+	 * @param	sprite       Sprite to shake.
+	 * @param	intensity    Percentage representing the maximum distance
+	 *                      that the sprite can move while shaking.
+	 * @param	duration     The length in seconds that the shaking effect should last.
+	 * @param	axes         On what axes to shake. Default value is `FlxAxes.XY` / both.
 	 */
-	public function tween(Sprite:FlxSprite, Intensity:Float = 0.05, Duration:Float = 1, Axes:FlxAxes = XY):ShakeTween
-	{
-		intensity = Intensity;
-		sprite = Sprite;
-		duration = Duration;
-		axes = Axes;
-		initialOffset = new FlxPoint(Sprite.offset.x, Sprite.offset.y);
+	public function tween(sprite:FlxSprite, intensity = .05, duration = 1., axes:FlxAxes = XY):ShakeTween {
+		this.intensity = intensity;
+		this.sprite = sprite;
+		this.duration = duration;
+		this.axes = axes;
+
+		initialOffset = new FlxPoint(sprite.offset.x, sprite.offset.y);
+
 		start();
 		return this;
 	}
 
-	override function destroy():Void
-	{
+	override function destroy():Void {
 		super.destroy();
 		// Return the sprite to its initial offset.
 		if (sprite != null && !sprite.offset.equals(initialOffset))
@@ -61,17 +60,13 @@ class ShakeTween extends FlxTween
 		initialOffset = null;
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
-		if (axes.x)
-			sprite.offset.x = initialOffset.x + FlxG.random.float(-intensity * sprite.width, intensity * sprite.width);
-		if (axes.y)
-			sprite.offset.y = initialOffset.y + FlxG.random.float(-intensity * sprite.height, intensity * sprite.height);
+		if (axes.x) sprite.offset.x = initialOffset.x + FlxG.random.float(-intensity * sprite.width, intensity * sprite.width);
+		if (axes.y) sprite.offset.y = initialOffset.y + FlxG.random.float(-intensity * sprite.height, intensity * sprite.height);
 	}
 
-	override function isTweenOf(Object:Dynamic, ?Field:OneOfTwo<String, Int>):Bool
-	{
+	override function isTweenOf(Object:Dynamic, ?Field:OneOfTwo<String, Int>):Bool {
 		return sprite == Object && (Field == null || Field == "shake");
 	}
 }

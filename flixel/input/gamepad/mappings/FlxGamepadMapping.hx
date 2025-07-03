@@ -6,10 +6,9 @@ import flixel.input.gamepad.FlxGamepadInputID;
 
 typedef FlxGamepadMapping = FlxTypedGamepadMapping<Int>;
 
-class FlxTypedGamepadMapping<TInputID:Int>
-{
-	public var supportsMotion:Bool = false;
-	public var supportsPointer:Bool = false;
+class FlxTypedGamepadMapping<TInputID:Int> {
+	public var supportsMotion = false;
+	public var supportsPointer = false;
 
 	public var leftStick:FlxTypedGamepadAnalogStick<TInputID>;
 	public var rightStick:FlxTypedGamepadAnalogStick<TInputID>;
@@ -23,22 +22,17 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	 * Whether to treat `A` or `B` as `ACCEPT` or `CANCEL`, when `FlxG.gamepads.acceptMode` is `ADAPTIVE`
 	 * @since 5.9.0
 	 */
-	var bottomIsAccept:Bool = true;
+	var bottomIsAccept = true;
 
-	public function new(?attachment:FlxGamepadAttachment)
-	{
-		if (attachment != null)
-			this.attachment = attachment;
-
+	public function new(?attachment:FlxGamepadAttachment) {
+		if (attachment != null) this.attachment = attachment;
 		initValues();
 	}
 
-	function initValues():Void {}
+	private function initValues():Void {}
 
-	public function getAnalogStick(ID:FlxGamepadInputID):FlxTypedGamepadAnalogStick<TInputID>
-	{
-		return switch (ID)
-		{
+	public function getAnalogStick(ID:FlxGamepadInputID):FlxTypedGamepadAnalogStick<TInputID> {
+		return switch (ID) {
 			case FlxGamepadInputID.LEFT_ANALOG_STICK:
 				leftStick;
 			case FlxGamepadInputID.RIGHT_ANALOG_STICK:
@@ -51,33 +45,27 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	/**
 	 * Given a raw hardware code, return the "universal" ID
 	 */
-	public function getID(rawID:TInputID):FlxGamepadInputID
-	{
+	public function getID(rawID:TInputID):FlxGamepadInputID {
 		return FlxGamepadInputID.NONE;
 	}
 
 	/**
 	 * Given an ID, return the raw hardware code
 	 */
-	public function getRawID(ID:FlxGamepadInputID):TInputID
-	{
-		return switch ID
-		{
+	public function getRawID(ID:FlxGamepadInputID):TInputID {
+		return switch ID {
 			case ACCEPT if (getGlobalBottomIsAccept()): getRawID(A);
 			case CANCEL if (getGlobalBottomIsAccept()): getRawID(B);
 			case ACCEPT: getRawID(B);
 			case CANCEL: getRawID(A);
-			default: cast -1;// TODO: Throw error
+			default: throw 'Invalid FlxGamepadInputID provided';
 		}
 	}
 
-	function getGlobalBottomIsAccept()
-	{
+	private function getGlobalBottomIsAccept() {
 		#if FLX_GAMEPAD
-		if (FlxG.gamepads != null)
-		{
-			return switch FlxG.gamepads.acceptMode
-			{
+		if (FlxG.gamepads != null) {
+			return switch FlxG.gamepads.acceptMode {
 				case BOTTOM: true;
 				case RIGHT: false;
 				case USE_MAPPING: bottomIsAccept;
@@ -91,13 +79,11 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	/**
 	 * Whether this axis needs to be flipped
 	 */
-	public function isAxisFlipped(axisID:TInputID):Bool
-	{
+	public function isAxisFlipped(axisID:TInputID):Bool {
 		return false;
 	}
 
-	public function isAxisForMotion(ID:TInputID):Bool
-	{
+	public function isAxisForMotion(ID:TInputID):Bool {
 		return false;
 	}
 
@@ -106,34 +92,27 @@ class FlxTypedGamepadMapping<TInputID:Int>
 	 * Given an axis index value like 0-6, figures out which input that
 	 * corresponds to and returns a "fake" ButtonID for that input
 	 */
-	public function axisIndexToRawID(axisID:TInputID):Int
-	{
+	public function axisIndexToRawID(axisID:TInputID):Int {
 		return -1;
 	}
 
-	public function checkForFakeAxis(ID:FlxGamepadInputID):Int
-	{
+	public function checkForFakeAxis(ID:FlxGamepadInputID):Int {
 		return -1;
 	}
 	#end
 
-	function set_attachment(attachment:FlxGamepadAttachment):FlxGamepadAttachment
-	{
+	private function set_attachment(attachment:FlxGamepadAttachment):FlxGamepadAttachment {
 		return this.attachment = attachment;
 	}
 
-	public function getMappedInput(id:FlxGamepadInputID)
-	{
+	public function getMappedInput(id:FlxGamepadInputID) {
 		return FlxGamepadMappedInput.UNKNOWN(id);
 	}
 
-	public function getInputLabel(id:FlxGamepadInputID):Null<String>
-	{
-		if (getRawID(id) == -1)
-			return null;// return empty string, "unknown" or enum maybe?
+	public function getInputLabel(ID:FlxGamepadInputID):Null<String> {
+		if (getRawID(ID) == -1) return null;// return empty string, "unknown" or enum maybe?
 
-		return switch (id)
-		{
+		return switch (ID) {
 			case A: "a";
 			case B: "b";
 			case X: "x";
@@ -178,8 +157,7 @@ class FlxTypedGamepadMapping<TInputID:Int>
 }
 
 @SuppressWarnings("checkstyle:MemberName")
-enum Manufacturer
-{
+enum Manufacturer {
 	GooglePepper;
 	AdobeWindows;
 	Unknown;

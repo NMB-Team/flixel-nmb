@@ -12,7 +12,7 @@ class FlxSoundGroup {
 	/**
 	 * The maximum number of sounds that can be in this group at once.
 	 */
-	public var limit:Int = 0;
+	public var limit = 0;
 
 	/**
 	 * The volume of this group
@@ -43,8 +43,7 @@ class FlxSoundGroup {
 	 * Create a new sound group
 	 * @param	volume  The initial volume of this group
 	 */
-	public function new(volume = 1., _limit = 0)
-	{
+	public function new(volume = 1., _limit = 0) {
 		if (_limit > 0) limit = _limit;
 		this.volume = volume;
 	}

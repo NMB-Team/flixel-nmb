@@ -23,6 +23,7 @@ import flixel.system.debug.interaction.tools.ToggleBounds;
 import flixel.system.debug.interaction.tools.TrackObject;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxArrayUtil;
 #if !(FLX_NATIVE_CURSOR && FLX_MOUSE)
 import openfl.display.Bitmap;
 #end

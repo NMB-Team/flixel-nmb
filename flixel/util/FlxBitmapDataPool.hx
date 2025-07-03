@@ -20,7 +20,7 @@ class FlxBitmapDataPool {
 	 */
 	public static var maxLength(default, set) = 8;
 
-	/** 
+	/**
 	 * Current number of BitmapData present in the pool.
 	 */
 	public static var length(default, null) = 0;
@@ -30,7 +30,7 @@ class FlxBitmapDataPool {
 
 	static final _rect = new Rectangle();
 
-	/** 
+	/**
 	 * Returns a BitmapData with the specified parameters.
 	 * If a suitable BitmapData cannot be found in the pool a new one will be created.
 	 * If fillColor is specified the returned BitmapData will also be cleared with it.
@@ -48,8 +48,8 @@ class FlxBitmapDataPool {
 				res = bmd;
 
 				// remove it from pool
-				node.prev?.next = node.next;
-				node.next?.prev = node.prev;
+				if (node.prev != null) node.prev.next = node.next;
+				if (node.next != null) node.next.prev = node.prev;
 
 				if (node == _head) _head = node.next;
 				if (node == _tail) _tail = node.prev;
@@ -68,13 +68,13 @@ class FlxBitmapDataPool {
 				_rect.height = h;
 				res.fillRect(_rect, fillColor);
 			}
-		} else 
+		} else
 			res = new BitmapData(w, h, transparent, fillColor != null ? fillColor : FlxColor.WHITE); // not found: create a new one
 
 		return res;
 	}
 
-	/** 
+	/**
 	 * Adds bmd to the pool for future use.
 	 */
 	public static function put(bmd:BitmapData):Void {
@@ -94,7 +94,7 @@ class FlxBitmapDataPool {
 		if (_head != null) {
 			_head = node;
 			node.next.prev = node;
-		} else 
+		} else
 			_head = _tail = node;
 
 		length++;

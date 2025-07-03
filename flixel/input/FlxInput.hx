@@ -80,8 +80,8 @@ class FlxInput<T> implements IFlxInput {
 }
 
 enum abstract FlxInputState(Int) from Int {
-	final JUST_RELEASED = -1;
-	final RELEASED = 0;
-	final PRESSED = 1;
-	final JUST_PRESSED = 2;
+	var JUST_RELEASED = -1;
+	var RELEASED = 0;
+	var PRESSED = 1;
+	var JUST_PRESSED = 2;
 }

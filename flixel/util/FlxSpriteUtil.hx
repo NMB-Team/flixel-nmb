@@ -348,7 +348,7 @@ class FlxSpriteUtil {
 	 * @param	drawStyle	A DrawStyle typedef containing the params of BitmapData.draw()
 	 * @return 	The FlxSprite for chaining
 	 */
-	public static function drawCurve(sprite:FlxSprite, StartX:Float, StartY:Float, EndX:Float, EndY:Float, ControlX:Float, ControlY:Float, fillColor = FlxColor.TRANSPARENT, ?lineStyle:LineStyle, ?drawStyle:DrawStyle):FlxSprite {
+	public static function drawCurve(sprite:FlxSprite, startX:Float, startY:Float, endX:Float, endY:Float, controlX:Float, controlY:Float, fillColor = FlxColor.TRANSPARENT, ?lineStyle:LineStyle, ?drawStyle:DrawStyle):FlxSprite {
 		lineStyle = getDefaultLineStyle(lineStyle);
 		beginDraw(fillColor, lineStyle);
 		flashGfx.moveTo(startX, startY);
@@ -714,10 +714,10 @@ class FlxSpriteUtil {
 	public static inline function flashTint(sprite:FlxSprite, tint = FlxColor.WHITE, duration = .5, ?func:(Float) -> Float, ?onComplete:() -> Void) {
 		final options:TweenOptions = onComplete != null ? { onComplete: (_)->onComplete} : null;
 
-		func ??= (n) -> 1 - FlxEase.circIn(n); // start at full, fade out
+		func ??= n -> 1 - FlxEase.circIn(n); // start at full, fade out
 
-		final color = tint.rgb;
-		final strength = tint.alphaFloat;
+		var color = tint.rgb;
+		var strength = tint.alphaFloat;
 		FlxTween.num(0, 1, duration, options, n -> {
 			color.alphaFloat = strength * func(n);
 			setTint(sprite, color);

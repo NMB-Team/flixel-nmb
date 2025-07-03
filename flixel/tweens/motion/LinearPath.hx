@@ -8,43 +8,37 @@ import flixel.util.FlxDestroyUtil;
 /**
  * Determines linear motion along a set of points.
  */
-class LinearPath extends Motion
-{
+class LinearPath extends Motion {
 	/**
 	 * The full length of the path.
 	 */
-	public var distance(default, null):Float = 0;
+	public var distance(default, null) = .0;
 
 	public var points:Array<FlxPoint>;
 
 	// Path information.
 	var _pointD:Array<Float>;
 	var _pointT:Array<Float>;
-	var _speed:Float = 0;
-	var _index:Int = 0;
+	var _speed = .0;
+	var _index = 0;
 
 	// Line information.
 	var _last:FlxPoint;
 	var _prevPoint:FlxPoint;
 	var _nextPoint:FlxPoint;
 
-	function new(Options:TweenOptions, ?manager:FlxTweenManager)
-	{
-		super(Options, manager);
+	private function new(options:TweenOptions, ?manager:FlxTweenManager) {
+		super(options, manager);
 
 		points = [];
 		_pointD = [0];
 		_pointT = [0];
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
 		// recycle FlxPoints
-		for (point in points)
-		{
-			point = FlxDestroyUtil.put(point);
-		}
+		for (point in points) point = FlxDestroyUtil.put(point);
 		_last = FlxDestroyUtil.put(_last);
 		_prevPoint = FlxDestroyUtil.put(_prevPoint);
 		_nextPoint = FlxDestroyUtil.put(_nextPoint);
@@ -53,32 +47,26 @@ class LinearPath extends Motion
 	/**
 	 * Starts moving along the path.
 	 *
-	 * @param	DurationOrSpeed		Duration or speed of the movement.
-	 * @param	UseDuration			Whether to use the previous param as duration or speed.
+	 * @param	durationOrSpeed		Duration or speed of the movement.
+	 * @param	useDuration			Whether to use the previous param as duration or speed.
 	 */
-	public function setMotion(DurationOrSpeed:Float, UseDuration:Bool = true):LinearPath
-	{
+	public function setMotion(durationOrSpeed:Float, useDuration = true):LinearPath {
 		updatePath();
 
-		if (UseDuration)
-		{
-			duration = DurationOrSpeed;
-			_speed = distance / DurationOrSpeed;
-		}
-		else
-		{
-			duration = distance / DurationOrSpeed;
-			_speed = DurationOrSpeed;
+		if (useDuration) {
+			duration = durationOrSpeed;
+			_speed = distance / durationOrSpeed;
+		} else {
+			duration = distance / durationOrSpeed;
+			_speed = durationOrSpeed;
 		}
 
 		start();
 		return this;
 	}
 
-	public function addPoint(x:Float = 0, y:Float = 0):LinearPath
-	{
-		if (_last != null)
-		{
+	public function addPoint(x = .0, y = .0):LinearPath {
+		if (_last != null) {
 			distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
 			_pointD[points.length] = distance;
 		}
@@ -86,45 +74,33 @@ class LinearPath extends Motion
 		return this;
 	}
 
-	public function getPoint(index:Int = 0):FlxPoint
-	{
-		if (points.length == 0)
-		{
-			throw "No points have been added to the path yet.";
-		}
+	public function getPoint(index:Int = 0):FlxPoint {
+		if (points.length == 0) FlxG.log.critical("No points have been added to the path yet.");
 		return points[index % points.length];
 	}
 
-	override public function start():LinearPath
-	{
+	override public function start():LinearPath {
 		_index = (backward) ? (points.length - 1) : 0;
 		super.start();
 		return this;
 	}
 
-	override function update(elapsed:Float):Void
-	{
+	override function update(elapsed:Float):Void {
 		super.update(elapsed);
 		var td:Float;
 		var tt:Float;
 
-		if (points == null)
-			return;
+		if (points == null) return;
 
-		if (!backward)
-		{
+		if (!backward) {
 			if (_index < points.length - 1)
-			{
-				while (scale > _pointT[_index + 1])
-				{
+				while (scale > _pointT[_index + 1]) {
 					_index++;
-					if (_index == points.length - 1)
-					{
+					if (_index == points.length - 1) {
 						_index -= 1;
 						break;
 					}
 				}
-			}
 
 			td = _pointT[_index];
 			tt = _pointT[_index + 1] - td;
@@ -133,21 +109,15 @@ class LinearPath extends Motion
 			_nextPoint = points[_index + 1];
 			x = _prevPoint.x + (_nextPoint.x - _prevPoint.x) * td;
 			y = _prevPoint.y + (_nextPoint.y - _prevPoint.y) * td;
-		}
-		else
-		{
+		} else {
 			if (_index > 0)
-			{
-				while (scale < _pointT[_index - 1])
-				{
+				while (scale < _pointT[_index - 1]) {
 					_index -= 1;
-					if (_index == 0)
-					{
+					if (_index == 0) {
 						_index += 1;
 						break;
 					}
 				}
-			}
 
 			td = _pointT[_index];
 			tt = _pointT[_index - 1] - td;
@@ -164,17 +134,11 @@ class LinearPath extends Motion
 	/**
 	 * Updates the path, preparing it for motion.
 	 */
-	function updatePath():Void
-	{
-		if (points.length < 2)
-			throw "A LinearPath must have at least 2 points to operate.";
-		if (_pointD.length == _pointT.length)
-			return;
+	private function updatePath():Void {
+		if (points.length < 2) FlxG.log.critical("A LinearPath must have at least 2 points to operate.");
+		if (_pointD.length == _pointT.length) return;
 		// evaluate t for each point
-		var i:Int = 0;
-		while (i < points.length)
-		{
-			_pointT[i] = _pointD[i++] / distance;
-		}
+		var i = 0;
+		while (i < points.length) _pointT[i] = _pointD[i++] / distance;
 	}
 }

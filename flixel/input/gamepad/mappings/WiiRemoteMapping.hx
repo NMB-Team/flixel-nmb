@@ -5,36 +5,30 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.gamepad.id.WiiRemoteID;
 import flixel.input.gamepad.mappings.FlxGamepadMapping;
 
-class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
-{
+class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID> {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 20;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 21;
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 22;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 23;
+	static inline final LEFT_ANALOG_STICK_FAKE_X = 20;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y = 21;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X = 22;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y = 23;
 	#end
 
-	override function initValues():Void
-	{
+	override function initValues():Void {
 		supportsMotion = true;
 		// when Julian updates his driver, this can be set to "true"
 		supportsPointer = false;
 	}
 
-	override function getID(rawID:WiiRemoteID):FlxGamepadInputID
-	{
-		return switch (attachment)
-		{
+	override function getID(rawID:WiiRemoteID):FlxGamepadInputID {
+		return switch (attachment) {
 			case WII_CLASSIC_CONTROLLER: getIDClassicController(rawID);
 			case WII_NUNCHUCK: getIDNunchuk(rawID);
 			case NONE: getIDDefault(rawID);
 		}
 	}
 
-	function getIDClassicController(rawID:WiiRemoteID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	private function getIDClassicController(rawID:WiiRemoteID):FlxGamepadInputID {
+		return switch (rawID) {
 			case WiiRemoteID.CLASSIC_A: B;
 			case WiiRemoteID.CLASSIC_B: A;
 			case WiiRemoteID.CLASSIC_X: Y;
@@ -64,10 +58,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	function getIDNunchuk(rawID:WiiRemoteID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	private function getIDNunchuk(rawID:WiiRemoteID):FlxGamepadInputID{
+		return switch (rawID) {
 			case WiiRemoteID.NUNCHUK_A: A;
 			case WiiRemoteID.NUNCHUK_B: B;
 			case WiiRemoteID.NUNCHUK_C: LEFT_SHOULDER;
@@ -89,10 +81,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	function getIDDefault(rawID:WiiRemoteID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	private function getIDDefault(rawID:WiiRemoteID):FlxGamepadInputID {
+		return switch (rawID){
 			case WiiRemoteID.REMOTE_A: A;
 			case WiiRemoteID.REMOTE_B: B;
 			case WiiRemoteID.REMOTE_ONE: X;
@@ -108,20 +98,16 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	override function getRawID(ID:FlxGamepadInputID):WiiRemoteID
-	{
-		return switch (attachment)
-		{
+	override function getRawID(ID:FlxGamepadInputID):WiiRemoteID {
+		return switch (attachment){
 			case WII_CLASSIC_CONTROLLER: getRawClassicController(ID);
 			case WII_NUNCHUCK: getRawNunchuk(ID);
 			case NONE: getRawDefault(ID);
 		}
 	}
 
-	function getRawClassicController(ID:FlxGamepadInputID):WiiRemoteID
-	{
-		return switch (ID)
-		{
+	private function getRawClassicController(ID:FlxGamepadInputID):WiiRemoteID {
+		return switch (ID) {
 			case A: WiiRemoteID.CLASSIC_B;
 			case B: WiiRemoteID.CLASSIC_A;
 			case X: WiiRemoteID.CLASSIC_Y;
@@ -151,10 +137,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	function getRawNunchuk(ID:FlxGamepadInputID):WiiRemoteID
-	{
-		return switch (ID)
-		{
+	private function getRawNunchuk(ID:FlxGamepadInputID):WiiRemoteID {
+		return switch (ID) {
 			case A: WiiRemoteID.NUNCHUK_A;
 			case B: WiiRemoteID.NUNCHUK_B;
 			case LEFT_SHOULDER: WiiRemoteID.NUNCHUK_C;
@@ -178,10 +162,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	function getRawDefault(ID:FlxGamepadInputID):WiiRemoteID
-	{
-		return switch (ID)
-		{
+	private function getRawDefault(ID:FlxGamepadInputID):WiiRemoteID {
+		return switch (ID) {
 			case A: WiiRemoteID.REMOTE_A;
 			case B: WiiRemoteID.REMOTE_B;
 			case X: WiiRemoteID.REMOTE_ONE;
@@ -199,46 +181,35 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	override function isAxisForMotion(ID:WiiRemoteID):Bool
-	{
-		if (attachment == NONE)
-		{
+	override function isAxisForMotion(ID:WiiRemoteID):Bool {
+		if (attachment == NONE) {
 			if (ID == WiiRemoteID.REMOTE_TILT_PITCH || ID == WiiRemoteID.REMOTE_TILT_ROLL)
 				return true;
-		}
-		else if (attachment == WII_NUNCHUCK)
-		{
+		} else if (attachment == WII_NUNCHUCK) {
 			if (ID == WiiRemoteID.NUNCHUK_TILT_PITCH || ID == WiiRemoteID.NUNCHUK_TILT_ROLL)
 				return true;
 		}
 		return false;
 	}
 
-	override function isAxisFlipped(axisID:WiiRemoteID):Bool
-	{
+	override function isAxisFlipped(axisID:WiiRemoteID):Bool {
 		return axisID == WiiRemoteID.LEFT_TRIGGER_FAKE;
 	}
 
 	#if FLX_JOYSTICK_API
 	// Analog stick and trigger values overlap with regular buttons so we remap to "fake" button ID's
-	override function axisIndexToRawID(axisID:WiiRemoteID):Int
-	{
+	override function axisIndexToRawID(axisID:WiiRemoteID):Int {
 		// return null for this unused access so it doesn't overlap a button input
-		if (attachment == NONE && axisID == WiiRemoteID.REMOTE_NULL_AXIS)
-			return -1;
+		if (attachment == NONE && axisID == WiiRemoteID.REMOTE_NULL_AXIS) return -1;
 		// return null for this unused access so it doesn't overlap a button input
-		else if (attachment == WII_NUNCHUCK && axisID == WiiRemoteID.NUNCHUK_NULL_AXIS)
-			return -1;
+		else if (attachment == WII_NUNCHUCK && axisID == WiiRemoteID.NUNCHUK_NULL_AXIS) return -1;
 
-		if (attachment == WII_NUNCHUCK || attachment == WII_CLASSIC_CONTROLLER)
-		{
+		if (attachment == WII_NUNCHUCK || attachment == WII_CLASSIC_CONTROLLER) {
 			if (axisID == leftStick.x)
 				return LEFT_ANALOG_STICK_FAKE_X;
 			else if (axisID == leftStick.y)
 				return LEFT_ANALOG_STICK_FAKE_Y;
-		}
-		else
-		{
+		} else {
 			if (axisID == leftStick.x)
 				return WiiRemoteID.REMOTE_DPAD_X;
 			else if (axisID == leftStick.y)
@@ -253,8 +224,7 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		return axisID;
 	}
 
-	override function checkForFakeAxis(ID:FlxGamepadInputID):WiiRemoteID
-	{
+	override function checkForFakeAxis(ID:FlxGamepadInputID):WiiRemoteID {
 		if (attachment == WII_NUNCHUCK && ID == FlxGamepadInputID.LEFT_TRIGGER)
 			return WiiRemoteID.NUNCHUK_Z;
 
@@ -262,16 +232,13 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 	}
 	#end
 
-	override function set_attachment(attachment:FlxGamepadAttachment):FlxGamepadAttachment
-	{
-		leftStick = switch (attachment)
-		{
+	override function set_attachment(attachment:FlxGamepadAttachment):FlxGamepadAttachment {
+		leftStick = switch (attachment) {
 			case WII_NUNCHUCK, WII_CLASSIC_CONTROLLER: WiiRemoteID.LEFT_ANALOG_STICK;
 			case NONE: WiiRemoteID.REMOTE_DPAD;
 		}
 
-		rightStick = switch (attachment)
-		{
+		rightStick = switch (attachment) {
 			case WII_CLASSIC_CONTROLLER: WiiRemoteID.RIGHT_ANALOG_STICK;
 			default: null;
 		}
@@ -279,37 +246,30 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		return super.set_attachment(attachment);
 	}
 
-	override function getInputLabel(id:FlxGamepadInputID)
-	{
-		var label = WiiRemoteMapping.getWiiInputLabel(id, attachment);
-		if (label == null)
-			return super.getInputLabel(id);
+	override function getInputLabel(id:FlxGamepadInputID) {
+		final label = WiiRemoteMapping.getWiiInputLabel(id, attachment);
+		if (label == null) return super.getInputLabel(id);
 
 		return label;
 	}
 
-	public static function getWiiInputLabel(id:FlxGamepadInputID, attachment:FlxGamepadAttachment)
-	{
-		switch (id)
-		{
+	public static function getWiiInputLabel(id:FlxGamepadInputID, attachment:FlxGamepadAttachment) {
+		switch (id) {
 			case BACK: return "minus";
 			case GUIDE: return "home";
 			case START: return"plus";
 			default:
 		}
 
-		return switch (attachment)
-		{
+		return switch (attachment) {
 			case WII_CLASSIC_CONTROLLER: getLabelClassicController(id);
 			case WII_NUNCHUCK: getLabelNunchuk(id);
 			case NONE: getLabelDefault(id);
 		}
 	}
 
-	static inline function getLabelClassicController(ID:FlxGamepadInputID):Null<String>
-	{
-		return switch (ID)
-		{
+	static inline function getLabelClassicController(ID:FlxGamepadInputID):Null<String> {
+		return switch (ID) {
 			case A: "b";
 			case B: "a";
 			case X: "y";
@@ -324,10 +284,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	static inline function getLabelNunchuk(ID:FlxGamepadInputID):Null<String>
-	{
-		return switch (ID)
-		{
+	static inline function getLabelNunchuk(ID:FlxGamepadInputID):Null<String> {
+		return switch (ID) {
 			case X: "1";
 			case Y: "2";
 			case LEFT_SHOULDER: "c";
@@ -336,10 +294,8 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	static inline function getLabelDefault(ID:FlxGamepadInputID):Null<String>
-	{
-		return switch (ID)
-		{
+	static inline function getLabelDefault(ID:FlxGamepadInputID):Null<String> {
+		return switch (ID) {
 			case X: "1";
 			case Y: "2";
 			case BACK: "minus";
@@ -349,8 +305,7 @@ class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 		}
 	}
 
-	override function getMappedInput(id:FlxGamepadInputID)
-	{
+	override function getMappedInput(id:FlxGamepadInputID) {
 		return FlxGamepadMappedInput.WII(getRawID(id));
 	}
 }

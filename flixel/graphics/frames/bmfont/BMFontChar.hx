@@ -12,10 +12,9 @@ using StringTools;
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
-@:structInit
+
 @:allow(flixel.graphics.frames.bmfont.BMFont)
-class BMFontChar
-{
+@:structInit class BMFontChar {
 	public var id:Int;
 	public var x:Int;
 	public var y:Int;
@@ -28,8 +27,7 @@ class BMFontChar
 	public var chnl:Int;
 	public var letter:Null<String> = null;
 
-	static inline function fromXml(charNode:BMFontXml):BMFontChar
-	{
+	static inline function fromXml(charNode:BMFontXml):BMFontChar {
 		return {
 			id: charNode.att.int("id"),
 			x: charNode.att.int("x"),
@@ -45,31 +43,26 @@ class BMFontChar
 		};
 	}
 
-	static function listFromXml(charsNode:BMFontXml):Array<BMFontChar>
-	{
+	static function listFromXml(charsNode:BMFontXml):Array<BMFontChar> {
 		final chars = charsNode.nodes("char");
-		return [ for (char in chars) fromXml(char) ];
+		return [for (char in chars) fromXml(char)];
 	}
 
-	static function fromText(kerningText:String):BMFontChar
-	{
-		var id:Int = -1;
-		var x:Int = -1;
-		var y:Int = -1;
-		var width:Int = 0;
-		var height:Int = 0;
-		var xoffset:Int = 0;
-		var yoffset:Int = 0;
-		var xadvance:Int = 0;
-		var page:Int = -1;
-		var chnl:Int = -1;
+	static function fromText(kerningText:String):BMFontChar {
+		var id = -1;
+		var x = -1;
+		var y = -1;
+		var width = 0;
+		var height = 0;
+		var xoffset = 0;
+		var yoffset = 0;
+		var xadvance = 0;
+		var page = -1;
+		var chnl = -1;
 		var letter:String = null;
 
-		BMFontUtil.forEachAttribute(kerningText,
-			function(key:String, value:UnicodeString)
-			{
-				switch key
-				{
+		BMFontUtil.forEachAttribute(kerningText, (key:String, value:UnicodeString) -> {
+				switch key {
 					case 'id': id = Std.parseInt(value);
 					case 'x': x = Std.parseInt(value);
 					case 'y': y = Std.parseInt(value);
@@ -86,8 +79,7 @@ class BMFontChar
 			}
 		);
 
-		return
-		{
+		return {
 			id: id,
 			x: x,
 			y: y,
@@ -102,12 +94,10 @@ class BMFontChar
 		};
 	}
 
-	static function listFromBytes(bytes:BytesInput):Array<BMFontChar>
-	{
+	static function listFromBytes(bytes:BytesInput):Array<BMFontChar> {
 		var blockSize = bytes.readInt32();
 		final chars = new Array<BMFontChar>();
-		while (blockSize > 0)
-		{
+		while (blockSize > 0) {
 			final char:BMFontChar = {
 				id: bytes.readInt32(),
 				x: bytes.readInt16(),
@@ -123,6 +113,7 @@ class BMFontChar
 			chars.push(char);
 			blockSize -= 20;
 		}
+
 		return chars;
 	}
 }

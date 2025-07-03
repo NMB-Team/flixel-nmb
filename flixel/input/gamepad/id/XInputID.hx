@@ -20,132 +20,131 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
 	* MAC: we assume the user is using the 360 Controller driver, specifically this one:
 	* https://github.com/360Controller/360Controller/releases
  */
-enum abstract XInputID(Int) to Int
-{
+enum abstract XInputID(Int) to Int {
 	#if FLX_GAMEINPUT_API
-	var A = 6;
-	var B = 7;
-	var X = 8;
-	var Y = 9;
+	final A = 6;
+	final B = 7;
+	final X = 8;
+	final Y = 9;
 
-	var BACK = 10;
-	var GUIDE = #if mac 11 #else - 1 #end;
-	var START = 12;
+	final BACK = 10;
+	final GUIDE = #if mac 11 #else - 1 #end;
+	final START = 12;
 
-	var LEFT_STICK_CLICK = 13;
-	var RIGHT_STICK_CLICK = 14;
+	final LEFT_STICK_CLICK = 13;
+	final RIGHT_STICK_CLICK = 14;
 
-	var LB = 15;
-	var RB = 16;
+	final LB = 15;
+	final RB = 16;
 
-	var DPAD_UP = 17;
-	var DPAD_DOWN = 18;
-	var DPAD_LEFT = 19;
-	var DPAD_RIGHT = 20;
+	final DPAD_UP = 17;
+	final DPAD_DOWN = 18;
+	final DPAD_LEFT = 19;
+	final DPAD_RIGHT = 20;
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 2;
 	static inline final RIGHT_Y = 3;
 
-	var LEFT_STICK_UP = 21;
-	var LEFT_STICK_DOWN = 22;
-	var LEFT_STICK_LEFT = 23;
-	var LEFT_STICK_RIGHT = 24;
+	final LEFT_STICK_UP = 21;
+	final LEFT_STICK_DOWN = 22;
+	final LEFT_STICK_LEFT = 23;
+	final LEFT_STICK_RIGHT = 24;
 
-	var RIGHT_STICK_UP = 25;
-	var RIGHT_STICK_DOWN = 26;
-	var RIGHT_STICK_LEFT = 27;
-	var RIGHT_STICK_RIGHT = 28;
+	final RIGHT_STICK_UP = 25;
+	final RIGHT_STICK_DOWN = 26;
+	final RIGHT_STICK_LEFT = 27;
+	final RIGHT_STICK_RIGHT = 28;
 
-	var LEFT_TRIGGER = 4;
-	var RIGHT_TRIGGER = 5;
+	final LEFT_TRIGGER = 4;
+	final RIGHT_TRIGGER = 5;
 	#elseif FLX_JOYSTICK_API
 	#if (windows || linux)
-	var A = 0;
-	var B = 1;
-	var X = 2;
-	var Y = 3;
+	final A = 0;
+	final B = 1;
+	final X = 2;
+	final Y = 3;
 
-	var LB = 4;
-	var RB = 5;
+	final LB = 4;
+	final RB = 5;
 
-	var BACK = 6;
-	var START = 7;
+	final BACK = 6;
+	final START = 7;
 
 	#if linux
-	var LEFT_STICK_CLICK = 9;
-	var RIGHT_STICK_CLICK = 10;
-	var GUIDE = 8;
+	final LEFT_STICK_CLICK = 9;
+	final RIGHT_STICK_CLICK = 10;
+	final GUIDE = 8;
 	#elseif windows
-	var LEFT_STICK_CLICK = 8;
-	var RIGHT_STICK_CLICK = 9;
-	var GUIDE = 10;
+	final LEFT_STICK_CLICK = 8;
+	final RIGHT_STICK_CLICK = 9;
+	final GUIDE = 10;
 	#end
 
 	// "fake" IDs, we manually watch for hat axis changes and then send events using
 	// these otherwise unused joystick button codes
-	var DPAD_UP = 11;
-	var DPAD_DOWN = 12;
-	var DPAD_LEFT = 13;
-	var DPAD_RIGHT = 14;
+	final DPAD_UP = 11;
+	final DPAD_DOWN = 12;
+	final DPAD_LEFT = 13;
+	final DPAD_RIGHT = 14;
 
-	var LEFT_TRIGGER = 2;
-	var RIGHT_TRIGGER = 5;
+	final LEFT_TRIGGER = 2;
+	final RIGHT_TRIGGER = 5;
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 3;
 	static inline final RIGHT_Y = 4;
 
-	var LEFT_STICK_UP = 21;
-	var LEFT_STICK_DOWN = 22;
-	var LEFT_STICK_LEFT = 23;
-	var LEFT_STICK_RIGHT = 24;
+	final LEFT_STICK_UP = 21;
+	final LEFT_STICK_DOWN = 22;
+	final LEFT_STICK_LEFT = 23;
+	final LEFT_STICK_RIGHT = 24;
 
-	var RIGHT_STICK_UP = 25;
-	var RIGHT_STICK_DOWN = 26;
-	var RIGHT_STICK_LEFT = 27;
-	var RIGHT_STICK_RIGHT = 28;
+	final RIGHT_STICK_UP = 25;
+	final RIGHT_STICK_DOWN = 26;
+	final RIGHT_STICK_LEFT = 27;
+	final RIGHT_STICK_RIGHT = 28;
 	#else // mac
-	var A = 0;
-	var B = 1;
-	var X = 2;
-	var Y = 3;
+	final A = 0;
+	final B = 1;
+	final X = 2;
+	final Y = 3;
 
-	var LB = 4;
-	var RB = 5;
+	final LB = 4;
+	final RB = 5;
 
-	var LEFT_STICK_CLICK = 6;
-	var RIGHT_STICK_CLICK = 7;
+	final LEFT_STICK_CLICK = 6;
+	final RIGHT_STICK_CLICK = 7;
 
-	var BACK = 9;
-	var START = 8;
+	final BACK = 9;
+	final START = 8;
 
-	var GUIDE = 10;
+	final GUIDE = 10;
 
-	var DPAD_UP = 11;
-	var DPAD_DOWN = 12;
-	var DPAD_LEFT = 13;
-	var DPAD_RIGHT = 14;
+	final DPAD_UP = 11;
+	final DPAD_DOWN = 12;
+	final DPAD_LEFT = 13;
+	final DPAD_RIGHT = 14;
 
-	var LEFT_TRIGGER = 2;
-	var RIGHT_TRIGGER = 5;
+	final LEFT_TRIGGER = 2;
+	final RIGHT_TRIGGER = 5;
 
 	static inline final LEFT_X = 0;
 	static inline final LEFT_Y = 1;
 	static inline final RIGHT_X = 3;
 	static inline final RIGHT_Y = 4;
 
-	var LEFT_STICK_UP = 21;
-	var LEFT_STICK_DOWN = 22;
-	var LEFT_STICK_LEFT = 23;
-	var LEFT_STICK_RIGHT = 24;
+	final LEFT_STICK_UP = 21;
+	final LEFT_STICK_DOWN = 22;
+	final LEFT_STICK_LEFT = 23;
+	final LEFT_STICK_RIGHT = 24;
 
-	var RIGHT_STICK_UP = 25;
-	var RIGHT_STICK_DOWN = 26;
-	var RIGHT_STICK_LEFT = 27;
-	var RIGHT_STICK_RIGHT = 28;
+	final RIGHT_STICK_UP = 25;
+	final RIGHT_STICK_DOWN = 26;
+	final RIGHT_STICK_LEFT = 27;
+	final RIGHT_STICK_RIGHT = 28;
 	#end
 	#end
 
@@ -163,3 +162,4 @@ enum abstract XInputID(Int) to Int
 		right: RIGHT_STICK_RIGHT
 	});
 }
+

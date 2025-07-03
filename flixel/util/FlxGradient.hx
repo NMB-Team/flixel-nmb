@@ -163,8 +163,4 @@ class FlxGradient {
 	}
 }
 
-typedef GradientMatrix = {
-	matrix:openfl.geom.Matrix,
-	alpha:Array<Float>,
-	ratio:Array<Int>
-}
+typedef GradientMatrix = {matrix:openfl.geom.Matrix, alpha:Array<Float>, ratio:Array<Int>}

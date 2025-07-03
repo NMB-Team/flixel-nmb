@@ -1,7 +1,8 @@
 package flixel.system.frontEnds;
 
-#if FLX_RECORD
 import flixel.FlxG;
+import openfl.ui.Mouse;
+#if FLX_RECORD
 import flixel.util.typeLimit.NextState;
 import flixel.FlxState;
 import flixel.input.keyboard.FlxKey;
@@ -9,7 +10,6 @@ import flixel.math.FlxRandom;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.utils.ByteArray;
-import openfl.ui.Mouse;
 #end
 
 /**
@@ -170,7 +170,7 @@ class VCRFrontEnd {
 		if (replayCallback != null) {
 			replayCallback();
 			replayCallback = null;
-		} else 
+		} else
 			stopReplay();
 	}
 

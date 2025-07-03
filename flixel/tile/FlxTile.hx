@@ -11,20 +11,19 @@ import flixel.util.FlxSignal;
  * You can use FlxTilemap.setTileProperties() to alter the collision properties and
  * callback functions and filters for this object to do things like one-way tiles or whatever.
  */
-class FlxTile extends FlxObject
-{
+class FlxTile extends FlxObject {
 	/**
 	 * This function is called whenever an object hits a tile of this type.
 	 * This function should take the form myFunction(Tile:FlxTile,Object:FlxObject):void.
 	 * Defaults to null, set through FlxTilemap.setTileProperties().
 	 */
-	public var callbackFunction:(FlxObject, FlxObject)->Void = null;
+	public var callbackFunction:(FlxObject, FlxObject) -> Void = null;
 
 	/**
 	 * Dispatched whenever FlxG.collide resolves a collision with a tile of this type
 	 * @since 5.9.0
 	 */
-	public var onCollide = new FlxTypedSignal<(FlxTile, FlxObject)->Void>();
+	public var onCollide = new FlxTypedSignal<(FlxTile, FlxObject) -> Void>();
 
 	/**
 	 * Each tile can store its own filter class for their callback functions.
@@ -51,7 +50,7 @@ class FlxTile extends FlxObject
 	 * You can think of tile objects as moving around the tilemap helping with collisions.
 	 * This value is only reliable and useful if used from the callback function.
 	 */
-	public var mapIndex:Int = 0;
+	public var mapIndex = 0;
 
 	/**
 	 * Frame graphic for this tile.
@@ -68,8 +67,7 @@ class FlxTile extends FlxObject
 	 * @param   visible          Whether the tile is visible or not.
 	 * @param   allowCollisions  The collision flags for the object.  By default this value is ANY or NONE depending on the parameters sent to loadMap().
 	 */
-	public function new(tilemap:FlxTypedTilemap<FlxTile>, index:Int, width:Float, height:Float, visible:Bool, allowCollisions:FlxDirectionFlags)
-	{
+	public function new(tilemap:FlxTypedTilemap<FlxTile>, index:Int, width:Float, height:Float, visible:Bool, allowCollisions:FlxDirectionFlags) {
 		super(0, 0, width, height);
 
 		immovable = true;
@@ -84,13 +82,13 @@ class FlxTile extends FlxObject
 	/**
 	 * Clean up memory.
 	 */
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
 
 		callbackFunction = null;
 		tilemap = null;
 		frame = null;
+
 		onCollide.removeAll();
 	}
 
@@ -101,8 +99,7 @@ class FlxTile extends FlxObject
 	 * This method is dynamic, meaning you can set custom behavior per tile, without extension.
 	 * @since 5.9.0
 	 */
-	public dynamic function overlapsObject(object:FlxObject):Bool
-	{
+	public dynamic function overlapsObject(object:FlxObject):Bool {
 		return object.x + object.width > x
 			&& object.x < x + width
 			&& object.y + object.height > y
@@ -122,13 +119,15 @@ class FlxTile extends FlxObject
 	 * @param   row     The tilemap row where this is being placed
 	 * @since 5.9.0
 	 */
-	public dynamic function orientAt(xPos:Float, yPos:Float, col:Int, row:Int)
-	{
+	public dynamic function orientAt(xPos:Float, yPos:Float, col:Int, row:Int) {
 		mapIndex = tilemap.getMapIndex(col, row);
+
 		width = tilemap.scaledTileWidth;
 		height = tilemap.scaledTileHeight;
+
 		x = xPos + col * width;
 		y = yPos + row * height;
+
 		last.x = x - (xPos - tilemap.last.x);
 		last.y = y - (yPos - tilemap.last.y);
 	}
@@ -143,8 +142,7 @@ class FlxTile extends FlxObject
 	 * @param   row     The tilemap row where this is being placed
 	 * @since 5.9.0
 	 */
-	public inline function orient(col:Int, row:Int)
-	{
+	public inline function orient(col:Int, row:Int) {
 		orientAt(tilemap.x, tilemap.y, col, row);
 	}
 
@@ -159,8 +157,7 @@ class FlxTile extends FlxObject
 	 * @param   mapIndex  The desired location in the map
 	 * @since 5.9.0
 	 */
-	public inline function orientByIndex(mapIndex:Int)
-	{
+	public inline function orientByIndex(mapIndex:Int) {
 		orientAtByIndex(tilemap.x, tilemap.y, mapIndex);
 	}
 
@@ -175,8 +172,7 @@ class FlxTile extends FlxObject
 	 * @param   mapIndex  The desired location in the map
 	 * @since 5.9.0
 	 */
-	public inline function orientAtByIndex(xPos:Float, yPos:Float, mapIndex:Int)
-	{
+	public inline function orientAtByIndex(xPos:Float, yPos:Float, mapIndex:Int) {
 		orientAt(xPos, yPos, tilemap.getColumn(mapIndex), tilemap.getRow(mapIndex));
 	}
 }

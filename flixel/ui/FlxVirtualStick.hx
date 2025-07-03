@@ -33,10 +33,10 @@ class FlxVirtualStick extends FlxSpriteContainer {
 	public final radius:Float;
 
 	/** Used to smooth the thumb's motion. Should be between 0 and 1.0. */
-	public var lerp:Float = 0.25;
+	public var lerp:Float = .25;
 
 	/** The minimum absolute value, to consider this input active */
-	public var deadzone = 0.1;
+	public var deadzone = .1;
 
 	public final onJustMove = new FlxSignal();
 	public final onJustStop = new FlxSignal();
@@ -146,7 +146,7 @@ class FlxVirtualStick extends FlxSpriteContainer {
 		else if (prev != 0 && curr != 0) MOVED;
 		else if (prev != 0 && curr == 0) JUST_STOPPED;
 		else if (prev == 0 && curr == 0) STOPPED;
-		else FlxG.log.critical('Unexpected case - prev: $prev, curr:$curr'); // not possible
+		else throw 'Unexpected case - prev: $prev, curr:$curr'; // not possible
 	}
 }
 
@@ -179,7 +179,7 @@ class InvisibleCircleButton extends FlxTypedButton<FlxSprite> {
 
 	inline function get_radius():Float return frameWidth * .5;
 
-	public function new(x = 0.0, y = 0.0, radius:Float, ?onClick) {
+	public function new(x = .0, y = .0, radius:Float, ?onClick) {
 		super(x, y, onClick);
 		final size = Math.ceil(radius * 2);
 		loadGraphic(FlxG.bitmap.create(size, size * 4, FlxColor.WHITE), true, size, size);

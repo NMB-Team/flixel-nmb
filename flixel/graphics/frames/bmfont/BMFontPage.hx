@@ -10,43 +10,33 @@ import haxe.io.BytesBuffer;
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
-@:structInit
 @:allow(flixel.graphics.frames.bmfont.BMFont)
-class BMFontPage
-{
+@:structInit class BMFontPage {
 	public var id:Int;
 	public var file:String;
 
-	public inline function new(id, file)
-	{
+	public inline function new(id, file) {
 		this.id = id;
 		this.file = file;
 	}
 
-	static function fromXml(pageNode:BMFontXml):BMFontPage
-	{
-		return
-		{
+	static function fromXml(pageNode:BMFontXml):BMFontPage {
+		return {
 			id: pageNode.att.int("id"),
 			file: pageNode.att.string("file")
 		}
 	}
 
-	static function listFromXml(pagesNode:BMFontXml):Array<BMFontPage>
-	{
+	static function listFromXml(pagesNode:BMFontXml):Array<BMFontPage> {
 		final pages = pagesNode.nodes("page");
-		return [for (page in pages) fromXml(page) ];
+		return [for (page in pages) fromXml(page)];
 	}
 
-	static function fromText(pageText:String)
-	{
+	static function fromText(pageText:String) {
 		var id = -1;
 		var file:String = null;
-		BMFontUtil.forEachAttribute(pageText,
-			function(key:String, value:String)
-			{
-				switch key
-				{
+		BMFontUtil.forEachAttribute(pageText, (key:String, value:String) -> {
+				switch key {
 					case 'id': id = Std.parseInt(value);
 					case 'file': file = value;
 					default: FlxG.log.warn('Unexpected font char attribute: $key=$value');
@@ -56,18 +46,15 @@ class BMFontPage
 		return new BMFontPage(id, file);
 	}
 
-	static function listFromBytes(bytes:BytesInput)
-	{
+	static function listFromBytes(bytes:BytesInput) {
 		var blockSize = bytes.readInt32();
 		final pages = new Array<BMFontPage>();
 
 		var i = 0;
-		while (blockSize > 0)
-		{
+		while (blockSize > 0) {
 			final bytesBuf = new BytesBuffer();
 			var curByte = bytes.readByte();
-			while (curByte != 0)
-			{
+			while (curByte != 0) {
 				bytesBuf.addByte(curByte);
 				curByte = bytes.readByte();
 			}

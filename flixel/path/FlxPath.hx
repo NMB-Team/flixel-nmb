@@ -17,61 +17,46 @@ typedef CenterMode = FlxPathAnchorMode;
 @:using(flixel.path.FlxPath.AnchorTools)
 enum FlxPathAnchorMode
 {
-	
+
 	/**
 	 * Align the x,y position of the object on the path.
 	 */
 	TOP_LEFT;
-	
+
 	/**
 	 * Align the midpoint of the object on the path.
 	 */
 	CENTER;
-	
+
 	/**
 	 * If the object is a FlxSprite, align its origin point on the path.
 	 * If it is not a sprite it will use the position.
 	 */
 	ORIGIN;
-	
+
 	/**
 	 * Uses the specified offset from the position.
 	 */
 	CUSTOM(offset:FlxPoint);
 }
 
-private class AnchorTools
-{
-	public static function computeAnchor(mode:FlxPathAnchorMode, object:FlxObject, ?result:FlxPoint):FlxPoint
-	{
+private class AnchorTools {
+	public static function computeAnchor(mode:FlxPathAnchorMode, object:FlxObject, ?result:FlxPoint):FlxPoint {
 		result = computeAnchorOffset(mode, object, result);
 		return result.add(object.x, object.y);
 	}
-	
-	public static function computeAnchorOffset(mode:FlxPathAnchorMode, object:FlxObject, ?result:FlxPoint):FlxPoint
-	{
-		if (result == null)
-			result = FlxPoint.get();
-		else
-			result.set();
-		
-		return switch (mode)
-		{
+
+	public static function computeAnchorOffset(mode:FlxPathAnchorMode, object:FlxObject, ?result:FlxPoint):FlxPoint {
+		if (result == null) result = FlxPoint.get();
+		else result.set();
+
+		return switch (mode) {
 			case ORIGIN:
-				if (object is FlxSprite)
-				{
-					result.add(cast(object, FlxSprite).origin.x, cast(object, FlxSprite).origin.y);
-				}
-				else
-				{
-					result;
-				}
-			case CENTER:
-				result.add(object.width * 0.5, object.height * 0.5);
-			case TOP_LEFT:
-				result;
-			case CUSTOM(offset):
-				result.add(offset);
+				if (object is FlxSprite) result.add(cast(object, FlxSprite).origin.x, cast(object, FlxSprite).origin.y);
+				else result;
+			case CENTER: result.add(object.width * .5, object.height * .5);
+			case TOP_LEFT: result;
+			case CUSTOM(offset): result.add(offset);
 		}
 	}
 }
@@ -87,8 +72,8 @@ private class AnchorTools
  * Usage example:
  *
  * ```haxe
- * var path = new FlxPath();
- * var points:Array<FlxPoint> = [new FlxPoint(0, 0), new FlxPoint(100, 0)];
+ * final path = new FlxPath();
+ * final points:Array<FlxPoint> = [new FlxPoint(0, 0), new FlxPoint(100, 0)];
  * object.path = path;
  * path.start(points, 50, FORWARD);
  * ```
@@ -111,12 +96,11 @@ private class AnchorTools
  * object.path = new FlxPath([new FlxPoint(0, 0), new FlxPoint(100, 0)]).start();
  * ```
  */
-class FlxPath extends FlxBasePath
-{
+class FlxPath extends FlxBasePath {
 	/**
 	 * Path behavior controls: move from the start of the path to the end then stop.
 	 */
-	static var _point:FlxPoint = new FlxPoint();
+	static var _point = new FlxPoint();
 
 	/**
 	 * The speed at which the object is moving on the path.
@@ -125,69 +109,66 @@ class FlxPath extends FlxBasePath
 	 * will NOT be nulled out. So `speed` is a good way
 	 * to check if this object is currently following a path or not.
 	 */
-	public var speed:Float = 0;
-	
+	public var speed = .0;
+
 	/**
 	 * Whether to make the object immovable while active.
 	 */
-	public var immovable(default, set):Bool = false;
-	
+	public var immovable(default, set) = false;
+
 	/**
 	 * The angle in degrees between this object and the next node, where -90 is directly upward, and 0 is to the right.
 	 */
-	public var angle(default, null):Float = 0;
-	
+	public var angle(default, null) = .0;
+
 	/**
 	 * How to center the object on the path.
 	 * @since 5.7.0
 	 */
 	public var centerMode:FlxPathAnchorMode = CENTER;
-	
+
 	/**
 	 * Whether the object's angle should be adjusted to the path angle during path follow behavior.
 	 */
-	public var autoRotate:Bool = false;
-	
+	public var autoRotate = false;
+
 	/**
 	 * The amount of degrees to offset from the path's angle, when `autoRotate` is `true`. To use
 	 * flixel 4.11's autoRotate behavior, set this to `90`, so there is no rotation at 0 degrees.
-	 * 
+	 *
 	 * @see [Flixel 5.0.0 Migration guide](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide)
 	 * @since 5.0.0
 	 */
-	public var angleOffset:Float = 0;
-	
+	public var angleOffset = .0;
+
 	/**
 	 * Whether to limit movement to certain axes.
 	 */
 	public var axes:FlxAxes = XY;
-	
+
 	/**
 	 * Internal tracker for path behavior flags (like looping, yoyo, etc).
 	 */
-	@:noCompletion
-	var _mode(get, set):FlxPathType;
-	
+	@:noCompletion var _mode(get, set):FlxPathType;
+
 	/**
 	 * Internal helper for node navigation, specifically yo-yo and backwards movement.
 	 */
-	@:noCompletion
-	var _inc(get, set):Int;
+	@:noCompletion var _inc(get, set):Int;
 
 	var _wasObjectImmovable:Null<Bool> = null;
 
-	var _firstUpdate:Bool = false;
+	var _firstUpdate = false;
 
 	/**
 	 * Object which will follow this path
 	 */
 	@:allow(flixel.FlxObject)
 	var object(get, set):FlxObject;
-	
-	public function new(?nodes:Array<FlxPoint>)
-	{
+
+	public function new(?nodes:Array<FlxPoint>) {
 		super(nodes != null ? nodes.copy() : []);
-		
+
 		active = false;
 	}
 
@@ -196,12 +177,12 @@ class FlxPath extends FlxBasePath
 	 * Also resets `centerMode` to `CENTER`.
 	 * @return This path object.
 	 */
-	public function reset():FlxPath
-	{
+	public function reset():FlxPath {
 		#if FLX_DEBUG
 		debugDrawData = {};
 		ignoreDrawDebug = false;
 		#end
+
 		centerMode = CENTER;
 		return this;
 	}
@@ -217,8 +198,7 @@ class FlxPath extends FlxBasePath
 	 * @return This path object.
 	 * @since 4.2.0
 	 */
-	public function setProperties(speed = 100.0, mode = FlxPathType.FORWARD, autoRotate = false):FlxPath
-	{
+	public function setProperties(speed = 100., mode = FlxPathType.FORWARD, autoRotate = false):FlxPath {
 		this.speed = Math.abs(speed);
 		_mode = mode;
 		this.autoRotate = autoRotate;
@@ -235,27 +215,15 @@ class FlxPath extends FlxBasePath
 	 * @param nodesAsReference   To pass the input array as reference (true) or to copy the points (false). Default is false.
 	 * @return This path object.
 	 */
-	public function start(?nodes:Array<FlxPoint>, speed = 100.0, mode = FlxPathType.FORWARD, autoRotate = false,
-			nodesAsReference:Bool = false):FlxPath
-	{
-		if (nodes != null)
-		{
-			if (nodesAsReference)
-			{
-				this.nodes = nodes;
-			}
-			else
-			{
-				this.nodes = nodes.copy();
-			}
+	public function start(?nodes:Array<FlxPoint>, speed = 100., mode = FlxPathType.FORWARD, autoRotate = false, nodesAsReference = false):FlxPath {
+		if (nodes != null) {
+			this.nodes = nodesAsReference ? nodes : nodes.copy();
 		}
-		
+
 		setProperties(speed, mode, autoRotate);
-		
-		if (this.nodes.length > 0)
-		{
-			restart();
-		}
+
+		if (this.nodes.length > 0) restart();
+
 		return this;
 	}
 
@@ -265,8 +233,7 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	override function restart():FlxPath
-	{
+	override function restart():FlxPath {
 		super.restart();
 		active = nodes.length > 0;
 		return this;
@@ -277,51 +244,40 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @param   nodeIndex  The index of the new node out of path.nodes.
 	 */
-	public function setNode(nodeIndex:Int):FlxPath
-	{
+	public function setNode(nodeIndex:Int):FlxPath {
 		startAt(nodeIndex);
 		return this;
 	}
 
-	function computeCenter(point:FlxPoint):FlxPoint
-	{
+	private function computeCenter(point:FlxPoint):FlxPoint {
 		return centerMode.computeAnchor(object, point);
 	}
-	
-	override function isTargetAtNext(elapsed:Float):Bool
-	{
+
+	override function isTargetAtNext(elapsed:Float):Bool {
 		// first check if we need to be pointing at the next node yet
 		final center = computeCenter(FlxPoint.get());
 		final deltaX = next.x - center.x;
 		final deltaY = next.y - center.y;
 		center.put();
-		
-		inline function abs(n:Float) return n > 0 ? n : -n;
 
-		if (axes == X)
-		{
-			return abs(deltaX) < speed * elapsed;
+		inline function abs(n:Float) {
+			return n > 0 ? n : -n;
 		}
-		
-		if (axes == Y)
-		{
-			return abs(deltaY) < speed * elapsed;
-		}
-		
+
+		if (axes == X) return abs(deltaX) < speed * elapsed;
+		if (axes == Y) return abs(deltaY) < speed * elapsed;
+
 		return Math.sqrt(deltaX * deltaX + deltaY * deltaY) < speed * elapsed;
 	}
-	
+
 	/**
 	 * Internal function for moving the object along the path.
 	 * The first half of the function decides if the object can advance to the next node in the path,
 	 * while the second half handles actually picking a velocity toward the next node.
 	 */
-	override function updateTarget(elapsed:Float):Void
-	{
-		if (_firstUpdate)
-		{
-			if (immovable)
-			{
+	override function updateTarget(elapsed:Float):Void {
+		if (_firstUpdate) {
+			if (immovable) {
 				_wasObjectImmovable = object.immovable;
 				object.immovable = true;
 			}
@@ -329,56 +285,37 @@ class FlxPath extends FlxBasePath
 		}
 
 		// then just move toward the current node at the requested speed
-		if (speed == 0)
-			return;
-		
+		if (speed == 0) return;
+
 		// set velocity based on path mode
 		_point = computeCenter(_point);
 		final node = next;
 
 		if (!_point.equals(node))
-		{
 			calculateVelocity(node, axes == X, axes == Y);
-		}
 		else
-		{
 			object.velocity.set();
-		}
 
 		// then set object rotation if necessary
-		if (autoRotate)
-		{
-			object.angularVelocity = 0;
-			object.angularAcceleration = 0;
+		if (autoRotate) {
+			object.angularVelocity = object.angularAcceleration = 0;
 			object.angle = angle + angleOffset;
 		}
 	}
 
-	function calculateVelocity(node:FlxPoint, horizontalOnly:Bool, verticalOnly:Bool):Void
-	{
-		if (horizontalOnly || _point.y == node.y)
-		{
+	private function calculateVelocity(node:FlxPoint, horizontalOnly:Bool, verticalOnly:Bool):Void {
+		if (horizontalOnly || _point.y == node.y) {
 			object.velocity.x = (_point.x < node.x) ? speed : -speed;
 			angle = (object.velocity.x < 0) ? 180 : 0;
 
-			if (!horizontalOnly)
-			{
-				object.velocity.y = 0;
-			}
-		}
-		else if (verticalOnly || _point.x == node.x)
-		{
+			if (!horizontalOnly) object.velocity.y = 0;
+		} else if (verticalOnly || _point.x == node.x) {
 			object.velocity.y = (_point.y < node.y) ? speed : -speed;
 			angle = (object.velocity.y < 0) ? -90 : 90;
 
-			if (!verticalOnly)
-			{
-				object.velocity.x = 0;
-			}
-		}
-		else
-		{
-			var velocity = object.velocity.copyFrom(node).subtract(_point);
+			if (!verticalOnly) object.velocity.x = 0;
+		} else {
+			final velocity = object.velocity.copyFrom(node).subtract(_point);
 			velocity.length = speed;
 			angle = velocity.degrees;
 		}
@@ -389,47 +326,36 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return The node (a `FlxPoint`) we are aiming for next.
 	 */
-	function advancePath(snap:Bool = true):FlxPoint
-	{
+	private function advancePath(snap = true):FlxPoint {
 		advance();
-		
 		return current;
 	}
-	
-	override function advance()
-	{
-		if (axes.x)
-		{
+
+	override function advance() {
+		if (axes.x) {
 			object.x = next.x;
-			switch (centerMode)
-			{
+			switch (centerMode) {
 				case ORIGIN:
 					if (object is FlxSprite)
 						object.x -= (cast object:FlxSprite).origin.x;
-				case CUSTOM(offset):
-					object.x -= offset.x;
-				case CENTER:
-					object.x -= object.width * 0.5;
+				case CUSTOM(offset): object.x -= offset.x;
+				case CENTER: object.x -= object.width * .5;
 				case TOP_LEFT:
 			}
 		}
-		
-		if (axes.y)
-		{
+
+		if (axes.y) {
 			object.y = next.y;
-			switch (centerMode)
-			{
+			switch (centerMode) {
 				case ORIGIN:
 					if (object is FlxSprite)
 						object.y -= (cast object:FlxSprite).origin.y;
-				case CUSTOM(offset):
-					object.y -= offset.y;
-				case CENTER:
-					object.y -= object.height * 0.5;
+				case CUSTOM(offset): object.y -= offset.y;
+				case CENTER: object.y -= object.height * 0.5;
 				case TOP_LEFT:
 			}
 		}
-		
+
 		super.advance();
 	}
 
@@ -438,26 +364,20 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	public function cancel():FlxPath
-	{
+	public function cancel():FlxPath {
 		onEnd();
-
-		if (object != null)
-		{
-			object.velocity.set(0, 0);
-		}
+		object?.velocity.set(0, 0);
 		return this;
 	}
 
 	/**
 	 * Called when the path ends, either by completing normally or via `cancel()`.
 	 */
-	function onEnd():Void
-	{
+	private function onEnd():Void {
 		active = false;
 		if (_wasObjectImmovable != null)
 			object.immovable = _wasObjectImmovable;
-		
+
 		_wasObjectImmovable = null;
 	}
 
@@ -469,8 +389,7 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	public function add(x:Float, y:Float):FlxPath
-	{
+	public function add(x:Float, y:Float):FlxPath {
 		nodes.push(FlxPoint.get(x, y));
 		return this;
 	}
@@ -484,10 +403,8 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	public function addAt(x:Float, y:Float, index:Int):FlxPath
-	{
-		if (index < 0)
-			return this;
+	public function addAt(x:Float, y:Float, index:Int):FlxPath {
+		if (index < 0) return this;
 		nodes.insert(index, FlxPoint.get(x, y));
 		return this;
 	}
@@ -502,16 +419,12 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	public function addPoint(node:FlxPoint, asReference:Bool = false):FlxPath
-	{
+	public function addPoint(node:FlxPoint, asReference = false):FlxPath {
 		if (asReference)
-		{
 			nodes.push(node);
-		}
 		else
-		{
 			nodes.push(FlxPoint.get(node.x, node.y));
-		}
+
 		return this;
 	}
 
@@ -526,18 +439,14 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return This path object.
 	 */
-	public function addPointAt(node:FlxPoint, index:Int, asReference:Bool = false):FlxPath
-	{
-		if (index < 0)
-			return this;
+	public function addPointAt(node:FlxPoint, index:Int, asReference = false):FlxPath {
+		if (index < 0) return this;
+
 		if (asReference)
-		{
 			nodes.insert(index, node);
-		}
 		else
-		{
 			nodes.insert(index, FlxPoint.get(node.x, node.y));
-		}
+
 		return this;
 	}
 
@@ -548,13 +457,10 @@ class FlxPath extends FlxBasePath
 	 * @param node   The point object you want to remove from the path.
 	 * @return The node that was excised.  Returns null if the node was not found.
 	 */
-	public function remove(node:FlxPoint):FlxPoint
-	{
-		var index:Int = nodes.indexOf(node);
-		if (index >= 0)
-		{
-			return nodes.splice(index, 1)[0];
-		}
+	public function remove(node:FlxPoint):FlxPoint {
+		final index = nodes.indexOf(node);
+		if (index >= 0) return nodes.splice(index, 1)[0];
+
 		return null;
 	}
 
@@ -564,16 +470,10 @@ class FlxPath extends FlxBasePath
 	 * @param index   Where within the list of path nodes you want to remove a node.
 	 * @return The node that was excised.  Returns null if there were no nodes in the path.
 	 */
-	public function removeAt(index:Int):FlxPoint
-	{
-		if (nodes.length <= 0)
-		{
-			return null;
-		}
-		if (index >= nodes.length - 1)
-		{
-			nodes.pop();
-		}
+	public function removeAt(index:Int):FlxPoint {
+		if (nodes.length <= 0) return null;
+		if (index >= nodes.length - 1) nodes.pop();
+
 		return nodes.splice(index, 1)[0];
 	}
 
@@ -582,12 +482,8 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return The first node in the path.
 	 */
-	public function head():FlxPoint
-	{
-		if (nodes.length > 0)
-		{
-			return nodes[0];
-		}
+	public function head():FlxPoint {
+		if (nodes.length > 0) return nodes[0];
 		return null;
 	}
 
@@ -596,91 +492,64 @@ class FlxPath extends FlxBasePath
 	 *
 	 * @return The last node in the path.
 	 */
-	public function tail():FlxPoint
-	{
-		if (nodes.length > 0)
-		{
-			return nodes[nodes.length - 1];
-		}
+	public function tail():FlxPoint {
+		if (nodes.length > 0) return nodes[nodes.length - 1];
 		return null;
 	}
 
-	function set_immovable(value:Bool):Bool
-	{
-		if (_firstUpdate || finished || value == immovable)
-			return this.immovable = value;
+	private function set_immovable(value:Bool):Bool {
+		if (_firstUpdate || finished || value == immovable) return this.immovable = value;
 
-		if (value)
-		{
+		if (value) {
 			_wasObjectImmovable = object.immovable;
 			object.immovable = true;
-		}
-		else if (_wasObjectImmovable != null)
-		{
+		} else if (_wasObjectImmovable != null) {
 			object.immovable = _wasObjectImmovable;
 			_wasObjectImmovable = null;
 		}
 
 		return this.immovable = value;
 	}
-	
-	function get__inc()
-	{
+
+	private function get__inc() {
 		return direction.toInt();
 	}
-	
-	function set__inc(value:Int):Int
-	{
+
+	private function set__inc(value:Int):Int {
 		direction = value < 0 ? FlxPathDirection.BACKWARD : FlxPathDirection.FORWARD;
 		return value;
 	}
-	
-	function get__mode()
-	{
+
+	private function get__mode() {
 		final isForward = direction == FlxPathDirection.FORWARD;
-		return switch(loopType)
-		{
-			case FlxPathLoopType.ONCE:
-				isForward ? FlxPathType.FORWARD : FlxPathType.BACKWARD;
-			case FlxPathLoopType.LOOP:
-				isForward ? FlxPathType.LOOP_FORWARD : FlxPathType.LOOP_BACKWARD;
-			case FlxPathLoopType.YOYO:
-				FlxPathType.YOYO;
+		return switch (loopType) {
+			case FlxPathLoopType.ONCE: isForward ? FlxPathType.FORWARD : FlxPathType.BACKWARD;
+			case FlxPathLoopType.LOOP: isForward ? FlxPathType.LOOP_FORWARD : FlxPathType.LOOP_BACKWARD;
+			case FlxPathLoopType.YOYO: FlxPathType.YOYO;
 		}
 	}
-	
-	function set__mode(value:FlxPathType):FlxPathType
-	{
-		loopType = switch (value)
-		{
-			case FlxPathType.YOYO:
-				FlxPathLoopType.YOYO;
-			case FlxPathType.FORWARD | FlxPathType.BACKWARD:
-				FlxPathLoopType.ONCE;
-			case FlxPathType.LOOP_FORWARD | FlxPathType.LOOP_BACKWARD:
-				FlxPathLoopType.LOOP;
+
+	private function set__mode(value:FlxPathType):FlxPathType {
+		loopType = switch (value) {
+			case FlxPathType.YOYO: FlxPathLoopType.YOYO;
+			case FlxPathType.FORWARD | FlxPathType.BACKWARD: FlxPathLoopType.ONCE;
+			case FlxPathType.LOOP_FORWARD | FlxPathType.LOOP_BACKWARD: FlxPathLoopType.LOOP;
 		}
-		
-		direction = switch (value)
-		{
-			case FlxPathType.YOYO:
-				direction;
-			case FlxPathType.FORWARD | FlxPathType.LOOP_FORWARD:
-				FlxPathDirection.FORWARD;
-			case FlxPathType.BACKWARD | FlxPathType.LOOP_BACKWARD:
-				FlxPathDirection.BACKWARD;
+
+		direction = switch (value) {
+			case FlxPathType.YOYO: direction;
+			case FlxPathType.FORWARD | FlxPathType.LOOP_FORWARD: FlxPathDirection.FORWARD;
+			case FlxPathType.BACKWARD | FlxPathType.LOOP_BACKWARD: FlxPathDirection.BACKWARD;
 		}
-		
+
 		return value;
 	}
-	
-	function get_object()
-	{
+
+	private function get_object() {
 		return target;
 	}
-	
-	function set_object(value:FlxObject)
-	{
+
+	private function set_object(value:FlxObject) {
 		return target = value;
 	}
 }
@@ -688,30 +557,29 @@ class FlxPath extends FlxBasePath
 /**
  * Path behavior controls
  */
-enum abstract FlxPathType(Int) from Int to Int
-{
+enum abstract FlxPathType(Int) from Int to Int {
 	/**
 	 * Move from the start of the path to the end then stop.
 	 */
-	var FORWARD = 0x000000;
+	final FORWARD = 0x000000;
 
 	/**
 	 * Move from the end of the path to the start then stop.
 	 */
-	var BACKWARD = 0x000001;
+	final BACKWARD = 0x000001;
 
 	/**
 	 * Move from the start of the path to the end then directly back to the start, and start over.
 	 */
-	var LOOP_FORWARD = 0x000010;
+	final LOOP_FORWARD = 0x000010;
 
 	/**
 	 * Move from the end of the path to the start then directly back to the end, and start over.
 	 */
-	var LOOP_BACKWARD = 0x000100;
+	final LOOP_BACKWARD = 0x000100;
 
 	/**
 	 * Move from the start of the path to the end then turn around and go back to the start, over and over.
 	 */
-	var YOYO = 0x001000;
+	final YOYO = 0x001000;
 }

@@ -80,12 +80,6 @@
 			}
 		},
 		{
-			"type": "MethodName",
-			"props": {
-				"format": "^[a-z][a-zA-Z0-9]*$"
-			}
-		},
-		{
 			"type": "TypeName",
 			"props": {
 				"format": "^[A-Z]+[a-zA-Z0-9]*$"

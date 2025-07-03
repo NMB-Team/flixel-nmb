@@ -175,8 +175,8 @@ class ScrollBar extends Sprite {
 	private function onHandleMove() {
 		if (handle.y < 0) handle.y = 0;
 
-		final calc_height = bg.height - handle.height;
-		if (handle.y > calc_height) handle.y = calc_height;
+		final calcHeight = bg.height - handle.height;
+		if (handle.y > calcHeight) handle.y = calcHeight;
 
 		target.scrollY = handle.y / (bg.height - handle.height) * target.maxScrollY;
 	}

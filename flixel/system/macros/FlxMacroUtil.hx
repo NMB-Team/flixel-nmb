@@ -11,7 +11,7 @@ class FlxMacroUtil {
 	 *
 	 * @param	invert	Use the field value as the key and the name as the value
 	 */
-	public static macro function buildMap(typePath:String, invert = false, ?exclude:Array<String>):Expr {
+	public static macro function buildMap(typePath:String, invert:Bool = false, ?exclude:Array<String>):Expr {
 		final type = Context.getType(typePath);
 		final values = [];
 
@@ -37,8 +37,10 @@ class FlxMacroUtil {
 		}
 
 		var finalExpr;
-		if (invert) finalExpr = values.map(v -> return macro $v{v.value} => $v{v.name});
-		else finalExpr = values.map(v -> return macro $v{v.name} => $v{v.value});
+		if (invert)
+			finalExpr = values.map(function(v) return macro $v{v.value} => $v{v.name});
+		else
+			finalExpr = values.map(function(v) return macro $v{v.name} => $v{v.value});
 
 		return macro $a{finalExpr};
 	}

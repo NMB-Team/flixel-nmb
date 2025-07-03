@@ -21,28 +21,23 @@ typedef FlxContainer = FlxTypedContainer<FlxBasic>;
  * child (or grandchild, and so on) of the state.
  * @since 5.7.0
  */
-class FlxTypedContainer<T:FlxBasic> extends FlxTypedGroup<T>
-{
+class FlxTypedContainer<T:FlxBasic> extends FlxTypedGroup<T> {
 	/**
 	 * @param   maxSize  Maximum amount of members allowed.
 	 */
-	public function new(maxSize = 0)
-	{
+	public function new(maxSize = 0) {
 		super(maxSize);
 	}
 
-	override function onMemberAdd(member:T)
-	{
+	override function onMemberAdd(member:T) {
 		// remove from previous container
-		if (member.container != null)
-			member.container.remove(member);
+		member.container?.remove(member);
 
 		member.container = (cast this:FlxContainer);
 		super.onMemberAdd(member);
 	}
 
-	override function onMemberRemove(member:T)
-	{
+	override function onMemberRemove(member:T) {
 		member.container = null;
 		super.onMemberRemove(member);
 	}

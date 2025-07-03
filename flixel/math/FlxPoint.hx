@@ -828,7 +828,7 @@ class FlxBasePoint implements IFlxPooled {
 
 	/**
 	 * Snaps a float value to the nearest multiple of the specified grid size.
-	 * 
+	 *
 	 * @param value The value to snap.
 	 * @param gridSize The size of the grid to snap to.
 	 * @return The snapped value.
@@ -1694,8 +1694,8 @@ class FlxCallbackPoint extends FlxBasePoint {
 		}
 	}
 
-	override public function set(x = .0, y = .0):FlxCallbackPoint {
-		super.set(x, y);
+	override public function set(x = .0, ?y:Null<Float>):FlxCallbackPoint {
+		super.set(x, x ?? y);
 		if (_setXYCallback != null) _setXYCallback(this);
 		return this;
 	}

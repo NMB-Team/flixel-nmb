@@ -91,7 +91,7 @@ class WatchBase<TEntry:WatchEntry> extends Window {
 		if (redraw) updateSize();
 	}
 
-	private public function remove(displayName:String, data:WatchEntryData):Void {
+	public function remove(displayName:String, data:WatchEntryData):Void {
 		final existing = getExistingEntry(displayName, data);
 		if (existing != null) removeEntry(existing);
 	}

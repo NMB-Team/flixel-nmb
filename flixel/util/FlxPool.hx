@@ -126,7 +126,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T> {
 		});
 	}
 
-	function trackGet(obj:T) {
+	private function trackGet(obj:T) {
 		final callStack = haxe.CallStack.callStack();
 		final stack = stackToString(callStack[2]);
 		if (stack == null) return;

@@ -116,7 +116,7 @@ class FlxVirtualDPadButtons extends FlxVirtualPadButtons {
 				addButton( 0, 35, LEFT );
 				addButton(69, 35, RIGHT);
 				addButton(35, 71, DOWN );
-			case ANALOG: throw "Unexpected mode: ANALOG";
+			case ANALOG: FlxG.log.critical("Unexpected mode: ANALOG");
 			case NONE: // do nothing
 		}
 	}

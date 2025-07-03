@@ -24,13 +24,12 @@ import flixel.util.FlxStringUtil;
  * @link http://www.photonstorm.com
  * @author Richard Davey / Photon Storm
  */
-class FlxBar extends FlxSprite
-{
+class FlxBar extends FlxSprite {
 	/**
 	 * If false, the bar is tracking its parent
 	 * (the position is synchronized with the parent's position).
 	 */
-	public var fixedPosition:Bool = true;
+	public var fixedPosition = true;
 
 	/**
 	 * How many pixels = 1% of the bar (barWidth (or barHeight) / 100)
@@ -60,8 +59,7 @@ class FlxBar extends FlxSprite
 	/**
 	 * The current value - must always be between min and max
 	 */
-	@:isVar
-	public var value(default, set):Float;
+	@:isVar public var value(default, set):Float;
 
 	/**
 	 * The minimum value the bar can be (can never be >= max)
@@ -92,22 +90,22 @@ class FlxBar extends FlxSprite
 	 *
 	 * @since 4.1.0
 	 */
-	public var numDivisions(default, set):Int = 100;
+	public var numDivisions(default, set) = 100;
 
 	/**
 	 * Determines whenever numDivisions will make stuff blocky
 	 */
-	public var continuous:Bool = false;
+	public var continuous = false;
 
 	/**
 	 * This function will be called when value will hit it's minimum
 	 */
-	public var emptyCallback:Void->Void;
+	public var emptyCallback:Void -> Void;
 
 	/**
 	 * This function will be called when value will hit it's maximum
 	 */
-	public var filledCallback:Void->Void;
+	public var filledCallback:Void -> Void;
 
 	/**
 	 * Object to track value from
@@ -127,8 +125,7 @@ class FlxBar extends FlxSprite
 	 * It is recommended to use this property in tile render mode
 	 * (although it will work in blit render mode also).
 	 */
-	@:isVar
-	public var frontFrames(get, set):FlxImageFrame;
+	@:isVar public var frontFrames(get, set):FlxImageFrame;
 
 	public var backFrames(get, set):FlxImageFrame;
 
@@ -156,7 +153,7 @@ class FlxBar extends FlxSprite
 	var _filledBarRect:Rectangle;
 	var _filledBarPoint:Point;
 
-	var _maxPercent:Int = 100;
+	var _maxPercent = 100;
 
 	/**
 	 * Create a new FlxBar Object
@@ -172,9 +169,7 @@ class FlxBar extends FlxSprite
 	 * @param	max			The maximum value the bar can reach. I.e. for a progress bar this would typically be 100.
 	 * @param	showBorder	Should the bar be outlined with a solid border?
 	 */
-	public function new(x:Float = 0, y:Float = 0, ?direction:FlxBarFillDirection, width:Int = 100, height:Int = 10, ?parentRef:Dynamic, variable:String = "",
-			min:Float = 0, max:Float = 100, showBorder:Bool = false)
-	{
+	public function new(x = .0, y = .0, ?direction:FlxBarFillDirection, width = 100, height = 10, ?parentRef:Dynamic, variable = "", min = .0, max = 100., showBorder = false) {
 		super(x, y);
 
 		direction = (direction == null) ? FlxBarFillDirection.LEFT_TO_RIGHT : direction;
@@ -184,16 +179,12 @@ class FlxBar extends FlxSprite
 
 		_filledBarPoint = new Point();
 		_filledBarRect = new Rectangle();
-		if (FlxG.render.blit)
-		{
+		if (FlxG.render.blit) {
 			_zeroOffset = new Point();
 			_emptyBarRect = new Rectangle();
 			makeGraphic(width, height, FlxColor.TRANSPARENT, true);
-		}
-		else
-		{
+		} else
 			_filledFlxRect = FlxRect.get();
-		}
 
 		if (parentRef != null)
 		{
@@ -206,22 +197,19 @@ class FlxBar extends FlxSprite
 		setRange(min, max);
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		positionOffset = FlxDestroyUtil.put(positionOffset);
 
-		if (FlxG.render.tile)
-		{
+		if (FlxG.render.tile) {
 			frontFrames = null;
 			_filledFlxRect = FlxDestroyUtil.put(_filledFlxRect);
-		}
-		else
-		{
+		} else {
 			_emptyBarRect = null;
 			_zeroOffset = null;
 			_emptyBar = FlxDestroyUtil.dispose(_emptyBar);
 			_filledBar = FlxDestroyUtil.dispose(_filledBar);
 		}
+
 		_filledBarRect = null;
 		_filledBarPoint = null;
 
@@ -241,13 +229,11 @@ class FlxBar extends FlxSprite
 	 * @param	offsetY		The offset on Y in relation to the origin x/y of the parent
 	 * @see		stopTrackingParent
 	 */
-	public function trackParent(offsetX:Int, offsetY:Int):Void
-	{
+	public function trackParent(offsetX:Int, offsetY:Int):Void {
 		fixedPosition = false;
 		positionOffset = FlxPoint.get(offsetX, offsetY);
 
-		if (Reflect.hasField(parent, "scrollFactor"))
-		{
+		if (Reflect.hasField(parent, "scrollFactor")) {
 			scrollFactor.x = parent.scrollFactor.x;
 			scrollFactor.y = parent.scrollFactor.y;
 		}
@@ -262,15 +248,11 @@ class FlxBar extends FlxSprite
 	 * @param	offsetX		The offset on X in relation to the origin x/y of the parent
 	 * @param	offsetY		The offset on Y in relation to the origin x/y of the parent
 	 */
-	public function setParent(parentRef:Dynamic, variable:String, track:Bool = false, offsetX:Int = 0, offsetY:Int = 0):Void
-	{
+	public function setParent(parentRef:Dynamic, variable:String, track = false, offsetX = 0, offsetY = 0):Void {
 		parent = parentRef;
 		parentVariable = variable;
 
-		if (track)
-		{
-			trackParent(offsetX, offsetY);
-		}
+		if (track) trackParent(offsetX, offsetY);
 
 		updateValueFromParent();
 	}
@@ -281,8 +263,7 @@ class FlxBar extends FlxSprite
 	 * @param	posX	X coordinate of the health bar now it's no longer tracking the parent sprite
 	 * @param	posY	Y coordinate of the health bar now it's no longer tracking the parent sprite
 	 */
-	public function stopTrackingParent(posX:Int, posY:Int):Void
-	{
+	public function stopTrackingParent(posX:Int, posY:Int):Void {
 		fixedPosition = true;
 		x = posX;
 		y = posY;
@@ -297,8 +278,7 @@ class FlxBar extends FlxSprite
 	 * @param	onFilled		The function that is called if the value of this FlxBar reaches max
 	 * @param	killOnEmpty		If set it will call FlxBar.kill() if the value reaches min
 	 */
-	public function setCallbacks(onEmpty:Void->Void, onFilled:Void->Void, killOnEmpty:Bool = false):Void
-	{
+	public function setCallbacks(onEmpty:Void -> Void, onFilled:Void -> Void, killOnEmpty = false):Void {
 		emptyCallback = (onEmpty != null) ? onEmpty : emptyCallback;
 		filledCallback = (onFilled != null) ? onFilled : filledCallback;
 		this.killOnEmpty = killOnEmpty;
@@ -310,11 +290,9 @@ class FlxBar extends FlxSprite
 	 * @param	min			The minimum value. I.e. for a progress bar this would be zero (nothing loaded yet)
 	 * @param	max			The maximum value the bar can reach. I.e. for a progress bar this would typically be 100.
 	 */
-	public function setRange(min:Float, max:Float):Void
-	{
-		if (max <= min)
-		{
-			throw "FlxBar: max cannot be less than or equal to min";
+	public function setRange(min:Float, max:Float):Void {
+		if (max <= min) {
+			FlxG.log.critical("FlxBar: max cannot be less than or equal to min");
 			return;
 		}
 
@@ -325,14 +303,7 @@ class FlxBar extends FlxSprite
 
 		pxPerPercent = (_fillHorizontal) ? (barWidth / _maxPercent) : (barHeight / _maxPercent);
 
-		if (!Math.isNaN(value))
-		{
-			value = Math.max(min, Math.min(value, max));
-		}
-		else
-		{
-			value = min;
-		}
+		value = !Math.isNaN(value) ? Math.max(min, Math.min(value, max)) : min;
 	}
 
 	/**
@@ -346,8 +317,7 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return	This FlxBar object with generated images for front and background.
 	 */
-	public function createFilledBar(empty:FlxColor, fill:FlxColor, showBorder:Bool = false, border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
+	public function createFilledBar(empty:FlxColor, fill:FlxColor, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
 		createColoredEmptyBar(empty, showBorder, border, borderSize);
 		createColoredFilledBar(fill, showBorder, border, borderSize);
 		return this;
@@ -362,44 +332,30 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return	This FlxBar object with generated image for rendering health bar background.
 	 */
-	public function createColoredEmptyBar(empty:FlxColor, showBorder:Bool = false, border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
-		if (FlxG.render.tile)
-		{
-			var emptyKey:String = "empty: " + barWidth + "x" + barHeight + ":" + empty.toHexString();
-			if (showBorder)
-				emptyKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
+	public function createColoredEmptyBar(empty:FlxColor, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
+		if (FlxG.render.tile) {
+			var emptyKey = "empty: " + barWidth + "x" + barHeight + ":" + empty.toHexString();
+			if (showBorder) emptyKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
 
-			if (!FlxG.bitmap.checkCache(emptyKey))
-			{
+			if (!FlxG.bitmap.checkCache(emptyKey)) {
 				var emptyBar:BitmapData = null;
 
-				if (showBorder)
-				{
+				if (showBorder) {
 					emptyBar = new BitmapData(barWidth, barHeight, true, border);
 					emptyBar.fillRect(new Rectangle(borderSize, borderSize, barWidth - borderSize * 2, barHeight - borderSize * 2), empty);
-				}
-				else
-				{
+				} else
 					emptyBar = new BitmapData(barWidth, barHeight, true, empty);
-				}
 
 				FlxG.bitmap.add(emptyBar, false, emptyKey);
 			}
 
 			frames = FlxG.bitmap.get(emptyKey).imageFrame;
-		}
-		else
-		{
-			if (showBorder)
-			{
+		} else {
+			if (showBorder) {
 				_emptyBar = new BitmapData(barWidth, barHeight, true, border);
 				_emptyBar.fillRect(new Rectangle(borderSize, borderSize, barWidth - borderSize * 2, barHeight - borderSize * 2), empty);
-			}
-			else
-			{
+			} else
 				_emptyBar = new BitmapData(barWidth, barHeight, true, empty);
-			}
 
 			_emptyBarRect.setTo(0, 0, barWidth, barHeight);
 			updateEmptyBar();
@@ -416,44 +372,30 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return	This FlxBar object with generated image for rendering actual values.
 	 */
-	public function createColoredFilledBar(fill:FlxColor, showBorder:Bool = false, border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
-		if (FlxG.render.tile)
-		{
-			var filledKey:String = "filled: " + barWidth + "x" + barHeight + ":" + fill.toHexString();
-			if (showBorder)
-				filledKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
+	public function createColoredFilledBar(fill:FlxColor, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
+		if (FlxG.render.tile) {
+			var filledKey = "filled: " + barWidth + "x" + barHeight + ":" + fill.toHexString();
+			if (showBorder) filledKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
 
-			if (!FlxG.bitmap.checkCache(filledKey))
-			{
+			if (!FlxG.bitmap.checkCache(filledKey)) {
 				var filledBar:BitmapData = null;
 
-				if (showBorder)
-				{
+				if (showBorder) {
 					filledBar = new BitmapData(barWidth, barHeight, true, border);
 					filledBar.fillRect(new Rectangle(borderSize, borderSize, barWidth - borderSize * 2, barHeight - borderSize * 2), fill);
-				}
-				else
-				{
+				} else
 					filledBar = new BitmapData(barWidth, barHeight, true, fill);
-				}
 
 				FlxG.bitmap.add(filledBar, false, filledKey);
 			}
 
 			frontFrames = FlxG.bitmap.get(filledKey).imageFrame;
-		}
-		else
-		{
-			if (showBorder)
-			{
+		} else {
+			if (showBorder) {
 				_filledBar = new BitmapData(barWidth, barHeight, true, border);
 				_filledBar.fillRect(new Rectangle(borderSize, borderSize, barWidth - borderSize * 2, barHeight - borderSize * 2), fill);
-			}
-			else
-			{
+			} else
 				_filledBar = new BitmapData(barWidth, barHeight, true, fill);
-			}
 
 			_filledBarRect.setTo(0, 0, barWidth, barHeight);
 			updateFilledBar();
@@ -474,9 +416,7 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return 	This FlxBar object with generated images for front and background.
 	 */
-	public function createGradientBar(empty:Array<FlxColor>, fill:Array<FlxColor>, chunkSize:Int = 1, rotation:Int = 180, showBorder:Bool = false,
-			border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
+	public function createGradientBar(empty:Array<FlxColor>, fill:Array<FlxColor>, chunkSize = 1, rotation = 180, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
 		createGradientEmptyBar(empty, chunkSize, rotation, showBorder, border, borderSize);
 		createGradientFilledBar(fill, chunkSize, rotation, showBorder, border, borderSize);
 		return this;
@@ -493,55 +433,33 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return 	This FlxBar object with generated image for background rendering.
 	 */
-	public function createGradientEmptyBar(empty:Array<FlxColor>, chunkSize:Int = 1, rotation:Int = 180, showBorder:Bool = false,
-			border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
-		if (FlxG.render.tile)
-		{
-			var emptyKey:String = "Gradient:" + barWidth + "x" + barHeight + ",colors:[";
-			for (col in empty)
-			{
-				emptyKey += col.toHexString() + ",";
-			}
+	public function createGradientEmptyBar(empty:Array<FlxColor>, chunkSize = 1, rotation = 180, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
+		if (FlxG.render.tile) {
+			var emptyKey = "Gradient:" + barWidth + "x" + barHeight + ",colors:[";
+			for (col in empty) emptyKey += col.toHexString() + ",";
 			emptyKey += "],chunkSize: " + chunkSize + ",rotation: " + rotation;
 
-			if (showBorder)
-			{
-				emptyKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
-			}
+			if (showBorder) emptyKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
 
-			if (!FlxG.bitmap.checkCache(emptyKey))
-			{
+			if (!FlxG.bitmap.checkCache(emptyKey)) {
 				var emptyBar:BitmapData = null;
 
-				if (showBorder)
-				{
+				if (showBorder) {
 					emptyBar = new BitmapData(barWidth, barHeight, true, border);
-					FlxGradient.overlayGradientOnBitmapData(emptyBar, barWidth - borderSize * 2, barHeight - borderSize * 2, empty, borderSize, borderSize,
-						chunkSize, rotation);
-				}
-				else
-				{
+					FlxGradient.overlayGradientOnBitmapData(emptyBar, barWidth - borderSize * 2, barHeight - borderSize * 2, empty, borderSize, borderSize, chunkSize, rotation);
+				} else
 					emptyBar = FlxGradient.createGradientBitmapData(barWidth, barHeight, empty, chunkSize, rotation);
-				}
 
 				FlxG.bitmap.add(emptyBar, false, emptyKey);
 			}
 
 			frames = FlxG.bitmap.get(emptyKey).imageFrame;
-		}
-		else
-		{
-			if (showBorder)
-			{
+		} else {
+			if (showBorder) {
 				_emptyBar = new BitmapData(barWidth, barHeight, true, border);
-				FlxGradient.overlayGradientOnBitmapData(_emptyBar, barWidth - borderSize * 2, barHeight - borderSize * 2, empty, borderSize, borderSize,
-					chunkSize, rotation);
-			}
-			else
-			{
+				FlxGradient.overlayGradientOnBitmapData(_emptyBar, barWidth - borderSize * 2, barHeight - borderSize * 2, empty, borderSize, borderSize, chunkSize, rotation);
+			} else
 				_emptyBar = FlxGradient.createGradientBitmapData(barWidth, barHeight, empty, chunkSize, rotation);
-			}
 
 			_emptyBarRect.setTo(0, 0, barWidth, barHeight);
 			updateEmptyBar();
@@ -561,55 +479,33 @@ class FlxBar extends FlxSprite
 	 * @param   borderSize  The size of the border, in pixels.
 	 * @return 	This FlxBar object with generated image for rendering actual values.
 	 */
-	public function createGradientFilledBar(fill:Array<FlxColor>, chunkSize:Int = 1, rotation:Int = 180, showBorder:Bool = false,
-			border:FlxColor = FlxColor.WHITE, borderSize:Int = 1):FlxBar
-	{
-		if (FlxG.render.tile)
-		{
-			var filledKey:String = "Gradient:" + barWidth + "x" + barHeight + ",colors:[";
-			for (col in fill)
-			{
-				filledKey += col.toHexString() + ",";
-			}
+	public function createGradientFilledBar(fill:Array<FlxColor>, chunkSize = 1, rotation = 180, showBorder = false, border = FlxColor.WHITE, borderSize = 1):FlxBar {
+		if (FlxG.render.tile) {
+			var filledKey = "Gradient:" + barWidth + "x" + barHeight + ",colors:[";
+			for (col in fill) filledKey += col.toHexString() + ",";
 			filledKey += "],chunkSize: " + chunkSize + ",rotation: " + rotation;
 
-			if (showBorder)
-			{
-				filledKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
-			}
+			if (showBorder) filledKey += ",border: " + border.toHexString() + "borderSize: " + borderSize;
 
-			if (!FlxG.bitmap.checkCache(filledKey))
-			{
+			if (!FlxG.bitmap.checkCache(filledKey)) {
 				var filledBar:BitmapData = null;
 
-				if (showBorder)
-				{
+				if (showBorder) {
 					filledBar = new BitmapData(barWidth, barHeight, true, border);
-					FlxGradient.overlayGradientOnBitmapData(filledBar, barWidth - borderSize * 2, barHeight - borderSize * 2, fill, borderSize, borderSize,
-						chunkSize, rotation);
-				}
-				else
-				{
+					FlxGradient.overlayGradientOnBitmapData(filledBar, barWidth - borderSize * 2, barHeight - borderSize * 2, fill, borderSize, borderSize, chunkSize, rotation);
+				} else
 					filledBar = FlxGradient.createGradientBitmapData(barWidth, barHeight, fill, chunkSize, rotation);
-				}
 
 				FlxG.bitmap.add(filledBar, false, filledKey);
 			}
 
 			frontFrames = FlxG.bitmap.get(filledKey).imageFrame;
-		}
-		else
-		{
-			if (showBorder)
-			{
+		} else {
+			if (showBorder) {
 				_filledBar = new BitmapData(barWidth, barHeight, true, border);
-				FlxGradient.overlayGradientOnBitmapData(_filledBar, barWidth - borderSize * 2, barHeight - borderSize * 2, fill, borderSize, borderSize,
-					chunkSize, rotation);
-			}
-			else
-			{
+				FlxGradient.overlayGradientOnBitmapData(_filledBar, barWidth - borderSize * 2, barHeight - borderSize * 2, fill, borderSize, borderSize, chunkSize, rotation);
+			} else
 				_filledBar = FlxGradient.createGradientBitmapData(barWidth, barHeight, fill, chunkSize, rotation);
-			}
 
 			_filledBarRect.setTo(0, 0, barWidth, barHeight);
 			updateFilledBar();
@@ -630,9 +526,7 @@ class FlxBar extends FlxSprite
 	 * @param	fillBackground		If no foreground (fill) image is given, use this colour value instead. 0xAARRGGBB format
 	 * @return	This FlxBar object with generated images for front and background.
 	 */
-	public function createImageBar(?empty:FlxGraphicAsset, ?fill:FlxGraphicAsset, emptyBackground:FlxColor = FlxColor.BLACK,
-			fillBackground:FlxColor = FlxColor.LIME):FlxBar
-	{
+	public function createImageBar(?empty:FlxGraphicAsset, ?fill:FlxGraphicAsset, emptyBackground = FlxColor.BLACK, fillBackground = FlxColor.LIME):FlxBar {
 		createImageEmptyBar(empty, emptyBackground);
 		createImageFilledBar(fill, fillBackground);
 		return this;
@@ -645,18 +539,11 @@ class FlxBar extends FlxSprite
 	 * @param	emptyBackground		If no background (empty) image is given, use this colour value instead. 0xAARRGGBB format
 	 * @return	This FlxBar object with generated image for background rendering.
 	 */
-	public function createImageEmptyBar(?empty:FlxGraphicAsset, emptyBackground:FlxColor = FlxColor.BLACK):FlxBar
-	{
-		if (empty != null)
-		{
-			var emptyGraphic:FlxGraphic = FlxG.bitmap.add(empty);
+	public function createImageEmptyBar(?empty:FlxGraphicAsset, emptyBackground = FlxColor.BLACK):FlxBar {
+		if (empty != null) {
+			final emptyGraphic = FlxG.bitmap.add(empty);
 
-			if (FlxG.render.tile)
-			{
-				frames = emptyGraphic.imageFrame;
-			}
-			else
-			{
+			if (!FlxG.render.tile) {
 				_emptyBar = emptyGraphic.bitmap.clone();
 
 				barWidth = _emptyBar.width;
@@ -665,17 +552,13 @@ class FlxBar extends FlxSprite
 				_emptyBarRect.setTo(0, 0, barWidth, barHeight);
 
 				if (graphic == null || (frame.sourceSize.x != barWidth || frame.sourceSize.y != barHeight))
-				{
 					makeGraphic(barWidth, barHeight, FlxColor.TRANSPARENT, true);
-				}
 
 				updateEmptyBar();
-			}
-		}
-		else
-		{
+			} else
+				frames = emptyGraphic.imageFrame;
+		} else
 			createColoredEmptyBar(emptyBackground);
-		}
 
 		return this;
 	}
@@ -687,57 +570,41 @@ class FlxBar extends FlxSprite
 	 * @param	fillBackground		If no foreground (fill) image is given, use this colour value instead. 0xAARRGGBB format
 	 * @return	This FlxBar object with generated image for rendering actual values.
 	 */
-	public function createImageFilledBar(?fill:FlxGraphicAsset, fillBackground:FlxColor = FlxColor.LIME):FlxBar
-	{
-		if (fill != null)
-		{
-			var filledGraphic:FlxGraphic = FlxG.bitmap.add(fill);
+	public function createImageFilledBar(?fill:FlxGraphicAsset, fillBackground = FlxColor.LIME):FlxBar {
+		if (fill != null) {
+			final filledGraphic = FlxG.bitmap.add(fill);
 
-			if (FlxG.render.tile)
-			{
-				frontFrames = filledGraphic.imageFrame;
-			}
-			else
-			{
+			if (!FlxG.render.tile) {
 				_filledBar = filledGraphic.bitmap.clone();
 
 				_filledBarRect.setTo(0, 0, barWidth, barHeight);
 
 				if (graphic == null || (frame.sourceSize.x != barWidth || frame.sourceSize.y != barHeight))
-				{
 					makeGraphic(barWidth, barHeight, FlxColor.TRANSPARENT, true);
-				}
 
 				pxPerPercent = (_fillHorizontal) ? (barWidth / _maxPercent) : (barHeight / _maxPercent);
 				updateFilledBar();
-			}
-		}
-		else
-		{
+			} else
+				frontFrames = filledGraphic.imageFrame;
+		} else
 			createColoredFilledBar(fillBackground);
-		}
 
 		return this;
 	}
 
-	function set_fillDirection(direction:FlxBarFillDirection):FlxBarFillDirection
-	{
+	private function set_fillDirection(direction:FlxBarFillDirection):FlxBarFillDirection {
 		fillDirection = direction;
 
-		switch (direction)
-		{
-			case LEFT_TO_RIGHT, RIGHT_TO_LEFT, HORIZONTAL_INSIDE_OUT, HORIZONTAL_OUTSIDE_IN:
-				_fillHorizontal = true;
-
-			case TOP_TO_BOTTOM, BOTTOM_TO_TOP, VERTICAL_INSIDE_OUT, VERTICAL_OUTSIDE_IN:
-				_fillHorizontal = false;
+		_fillHorizontal = switch (direction) {
+			case LEFT_TO_RIGHT, RIGHT_TO_LEFT, HORIZONTAL_INSIDE_OUT, HORIZONTAL_OUTSIDE_IN: true;
+			case TOP_TO_BOTTOM, BOTTOM_TO_TOP, VERTICAL_INSIDE_OUT, VERTICAL_OUTSIDE_IN: false;
+			case _: false;
 		}
 
 		return fillDirection;
 	}
 
-	function updateValueFromParent():Void
-	{
+	private function updateValueFromParent():Void {
 		value = Reflect.getProperty(parent, parentVariable);
 	}
 
@@ -745,8 +612,7 @@ class FlxBar extends FlxSprite
 	 * Updates health bar view according its current value.
 	 * Called when the health bar detects a change in the health of the parent.
 	 */
-	public function updateBar():Void
-	{
+	public function updateBar():Void {
 		updateEmptyBar();
 		updateFilledBar();
 	}
@@ -754,10 +620,8 @@ class FlxBar extends FlxSprite
 	/**
 	 * Stamps health bar background on its pixels
 	 */
-	public function updateEmptyBar():Void
-	{
-		if (FlxG.render.blit)
-		{
+	public function updateEmptyBar():Void {
+		if (FlxG.render.blit) {
 			pixels.copyPixels(_emptyBar, _emptyBarRect, _zeroOffset);
 			dirty = true;
 		}
@@ -766,93 +630,67 @@ class FlxBar extends FlxSprite
 	/**
 	 * Stamps health bar foreground on its pixels
 	 */
-	public function updateFilledBar():Void
-	{
+	public function updateFilledBar():Void {
 		_filledBarRect.width = barWidth;
 		_filledBarRect.height = barHeight;
 
-		var fraction:Float = (value - min) / range;
-		var percent:Float = fraction * _maxPercent;
-		var maxScale:Float = (_fillHorizontal) ? barWidth : barHeight;
-		var interval:Float = continuous ? {
+		final fraction = (value - min) / range;
+		final percent = fraction * _maxPercent;
+		final maxScale = (_fillHorizontal) ? barWidth : barHeight;
+		final interval = continuous ? {
 			fraction * maxScale;
 		} : {
-			var scaleInterval:Float = maxScale / numDivisions;
+			final scaleInterval = maxScale / numDivisions;
 			Math.round(Std.int(fraction * maxScale / scaleInterval) * scaleInterval);
 		}
 
 		if (_fillHorizontal)
-		{
 			_filledBarRect.width = floorFunc(interval);
-		}
 		else
-		{
 			_filledBarRect.height = floorFunc(interval);
-		}
 
-		if (percent > 0)
-		{
-			switch (fillDirection)
-			{
+		if (percent > 0) {
+			switch (fillDirection) {
 				case LEFT_TO_RIGHT, TOP_TO_BOTTOM:
-				//	Already handled above
-
+					//	Already handled above
 				case BOTTOM_TO_TOP:
 					_filledBarRect.y = barHeight - _filledBarRect.height;
 					_filledBarPoint.y = barHeight - _filledBarRect.height;
-
 				case RIGHT_TO_LEFT:
 					_filledBarRect.x = barWidth - _filledBarRect.width;
 					_filledBarPoint.x = barWidth - _filledBarRect.width;
-
 				case HORIZONTAL_INSIDE_OUT:
 					_filledBarRect.x = floorFunc((barWidth * .5) - (_filledBarRect.width * .5));
 					_filledBarPoint.x = floorFunc((barWidth * .5) - (_filledBarRect.width * .5));
-
 				case HORIZONTAL_OUTSIDE_IN:
 					_filledBarRect.width = floorFunc(maxScale - interval);
 					_filledBarPoint.x = floorFunc((barWidth - _filledBarRect.width) * .5);
-
 				case VERTICAL_INSIDE_OUT:
 					_filledBarRect.y = floorFunc((barHeight * .5) - (_filledBarRect.height * .5));
 					_filledBarPoint.y = floorFunc((barHeight * .5) - (_filledBarRect.height * .5));
-
 				case VERTICAL_OUTSIDE_IN:
 					_filledBarRect.height = floorFunc(maxScale - interval);
 					_filledBarPoint.y = floorFunc((barHeight - _filledBarRect.height) * .5);
 			}
 
-			if (FlxG.render.blit)
-			{
-				pixels.copyPixels(_filledBar, _filledBarRect, _filledBarPoint, null, null, true);
-			}
-			else
-			{
-				if (frontFrames != null)
-				{
+			if (!FlxG.render.blit) {
+				if (frontFrames != null) {
 					_filledFlxRect.copyFromFlash(_filledBarRect).round();
 					_frontFrame = frontFrames.frame.clipTo(_filledFlxRect, _frontFrame);
 				}
-			}
+			} else
+				pixels.copyPixels(_filledBar, _filledBarRect, _filledBarPoint, null, null, true);
 		}
 
-		if (FlxG.render.blit)
-		{
-			dirty = true;
-		}
+		if (FlxG.render.blit) dirty = true;
 	}
 
-	override public function update(elapsed:Float):Void
-	{
-		if (parent != null)
-		{
+	override public function update(elapsed:Float):Void {
+		if (parent != null) {
 			if (Reflect.getProperty(parent, parentVariable) != value)
-			{
 				updateValueFromParent();
-			}
 
-			if (!fixedPosition)
-			{
+			if (!fixedPosition) {
 				x = parent.x + positionOffset.x;
 				y = parent.y + positionOffset.y;
 			}
@@ -861,67 +699,45 @@ class FlxBar extends FlxSprite
 		super.update(elapsed);
 	}
 
-	override public function draw():Void
-	{
+	override public function draw():Void {
 		super.draw();
 
-		if (!FlxG.render.tile)
-			return;
-
-		if (alpha == 0)
-			return;
+		if (!FlxG.render.tile || alpha == 0) return;
 
 		if (percent > 0 && _frontFrame.type != FlxFrameType.EMPTY)
-		{
-			for (camera in getCamerasLegacy())
-			{
-				if (!camera.visible || !camera.exists || !isOnScreen(camera))
-				{
-					continue;
-				}
+			for (camera in getCamerasLegacy()) {
+				if (!camera.visible || !camera.exists || !isOnScreen(camera)) continue;
 
 				_frontFrame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
 				_matrix.translate(-origin.x, -origin.y);
 				_matrix.scale(scale.x, scale.y);
 
 				// rotate matrix if sprite's graphic isn't prerotated
-				if (bakedRotationAngle <= 0)
-				{
+				if (bakedRotationAngle <= 0) {
 					updateTrig();
 
-					if (angle != 0)
-						_matrix.rotateWithTrig(_cosAngle, _sinAngle);
+					if (angle != 0) _matrix.rotateWithTrig(_cosAngle, _sinAngle);
 				}
 
 				getScreenPosition(_point, camera).subtract(offset);
 				_point.add(origin.x, origin.y);
 				_matrix.translate(_point.x, _point.y);
 
-				if (isPixelPerfectRender(camera))
-				{
+				if (isPixelPerfectRender(camera)) {
 					_matrix.tx = Math.floor(_matrix.tx);
 					_matrix.ty = Math.floor(_matrix.ty);
 				}
 
 				camera.drawPixels(_frontFrame, _matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 			}
-		}
 	}
 
-	override function set_pixels(pixels:BitmapData):BitmapData
-	{
-		if (FlxG.render.tile)
-		{
-			return pixels; // hack
-		}
-		else
-		{
-			return super.set_pixels(pixels);
-		}
+	override function set_pixels(pixels:BitmapData):BitmapData {
+		if (FlxG.render.tile) return pixels; // hack
+		else return super.set_pixels(pixels);
 	}
 
-	override public function toString():String
-	{
+	override public function toString():String {
 		return FlxStringUtil.getDebugString([
 			LabelValuePair.weak("min", min),
 			LabelValuePair.weak("max", max),
@@ -932,132 +748,82 @@ class FlxBar extends FlxSprite
 		]);
 	}
 
-	function get_percent():Float
-	{
-		if (value > max)
-		{
-			return _maxPercent;
-		}
-
+	private function get_percent():Float {
+		if (value > max) return _maxPercent;
 		return ((value - min) / range) * _maxPercent;
 	}
 
-	function get_floorPercent():Int
-	{
-		if (value > max)
-		{
-			return _maxPercent;
-		}
-
+	private function get_floorPercent():Int {
+		if (value > max) return _maxPercent;
 		return Math.floor(((value - min) / range) * _maxPercent);
 	}
 
-	function set_percent(newPct:Float):Float
-	{
-		if (newPct >= 0 && newPct <= _maxPercent)
-		{
-			value = pct * newPct;
-		}
+	private function set_percent(newPct:Float):Float {
+		if (newPct >= 0 && newPct <= _maxPercent) value = pct * newPct;
 		return newPct;
 	}
 
-	function set_value(newValue:Float):Float
-	{
+	private function set_value(newValue:Float):Float {
 		value = Math.max(min, Math.min(newValue, max));
 
-		if (value == min && emptyCallback != null)
-		{
-			emptyCallback();
-		}
-
-		if (value == max && filledCallback != null)
-		{
-			filledCallback();
-		}
-
-		if (value == min && killOnEmpty)
-		{
-			kill();
-		}
+		if (value == min && emptyCallback != null) emptyCallback();
+		if (value == max && filledCallback != null) filledCallback();
+		if (value == min && killOnEmpty) kill();
 
 		updateBar();
 		return newValue;
 	}
 
-	function set_numDivisions(newValue:Int):Int
-	{
+	private function set_numDivisions(newValue:Int):Int {
 		numDivisions = (newValue > 0) ? newValue : 100;
 		updateFilledBar();
 		return newValue;
 	}
 
-	function get_frontFrames():FlxImageFrame
-	{
-		if (FlxG.render.tile)
-		{
-			return frontFrames;
-		}
+	private function get_frontFrames():FlxImageFrame{
+		if (FlxG.render.tile) return frontFrames;
 		return null;
 	}
 
-	function set_frontFrames(value:FlxImageFrame):FlxImageFrame
-	{
-		if (FlxG.render.tile)
-		{
-			/*if (value != null)
-				value.parent.incrementUseCount();
-
-			if (frontFrames != null)
-				frontFrames.parent.decrementUseCount();*/
-
+	private function set_frontFrames(value:FlxImageFrame):FlxImageFrame {
+		if (FlxG.render.tile) {
 			frontFrames = value;
 			_frontFrame = (value != null) ? value.frame.copyTo(_frontFrame) : FlxDestroyUtil.destroy(_frontFrame);
-		}
-		else
-		{
+		} else
 			createImageFilledBar(value.frame.paint());
-		}
+
 		return value;
 	}
 
-	function get_backFrames():FlxImageFrame
-	{
-		if (FlxG.render.tile)
-		{
-			return cast frames;
-		}
+	private function get_backFrames():FlxImageFrame {
+		if (FlxG.render.tile) return cast frames;
 		return null;
 	}
 
-	function set_backFrames(value:FlxImageFrame):FlxImageFrame
-	{
+	private function set_backFrames(value:FlxImageFrame):FlxImageFrame {
 		if (FlxG.render.tile)
-		{
 			frames = value;
-		}
 		else
-		{
 			createImageEmptyBar(value.frame.paint());
-		}
 		return value;
 	}
 
-	inline function floorFunc(x:Float):Float
-	{
+	inline function floorFunc(x:Float):Float {
 		return continuous ? x : Std.int(x);
 	}
 
 	@:noCompletion public var unbounded(get, set):Bool;
 
-	@:noCompletion inline function get_unbounded()
+	@:noCompletion inline function get_unbounded() {
 		return continuous;
+	}
 
-	@:noCompletion inline function set_unbounded(value:Bool):Bool
+	@:noCompletion inline function set_unbounded(value:Bool):Bool {
 		return continuous = value;
+	}
 }
 
-enum FlxBarFillDirection
-{
+enum FlxBarFillDirection {
 	LEFT_TO_RIGHT;
 	RIGHT_TO_LEFT;
 	TOP_TO_BOTTOM;

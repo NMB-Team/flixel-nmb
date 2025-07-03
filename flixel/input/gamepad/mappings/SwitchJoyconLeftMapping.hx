@@ -7,31 +7,26 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 /**
  * @since 4.8.0
  */
-class SwitchJoyconLeftMapping extends FlxTypedGamepadMapping<SwitchJoyconLeftID>
-{
+class SwitchJoyconLeftMapping extends FlxTypedGamepadMapping<SwitchJoyconLeftID> {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 32;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 33;
+	static inline final LEFT_ANALOG_STICK_FAKE_X = 32;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y = 33;
 
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 34;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 35;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X = 34;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y = 35;
 
-	static inline var LEFT_TRIGGER_FAKE:Int = 36;
-	static inline var RIGHT_TRIGGER_FAKE:Int = 37;
+	static inline final LEFT_TRIGGER_FAKE = 36;
+	static inline final RIGHT_TRIGGER_FAKE = 37;
 	#end
 
-	override function initValues():Void
-	{
+	override function initValues():Void {
 		leftStick = SwitchJoyconLeftID.LEFT_ANALOG_STICK;
 		supportsMotion = true;
-		supportsPointer = false;
-		bottomIsAccept = false;
+		supportsPointer = bottomIsAccept = false;
 	}
 
-	override function getID(rawID:SwitchJoyconLeftID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	override function getID(rawID:SwitchJoyconLeftID):FlxGamepadInputID {
+		return switch (rawID) {
 			case SwitchJoyconLeftID.DOWN: A;
 			case SwitchJoyconLeftID.RIGHT: B;
 			case SwitchJoyconLeftID.LEFT: X;
@@ -50,10 +45,8 @@ class SwitchJoyconLeftMapping extends FlxTypedGamepadMapping<SwitchJoyconLeftID>
 		}
 	}
 
-	override function getRawID(id:FlxGamepadInputID):SwitchJoyconLeftID
-	{
-		return switch (id)
-		{
+	override function getRawID(id:FlxGamepadInputID):SwitchJoyconLeftID {
+		return switch (id) {
 			case A: SwitchJoyconLeftID.DOWN;
 			case B: SwitchJoyconLeftID.RIGHT;
 			case X: SwitchJoyconLeftID.LEFT;
@@ -76,10 +69,8 @@ class SwitchJoyconLeftMapping extends FlxTypedGamepadMapping<SwitchJoyconLeftID>
 		}
 	}
 
-	override function getInputLabel(id:FlxGamepadInputID)
-	{
-		return switch (id)
-		{
+	override function getInputLabel(id:FlxGamepadInputID) {
+		return switch (id) {
 			case A: "down";
 			case B: "right";
 			case X: "left";
@@ -93,16 +84,15 @@ class SwitchJoyconLeftMapping extends FlxTypedGamepadMapping<SwitchJoyconLeftID>
 		}
 	}
 
-	override function getMappedInput(id:FlxGamepadInputID)
-	{
+	override function getMappedInput(id:FlxGamepadInputID) {
 		return FlxGamepadMappedInput.SWITCH_JOYCON_LEFT(getRawID(id));
 	}
 
 	#if FLX_JOYSTICK_API
-	override function axisIndexToRawID(axisID:SwitchJoyconLeftID):Int
-	{
+	override function axisIndexToRawID(axisID:SwitchJoyconLeftID):Int {
 		// Analog stick and trigger values overlap with regular buttons so we remap to "fake" button ID's
-		return if (axisID == leftStick.x)
+		return
+			if (axisID == leftStick.x)
 				LEFT_ANALOG_STICK_FAKE_X;
 			else if (axisID == leftStick.y)
 				LEFT_ANALOG_STICK_FAKE_Y;

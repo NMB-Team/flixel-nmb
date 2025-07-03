@@ -128,14 +128,14 @@ class FlxFlicker implements IFlxDestroyable {
 	 * Temporarily pause the flickering, so it can be resumed later.
 	 */
 	public inline function pause():Void {
-		timer?.active = false;
+		if (timer != null) timer.active = false;
 	}
 
 	/**
 	 * Resume the flickering after it has been temporarily paused.
 	 */
 	public inline function resume():Void {
-		timer?.active = true;
+		if (timer != null) timer.active = true;
 	}
 
 	/**

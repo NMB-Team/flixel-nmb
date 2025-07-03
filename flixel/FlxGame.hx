@@ -390,7 +390,7 @@ class FlxGame extends Sprite {
 		if (!FlxG.autoPause) return;
 
 		#if FLX_FOCUS_LOST_SCREEN
-		_focusLostScreen?.visible = false;
+		if (_focusLostScreen != null) _focusLostScreen.visible = false;
 		#end
 
 		#if FLX_DEBUG
@@ -413,7 +413,7 @@ class FlxGame extends Sprite {
 		if (!FlxG.autoPause) return;
 
 		#if FLX_FOCUS_LOST_SCREEN
-		_focusLostScreen?.visible = true;
+		if (_focusLostScreen != null) _focusLostScreen.visible = true;
 		#end
 
 		#if FLX_DEBUG
@@ -428,7 +428,7 @@ class FlxGame extends Sprite {
 	}
 
 	@:allow(flixel.FlxG)
-	function onResize(_):Void {
+	private function onResize(_):Void {
 		final width = FlxG.stage.stageWidth;
 		final height = FlxG.stage.stageHeight;
 
@@ -651,15 +651,13 @@ class FlxGame extends Sprite {
 		if (_nextState != null) switchState();
 
 		#if FLX_DEBUG
-		if (FlxG.debugger.visible)
-			ticks = getTicks();
+		if (FlxG.debugger.visible) ticks = getTicks();
 		#end
 
 		updateElapsed();
-
-		FlxG.signals.preUpdate.dispatch();
-
 		updateInput();
+
+		FlxG.signals.preUpdate.dispatch(); // not sure if this will cause issues, but it did cause `key` and `mouse` input checks to run twice if this was above `updateInput()`.
 
 		#if FLX_SOUND_SYSTEM
 		FlxG.sound.update(FlxG.elapsed);
@@ -818,7 +816,7 @@ class FlxGame extends Sprite {
 		return value;
 	}
 
-	function setFiltersSuper(value:Array<BitmapFilter>):Array<BitmapFilter> {
+	private function setFiltersSuper(value:Array<BitmapFilter>):Array<BitmapFilter> {
 		return super.set_filters(value);
 	}
 }

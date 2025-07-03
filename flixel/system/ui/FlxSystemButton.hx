@@ -56,8 +56,8 @@ class FlxSystemButton extends Sprite implements IFlxDestroyable {
 
 		if (icon != null) changeIcon(icon);
 
-		upHandler = upHandler;
-		toggleMode = toggleMode;
+		this.upHandler = upHandler;
+		this.toggleMode = toggleMode;
 
 		addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -102,20 +102,20 @@ class FlxSystemButton extends Sprite implements IFlxDestroyable {
 		_mouseDown = true;
 	}
 
-	@:noCompletion inline final MULT_ALPHA = .2;
+	@:noCompletion final multAlpha = .2;
 	@:noCompletion inline function onMouseOver(_):Void {
 		if (!enabled) return;
-		alpha -= MULT_ALPHA;
+		alpha -= multAlpha;
 	}
 
 	@:noCompletion inline function onMouseOut(_):Void {
 		if (!enabled) return;
-		alpha += MULT_ALPHA;
+		alpha += multAlpha;
 	}
 
 	@:noCompletion inline function set_toggled(value:Bool):Bool {
 		if (toggleMode)
-			alpha = value ? MULT_ALPHA + .1 : 1;
+			alpha = value ? multAlpha + .1 : 1;
 		return toggled = value;
 	}
 }

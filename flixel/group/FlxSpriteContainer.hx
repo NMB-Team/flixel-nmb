@@ -29,22 +29,16 @@ typedef FlxSpriteContainer = FlxTypedSpriteContainer<FlxSprite>;
  * `FlxTypedSpriteContainer<FlxSprite>`.
  * @since 5.7.0
  */
-class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
-{
-	override function initGroup(maxSize):Void
-	{
+class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T> {
+	override function initGroup(maxSize):Void {
 		@:bypassAccessor
 		group = new SpriteContainer<T>(this, maxSize);
 	}
 
 	@:access(flixel.FlxCamera)
-	override function draw():Void
-	{
+	override function draw():Void {
 		final oldDefaultCameras = FlxCamera._defaultCameras;
-		if (_cameras != null)
-		{
-			FlxCamera._defaultCameras = _cameras;
-		}
+		if (_cameras != null) FlxCamera._defaultCameras = _cameras;
 
 		super.draw();
 
@@ -52,20 +46,17 @@ class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
 	}
 
 	@:deprecated("FlxSpriteContainer.group can not be set")
-	override function set_group(value:FlxTypedGroup<T>):FlxTypedGroup<T>
-	{
+	override function set_group(value:FlxTypedGroup<T>):FlxTypedGroup<T> {
 		throw "FlxSpriteContainer.group cannot be set in FlxSpriteContainers";
 	}
 
-	override function set_camera(value:FlxCamera):FlxCamera
-	{
+	override function set_camera(value:FlxCamera):FlxCamera {
 		// Do not set children's cameras, this in no longer needed
 		_cameras = value == null ? null : [value];
 		return value;
 	}
 
-	override function set_cameras(value:Array<FlxCamera>):Array<FlxCamera>
-	{
+	override function set_cameras(value:Array<FlxCamera>):Array<FlxCamera> {
 		// Do not set children's cameras, this in no longer needed
 		return _cameras = value;
 	}
@@ -76,28 +67,23 @@ class FlxTypedSpriteContainer<T:FlxSprite> extends FlxTypedSpriteGroup<T>
  * containing sprite.
  */
 @:dox(hide)
-private class SpriteContainer<T:FlxSprite> extends FlxTypedContainer<T>
-{
+private class SpriteContainer<T:FlxSprite> extends FlxTypedContainer<T> {
 	var parentSprite:FlxTypedSpriteContainer<T>;
 
-	public function new (parent:FlxTypedSpriteContainer<T>, maxSize:Int)
-	{
+	public function new (parent:FlxTypedSpriteContainer<T>, maxSize:Int) {
 		parentSprite = parent;
 		super(maxSize);
 	}
 
-	override function get_container()
-	{
+	override function get_container() {
 		return parentSprite.container;
 	}
 
-	override function getCamerasLegacy()
-	{
+	override function getCamerasLegacy() {
 		return (_cameras != null ? _cameras : parentSprite.getCamerasLegacy());
 	}
 
-	override function getCameras()
-	{
+	override function getCameras() {
 		return (_cameras != null ? _cameras : parentSprite.getCameras());
 	}
 }

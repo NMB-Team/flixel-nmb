@@ -35,7 +35,7 @@ class FlxStringUtil {
 	 */
 	public static function formatTime(seconds:Float, showMS = false):String {
 		var timeString = Std.int(seconds / 60) + ":";
-		var timeStringHelper:Int = Std.int(seconds) % 60;
+		var timeStringHelper = Std.int(seconds) % 60;
 		if (timeStringHelper < 10) timeString += "0";
 
 		timeString += timeStringHelper;
@@ -606,7 +606,7 @@ class FlxStringUtil {
 	 * Returns true if `s` equals `null` or is empty.
 	 * @since 4.1.0
 	 */
-	public static inline function isNullOrEmpty(s:String):Bool {
+	public static inline function isNullOrEmpty(s:Dynamic):Bool {
 		return s == null || s.length == 0;
 	}
 

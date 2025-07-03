@@ -23,18 +23,17 @@ using flixel.util.FlxArrayUtil;
  * @since 4.6.0
  */
 @:allow(flixel.input.actions.FlxActionManager)
-class FlxActionSet implements IFlxDestroyable
-{
+class FlxActionSet implements IFlxDestroyable {
 	/**
 	 * Name of the action set
 	 */
-	public var name(default, null):String = "";
+	public var name(default, null) = "";
 
 	#if FLX_STEAMWRAP
 	/**
 	 * This action set's numeric handle for the Steam API (ignored if not using Steam)
 	 */
-	public var steamHandle(default, null):Int = -1;
+	public var steamHandle(default, null) = -1;
 	#end
 
 	/**
@@ -50,7 +49,7 @@ class FlxActionSet implements IFlxDestroyable
 	/**
 	 * Whether this action set runs when update() is called
 	 */
-	public var active:Bool = true;
+	public var active = true;
 
 	#if FLX_STEAMWRAP
 	/**
@@ -63,56 +62,49 @@ class FlxActionSet implements IFlxDestroyable
 	 * This is unique to steam inputs, which cannot be constructed directly.
 	 * Non-steam inputs can be constructed and added to the actions normally.
 	 *
-	 * @param	SteamSet	A steamwrap ControllerActionSet file (found in ControllerConfig)
-	 * @param	CallbackDigital	A function to call when digital actions fire
-	 * @param	CallbackAnalog	A function to call when analog actions fire
+	 * @param	steamSet	A steamwrap ControllerActionSet file (found in ControllerConfig)
+	 * @param	callbackDigital	A function to call when digital actions fire
+	 * @param	callbackAnalog	A function to call when analog actions fire
 	 * @return	An action set
 	 */
 	@:access(flixel.input.actions.FlxActionManager)
-	private static function fromSteam(SteamSet:ControllerActionSet, CallbackDigital:FlxActionDigital->Void, CallbackAnalog:FlxActionAnalog->Void):FlxActionSet
-	{
-		if (SteamSet == null)
-			return null;
+	static function fromSteam(steamSet:ControllerActionSet, callbackDigital:FlxActionDigital -> Void, callbackAnalog:FlxActionAnalog -> Void):FlxActionSet {
+		if (steamSet == null) return null;
 
-		var digitalActions:Array<FlxActionDigital> = [];
-		var analogActions:Array<FlxActionAnalog> = [];
+		final digitalActions:Array<FlxActionDigital> = [];
+		final analogActions:Array<FlxActionAnalog> = [];
 
-		if (SteamSet.button != null)
-		{
-			for (b in SteamSet.button)
-			{
-				if (b == null)
-					continue;
-				var action = new FlxActionDigital(b.name, CallbackDigital);
-				var aHandle = FlxSteamController.getDigitalActionHandle(b.name);
+		if (steamSet.button != null)
+			for (b in steamSet.button) {
+				if (b == null) continue;
+
+				final action = new FlxActionDigital(b.name, callbackDigital);
+				final aHandle = FlxSteamController.getDigitalActionHandle(b.name);
 				action.steamHandle = aHandle;
 				digitalActions.push(action);
 			}
-		}
-		if (SteamSet.analogTrigger != null)
-		{
-			for (a in SteamSet.analogTrigger)
-			{
-				if (a == null)
-					continue;
-				var action = new FlxActionAnalog(a.name, CallbackAnalog);
-				var aHandle = FlxSteamController.getAnalogActionHandle(a.name);
+
+		if (steamSet.analogTrigger != null)
+			for (a in steamSet.analogTrigger) {
+				if (a == null) continue;
+
+				final action = new FlxActionAnalog(a.name, callbackAnalog);
+				final aHandle = FlxSteamController.getAnalogActionHandle(a.name);
 				action.steamHandle = aHandle;
 				analogActions.push(action);
 			}
-		}
-		for (s in SteamSet.stickPadGyro)
-		{
-			if (s == null)
-				continue;
-			var action = new FlxActionAnalog(s.name, CallbackAnalog);
-			var aHandle = FlxSteamController.getAnalogActionHandle(s.name);
+
+		for (s in steamSet.stickPadGyro) {
+			if (s == null) continue;
+
+			final action = new FlxActionAnalog(s.name, callbackAnalog);
+			final aHandle = FlxSteamController.getAnalogActionHandle(s.name);
 			action.steamHandle = aHandle;
 			analogActions.push(action);
 		}
 
-		var set = new FlxActionSet(SteamSet.name, digitalActions, analogActions);
-		set.steamHandle = FlxSteamController.getActionSetHandle(SteamSet.name);
+		final set = new FlxActionSet(steamSet.name, digitalActions, analogActions);
+		set.steamHandle = FlxSteamController.getActionSetHandle(steamSet.name);
 
 		return set;
 	}
@@ -121,60 +113,50 @@ class FlxActionSet implements IFlxDestroyable
 	/**
 	 * Create an action set from a parsed Json object
 	 *
-	 * @param	Data	A parsed Json object
-	 * @param	CallbackDigital	A function to call when digital actions fire
-	 * @param	CallbackAnalog	A function to call when analog actions fire
+	 * @param	data	A parsed Json object
+	 * @param	callbackDigital	A function to call when digital actions fire
+	 * @param	callbackAnalog	A function to call when analog actions fire
 	 * @return	An action set
 	 */
 	@:access(flixel.input.actions.FlxActionManager)
-	static function fromJson(Data:ActionSetJson, CallbackDigital:FlxActionDigital->Void, CallbackAnalog:FlxActionAnalog->Void):FlxActionSet
-	{
-		var digitalActions:Array<FlxActionDigital> = [];
-		var analogActions:Array<FlxActionAnalog> = [];
+	static function fromJson(data:ActionSetJson, callbackDigital:FlxActionDigital -> Void, callbackAnalog:FlxActionAnalog -> Void):FlxActionSet {
+		final digitalActions:Array<FlxActionDigital> = [];
+		final analogActions:Array<FlxActionAnalog> = [];
 
-		if (Data == null)
-			return null;
+		if (data == null) return null;
 
-		if (Data.digitalActions != null)
-		{
-			var arrD:Array<Dynamic> = Data.digitalActions;
-			for (d in arrD)
-			{
-				var dName:String = cast d;
-				var action = new FlxActionDigital(dName, CallbackDigital);
+		if (data.digitalActions != null) {
+			final arrD:Array<Dynamic> = data.digitalActions;
+			for (d in arrD) {
+				final dName:String = cast d;
+				final action = new FlxActionDigital(dName, callbackDigital);
 				digitalActions.push(action);
 			}
 		}
 
-		if (Data.analogActions != null)
-		{
-			var arrA:Array<Dynamic> = Data.analogActions;
-			for (a in arrA)
-			{
-				var aName:String = cast a;
-				var action = new FlxActionAnalog(aName, CallbackAnalog);
+		if (data.analogActions != null) {
+			final arrA:Array<Dynamic> = data.analogActions;
+			for (a in arrA) {
+				final aName:String = cast a;
+				final action = new FlxActionAnalog(aName, callbackAnalog);
 				analogActions.push(action);
 			}
 		}
 
-		if (Data.name != null)
-		{
-			var name:String = Data.name;
-			var set = new FlxActionSet(name, digitalActions, analogActions);
+		if (data.name != null) {
+			final name:String = data.name;
+			final set = new FlxActionSet(name, digitalActions, analogActions);
 			return set;
 		}
 
 		return null;
 	}
 
-	public function toJson():String
-	{
-		var space:String = "\t";
-		return Json.stringify(this, function(key:Dynamic, value:Dynamic):Dynamic
-		{
-			if ((value is FlxAction))
-			{
-				var fa:FlxAction = cast value;
+	public function toJson():String {
+		final space = "\t";
+		return Json.stringify(this, function(key:Dynamic, value:Dynamic):Dynamic {
+			if ((value is FlxAction)) {
+				final fa:FlxAction = cast value;
 				return {
 					"type": fa.type,
 					"name": fa.name,
@@ -185,149 +167,108 @@ class FlxActionSet implements IFlxDestroyable
 		}, space);
 	}
 
-	public function new(Name:String, ?DigitalActions:Array<FlxActionDigital>, ?AnalogActions:Array<FlxActionAnalog>)
-	{
-		name = Name;
-		if (DigitalActions == null)
-			DigitalActions = [];
-		if (AnalogActions == null)
-			AnalogActions = [];
-		digitalActions = DigitalActions;
-		analogActions = AnalogActions;
+	public function new(name:String, ?digitalActions:Array<FlxActionDigital>, ?analogActions:Array<FlxActionAnalog>) {
+		this.name = name;
+
+		digitalActions ??= [];
+		analogActions ??= [];
+		this.digitalActions = digitalActions;
+		this.analogActions = analogActions;
 	}
 
 	/**
 	 * Automatically adds or removes inputs for a steam controller
 	 * to any steam-affiliated actions
-	 * @param	Handle	steam controller handle from FlxSteam.getConnectedControllers(), or FlxInputDeviceID.FIRST_ACTIVE / ALL
-	 * @param	Attach	true: adds inputs, false: removes inputs
+	 * @param	handle	steam controller handle from FlxSteam.getConnectedControllers(), or FlxInputDeviceID.FIRST_ACTIVE / ALL
+	 * @param	attach	true: adds inputs, false: removes inputs
 	 */
-	public function attachSteamController(Handle:Int, Attach:Bool = true):Void
-	{
-		attachSteamControllerSub(Handle, Attach, FlxInputType.DIGITAL, digitalActions, null);
-		attachSteamControllerSub(Handle, Attach, FlxInputType.ANALOG, null, analogActions);
+	public function attachSteamController(handle:Int, attach = true):Void {
+		attachSteamControllerSub(handle, attach, FlxInputType.DIGITAL, digitalActions, null);
+		attachSteamControllerSub(handle, attach, FlxInputType.ANALOG, null, analogActions);
 	}
 
-	public function add(Action:FlxAction):Bool
-	{
-		if (Action.type == DIGITAL)
-		{
-			var dAction:FlxActionDigital = cast Action;
-			if (digitalActions.contains(dAction))
-				return false;
+	public function add(Action:FlxAction):Bool {
+		if (Action.type == DIGITAL) {
+			final dAction:FlxActionDigital = cast Action;
+			if (digitalActions.contains(dAction)) return false;
 			digitalActions.push(dAction);
 			return true;
-		}
-		else if (Action.type == ANALOG)
-		{
-			var aAction:FlxActionAnalog = cast Action;
-			if (analogActions.contains(aAction))
-				return false;
+		} else if (Action.type == ANALOG) {
+			final aAction:FlxActionAnalog = cast Action;
+			if (analogActions.contains(aAction)) return false;
 			analogActions.push(aAction);
 			return true;
 		}
 		return false;
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		digitalActions = FlxDestroyUtil.destroyArray(digitalActions);
 		analogActions = FlxDestroyUtil.destroyArray(analogActions);
 	}
 
 	/**
 	 * Remove an action from this set
-	 * @param	Action a FlxAction
-	 * @param	Destroy whether to destroy it as well
+	 * @param	action a FlxAction
+	 * @param	destroy whether to destroy it as well
 	 * @return	whether it was found and removed
 	 */
-	public function remove(Action:FlxAction, Destroy:Bool = true):Bool
-	{
+	public function remove(action:FlxAction, destroy = true):Bool {
 		var result = false;
-		if (Action.type == DIGITAL)
-		{
-			result = digitalActions.remove(cast Action);
-			if (result && Destroy)
-			{
-				Action.destroy();
-			}
+		if (action.type == DIGITAL) {
+			result = digitalActions.remove(cast action);
+			if (result && destroy) action.destroy();
+		} else if (action.type == ANALOG) {
+			result = analogActions.remove(cast action);
+			if (result && destroy) action.destroy();
 		}
-		else if (Action.type == ANALOG)
-		{
-			result = analogActions.remove(cast Action);
-			if (result && Destroy)
-			{
-				Action.destroy();
-			}
-		}
+
 		return result;
 	}
 
 	/**
 	 * Update all the actions in this set (each will check inputs & potentially trigger)
 	 */
-	public function update():Void
-	{
-		if (!active)
-			return;
+	public function update():Void {
+		if (!active) return;
+
 		for (digitalAction in digitalActions)
-		{
 			digitalAction.update();
-		}
+
 		for (analogAction in analogActions)
-		{
 			analogAction.update();
-		}
 	}
 
-	function attachSteamControllerSub(Handle:Int, Attach:Bool, InputType:FlxInputType, DigitalActions:Array<FlxActionDigital>,
-			AnalogActions:Array<FlxActionAnalog>)
-	{
-		var length = InputType == FlxInputType.DIGITAL ? DigitalActions.length : AnalogActions.length;
+	private function attachSteamControllerSub(handle:Int, attach:Bool, inputType:FlxInputType, digitalActions:Array<FlxActionDigital>, analogActions:Array<FlxActionAnalog>) {
+		final length = inputType == FlxInputType.DIGITAL ? digitalActions.length : analogActions.length;
 
-		for (i in 0...length)
-		{
-			var action = InputType == FlxInputType.DIGITAL ? DigitalActions[i] : AnalogActions[i];
+		for (i in 0...length) {
+			final action = inputType == FlxInputType.DIGITAL ? digitalActions[i] : analogActions[i];
 
-			if (action.steamHandle != -1) // all steam-affiliated actions will have this numeric ID assigned
-			{
+			if (action.steamHandle != -1) { // all steam-affiliated actions will have this numeric ID assigned
 				var inputExists = false;
 				var theInput:FlxActionInput = null;
 
 				// check if any of the steam controller inputs match this handle
 				if (action.inputs != null)
-				{
 					for (input in action.inputs)
-					{
-						if (input.device == FlxInputDevice.STEAM_CONTROLLER && input.deviceID == Handle)
-						{
+						if (input.device == FlxInputDevice.STEAM_CONTROLLER && input.deviceID == handle) {
 							inputExists = true;
 							theInput = input;
 						}
-					}
-				}
 
-				if (Attach)
-				{
+				if (attach) {
 					// attaching: add inputs for this controller if they don't exist
 
-					if (!inputExists)
-					{
-						if (InputType == FlxInputType.DIGITAL)
-						{
-							DigitalActions[i].add(new FlxActionInputDigitalSteam(action.steamHandle, FlxInputState.JUST_PRESSED, Handle));
-						}
-						else if (InputType == FlxInputType.ANALOG)
-						{
-							AnalogActions[i].add(new FlxActionInputAnalogSteam(action.steamHandle, FlxAnalogState.MOVED, FlxAnalogAxis.EITHER, Handle));
-						}
+					if (!inputExists) {
+						if (inputType == FlxInputType.DIGITAL)
+							digitalActions[i].add(new FlxActionInputDigitalSteam(action.steamHandle, FlxInputState.JUST_PRESSED, handle));
+						else if (inputType == FlxInputType.ANALOG)
+							analogActions[i].add(new FlxActionInputAnalogSteam(action.steamHandle, FlxAnalogState.MOVED, FlxAnalogAxis.EITHER, handle));
 					}
-				}
-				else if (inputExists)
-				{
+				} else if (inputExists)
 					// detaching: remove inputs for this controller if they exist
 					action.remove(theInput);
-				}
 			}
 		}
 	}

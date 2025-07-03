@@ -4,26 +4,22 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.gamepad.id.OUYAID;
 import flixel.input.gamepad.mappings.FlxGamepadMapping;
 
-class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
-{
+class OUYAMapping extends FlxTypedGamepadMapping<OUYAID> {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 19;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 20;
+	static inline final LEFT_ANALOG_STICK_FAKE_X = 19;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y = 20;
 
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 21;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 22;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X = 21;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y = 22;
 	#end
 
-	override function initValues():Void
-	{
+	override function initValues():Void {
 		leftStick = OUYAID.LEFT_ANALOG_STICK;
 		rightStick = OUYAID.RIGHT_ANALOG_STICK;
 	}
 
-	override function getID(rawID:OUYAID):FlxGamepadInputID
-	{
-		return switch (rawID)
-		{
+	override function getID(rawID:OUYAID):FlxGamepadInputID {
+		return switch (rawID) {
 			case OUYAID.O: A;
 			case OUYAID.A: B;
 			case OUYAID.U: X;
@@ -51,10 +47,8 @@ class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
 		}
 	}
 
-	override function getRawID(ID:FlxGamepadInputID):OUYAID
-	{
-		return switch (ID)
-		{
+	override function getRawID(ID:FlxGamepadInputID):OUYAID {
+		return switch (ID) {
 			case A: OUYAID.O;
 			case B: OUYAID.A;
 			case X: OUYAID.U;
@@ -82,10 +76,8 @@ class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
 		}
 	}
 
-	override function getInputLabel(id:FlxGamepadInputID)
-	{
-		return switch (id)
-		{
+	override function getInputLabel(id:FlxGamepadInputID) {
+		return switch (id) {
 			case A: "o";
 			case B: "a";
 			case X: "u";
@@ -95,20 +87,23 @@ class OUYAMapping extends FlxTypedGamepadMapping<OUYAID>
 		}
 	}
 
-	override function getMappedInput(id:FlxGamepadInputID)
-	{
+	override function getMappedInput(id:FlxGamepadInputID) {
 		return FlxGamepadMappedInput.OUYA(getRawID(id));
 	}
 
 	#if FLX_JOYSTICK_API
-	override function axisIndexToRawID(axisID:OUYAID):Int
-	{
-		return if (axisID == leftStick.x) LEFT_ANALOG_STICK_FAKE_X; else if (axisID == leftStick.y) LEFT_ANALOG_STICK_FAKE_Y; else if (axisID == rightStick.x)
-			RIGHT_ANALOG_STICK_FAKE_X;
-		else if (axisID == rightStick.y)
-			RIGHT_ANALOG_STICK_FAKE_Y;
-		else
-			axisID;
+	override function axisIndexToRawID(axisID:OUYAID):Int {
+		return
+			if (axisID == leftStick.x)
+				LEFT_ANALOG_STICK_FAKE_X;
+			else if (axisID == leftStick.y)
+				LEFT_ANALOG_STICK_FAKE_Y;
+			else if (axisID == rightStick.x)
+				RIGHT_ANALOG_STICK_FAKE_X;
+			else if (axisID == rightStick.y)
+				RIGHT_ANALOG_STICK_FAKE_Y;
+			else
+				axisID;
 	}
 	#end
 }

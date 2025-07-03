@@ -11,8 +11,7 @@ import openfl.events.KeyboardEvent;
  * Keeps track of what keys are pressed and how with handy Bools or strings.
  * Normally accessed via `FlxG.keys`. Example: `FlxG.keys.justPressed.A`
  */
-class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
-{
+class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList> {
 	#if !web
 	/**
 	 * Function and numpad keycodes on native targets are incorrect,
@@ -22,8 +21,7 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 	var _nativeCorrection:Map<String, Int>;
 	#end
 
-	public function new()
-	{
+	public function new() {
 		super(FlxKeyList.new);
 
 		#if html5
@@ -31,14 +29,11 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 		#end
 
 		for (code in FlxKey.fromStringMap)
-		{
-			if (code != FlxKey.ANY && code != FlxKey.NONE)
-			{
-				var input = new FlxKeyInput(code);
+			if (code != FlxKey.ANY && code != FlxKey.NONE) {
+				final input = new FlxKeyInput(code);
 				_keyListArray.push(input);
 				_keyListMap.set(code, input);
 			}
-		}
 
 		#if !web
 		_nativeCorrection = new Map<String, Int>();
@@ -96,21 +91,17 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 		#end
 	}
 
-	override function onKeyUp(event:KeyboardEvent):Void
-	{
+	override function onKeyUp(event:KeyboardEvent):Void {
 		super.onKeyUp(event);
 
 		// Debugger toggle
 		#if FLX_DEBUG
 		if (FlxG.game.debugger != null && inKeyArray(FlxG.debugger.toggleKeys, event) && enabled && !FlxInputText.globalManager.isTyping)
-		{
 			FlxG.debugger.visible = !FlxG.debugger.visible;
-		}
 		#end
 	}
 
-	override function onKeyDown(event:KeyboardEvent):Void
-	{
+	override function onKeyDown(event:KeyboardEvent):Void {
 		super.onKeyDown(event);
 
 		// Attempted to cancel the replay?
@@ -125,12 +116,11 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 		#end
 	}
 
-	override function resolveKeyCode(e:KeyboardEvent):Int
-	{
+	override function resolveKeyCode(e:KeyboardEvent):Int {
 		#if web
 		return e.keyCode;
 		#else
-		var code = _nativeCorrection.get(e.charCode + "_" + e.keyCode);
+		final code = _nativeCorrection.get(e.charCode + "_" + e.keyCode);
 		return (code == null) ? e.keyCode : code;
 		#end
 	}
@@ -143,22 +133,13 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 	 * @return	An array of key state data. Null if there is no data.
 	 */
 	@:allow(flixel.system.replay.FlxReplay)
-	function record():Array<CodeValuePair>
-	{
+	private function record():Array<CodeValuePair> {
 		var data:Array<CodeValuePair> = null;
 
-		for (key in _keyListArray)
-		{
-			if (key == null || key.released)
-			{
-				continue;
-			}
+		for (key in _keyListArray) {
+			if (key == null || key.released) continue;
 
-			if (data == null)
-			{
-				data = new Array<CodeValuePair>();
-			}
-
+			data ??= new Array<CodeValuePair>();
 			data.push(new CodeValuePair(key.ID, key.current));
 		}
 
@@ -172,13 +153,11 @@ class FlxKeyboard extends FlxKeyManager<FlxKey, FlxKeyList>
 	 * @param	record	Array of data about key states.
 	 */
 	@:allow(flixel.system.replay.FlxReplay)
-	function playback(record:Array<CodeValuePair>):Void
-	{
+	private function playback(record:Array<CodeValuePair>):Void {
 		var i = 0;
 		final len = record.length;
 
-		while (i < len)
-		{
+		while (i < len) {
 			final keyRecord = record[i++];
 			final key = getKey(keyRecord.code);
 			key.current = keyRecord.value;

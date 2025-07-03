@@ -1,7 +1,6 @@
 package flixel.system.macros;
 
 #if macro
-import haxe.io.Path;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr.Position;
@@ -110,7 +109,7 @@ private enum HelperDefines {
 	FLX_GENERIC;
 }
 
-class FlxDefine {
+class FlxDefines {
 	public static function run() {
 		#if !display
 		checkCompatibility();

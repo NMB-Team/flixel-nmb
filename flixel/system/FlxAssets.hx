@@ -97,8 +97,7 @@ abstract FlxJsonAsset<T>(OneOfTwo<T, String>) from T from String {
 typedef FlxShader = flixel.graphics.tile.FlxGraphicsShader;
 #end
 
-class FlxAssets
-{
+class FlxAssets {
 	/**
 	 * The default sound format to be assumed when unspecified, only affects calls to
 	 * `FlxAssets.getSound` which are not common. Currently set to ".ogg"
@@ -132,8 +131,7 @@ class FlxAssets
 	 *
 	 * // AssetPaths.hx
 	 * @:build(flixel.system.FlxAssets.buildFileReferences("assets", true, null, null,
-	 * 	function renameFileName(name:String):Null<String>
-	 * 	{
+	 * 	function renameFileName(name:String):Null<String> {
 	 * 		return name.toLowerCase()
 	 * 			.split("/").join("_")
 	 * 			.split("-").join("_")
@@ -161,9 +159,7 @@ class FlxAssets
 	 * @see [Flixel 5.0.0 Migration guide - AssetPaths has less caveats](https://github.com/HaxeFlixel/flixel/wiki/Flixel-5.0.0-Migration-guide#assetpaths-has-less-caveats-2575)
 	 * @see [Haxe Macros: Code completion for everything](http://blog.stroep.nl/2014/01/haxe-macros/)
 	**/
-	public static function buildFileReferences(directory = "assets/", subDirectories = false, ?include:Expr, ?exclude:Expr,
-			?rename:String->Null<String>, listField = "allFiles"):Array<Field>
-	{
+	public static function buildFileReferences(directory = "assets/", subDirectories = false, ?include:Expr, ?exclude:Expr, ?rename:String -> Null<String>, listField = "allFiles"):Array<Field> {
 		#if doc_gen
 		return [];
 		#else
@@ -173,19 +169,15 @@ class FlxAssets
 	}
 
 	#if !doc_gen
-	static function exprToRegex(expr:Expr):EReg
-	{
-		switch (expr.expr)
-		{
-			case null | EConst(CIdent("null")):
-				return null;
+	static function exprToRegex(expr:Expr):EReg {
+		switch (expr.expr) {
+			case null | EConst(CIdent("null")): return null;
 			case EConst(CString(s, _)):
 				s = EReg.escape(s);
 				s = StringTools.replace(s, "\\*", ".*");
 				s = StringTools.replace(s, "\\|", "|");
 				return new EReg("^" + s + "$", "");
-			case EConst(CRegexp(r, opt)):
-				return new EReg(r, opt);
+			case EConst(CRegexp(r, opt)): return new EReg(r, opt);
 			default:
 				haxe.macro.Context.error("Value must be a string or regular expression.", expr.pos);
 				return null;
@@ -195,11 +187,10 @@ class FlxAssets
 	#end
 	#if (!macro || doc_gen)
 	// fonts
-	public static var FONT_DEFAULT:String = "Nokia Cellphone FC Small";
-	public static var FONT_DEBUGGER:String = "Montserrat SemiBold";
+	public static var FONT_DEFAULT = "Nokia Cellphone FC Small";
+	public static var FONT_DEBUGGER = "Montserrat SemiBold";
 
-	public static function drawLogo(graph:Graphics):Void
-	{
+	public static function drawLogo(graph:Graphics):Void {
 		// draw green area
 		graph.beginFill(0x00b922);
 		graph.moveTo(50, 13);
@@ -259,8 +250,7 @@ class FlxAssets
 	 * @param   id  The ID or asset path for the bitmap
 	 * @return  A new BitmapData object
 	**/
-	public static inline function getBitmapData(id:String):BitmapData
-	{
+	public static inline function getBitmapData(id:String):BitmapData {
 		return FlxG.assets.getBitmapData(id);
 	}
 
@@ -270,8 +260,7 @@ class FlxAssets
 	 * @param   source  BitmapData class to generate BitmapData object from.
 	 * @return  Newly instantiated BitmapData object.
 	 */
-	public static inline function getBitmapFromClass(source:Class<Dynamic>):BitmapData
-	{
+	public static inline function getBitmapFromClass(source:Class<Dynamic>):BitmapData {
 		return Type.createInstance(source, []);
 	}
 
@@ -285,20 +274,13 @@ class FlxAssets
 	 * @param   graphic  input data to get BitmapData object for.
 	 * @return  BitmapData for specified Dynamic object.
 	 */
-	public static function resolveBitmapData(graphic:FlxGraphicSource):BitmapData
-	{
+	public static function resolveBitmapData(graphic:FlxGraphicSource):BitmapData {
 		if ((graphic is BitmapData))
-		{
 			return cast graphic;
-		}
 		else if ((graphic is Class))
-		{
 			return getBitmapFromClass(cast graphic);
-		}
 		else if ((graphic is String))
-		{
 			return FlxG.assets.getBitmapData(cast graphic);
-		}
 
 		return null;
 	}
@@ -314,23 +296,15 @@ class FlxAssets
 	 * @param   key      optional key string.
 	 * @return  Key String for specified Graphic object.
 	 */
-	public static function resolveKey(graphic:FlxGraphicSource, ?key:String):String
-	{
-		if (key != null)
-			return key;
+	public static function resolveKey(graphic:FlxGraphicSource, ?key:String):String {
+		if (key != null) return key;
 
 		if ((graphic is BitmapData))
-		{
 			return key;
-		}
 		else if ((graphic is Class))
-		{
 			return FlxG.bitmap.getKeyForClass(cast graphic);
-		}
 		else if ((graphic is String))
-		{
 			return cast graphic;
-		}
 
 		return null;
 	}
@@ -344,22 +318,20 @@ class FlxAssets
 	 *
 	 * @since 5.9.0
 	 */
-	public static function getSoundAddExtension(id:String, useCache = true):Sound
-	{
+	public static function getSoundAddExtension(id:String, useCache = true):Sound {
 		if (!id.endsWith(".mp3") && !id.endsWith(".ogg") && !id.endsWith(".wav"))
 			id += "." + defaultSoundExtension;
 
 		return FlxG.assets.getSoundUnsafe(id, useCache);
 	}
 
-	public static function getVirtualInputFrames():FlxAtlasFrames
-	{
-		var bitmapData = new GraphicVirtualInput(0, 0);
+	public static function getVirtualInputFrames():FlxAtlasFrames {
+		final bitmapData = new GraphicVirtualInput(0, 0);
 		#if html5 // dirty hack for openfl/openfl#682
 		Reflect.setProperty(bitmapData, "width", 399);
 		Reflect.setProperty(bitmapData, "height", 183);
 		#end
-		var graphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmapData);
+		final graphic = FlxGraphic.fromBitmapData(bitmapData);
 		return FlxAtlasFrames.fromSpriteSheetPacker(graphic, Std.string(new VirtualInputData()));
 	}
 	#end

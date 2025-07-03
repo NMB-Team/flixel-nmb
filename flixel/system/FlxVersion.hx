@@ -1,13 +1,13 @@
 package flixel.system;
 
-import FlxStringUtil;
+import flixel.util.FlxStringUtil;
 
 /**
  * Helper object for semantic versioning.
  * @see   http://semver.org/
  */
 @:build(flixel.system.macros.FlxGitSHA.buildGitSHA("flixel"))
-class FlxVersion {
+final class FlxVersion {
 	public var major(default, null):Int;
 	public var minor(default, null):Int;
 	public var patch(default, null):Int;
@@ -21,7 +21,7 @@ class FlxVersion {
 
 		// build string representation of this version
 		var sha = FlxVersion.sha;
-		if (!flixel.util.FlxStringUtil.isNullOrEmpty(sha)) sha = "@" + sha.substring(0, 7);
+		if (!FlxStringUtil.isNullOrEmpty(sha)) sha = "@" + sha.substring(0, 7);
 		s = 'HaxeFlixel $major.$minor.$patch$sha [dtwotwo]';
 	}
 

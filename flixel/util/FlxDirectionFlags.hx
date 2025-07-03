@@ -44,7 +44,7 @@ enum abstract FlxDirectionFlags(Int) {
 	 * @since 5.0.0
 	 */
 	public var degrees(get, never):Float;
-	function get_degrees():Float {
+	private function get_degrees():Float {
 		return switch self {
 			case RIGHT: 0;
 			case DOWN: 90;

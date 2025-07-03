@@ -15,17 +15,14 @@ import openfl.geom.Rectangle;
  * Atlas frames collection. It makes possible to use texture atlases in Flixel.
  * Plus it contains few packer parser methods for most commonly used atlas formats.
  */
-class FlxAtlasFrames extends FlxFramesCollection
-{
+class FlxAtlasFrames extends FlxFramesCollection {
 	var usedGraphics:Array<FlxGraphic> = [];
 
-	public function new(parent:FlxGraphic, ?border:FlxPoint)
-	{
+	public function new(parent:FlxGraphic, ?border:FlxPoint) {
 		super(parent, FlxFrameCollectionType.ATLAS, border);
 	}
 
-	override function destroy()
-	{
+	override function destroy() {
 		while (usedGraphics.length > 0)
 			usedGraphics.shift().decrementUseCount();
 
@@ -45,8 +42,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 * @see [Exporting texture atlases with Aseprite](https://www.aseprite.org/docs/sprite-sheet/#texture-atlases)
 	 */
-	public static inline function fromAseprite(source:FlxGraphicAsset, description:FlxAsepriteJsonAsset):FlxAtlasFrames
-	{
+	public static inline function fromAseprite(source:FlxGraphicAsset, description:FlxAsepriteJsonAsset):FlxAtlasFrames {
 		return fromTexturePackerJson(source, description, true);
 	}
 
@@ -63,33 +59,24 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *                            Note: You can also use `fromAseprite` which uses duration.
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 */
-	public static function fromTexturePackerJson(source:FlxGraphicAsset, description:FlxTexturePackerJsonAsset, useFrameDuration = false):FlxAtlasFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source, false);
-		if (graphic == null)
-			return null;
+	public static function fromTexturePackerJson(source:FlxGraphicAsset, description:FlxTexturePackerJsonAsset, useFrameDuration = false):FlxAtlasFrames {
+		final graphic = FlxG.bitmap.add(source, false);
+		if (graphic == null) return null;
 
 		// No need to parse data again
 		var frames:FlxAtlasFrames = FlxAtlasFrames.findFrame(graphic);
-		if (frames != null)
-			return frames;
+		if (frames != null) return frames;
 
-		if (graphic == null || description == null)
-			return null;
+		if (graphic == null || description == null) return null;
 
 		frames = new FlxAtlasFrames(graphic);
 
 		final data:TexturePackerAtlas = description.getData();
-		// JSON-Array
-		if (data.frames.isArray())
-		{
+		if (data.frames.isArray()) { // JSON-Array
 			for (frame in data.frames.toArray())
 				texturePackerHelper(frame.filename, frame, frames, useFrameDuration);
-		}
-		// JSON-Hash
-		else
-		{
-			for (name=>frame in data.frames.toHash())
+		} else { // JSON-Hash
+			for (name => frame in data.frames.toHash())
 				texturePackerHelper(name, frame, frames, useFrameDuration);
 		}
 
@@ -103,22 +90,17 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 * @param   frameData   The TexturePacker data excluding "filename".
 	 * @param   frames      The `FlxAtlasFrames` to add this frame to.
 	 */
-	static function texturePackerHelper(frameName:String, frameData:TexturePackerAtlasFrame, frames:FlxAtlasFrames, useFrameDuration = false):Void
-	{
-		final rotated:Bool = frameData.rotated;
-		var angle:FlxFrameAngle = FlxFrameAngle.ANGLE_0;
+	static function texturePackerHelper(frameName:String, frameData:TexturePackerAtlasFrame, frames:FlxAtlasFrames, useFrameDuration = false):Void {
+		final rotated = frameData.rotated;
+		var angle = FlxFrameAngle.ANGLE_0;
 		var frameRect:FlxRect = null;
 
 		final frame = frameData.frame;
-		if (rotated)
-		{
+		if (rotated) {
 			frameRect = FlxRect.get(frame.x, frame.y, frame.h, frame.w);
 			angle = FlxFrameAngle.ANGLE_NEG_90;
-		}
-		else
-		{
+		} else
 			frameRect = FlxRect.get(frame.x, frame.y, frame.w, frame.h);
-		}
 
 		final sourceSize = FlxPoint.get(frameData.sourceSize.w, frameData.sourceSize.h);
 		final offset = FlxPoint.get(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y);
@@ -135,67 +117,61 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *                        Or you can just pass path to the description file in the assets directory.
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 */
-	public static function fromLibGdx(source:FlxGraphicAsset, description:String):FlxAtlasFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source);
-		if (graphic == null)
-			return null;
+	public static function fromLibGdx(source:FlxGraphicAsset, description:String):FlxAtlasFrames {
+		final graphic = FlxG.bitmap.add(source);
+		if (graphic == null) return null;
 
 		// No need to parse data again
-		var frames:FlxAtlasFrames = FlxAtlasFrames.findFrame(graphic);
-		if (frames != null)
-			return frames;
+		var frames = FlxAtlasFrames.findFrame(graphic);
+		if (frames != null) return frames;
 
-		if ((graphic == null) || (description == null))
-			return null;
+		if ((graphic == null) || (description == null)) return null;
 
 		frames = new FlxAtlasFrames(graphic);
 
-		if (FlxG.assets.exists(description))
-			description = FlxG.assets.getTextUnsafe(description);
+		if (FlxG.assets.exists(description)) description = FlxG.assets.getTextUnsafe(description);
 
-		var pack:String = StringTools.trim(description);
-		var lines:Array<String> = pack.split("\n");
+		final pack = StringTools.trim(description);
+		var lines = pack.split("\n");
 
 		// find the "repeat" option and skip unused data
-		var repeatLine:Int = (lines[3].indexOf("repeat:") > -1) ? 3 : 4;
+		final repeatLine = (lines[3].indexOf("repeat:") > -1) ? 3 : 4;
 		lines.resize(0);
 
-		var numElementsPerImage:Int = 7;
-		var numImages:Int = Std.int(lines.length / numElementsPerImage);
+		final numElementsPerImage = 7;
+		final numImages = Std.int(lines.length / numElementsPerImage);
 
-		for (i in 0...numImages)
-		{
+		for (i in 0...numImages) {
 			var curIndex = i * numElementsPerImage;
 
 			var name = lines[curIndex++];
-			var rotated = (lines[curIndex++].indexOf("true") >= 0);
-			var angle = rotated ? FlxFrameAngle.ANGLE_90 : FlxFrameAngle.ANGLE_0;
+			final rotated = (lines[curIndex++].indexOf("true") >= 0);
+			final angle = rotated ? FlxFrameAngle.ANGLE_90 : FlxFrameAngle.ANGLE_0;
 
 			var tempString = lines[curIndex++];
 			var size = getDimensions(tempString);
 
-			var imageX = size.x;
-			var imageY = size.y;
+			final imageX = size.x;
+			final imageY = size.y;
 
 			tempString = lines[curIndex++];
 			size = getDimensions(tempString);
 
-			var imageWidth = size.x;
-			var imageHeight = size.y;
+			final imageWidth = size.x;
+			final imageHeight = size.y;
 
-			var rect = FlxRect.get(imageX, imageY, imageWidth, imageHeight);
-
-			tempString = lines[curIndex++];
-			size = getDimensions(tempString);
-
-			var sourceSize = FlxPoint.get(size.x, size.y);
+			final rect = FlxRect.get(imageX, imageY, imageWidth, imageHeight);
 
 			tempString = lines[curIndex++];
 			size = getDimensions(tempString);
 
+			final sourceSize = FlxPoint.get(size.x, size.y);
+
 			tempString = lines[curIndex++];
-			var index = Std.parseInt(tempString.split(':')[1]);
+			size = getDimensions(tempString);
+
+			tempString = lines[curIndex++];
+			final index = Std.parseInt(tempString.split(':')[1]);
 
 			if (index != -1)
 				name += '_$index';
@@ -204,7 +180,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 			// currently outputs the offset from the bottom left, instead:
 			// var offset = FlxPoint.get(size.x, size.y);
 			// workaround for https://github.com/libgdx/libgdx/issues/4288
-			var offset = FlxPoint.get(size.x, sourceSize.y - size.y - imageHeight);
+			final offset = FlxPoint.get(size.x, sourceSize.y - size.y - imageHeight);
 			frames.addAtlasFrame(rect, sourceSize, offset, name, angle);
 		}
 
@@ -214,10 +190,9 @@ class FlxAtlasFrames extends FlxFramesCollection
 	/**
 	 * Internal method for LibGDX atlas parsing. It tries to extract dimensions info from the specified string.
 	 */
-	static function getDimensions(line:String):{x:Int, y:Int}
-	{
-		var colonPosition:Int = line.indexOf(":");
-		var comaPosition:Int = line.indexOf(",");
+	static function getDimensions(line:String):{x:Int, y:Int} {
+		final colonPosition = line.indexOf(":");
+		final comaPosition = line.indexOf(",");
 
 		return {
 			x: Std.parseInt(line.substring(colonPosition + 1, comaPosition)),
@@ -234,81 +209,67 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *                  Can be a path to the XML asset, an XML string, or an `Xml` object.
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 */
-	public static function fromSparrow(source:FlxGraphicAsset, xml:FlxXmlAsset):FlxAtlasFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(source);
-		if (graphic == null)
-			return null;
-		// No need to parse data again
-		var frames:FlxAtlasFrames = FlxAtlasFrames.findFrame(graphic);
-		if (frames != null)
-			return frames;
+	public static function fromSparrow(source:FlxGraphicAsset, xml:FlxXmlAsset):FlxAtlasFrames {
+		final graphic = FlxG.bitmap.add(source);
+		if (graphic == null) return null;
 
-		if (graphic == null || xml == null)
-			return null;
+		// No need to parse data again
+		var frames = FlxAtlasFrames.findFrame(graphic);
+		if (frames != null) return frames;
+
+		if (graphic == null || xml == null) return null;
 
 		frames = new FlxAtlasFrames(graphic);
 
-		var data:Xml = xml.getXml().firstElement();
+		final data:Xml = xml.getXml().firstElement();
 		var firstElement = null;
-		for(node in data.elements())
-		{
-			if (firstElement == null)
-			{
+		for (node in data.elements()) {
+			if (firstElement == null) {
 				firstElement = node;
-				if (firstElement.nodeName == "SubTexture" && (firstElement.exists("w") || firstElement.exists("h"))) {}
-				else break;
+				if (firstElement.nodeName != "SubTexture" || (!firstElement.exists("w") && !firstElement.exists("h"))) break;
 			}
-			if(node.nodeName == "SubTexture")
-			{
+
+			if (node.nodeName == "SubTexture") {
 				node.set("width", node.get("w"));
 				node.remove("w");
 				node.set("height", node.get("h"));
 				node.remove("h");
-			} else return frames;
+			} else
+				return frames;
 		}
 
 		if (firstElement == null) return frames;
 
-		var data:Access = new Access(data);
+		final data = new Access(data);
 
-		for (texture in data.nodes.SubTexture)
-		{
-			var name = texture.att.name;
-			var trimmed = texture.has.frameX;
-			var rotated = (texture.has.rotated && texture.att.rotated == "true");
-			var flipX = (texture.has.flipX && texture.att.flipX == "true");
-			var flipY = (texture.has.flipY && texture.att.flipY == "true");
+		for (texture in data.nodes.SubTexture) {
+			final name = texture.att.name;
+			final trimmed = texture.has.frameX;
+			final rotated = (texture.has.rotated && texture.att.rotated == "true");
+			final flipX = (texture.has.flipX && texture.att.flipX == "true");
+			final flipY = (texture.has.flipY && texture.att.flipY == "true");
 
-			var rect = FlxRect.get(Std.parseFloat(texture.att.x), Std.parseFloat(texture.att.y), Std.parseFloat(texture.att.width),
-				Std.parseFloat(texture.att.height));
+			final rect = FlxRect.get(Std.parseFloat(texture.att.x), Std.parseFloat(texture.att.y), Std.parseFloat(texture.att.width), Std.parseFloat(texture.att.height));
 
-			var size = if (trimmed)
-			{
-				FlxRect.get(Std.parseFloat(texture.att.frameX), Std.parseFloat(texture.att.frameY), Std.parseFloat(texture.att.frameWidth),
-					Std.parseFloat(texture.att.frameHeight));
-			}
-			else
-			{
+			final size = if (trimmed) {
+				FlxRect.get(Std.parseFloat(texture.att.frameX), Std.parseFloat(texture.att.frameY), Std.parseFloat(texture.att.frameWidth), Std.parseFloat(texture.att.frameHeight));
+			} else
 				FlxRect.get(0, 0, rect.width, rect.height);
-			}
 
+			final angle = rotated ? FlxFrameAngle.ANGLE_NEG_90 : FlxFrameAngle.ANGLE_0;
 
-			var angle = rotated ? FlxFrameAngle.ANGLE_NEG_90 : FlxFrameAngle.ANGLE_0;
-
-			var offset = FlxPoint.get(-size.x, -size.y);
-			var sourceSize = FlxPoint.get(size.width, size.height);
+			final offset = FlxPoint.get(-size.x, -size.y);
+			final sourceSize = FlxPoint.get(size.width, size.height);
 
 			if (rotated && !trimmed)
 				sourceSize.set(size.height, size.width);
 
 			// Prevents issues caused by adding frames of size 0
-			if (rect.width == 0 || rect.height == 0)
-			{
+			if (rect.width == 0 || rect.height == 0) {
 				if (!trimmed)
 					size.setSize(1,1);
 
-				var frame = frames.addEmptyFrame(size);
+				final frame = frames.addEmptyFrame(size);
 
 				frame.name = name;
 				frame.offset.copyFrom(offset);
@@ -330,36 +291,30 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *                  Can be a path to the XML asset, an XML string, or an `Xml` object.
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 */
-	public static function fromTexturePackerXml(source:FlxGraphicAsset, xml:FlxXmlAsset):FlxAtlasFrames
-	{
-		final graphic:FlxGraphic = FlxG.bitmap.add(source, false);
-		if (graphic == null)
-			return null;
+	public static function fromTexturePackerXml(source:FlxGraphicAsset, xml:FlxXmlAsset):FlxAtlasFrames {
+		final graphic = FlxG.bitmap.add(source, false);
+		if (graphic == null) return null;
 
 		// No need to parse data again
 		var frames = FlxAtlasFrames.findFrame(graphic);
-		if (frames != null)
-			return frames;
+		if (frames != null) return frames;
 
-		if (graphic == null || xml == null)
-			return null;
+		if (graphic == null || xml == null) return null;
 
 		frames = new FlxAtlasFrames(graphic);
 
 		final data = xml.getXml();
 
-		for (sprite in data.firstElement().elements())
-		{
-			var trimmed = (sprite.exists("oX") || sprite.exists("oY"));
-			var rotated = (sprite.exists("r") && sprite.get("r") == "y");
-			var angle = (rotated) ? FlxFrameAngle.ANGLE_NEG_90 : FlxFrameAngle.ANGLE_0;
-			var name = sprite.get("n");
-			var offset = FlxPoint.get(0, 0);
-			var rect = FlxRect.get(Std.parseInt(sprite.get("x")), Std.parseInt(sprite.get("y")), Std.parseInt(sprite.get("w")), Std.parseInt(sprite.get("h")));
-			var sourceSize = FlxPoint.get(rect.width, rect.height);
+		for (sprite in data.firstElement().elements()) {
+			final trimmed = (sprite.exists("oX") || sprite.exists("oY"));
+			final rotated = (sprite.exists("r") && sprite.get("r") == "y");
+			final angle = (rotated) ? FlxFrameAngle.ANGLE_NEG_90 : FlxFrameAngle.ANGLE_0;
+			final name = sprite.get("n");
+			final offset = FlxPoint.get(0, 0);
+			final rect = FlxRect.get(Std.parseInt(sprite.get("x")), Std.parseInt(sprite.get("y")), Std.parseInt(sprite.get("w")), Std.parseInt(sprite.get("h")));
+			final sourceSize = FlxPoint.get(rect.width, rect.height);
 
-			if (trimmed)
-			{
+			if (trimmed) {
 				offset.set(Std.parseInt(sprite.get("oX")), Std.parseInt(sprite.get("oY")));
 				sourceSize.set(Std.parseInt(sprite.get("oW")), Std.parseInt(sprite.get("oH")));
 			}
@@ -373,44 +328,37 @@ class FlxAtlasFrames extends FlxFramesCollection
 	/**
 	 * Parsing method for Sprite Sheet Packer atlases (http://spritesheetpacker.codeplex.com/).
 	 *
-	 * @param   Source        The image source (can be `FlxGraphic`, `String` or `BitmapData`).
-	 * @param   Description   Contents of the file with atlas description.
+	 * @param   source        The image source (can be `FlxGraphic`, `String` or `BitmapData`).
+	 * @param   description   Contents of the file with atlas description.
 	 *                        You can get it with `FlxG.assets.getText(path/to/description/file)`.
 	 *                        Or you can just pass a path to the description file in the assets directory.
 	 * @return  Newly created `FlxAtlasFrames` collection.
 	 */
-	public static function fromSpriteSheetPacker(Source:FlxGraphicAsset, Description:String):FlxAtlasFrames
-	{
-		var graphic:FlxGraphic = FlxG.bitmap.add(Source);
-		if (graphic == null)
-			return null;
+	public static function fromSpriteSheetPacker(source:FlxGraphicAsset, description:String):FlxAtlasFrames {
+		final graphic = FlxG.bitmap.add(source);
+		if (graphic == null) return null;
 
 		// No need to parse data again
 		var frames = FlxAtlasFrames.findFrame(graphic);
-		if (frames != null)
-			return frames;
+		if (frames != null) return frames;
 
-		if (graphic == null || Description == null)
-			return null;
+		if (graphic == null || description == null) return null;
 
 		frames = new FlxAtlasFrames(graphic);
 
-		if (FlxG.assets.exists(Description))
-			Description = FlxG.assets.getTextUnsafe(Description);
+		if (FlxG.assets.exists(description)) description = FlxG.assets.getTextUnsafe(description);
 
-		var pack = StringTools.trim(Description);
-		var lines:Array<String> = pack.split("\n");
+		final pack = StringTools.trim(description);
+		final lines = pack.split("\n");
 
-		for (i in 0...lines.length)
-		{
-			var currImageData = lines[i].split("=");
-			var name = StringTools.trim(currImageData[0]);
-			var currImageRegion = StringTools.trim(currImageData[1]).split(" ");
+		for (i in 0...lines.length) {
+			final currImageData = lines[i].split("=");
+			final name = StringTools.trim(currImageData[0]);
+			final currImageRegion = StringTools.trim(currImageData[1]).split(" ");
 
-			var rect = FlxRect.get(Std.parseInt(currImageRegion[0]), Std.parseInt(currImageRegion[1]), Std.parseInt(currImageRegion[2]),
-				Std.parseInt(currImageRegion[3]));
-			var sourceSize = FlxPoint.get(rect.width, rect.height);
-			var offset = FlxPoint.get();
+			final rect = FlxRect.get(Std.parseInt(currImageRegion[0]), Std.parseInt(currImageRegion[1]), Std.parseInt(currImageRegion[2]), Std.parseInt(currImageRegion[3]));
+			final sourceSize = FlxPoint.get(rect.width, rect.height);
+			final offset = FlxPoint.get();
 
 			frames.addAtlasFrame(rect, sourceSize, offset, name, FlxFrameAngle.ANGLE_0);
 		}
@@ -425,12 +373,10 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 * @return  `FlxAtlasFrames` collection for the specified `FlxGraphic` object
 	 *          Could be `null` if `FlxGraphic` doesn't have it yet.
 	 */
-	public static function findFrame(graphic:FlxGraphic, ?border:FlxPoint):FlxAtlasFrames
-	{
-		if (border == null)
-			border = FlxPoint.weak();
+	public static function findFrame(graphic:FlxGraphic, ?border:FlxPoint):FlxAtlasFrames {
+		border ??= FlxPoint.weak();
 
-		var atlasFrames:Array<FlxAtlasFrames> = cast graphic.getFramesCollections(FlxFrameCollectionType.ATLAS);
+		final atlasFrames:Array<FlxAtlasFrames> = cast graphic.getFramesCollections(FlxFrameCollectionType.ATLAS);
 
 		for (atlas in atlasFrames)
 			if (atlas.border.equals(border))
@@ -439,23 +385,20 @@ class FlxAtlasFrames extends FlxFramesCollection
 		return null;
 	}
 
-	override public function addBorder(border:FlxPoint):FlxAtlasFrames
-	{
-		var resultBorder = FlxPoint.weak().add(this.border).add(border);
+	override public function addBorder(border:FlxPoint):FlxAtlasFrames {
+		final resultBorder = FlxPoint.weak().add(this.border).add(border);
 		var atlasFrames = FlxAtlasFrames.findFrame(parent, resultBorder);
-		if (atlasFrames != null)
-			return atlasFrames;
+		if (atlasFrames != null) return atlasFrames;
 
 		atlasFrames = new FlxAtlasFrames(parent, resultBorder);
 
-		for (frame in frames)
-			atlasFrames.pushFrame(frame.setBorderTo(border));
+		for (frame in frames) atlasFrames.pushFrame(frame.setBorderTo(border));
 
 		return atlasFrames;
 	}
 
 	/**
-	 * Adds all ofthe frames from the specified collection
+	 * Adds all of the frames from the specified collection
 	 *
 	 * @param   collection     The frames to add. Note: calling destroy() on this collection
 	 *                         after it has been added can cause crashes.
@@ -463,13 +406,10 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *
 	 * @since 5.3.0
 	 */
-	public function addAtlas(collection:FlxAtlasFrames, overwriteHash = false)
-	{
-		for (frame in collection.frames)
-			pushFrame(frame, overwriteHash);
+	public function addAtlas(collection:FlxAtlasFrames, overwriteHash = false) {
+		for (frame in collection.frames) pushFrame(frame, overwriteHash);
 
-		if (!usedGraphics.contains(collection.parent))
-		{
+		if (!usedGraphics.contains(collection.parent)) {
 			usedGraphics.push(collection.parent);
 			collection.parent.incrementUseCount();
 		}
@@ -486,8 +426,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 	 *
 	 * @since 5.3.0
 	 */
-	public function concat(collection:FlxAtlasFrames, overwriteHash = false)
-	{
+	public function concat(collection:FlxAtlasFrames, overwriteHash = false) {
 		final newCollection = new FlxAtlasFrames(parent);
 		newCollection.addAtlas(this);
 		newCollection.addAtlas(this, overwriteHash);

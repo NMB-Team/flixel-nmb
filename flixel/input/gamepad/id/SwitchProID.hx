@@ -17,36 +17,35 @@ import flixel.input.gamepad.FlxGamepadAnalogStick;
  *
  * @since 4.8.0
  */
-enum abstract SwitchProID(Int) to Int
-{
-	var ZL = 4;
-	var ZR = 5;
-	var B = 6;
-	var A = 7;
-	var Y = 8;
-	var X = 9;
-	var MINUS = 10;
-	var HOME = 11;
-	var PLUS = 12;
-	var LEFT_STICK_CLICK = 13;
-	var RIGHT_STICK_CLICK = 14;
-	var L = 15;
-	var R = 16;
-	var DPAD_UP = 17;
-	var DPAD_DOWN = 18;
-	var DPAD_LEFT = 19;
-	var DPAD_RIGHT = 20;
-	var CAPTURE = 21;
+enum abstract SwitchProID(Int) to Int {
+	final ZL = 4;
+	final ZR = 5;
+	final B = 6;
+	final A = 7;
+	final Y = 8;
+	final X = 9;
+	final MINUS = 10;
+	final HOME = 11;
+	final PLUS = 12;
+	final LEFT_STICK_CLICK = 13;
+	final RIGHT_STICK_CLICK = 14;
+	final L = 15;
+	final R = 16;
+	final DPAD_UP = 17;
+	final DPAD_DOWN = 18;
+	final DPAD_LEFT = 19;
+	final DPAD_RIGHT = 20;
+	final CAPTURE = 21;
 
-	var LEFT_STICK_UP = 22;
-	var LEFT_STICK_DOWN = 23;
-	var LEFT_STICK_LEFT = 24;
-	var LEFT_STICK_RIGHT = 25;
+	final LEFT_STICK_UP = 22;
+	final LEFT_STICK_DOWN = 23;
+	final LEFT_STICK_LEFT = 24;
+	final LEFT_STICK_RIGHT = 25;
 
-	var RIGHT_STICK_UP = 26;
-	var RIGHT_STICK_DOWN = 27;
-	var RIGHT_STICK_LEFT = 28;
-	var RIGHT_STICK_RIGHT = 29;
+	final RIGHT_STICK_UP = 26;
+	final RIGHT_STICK_DOWN = 27;
+	final RIGHT_STICK_LEFT = 28;
+	final RIGHT_STICK_RIGHT = 29;
 
 	public static final LEFT_ANALOG_STICK = new FlxTypedGamepadAnalogStick<SwitchProID>(0, 1, {
 		up: LEFT_STICK_UP,

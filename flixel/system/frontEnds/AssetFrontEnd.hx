@@ -62,7 +62,7 @@ class AssetFrontEnd {
 		#if FLX_VALIDATE_CUSTOM_ASSETS_DIRECTORY
 		// Verify valid directory
 		if (sys.FileSystem.exists(directory) == false)
-			FlxG.log.critical('Error finding custom asset directory:"$directory" from given path: $rawPath');
+			throw 'Error finding custom asset directory:"$directory" from given path: $rawPath';
 		#end
 
 		// remove final "/assets" since the id typically contains it
@@ -71,14 +71,14 @@ class AssetFrontEnd {
 		parentDirectory = split.join("/");
 	}
 
-	inline function getPath(id:String) {
+	private function getPath(id:String) {
 		return Path.normalize('$parentDirectory/$id');
 	}
 
 	/**
 	 * True for assets packaged with all HaxeFlixel build, and any non-default libraries
 	 */
-	inline function useOpenflAssets(id:String) {
+	private function useOpenflAssets(id:String) {
 		return id.startsWith("flixel/") || id.contains(':');
 	}
 	#else

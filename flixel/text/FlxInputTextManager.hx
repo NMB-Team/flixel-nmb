@@ -10,8 +10,7 @@ import openfl.events.TextEvent;
  * A manager for tracking and dispatching events for input text objects.
  * Normally accessed via the static `FlxInputText.globalManager` rather than being created separately.
  */
-class FlxInputTextManager extends FlxBasic
-{
+class FlxInputTextManager extends FlxBasic {
 	/**
 	 * The input text object that's currently in focus, or `null` if there isn't any.
 	 */
@@ -23,9 +22,9 @@ class FlxInputTextManager extends FlxBasic
 	public var isTyping(get, never):Bool;
 
 	/**
-	 *
+	 * A signal that is fired when an input text object receives a `TypingAction`.
 	 */
-	public final onTypingAction = new FlxTypedSignal<(action:TypingAction)->Void>();
+	public final onTypingAction = new FlxTypedSignal<(action:TypingAction) -> Void>();
 
 	/**
 	 * Contains all of the currently registered input text objects.
@@ -35,10 +34,9 @@ class FlxInputTextManager extends FlxBasic
 	/**
 	 * Whether we should use mac modifer keys or not. Behavior in linux is currently unknown
 	 */
-	final _mac:Bool = false;
+	final _mac = false;
 
-	public function new ()
-	{
+	public function new() {
 		#if mac
 		_mac = true;
 		#elseif (js && html5)
@@ -53,8 +51,7 @@ class FlxInputTextManager extends FlxBasic
 	/**
 	 * Clean up memory.
 	 */
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
 
 		focus = null;
@@ -62,8 +59,7 @@ class FlxInputTextManager extends FlxBasic
 		removeEvents();
 	}
 
-	function addEvents()
-	{
+	private function addEvents() {
 
 		FlxG.stage.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 		// Higher priority is needed here because FlxKeyboard will cancel
@@ -71,8 +67,7 @@ class FlxInputTextManager extends FlxBasic
 		FlxG.stage.window.onKeyDown.add(onKeyDown, false, 1000);
 	}
 
-	function removeEvents()
-	{
+	private function removeEvents() {
 		FlxG.stage.removeEventListener(TextEvent.TEXT_INPUT, onTextInput);
 		FlxG.stage.window.onKeyDown.remove(onKeyDown);
 	}
@@ -81,16 +76,12 @@ class FlxInputTextManager extends FlxBasic
 	 * Registers an input text object, and initiates the event listeners if it's
 	 * the first one to be added.
 	 */
-	public function registerInputText(input:IFlxInputText):Void
-	{
-		if (!_registeredInputTexts.contains(input))
-		{
+	public function registerInputText(input:IFlxInputText):Void {
+		if (!_registeredInputTexts.contains(input)) {
 			_registeredInputTexts.push(input);
 
-			if (!FlxG.stage.window.onKeyDown.has(onKeyDown))
-			{
+			if (!FlxG.stage.window.onKeyDown.has(onKeyDown)) 
 				addEvents();
-			}
 		}
 	}
 
@@ -98,34 +89,21 @@ class FlxInputTextManager extends FlxBasic
 	 * Unregisters an input text object, and removes the event listeners if there
 	 * aren't any more left.
 	 */
-	public function unregisterInputText(input:IFlxInputText):Void
-	{
-		if (_registeredInputTexts.contains(input))
-		{
+	public function unregisterInputText(input:IFlxInputText):Void {
+		if (_registeredInputTexts.contains(input)) {
 			_registeredInputTexts.remove(input);
 
 			if (_registeredInputTexts.length == 0 && FlxG.stage.window.onKeyDown.has(onKeyDown))
-			{
 				removeEvents();
-			}
 		}
 	}
 
-	public function setFocus(value:IFlxInputText)
-	{
-		if (focus != value)
-		{
-			if (focus != null)
-			{
-				focus.endFocus();
-			}
+	public function setFocus(value:IFlxInputText) {
+		if (focus != value) {
+			focus?.endFocus();
 
 			focus = value;
-
-			if (focus != null)
-			{
-				focus.startFocus();
-			}
+			focus?.startFocus();
 
 			FlxG.stage.window.textInputEnabled = (focus != null);
 		}
@@ -134,20 +112,13 @@ class FlxInputTextManager extends FlxBasic
 	/**
 	 * Called when a `TEXT_INPUT` event is received.
 	 */
-	function onTextInput(event:TextEvent):Void
-	{
+	private function onTextInput(event:TextEvent):Void {
 		// Adding new lines is handled inside FlxInputText
-		if (event.text.length == 1 && event.text.charCodeAt(0) == KeyCode.RETURN)
-			return;
-
-		if (focus != null)
-		{
-			dispatchTypingAction(ADD_TEXT(event.text));
-		}
+		if (event.text.length == 1 && event.text.charCodeAt(0) == KeyCode.RETURN) return;
+		if (focus != null) dispatchTypingAction(ADD_TEXT(event.text));
 	}
 
-	function dispatchTypingAction(action:TypingAction)
-	{
+	private function dispatchTypingAction(action:TypingAction) {
 		focus.dispatchTypingAction(action);
 		onTypingAction.dispatch(action);
 	}
@@ -155,10 +126,8 @@ class FlxInputTextManager extends FlxBasic
 	/**
 	 * Called when an `onKeyDown` event is recieved.
 	 */
-	function onKeyDown(key:KeyCode, modifier:KeyModifier):Void
-	{
-		if (focus == null)
-			return;
+	private function onKeyDown(key:KeyCode, modifier:KeyModifier):Void {
+		if (focus == null) return;
 
 		// Modifier used for commands like cut, copy and paste
 		final commandPressed = _mac ? modifier.metaKey : modifier.ctrlKey;
@@ -169,8 +138,7 @@ class FlxInputTextManager extends FlxBasic
 		// Modifier used to move one line over
 		final lineModPressed = commandPressed;
 
-		switch (key)
-		{
+		switch (key) {
 			case RETURN, NUMPAD_ENTER:
 				dispatchTypingAction(COMMAND(NEW_LINE));
 			case BACKSPACE:
@@ -222,35 +190,29 @@ class FlxInputTextManager extends FlxBasic
 		// On HTML5, the SPACE key gets added to `FlxG.keys.preventDefaultKeys` by default, which also
 		// stops it from dispatching a text input event. We need to call `onTextInput()` manually
 		if (key == SPACE && FlxG.keys.preventDefaultKeys != null && FlxG.keys.preventDefaultKeys.contains(SPACE))
-		{
 			onTextInput(new TextEvent(TextEvent.TEXT_INPUT, false, false, " "));
-		}
 		#end
 	}
 
-	function get_isTyping():Bool
-	{
+	private function get_isTyping():Bool {
 		return focus != null && focus.editable;
 	}
 }
 
-interface IFlxInputText
-{
+interface IFlxInputText {
 	var editable:Bool;
 	function startFocus():Void;
 	function endFocus():Void;
 	function dispatchTypingAction(action:TypingAction):Void;
 }
 
-enum TypingAction
-{
+enum TypingAction {
 	ADD_TEXT(text:String);
 	MOVE_CURSOR(type:MoveCursorAction, shiftKey:Bool);
 	COMMAND(cmd:TypingCommand);
 }
 
-enum MoveCursorAction
-{
+enum MoveCursorAction {
 	/**
 	 * Moves the cursor one character to the left.
 	 */
@@ -304,8 +266,7 @@ enum MoveCursorAction
 	WORD_RIGHT;
 }
 
-enum TypingCommand
-{
+enum TypingCommand {
 	/**
 	 * Enters a new line into the text.
 	 */

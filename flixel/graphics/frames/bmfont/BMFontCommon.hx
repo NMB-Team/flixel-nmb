@@ -9,10 +9,8 @@ import haxe.io.BytesInput;
  * @since 5.6.0
  * @see [flixel.graphics.frames.FlxBitmapFont.fromAngelCode](https://api.haxeflixel.com/flixel/graphics/frames/FlxBitmapFont.html#fromAngelCode)
  */
-@:structInit
 @:allow(flixel.graphics.frames.bmfont.BMFont)
-class BMFontCommon
-{
+@:structInit class BMFontCommon {
 	public var lineHeight:Int;
 	public var base:Int;
 	public var scaleW:Int;
@@ -24,10 +22,8 @@ class BMFontCommon
 	public var greenChnl:Int;
 	public var blueChnl:Int;
 
-	static function fromXml(commonNode:BMFontXml):BMFontCommon
-	{
-		return
-		{
+	static function fromXml(commonNode:BMFontXml):BMFontCommon {
+		return {
 			lineHeight: commonNode.att.int("lineHeight"),
 			base: commonNode.att.intSafe("base", -1),
 			scaleW: commonNode.att.intWarn("scaleW", 1),
@@ -41,24 +37,20 @@ class BMFontCommon
 		};
 	}
 
-	static function fromText(commonText:String):BMFontCommon
-	{
-		var lineHeight:Int = -1;
-		var base:Int = -1;
-		var scaleW:Int = 1;
-		var scaleH:Int = 1;
-		var pages:Int = 0;
-		var packed:Bool = false;
-		var alphaChnl:Int = 0;
-		var redChnl:Int = 0;
-		var greenChnl:Int = 0;
-		var blueChnl:Int = 0;
+	static function fromText(commonText:String):BMFontCommon {
+		var lineHeight = -1;
+		var base = -1;
+		var scaleW = 1;
+		var scaleH = 1;
+		var pages = 0;
+		var packed = false;
+		var alphaChnl = 0;
+		var redChnl = 0;
+		var greenChnl = 0;
+		var blueChnl = 0;
 
-		BMFontUtil.forEachAttribute(commonText,
-			function(key:String, value:String)
-			{
-				switch key
-				{
+		BMFontUtil.forEachAttribute(commonText, (key:String, value:String) -> {
+				switch key {
 					case 'lineHeight': lineHeight = Std.parseInt(value);
 					case 'base': base = Std.parseInt(value);
 					case 'scaleW': scaleW = Std.parseInt(value);
@@ -73,8 +65,7 @@ class BMFontCommon
 			}
 		);
 
-		return
-		{
+		return {
 			lineHeight : lineHeight,
 			base : base,
 			scaleW : scaleW,
@@ -88,11 +79,10 @@ class BMFontCommon
 		};
 	}
 
-	static function fromBytes(bytes:BytesInput):BMFontCommon
-	{
+	static function fromBytes(bytes:BytesInput):BMFontCommon {
 		final blockSize = bytes.readInt32();
 		if (blockSize != 15)
-			throw 'Invalid block size for common block. Expected 15 got $blockSize';
+			FlxG.log.critical('Invalid block size for common block. Expected 15 got $blockSize');
 
 		return {
 			lineHeight: bytes.readInt16(),

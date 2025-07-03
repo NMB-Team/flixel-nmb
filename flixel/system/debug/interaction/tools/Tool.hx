@@ -53,7 +53,7 @@ class Tool extends Sprite implements IFlxDestroyable {
 	 * that a specific action is happening. Use `setCursorInUse()` to
 	 * learn more about custom cursors.
 	 */
-	private inline function setCursor(icon:BitmapData, offsetX = .0, offsetY = .0):Void {
+	private function setCursor(icon:BitmapData, offsetX = .0, offsetY = .0):Void {
 		cursor = icon;
 		_brain.registerCustomCursor(_name, cursor, offsetX, offsetY);
 	}
@@ -67,19 +67,19 @@ class Tool extends Sprite implements IFlxDestroyable {
 	 *
 	 * @param	customCursorName	Name of the custom cursor that will be used from now on for the tool. If an empty string is informed, the tool's default icon (informed via `setCursor()`) will be used.
 	 */
-	private inline function setCursorInUse(customCursorName:String):Void {
+	private function setCursorInUse(customCursorName:String):Void {
 		cursorInUse = customCursorName;
 	}
 
 	/**
 	 * Make the tool use its default cursor, which was informed via `setCursor()`.
 	 */
-	private inline function useDefaultCursor():Void {
+	private function useDefaultCursor():Void {
 		if (FlxStringUtil.isNullOrEmpty(cursorInUse)) return;
 		cursorInUse = "";
 	}
 
-	private inline function onButtonClicked():Void {
+	private function onButtonClicked():Void {
 		_brain.setActiveTool(this);
 	}
 

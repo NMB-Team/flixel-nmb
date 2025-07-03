@@ -4,10 +4,8 @@ package flixel.input.android;
 /**
  * Keeps track of Android system key presses (Back/Menu)
  */
-class FlxAndroidKeys extends FlxKeyManager<FlxAndroidKey, FlxAndroidKeyList>
-{
-	public function new()
-	{
+class FlxAndroidKeys extends FlxKeyManager<FlxAndroidKey, FlxAndroidKeyList> {
+	public function new() {
 		super(FlxAndroidKeyList.new);
 
 		// BACK button

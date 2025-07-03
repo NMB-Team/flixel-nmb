@@ -22,7 +22,7 @@ class FlxBaseKeyList {
 		return keyManager.checkStatusUnsafe(keyCode, status);
 	}
 
-	inline function get_ANY():Bool {
+	private function get_ANY():Bool {
 		for (key in keyManager._keyListArray)
 			if (key != null && check(key.ID))
 				return true;
@@ -30,7 +30,7 @@ class FlxBaseKeyList {
 		return false;
 	}
 
-	inline function get_NONE():Bool {
+	private function get_NONE():Bool {
 		for (key in keyManager._keyListArray)
 			if (key != null && check(key.ID))
 				return false;
