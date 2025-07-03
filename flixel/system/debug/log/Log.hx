@@ -123,7 +123,7 @@ class Log extends Window
 	public function clear():Void
 	{
 		_text.text = "";
-		_lines.splice(0, _lines.length);
+		_lines.resize(0);
 		#if !js
 		_text.scrollV = 0;
 		#end

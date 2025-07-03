@@ -4,6 +4,9 @@ import flixel.util.FlxPool.IFlxPooled;
 import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
+import openfl.events.FocusEvent;
+import openfl.events.KeyboardEvent;
+import openfl.events.MouseEvent;
 
 @:access(openfl.display.BitmapData)
 class FlxDestroyUtil
@@ -120,6 +123,16 @@ class FlxDestroyUtil
 			parent.removeChild(child);
 		}
 		return null;
+	}
+
+	@:access(openfl.text.TextField)
+	public static inline function removeEventListeners(textField:openfl.text.TextField)
+	{
+		textField.removeEventListener(FocusEvent.FOCUS_IN, textField.this_onFocusIn);
+		textField.removeEventListener(FocusEvent.FOCUS_OUT, textField.this_onFocusOut);
+		textField.removeEventListener(KeyboardEvent.KEY_DOWN, textField.this_onKeyDown);
+		textField.removeEventListener(MouseEvent.MOUSE_DOWN, textField.this_onMouseDown);
+		textField.removeEventListener(MouseEvent.MOUSE_WHEEL, textField.this_onMouseWheel);
 	}
 	#end
 }

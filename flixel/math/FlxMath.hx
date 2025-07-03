@@ -51,7 +51,8 @@ class FlxMath
 	 * @param f The float value to quantize.
 	 * @param snap The snap value to quantize to.
 	 */
-	inline static function quantize(f:Float, snap:Float) {
+	public static inline function quantize(f:Float, snap:Float)
+	{
 		#if FLX_DEBUG FlxG.log.notice('Quantized snap: $snap'); #end
 		return ((Math.fround(f * snap)) / snap);
 	}
@@ -399,7 +400,8 @@ class FlxMath
 	/**
 	 * Converts a normalized percent (0–1) to a value in a given range.
 	 */
-	inline static function percentToRange(percent:Float, min:Float, max:Float):Float {
+	public static inline function percentToRange(percent:Float, min:Float, max:Float):Float
+	{
 		return min + percent * (max - min);
 	}
 
@@ -411,7 +413,8 @@ class FlxMath
 	 * @param values The array of float values to calculate the mean of.
 	 * @return The mean of the array.
 	 */
-	inline static function mean(values:Array<Float>):Float {
+	public static inline function mean(values:Array<Float>):Float
+	{
 		final amount = values.length;
 
 		var result = .0;

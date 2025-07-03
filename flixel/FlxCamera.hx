@@ -1528,7 +1528,7 @@ class FlxCamera extends FlxBasic
 			if (fxAlpha == 0) return;
 
 			final targetGraphics = (graphics == null) ? canvas.graphics : graphics;
-			#if (openfl > "8.7.0") targetGraphics.overrideBlendMode(null); #end
+			targetGraphics.overrideBlendMode(null);
 			targetGraphics.beginFill(color, fxAlpha);
 			// i'm drawing rect with these parameters to avoid light lines at the top and left of the camera,
 			// which could appear while cameras fading

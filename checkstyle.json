@@ -10,16 +10,13 @@
 	"defineCombinations": [
 		["FLX_JOYSTICK_API"],
 		["FLX_GAMEINPUT_API"],
-		["flash", "web"],
 		["html5", "js", "web"],
 		["desktop", "sys"],
 		["android", "cpp", "mobile"]
 	],
 	"exclude": {
 		"all": [
-			"TestSuite",
-			"/export/",
-			"tests/unit/bin/"
+			"/export/"
 		],
 		"AvoidStarImport": [
 			"flixel.math.FlxRandomTest"
@@ -45,12 +42,6 @@
 			"props": {
 				"format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$",
 				"tokens": ["INLINE"]
-			}
-		},
-		{
-			"type": "LocalVariableName",
-			"props": {
-				"format": "^[a-z][a-zA-Z0-9]*$"
 			}
 		},
 		{
@@ -80,12 +71,6 @@
 			"props": {
 				"format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$",
 				"tokens": ["ENUM"]
-			}
-		},
-		{
-			"type": "MethodName",
-			"props": {
-				"format": "^[a-z][a-zA-Z0-9]*$"
 			}
 		},
 		{
@@ -124,9 +109,6 @@
 		},
 		{
 			"type": "PublicAccessor"
-		},
-		{
-			"type": "RedundantModifier"
 		}
 	]
 }

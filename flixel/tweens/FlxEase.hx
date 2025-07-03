@@ -20,17 +20,17 @@ package flixel.tweens;
 class FlxEase
 {
 	/** Easing constants */
-	static var PI2:Float = Math.PI * .5;
+	static final PI2:Float = Math.PI * .5;
 
-	static var EL:Float = 2 * Math.PI / .45;
-	static var B1:Float = 1 / 2.75;
-	static var B2:Float = 2 / 2.75;
-	static var B3:Float = 1.5 / 2.75;
-	static var B4:Float = 2.5 / 2.75;
-	static var B5:Float = 2.25 / 2.75;
-	static var B6:Float = 2.625 / 2.75;
-	static var ELASTIC_AMPLITUDE:Float = 1;
-	static var ELASTIC_PERIOD:Float = 0.4;
+	static final EL:Float = 2 * Math.PI / .45;
+	static final B1:Float = 1 / 2.75;
+	static final B2:Float = 2 / 2.75;
+	static final B3:Float = 1.5 / 2.75;
+	static final B4:Float = 2.5 / 2.75;
+	static final B5:Float = 2.25 / 2.75;
+	static final B6:Float = 2.625 / 2.75;
+	static final ELASTIC_AMPLITUDE:Float = 1;
+	static final ELASTIC_PERIOD:Float = 0.4;
 
 	/** @since 4.3.0 */
 	public static inline function linear(t:Float):Float

@@ -1476,7 +1476,7 @@ class FlxTweenManager extends FlxBasic
 			}
 		}
 
-		_tweens.splice(0, _tweens.length);
+		_tweens.resize(0);
 	}
 
 	/**

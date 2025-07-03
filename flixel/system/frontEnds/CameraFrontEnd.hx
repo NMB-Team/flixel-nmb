@@ -167,8 +167,8 @@ class CameraFrontEnd
 			}
 		}
 		var oldList = this.list.copy();
-		this.list.splice(0, this.list.length); // clear but keep references
-		this.defaults.splice(0, this.defaults.length);
+		this.list.resize(0); // clear but keep references
+		this.defaults.resize(0);
 
 		for (i => camera in order)
 		{

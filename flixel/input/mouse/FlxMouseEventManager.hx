@@ -321,7 +321,7 @@ class FlxMouseEventManager extends FlxBasic
 			}
 		}
 
-		_list.splice(0, _list.length);
+		_list.resize(0);
 		_overList = [];
 		_downList = [];
 		_clickList = [];

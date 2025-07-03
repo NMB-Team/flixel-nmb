@@ -70,7 +70,7 @@ class ConsoleHistory
 
 	public function clear()
 	{
-		commands.splice(0, commands.length);
+		commands.resize(0);
 
 		#if FLX_SAVE
 		FlxG.save.flush();

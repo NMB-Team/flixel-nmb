@@ -160,8 +160,8 @@ class FlxDefines
 		abortVersion("Lime", "8.1.2 or newer", "lime", (macro null).pos);
 		#end
 
-		#if (openfl < version("9.3.3"))
-		abortVersion("OpenFL", "9.3.3 or newer", "openfl", (macro null).pos);
+		#if (openfl < version("9.4.0"))
+		abortVersion("OpenFL", "9.4.0 or newer", "openfl", (macro null).pos);
 		#end
 	}
 
@@ -231,12 +231,8 @@ class FlxDefines
 		if (!defined(FLX_NO_SOUND_SYSTEM) && !defined(FLX_NO_SOUND_TRAY))
 			define(FLX_SOUND_TRAY);
 
-		#if (lime >= "8.0.0")
 		if (defined(FLX_NO_SOUND_SYSTEM) || defined("flash"))
 			define(FLX_NO_PITCH);
-		#else
-		define(FLX_NO_PITCH);
-		#end
 
 		if (!defined(FLX_NO_PITCH))
 			define(FLX_PITCH);

@@ -1,0 +1,37 @@
+{
+    "haxe.enableCompilationServer": false,
+	"haxecheckstyle.sourceFolders": [
+		"flixel"
+	],
+	"[haxe]": {
+		"editor.formatOnSave": false,
+		"editor.formatOnSaveMode": "modifications"
+	},
+	"haxe.configurations": [
+		{
+			"label": "JS",
+			"args": [
+				"-lib",
+				"openfl",
+				"-lib",
+				"lime",
+				"--macro",
+				"flixel.system.macros.FlxDefines.run()",
+				"-js",
+				"foo.js",
+				"--remap",
+				"flash:openfl"
+			]
+		}
+	],
+	"lime.buildTypes": [
+		{
+			"label": "Final",
+			"enabled":false
+		},
+		{
+			"label": "Debug",
+			"enabled":false
+		}
+	]
+}

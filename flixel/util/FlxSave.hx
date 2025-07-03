@@ -459,14 +459,40 @@ private class FlxSharedObject extends SharedObject
 		}
 	}
 
-	#if ((hl || cpp) && windows)
 	/**
-	 * Returns the path to the root directory of the project, with an optional suffix.
-	 * @param name The suffix to add to the path.
+	 * Returns the platform-specific path to the project's root data directory, with an optional subpath.
+	 *
+	 * @param subpath Relative subdirectory or filename (e.g. "saves/mysave.save").
+	 * @return Full normalized path.
 	 */
-	static function startPath(?name = '')
-		return haxe.io.Path.normalize('${Sys.getEnv("PROGRAMDATA")}/${getDefaultLocalPath()}/${openfl.Lib.current.stage.application.meta['file']}/$name');
-	#end
+	static inline function getStoragePath(subpath:String):String
+	{
+		#if js
+		final base = "/";
+		final appName = "app";
+		#else
+		final base = switch (Sys.systemName())
+		{
+			case "Windows":
+				Sys.getEnv("PROGRAMDATA") ?? "C:/ProgramData";
+			case "Mac":
+				Sys.getEnv("HOME") != null ? haxe.io.Path.join([Sys.getEnv("HOME"), "Library", "Application Support"]) : "/tmp";
+			case "Linux":
+				Sys.getEnv("XDG_DATA_HOME") ?? (Sys.getEnv("HOME") != null ? haxe.io.Path.join([Sys.getEnv("HOME"), ".local", "share"]) : "/tmp");
+			default:
+				"/tmp";
+		};
+		
+		final meta = openfl.Lib.current.stage?.application?.meta;
+		final appName = meta != null ? meta.get("file") : "default";
+		#end
+		
+		final localPath = getDefaultLocalPath(); // usually company name
+		final parts = #if js [base, subpath] #else [base, localPath, appName, subpath] #end;
+		
+		final fullPath = haxe.io.Path.normalize(haxe.io.Path.join(parts.filter(p -> p != null && p != "")));
+		return fullPath;
+	}
 
 	static function onExit(_)
 	{
@@ -626,27 +652,25 @@ private class FlxSharedObject extends SharedObject
 		}
 	}
 
-	static function getPath(localPath:String, name:String):String {
-		// Avoid ever putting .save files directly in ProgramData
+	/**
+	 * Returns the full path to a save file.
+	 *
+	 * @param localPath Optional local folder name (usually the company).
+	 * @param name Save name (e.g. "slot1").
+	 * @return Full normalized path to the save file.
+	 */
+	static function getPath(localPath:String, name:String):String
+	{
 		final extension = ".save";
-		#if ((hl || cpp) && windows)
-			helperPath(name);
-
-			final folder = "saves";
-			FlxG.log.advanced('Saved to ${startPath('$folder/$name$extension')}', FlxSave.saveLogStyle);
-			return startPath('$folder/$name$extension');
-		#else
-			if (localPath.isNullOrEmpty()) localPath = getDefaultLocalPath();
-
-			final directory = lime.system.System.applicationStorageDirectory;
-			final path = haxe.io.Path.normalize('$directory/../../../$localPath') + "/";
-
-			helperPath(name);
-
-			final pathTo = path + name + extension;
-			FlxG.log.advanced('Saved to $pathTo', FlxSave.saveLogStyle);
-			return pathTo;
-		#end
+		final folder = "saves";
+		
+		helperPath(name); // applies naming conventions and slashes
+		
+		final subPath = '$folder/$name$extension';
+		final fullPath = getStoragePath(subPath);
+		
+		FlxG.log.advanced('Saved to $fullPath', FlxSave.saveLogStyle);
+		return fullPath;
 	}
 
 	/**

@@ -17,7 +17,9 @@ class FlxArrayUtil
 	 * @param 	element	The element to remove from the array
 	 * @return	The array
 	 */
+	#if FLX_GENERIC
 	@:generic
+	#end
 	public static inline function fastSplice<T>(array:Array<T>, element:T):Array<T>
 	{
 		var index = array.indexOf(element);
@@ -233,7 +235,8 @@ class FlxArrayUtil
 	 * @param max The maximum value in the array.
 	 * @param min The minimum value in the array (default is 0).
 	 */
-	inline static function rangeArray(max:Int, min = 0):Array<Int> {
+	public static inline function rangeArray(max:Int, min = 0):Array<Int>
+	{
 		final result = [for (i in min...max) i];
 		return result;
 	}
