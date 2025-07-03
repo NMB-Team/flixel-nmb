@@ -149,11 +149,6 @@ class FlxG
 
 	public static var renderMethod(default, null):FlxRenderMethod;
 
-	@:deprecated("FlxG.renderBlit is deprecated, use FlxG.render.blit, instead")
-	public static var renderBlit(default, null):Bool;
-	@:deprecated("FlxG.renderTile is deprecated, use FlxG.render.tile, instead")
-	public static var renderTile(default, null):Bool;
-
 	/**
 	 * Whether or not antialiasing is allowed.
 	 *
@@ -621,9 +616,6 @@ class FlxG
 		FlxG.height = height;
 
 		render.init();
-		renderMethod = render.method;
-		renderBlit = renderMethod == BLITTING;
-		renderTile = renderMethod == DRAW_TILES;
 
 		FlxG.initialWidth = width;
 		FlxG.initialHeight = height;
@@ -802,10 +794,4 @@ class FlxG
 			false
 		#end;
 	}
-}
-
-enum FlxRenderMethod
-{
-	DRAW_TILES;
-	BLITTING;
 }

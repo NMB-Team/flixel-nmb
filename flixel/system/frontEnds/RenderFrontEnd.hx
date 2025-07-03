@@ -1,6 +1,5 @@
 package flixel.system.frontEnds;
 
-import flixel.FlxG.FlxRenderMethod as RenderMethod;
 import flixel.FlxG;
 import openfl.display.Stage;
 
@@ -35,6 +34,7 @@ class RenderFrontEnd
 
 		blit = method == BLITTING;
 		tile = method == DRAW_TILES;
+
 		FlxObject.defaultPixelPerfectPosition = blit;
 	}
 
@@ -64,6 +64,12 @@ class RenderFrontEnd
 				#end
 		}
 	}
+}
+
+enum FlxRenderMethod
+{
+	DRAW_TILES;
+	BLITTING;
 }
 
 enum FlxPixelMode

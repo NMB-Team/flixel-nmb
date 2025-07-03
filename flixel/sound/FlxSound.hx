@@ -779,15 +779,9 @@ class FlxSound extends FlxBasic
 	{
 		if (_channel != null)
 		{
-			#if (openfl < "9.3.2")
-			@:privateAccess
-			if (_channel.__source != null)
-				_channel.__source.pitch = v;
-			#else
 			@:privateAccess
 			if (_channel.__audioSource != null)
 				_channel.__audioSource.pitch = v;
-			#end
 		}
 
 		return _pitch = v;
@@ -830,15 +824,9 @@ class FlxSound extends FlxBasic
 	{
 		if (_channel != null)
 		{
-			#if (openfl < "9.3.2")
-			@:privateAccess
-			if (_channel.__source != null)
-				return _channel.__source.latency;
-			#else
 			@:privateAccess
 			if (_channel.__audioSource != null)
 				return _channel.__audioSource.latency;
-			#end
 		}
 		return 0;
 	}
