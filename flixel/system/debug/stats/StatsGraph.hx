@@ -13,19 +13,18 @@ import flixel.util.FlxDestroyUtil;
  * This is a helper function for the stats window to draw a graph with given values.
  */
 #if FLX_DEBUG
-class StatsGraph extends Sprite
-{
-	static inline var AXIS_COLOR:FlxColor = 0xffffff;
-	static inline var AXIS_ALPHA:Float = 0.5;
-	static inline var HISTORY_MAX:Int = 30;
+class StatsGraph extends Sprite {
+	static inline final AXIS_COLOR:FlxColor = 0xffffff;
+	static inline final AXIS_ALPHA = .5;
+	static inline final HISTORY_MAX = 15;
 
 	public var minLabel:TextField;
 	public var curLabel:TextField;
 	public var maxLabel:TextField;
 	public var avgLabel:TextField;
 
-	public var minValue:Float = FlxMath.MAX_VALUE_FLOAT;
-	public var maxValue:Float = FlxMath.MIN_VALUE_FLOAT;
+	public var minValue = FlxMath.MAX_VALUE_FLOAT;
+	public var maxValue = FlxMath.MIN_VALUE_FLOAT;
 
 	public var graphColor:FlxColor;
 
@@ -38,17 +37,16 @@ class StatsGraph extends Sprite
 	var _labelWidth:Int;
 	var _label:String;
 
-	public function new(X:Int, Y:Int, Width:Int, Height:Int, GraphColor:FlxColor, Unit:String, LabelWidth:Int = 45, ?Label:String)
-	{
+	public function new(x:Int, y:Int, width:Int, height:Int, graphColor:FlxColor, unit:String, labelWidth = 45, ?label:String) {
 		super();
-		x = X;
-		y = Y;
-		_width = Width - LabelWidth;
-		_height = Height;
-		graphColor = GraphColor;
-		_unit = Unit;
-		_labelWidth = LabelWidth;
-		_label = (Label == null) ? "" : Label;
+		this.x = x;
+		this.y = y;
+		_width = width - labelWidth;
+		_height = height;
+		this.graphColor = graphColor;
+		_unit = unit;
+		_labelWidth = labelWidth;
+		_label = (label == null) ? "" : label;
 
 		_axis = new Shape();
 		_axis.x = _labelWidth + 10;
@@ -60,7 +58,7 @@ class StatsGraph extends Sprite
 		avgLabel = DebuggerUtil.createTextField(_labelWidth + 20, (_height * .5) - (Stats.TEXT_SIZE * .5) - 10, Stats.LABEL_COLOR, Stats.TEXT_SIZE);
 		avgLabel.width = _width;
 		avgLabel.defaultTextFormat.align = TextFormatAlign.CENTER;
-		avgLabel.alpha = 0.5;
+		avgLabel.alpha = .5;
 
 		addChild(_axis);
 		addChild(maxLabel);
@@ -74,9 +72,8 @@ class StatsGraph extends Sprite
 	/**
 	 * Redraws the axes of the graph.
 	 */
-	function drawAxes():Void
-	{
-		var gfx = _axis.graphics;
+	inline function drawAxes():Void {
+		final gfx = _axis.graphics;
 		gfx.clear();
 		gfx.lineStyle(1, AXIS_COLOR, AXIS_ALPHA);
 
@@ -92,39 +89,36 @@ class StatsGraph extends Sprite
 	/**
 	 * Redraws the graph based on the values stored in the history.
 	 */
-	function drawGraph():Void
-	{
-		var gfx:Graphics = graphics;
+	inline function drawGraph():Void {
+		final gfx = graphics;
 		gfx.clear();
 		gfx.lineStyle(1, graphColor, 1);
 
-		var inc:Float = _width / (HISTORY_MAX - 1);
-		var range:Float = Math.max(maxValue - minValue, maxValue * 0.1);
-		var graphX = _axis.x + 1;
+		final inc = _width / (HISTORY_MAX - 1);
+		final range = Math.max(maxValue - minValue, maxValue * .1);
+		final graphX = _axis.x + 1;
 
-		for (i in 0...history.length)
-		{
-			var value = (history[i] - minValue) / range;
+		for (i in 0...history.length) {
+			final value = (history[i] - minValue) / range;
+			final pointY = (-value * _height - 1) + _height;
 
-			var pointY = (-value * _height - 1) + _height;
 			if (i == 0)
 				gfx.moveTo(graphX, _axis.y + pointY);
+
 			gfx.lineTo(graphX + (i * inc), pointY);
 		}
 	}
 
-	public function update(Value:Float):Void
-	{
-		history.unshift(Value);
-		if (history.length > HISTORY_MAX)
-			history.pop();
+	public function update(value:Float):Void {
+		history.unshift(value);
+		if (history.length > HISTORY_MAX) history.pop();
 
 		// Update range
-		maxValue = Math.max(maxValue, Value);
-		minValue = Math.min(minValue, Value);
+		maxValue = Math.max(maxValue, value);
+		minValue = Math.min(minValue, value);
 
 		minLabel.text = formatValue(minValue);
-		curLabel.text = formatValue(Value);
+		curLabel.text = formatValue(value);
 		maxLabel.text = formatValue(maxValue);
 
 		avgLabel.text = _label + "\nAvg: " + formatValue(average());
@@ -132,27 +126,27 @@ class StatsGraph extends Sprite
 		drawGraph();
 	}
 
-	function formatValue(value:Float):String
-	{
+	inline function formatValue(value:Float):String {
 		return FlxMath.roundDecimal(value, Stats.DECIMALS) + " " + _unit;
 	}
 
-	public function average():Float
-	{
-		var sum:Float = 0;
-		for (value in history)
-			sum += value;
-		return sum / history.length;
+	public inline function average():Float {
+		final len = history.length;
+		if (len == 0) return 0;
+
+		var sum = .0;
+		for (val in history) sum += val;
+
+		return sum / len;
 	}
 
-	public function destroy():Void
-	{
+	public function destroy():Void {
 		_axis = FlxDestroyUtil.removeChild(this, _axis);
 		minLabel = FlxDestroyUtil.removeChild(this, minLabel);
 		curLabel = FlxDestroyUtil.removeChild(this, curLabel);
 		maxLabel = FlxDestroyUtil.removeChild(this, maxLabel);
 		avgLabel = FlxDestroyUtil.removeChild(this, avgLabel);
-		history = null;
+		history = flixel.util.FlxArrayUtil.clearArray(history);
 	}
 }
 #end
