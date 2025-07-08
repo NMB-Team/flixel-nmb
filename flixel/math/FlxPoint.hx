@@ -309,9 +309,7 @@ import openfl.geom.Point;
 	 */
 	public inline function set(x:Float = 0, y:Float = 0):FlxPoint
 	{
-		this.x = x;
-		this.y = y;
-		return this;
+		return this.set(x, y);
 	}
 
 	inline function get_x():Float
@@ -511,9 +509,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload extern inline function add(x:Float = 0, y:Float = 0):FlxPoint
 	{
-		this.x = this.x + x;
-		this.y = this.y + y;
-		return this;
+		return set(this.x + x, this.y + y);
 	}
 
 	/**
@@ -539,10 +535,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload inline extern function add(p:Point):FlxPoint
 	{
-		x = x + p.x;
-		y = y + p.y;
-
-		return this;
+		return set(x + p.x, y + p.y);
 	}
 
 	/**
@@ -566,9 +559,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload inline extern function subtract(x:Float = 0, y:Float = 0):FlxPoint
 	{
-		this.x = this.x - x;
-		this.y = this.y - y;
-		return this;
+		return set(this.x - x, this.y - y);
 	}
 
 	/**
@@ -621,9 +612,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload inline extern function scale(x:Float, y:Float):FlxPoint
 	{
-		this.x = this.x * x;
-		this.y = this.y * y;
-		return this;
+		return set(this.x * x, this.y * y);
 	}
 
 	/**
@@ -635,9 +624,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload inline extern function scale(amount:Float):FlxPoint
 	{
-		this.x = this.x * amount;
-		this.y = this.y * amount;
-		return this;
+		return set(this.x * amount, this.y * amount);
 	}
 
 	/**
@@ -722,7 +709,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public overload inline extern function copyFrom(p:Point):FlxPoint
 	{
-		return this.set(p.x, p.y);
+		return set(p.x, p.y);
 	}
 
 	/**
@@ -734,7 +721,7 @@ class FlxBasePoint implements IFlxPooled
 	// @:deprecated("copyFromFlash is deprecated, use copyFrom, instead")// 6.0.0
 	public inline function copyFromFlash(p:Point):FlxPoint
 	{
-		return this.set(p.x, p.y);
+		return set(p.x, p.y);
 	}
 
 	/**
@@ -808,9 +795,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function floor():FlxPoint
 	{
-		x = Math.ffloor(x);
-		y = Math.ffloor(y);
-		return this;
+		return set(Math.floor(x), Math.floor(y));
 	}
 
 	/**
@@ -818,9 +803,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function ceil():FlxPoint
 	{
-		x = Math.fceil(x);
-		y = Math.fceil(y);
-		return this;
+		return set(Math.ceil(x), Math.ceil(y));
 	}
 
 	/**
@@ -860,7 +843,7 @@ class FlxBasePoint implements IFlxPooled
 
 	/**
 	 * Snaps a float value to the nearest multiple of the specified grid size.
-	 * 
+	 *
 	 * @param value The value to snap.
 	 * @param gridSize The size of the grid to snap to.
 	 * @return The snapped value.
@@ -1141,8 +1124,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function zero():FlxPoint
 	{
-		x = y = 0;
-		return this;
+		return this.set();
 	}
 
 	/**
@@ -1173,14 +1155,10 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function rotateByRadians(rads:Float):FlxPoint
 	{
-		final s:Float = Math.sin(rads);
-		final c:Float = Math.cos(rads);
-		final tempX:Float = x;
+		final s = Math.sin(rads);
+		final c = Math.cos(rads);
 
-		x = tempX * c - y * s;
-		y = tempX * s + y * c;
-
-		return this;
+		return set(x * c - y * s, x * s + y * c);
 	}
 
 	/**
@@ -1203,10 +1181,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function rotateWithTrig(sin:Float, cos:Float):FlxPoint
 	{
-		final tempX:Float = x;
-		x = tempX * cos - y * sin;
-		y = tempX * sin + y * cos;
-		return this;
+		return set(x * cos - y * sin, x * sin + y * cos);
 	}
 
 	/**
@@ -1220,9 +1195,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public function setPolarRadians(length:Float, radians:Float):FlxPoint
 	{
-		x = length * Math.cos(radians);
-		y = length * Math.sin(radians);
-		return this;
+		return set(length * Math.cos(radians), length * Math.sin(radians));
 	}
 
 	/**
@@ -1264,9 +1237,7 @@ class FlxBasePoint implements IFlxPooled
 	 */
 	public inline function negate():FlxPoint
 	{
-		x = -x;
-		y = -y;
-		return this;
+		return set(x * -1, y * -1);
 	}
 
 	public inline function negateNew():FlxPoint
@@ -1529,8 +1500,7 @@ class FlxBasePoint implements IFlxPooled
 	public inline function bounce(normal:FlxPoint, bounceCoeff:Float = 1):FlxPoint
 	{
 		final d:Float = (1 + bounceCoeff) * dotProductWeak(normal);
-		x -= d * normal.x;
-		y -= d * normal.y;
+		set(x - d * normal.x, y - d * normal.y);
 		normal.putWeak();
 		return this;
 	}
@@ -1551,8 +1521,7 @@ class FlxBasePoint implements IFlxPooled
 		final bounceY:Float = -p2.y;
 		final frictionX:Float = p1.x;
 		final frictionY:Float = p1.y;
-		x = bounceX * bounceCoeff + frictionX * friction;
-		y = bounceY * bounceCoeff + frictionY * friction;
+		set(bounceX * bounceCoeff + frictionX * friction, bounceY * bounceCoeff + frictionY * friction);
 		normal.putWeak();
 		return this;
 	}
@@ -1604,8 +1573,7 @@ class FlxBasePoint implements IFlxPooled
 		if (!isZero())
 		{
 			final a:Float = radians;
-			x = l * Math.cos(a);
-			y = l * Math.sin(a);
+			set(l * Math.cos(a), l * Math.sin(a));
 		}
 		return l;
 	}
@@ -1635,8 +1603,7 @@ class FlxBasePoint implements IFlxPooled
 	{
 		final len:Float = length;
 
-		x = len * Math.cos(rads);
-		y = len * Math.sin(rads);
+		set(len * Math.cos(rads), len * Math.sin(rads));
 		return rads;
 	}
 
@@ -1821,7 +1788,8 @@ class FlxCallbackPoint extends FlxBasePoint
 
 	override public function set(x:Float = 0, y:Float = 0):FlxCallbackPoint
 	{
-		super.set(x, y);
+		@:bypassAccessor this.x = x;
+		@:bypassAccessor this.y = y;
 		if (_setXYCallback != null)
 			_setXYCallback(this);
 		return this;
