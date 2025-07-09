@@ -18,12 +18,12 @@ class FlxQuadTree extends FlxRect
 	/**
 	 * Flag for specifying that you want to add an object to the A list.
 	 */
-	public static inline var A_LIST:Int = 0;
+	public static inline final A_LIST:Int = 0;
 
 	/**
 	 * Flag for specifying that you want to add an object to the B list.
 	 */
-	public static inline var B_LIST:Int = 1;
+	public static inline final B_LIST:Int = 1;
 
 	/**
 	 * Controls the granularity of the quad tree.  Default is 6 (decent performance on large and small worlds).

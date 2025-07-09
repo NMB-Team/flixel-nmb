@@ -1,6 +1,5 @@
 package flixel.system.debug;
 
-import flixel.FlxG;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import openfl.events.Event;

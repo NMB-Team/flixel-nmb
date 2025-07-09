@@ -5,7 +5,7 @@ package flixel.animation;
  */
 class FlxPrerotatedAnimation extends FlxBaseAnimation
 {
-	public static inline var PREROTATED:String = "prerotated_animation";
+	public static inline final PREROTATED:String = "prerotated_animation";
 
 	var rotations:Int;
 

@@ -36,9 +36,9 @@ import openfl.display.Bitmap;
  */
 class Interaction extends Window
 {
-	static inline var BUTTONS_PER_LINE = 2;
-	static inline var SPACING = 25;
-	static inline var PADDING = 10;
+	static inline final BUTTONS_PER_LINE = 2;
+	static inline final SPACING = 25;
+	static inline final PADDING = 10;
 
 	public var activeTool(default, null):Tool;
 	public var selectedItems(default, null):FlxTypedGroup<FlxObject> = new FlxTypedGroup();

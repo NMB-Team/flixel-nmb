@@ -39,7 +39,7 @@ class FlxText extends FlxSprite
 	/**
 	 * 4px gutter at the bottom when the field has automatic height
 	 */
-	static inline var VERTICAL_GUTTER:Int = 4;
+	static inline final VERTICAL_GUTTER:Int = 4;
 
 	/**
 	 * The text being displayed.

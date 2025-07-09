@@ -184,7 +184,7 @@ class FlxSoundTray extends Sprite
 	{
 		if (!silent && forceSound)
 		{
-			var sound = FlxAssets.getSoundAddExtension(up ? volumeUpSound : volumeDownSound);
+			final sound = FlxAssets.getSoundAddExtension(up ? volumeUpSound : volumeDownSound);
 			if (sound != null) {
 				FlxG.sound.list.add(_sound);
 				_sound.loadEmbedded(sound);
@@ -197,6 +197,7 @@ class FlxSoundTray extends Sprite
 		lerpYPos = 0;
 		active = visible = true;
 		_updateBars();
+
 		#if FLX_SAVE
 		// Save sound preferences
 		FlxG.save.data.mute = FlxG.sound.muted;

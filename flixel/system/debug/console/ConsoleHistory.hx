@@ -2,7 +2,7 @@ package flixel.system.debug.console;
 
 class ConsoleHistory
 {
-	static inline var MAX_LENGTH:Int = 50;
+	static inline final MAX_LENGTH:Int = 50;
 
 	public var commands:Array<String>;
 

@@ -477,14 +477,15 @@ class FlxRect implements IFlxPooled
 		if (degrees < 0)
 			degrees += 360;
 
-		var radians = FlxAngle.TO_RAD * degrees;
-		var cos = Math.cos(radians);
-		var sin = Math.sin(radians);
+		final radians = FlxAngle.TO_RAD * degrees;
+		final cos = Math.cos(radians);
+		final sin = Math.sin(radians);
 
-		var left = -origin.x - innerOffset.x;
-		var top = -origin.y - innerOffset.y;
-		var right = -origin.x + width - innerOffset.x;
-		var bottom = -origin.y + height - innerOffset.y;
+		final left = -origin.x - innerOffset.x;
+		final top = -origin.y - innerOffset.y;
+		final right = -origin.x + width - innerOffset.x;
+		final bottom = -origin.y + height - innerOffset.y;
+
 		if (degrees < 90)
 		{
 			newRect.x = x + origin.x + cos * left - sin * bottom;
@@ -493,7 +494,7 @@ class FlxRect implements IFlxPooled
 		else if (degrees < 180)
 		{
 			newRect.x = x + origin.x + cos * right - sin * bottom;
-			newRect.y = y + origin.y + sin * left  + cos * bottom;
+			newRect.y = y + origin.y + sin * left + cos * bottom;
 		}
 		else if (degrees < 270)
 		{
@@ -506,8 +507,8 @@ class FlxRect implements IFlxPooled
 			newRect.y = y + origin.y + sin * right + cos * top;
 		}
 		// temp var, in case input rect is the output rect
-		var newHeight = Math.abs(cos * height) + Math.abs(sin * width );
-		newRect.width = Math.abs(cos * width ) + Math.abs(sin * height);
+		final newHeight = Math.abs(cos * height) + Math.abs(sin * width);
+		newRect.width = Math.abs(cos * width) + Math.abs(sin * height);
 		newRect.height = newHeight;
 
 		origin.putWeak();
@@ -653,14 +654,9 @@ class FlxRect implements IFlxPooled
 	}
 }
 
-@:forward
-@:forward.new
-@:forward.variance
-abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
-{
+@:forward @:forward.new @:forward.variance abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled {
 	public static var pool(get, never):IFlxPool<FlxRect>;
-	static inline function get_pool()
-	{
+	static inline function get_pool() {
 		return FlxRect.pool;
 	}
 
@@ -668,8 +664,7 @@ abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
 	 * Recycle or create new FlxRect.
 	 * Be sure to put() them back into the pool after you're done with them!
 	 */
-	public static inline function get(x = 0.0, y = 0.0, width = 0.0, height = 0.0):FlxReadOnlyRect
-	{
+	public static inline function get(x = .0, y = .0, width = .0, height = .0):FlxReadOnlyRect {
 		return FlxRect.get(x, y, width, height);
 	}
 
@@ -677,8 +672,7 @@ abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
 	 * Recycle or create a new FlxRect which will automatically be released
 	 * to the pool when passed into a flixel function.
 	 */
-	public static inline function weak(x = 0.0, y = 0.0, width = 0.0, height = 0.0):FlxReadOnlyRect
-	{
+	public static inline function weak(x = .0, y = .0, width = .0, height = .0):FlxReadOnlyRect {
 		return FlxRect.weak(x, y, width, height);
 	}
 
@@ -718,10 +712,10 @@ abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled
 	inline function destroy() return this.destroy();
 	inline function setSize(w, h) return this.setSize(w, h);
 	inline function setPosition(x, y) return this.setPosition(x, y);
-	inline function set(x = 0.0, y = 0.0, w = 0.0, h = 0.0) return this.set(x, y, w, h);
+	inline function set(x = .0, y = .0, w = .0, h = .0) return this.set(x, y, w, h);
 	inline function setBounds(x1, y1, x2, y2) return this.setBounds(x1, y1, x2, y2);
 	inline function setAbs(x, y, w, h) return this.setAbs(x, y, w, h);
-	inline function setBoundsAbs(x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0) return this.setBoundsAbs(x1, y1, x2, y2);
+	inline function setBoundsAbs(x1 = .0, y1 = .0, x2 = .0, y2 = .0) return this.setBoundsAbs(x1, y1, x2, y2);
 	inline function copyFrom(rect) return this.copyFrom(rect);
 	inline function copyFromFlash(rect) return this.copyFromFlash(rect);
 	inline function union(rect) return this.union(rect);

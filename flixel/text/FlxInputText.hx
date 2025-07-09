@@ -32,7 +32,7 @@ class FlxInputText extends FlxText implements IFlxInputText
 	/**
 	 * The gaps at the sides of the text field (2px).
 	 */
-	static inline var GUTTER:Int = 2;
+	static inline final GUTTER:Int = 2;
 
 	/**
 	 * Characters that break up the words to select.

@@ -24,7 +24,7 @@ class Watch extends WatchBase<WatchEntry>
 class WatchBase<TEntry:WatchEntry> extends Window
 {
 	#if FLX_DEBUG
-	static inline var LINE_HEIGHT:Int = 15;
+	static inline final LINE_HEIGHT:Int = 15;
 
 	public var alwaysOnTop(get, set):Bool;
 	inline function get_alwaysOnTop() return _alwaysOnTop;

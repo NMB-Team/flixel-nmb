@@ -1,14 +1,12 @@
 package flixel.util;
 
-enum FlxHorizontalAlign
-{
+enum FlxHorizontalAlign {
 	LEFT;
 	CENTER;
 	RIGHT;
 }
 
-enum FlxVerticalAlign
-{
+enum FlxVerticalAlign {
 	TOP;
 	CENTER;
 	BOTTOM;

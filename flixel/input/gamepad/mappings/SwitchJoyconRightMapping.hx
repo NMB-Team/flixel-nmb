@@ -10,14 +10,14 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 class SwitchJoyconRightMapping extends FlxTypedGamepadMapping<SwitchJoyconRightID>
 {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 32;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 33;
+	static inline final LEFT_ANALOG_STICK_FAKE_X:Int = 32;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y:Int = 33;
 
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 34;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 35;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X:Int = 34;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y:Int = 35;
 
-	static inline var LEFT_TRIGGER_FAKE:Int = 36;
-	static inline var RIGHT_TRIGGER_FAKE:Int = 37;
+	static inline final LEFT_TRIGGER_FAKE:Int = 36;
+	static inline final RIGHT_TRIGGER_FAKE:Int = 37;
 	#end
 
 	override function initValues():Void

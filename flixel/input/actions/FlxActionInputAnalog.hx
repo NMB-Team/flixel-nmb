@@ -316,8 +316,8 @@ class FlxActionInputAnalog extends FlxActionInput
 	public var xMoved(default, null):FlxInput<Int>;
 	public var yMoved(default, null):FlxInput<Int>;
 
-	static inline var A_X = true;
-	static inline var A_Y = false;
+	static inline final A_X = true;
+	static inline final A_Y = false;
 
 	function new(Device:FlxInputDevice, InputID:Int, Trigger:FlxAnalogState, Axis:FlxAnalogAxis = EITHER, DeviceID:Int = FlxInputDeviceID.FIRST_ACTIVE)
 	{

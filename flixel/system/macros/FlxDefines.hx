@@ -141,9 +141,7 @@ class FlxDefines
 		abortVersion("Haxe", "4.3.0 or newer", "haxe_ver", (macro null).pos);
 		#end
 
-		#if !nme
 		checkOpenFLVersions();
-		#end
 
 		#if (flixel_addons < version("3.3.0"))
 		abortVersion("Flixel Addons", "3.3.0 or newer", "flixel-addons", (macro null).pos);
@@ -247,10 +245,6 @@ class FlxDefines
 			define(FLX_GAMEINPUT_API);
 		else if (!defined("openfl_next") && defined("cpp"))
 			define(FLX_JOYSTICK_API);
-
-		#if nme
-		define(FLX_JOYSTICK_API);
-		#end
 
 		if (!defined(FLX_NO_TOUCH) || !defined(FLX_NO_MOUSE))
 			define(FLX_POINTER_INPUT);

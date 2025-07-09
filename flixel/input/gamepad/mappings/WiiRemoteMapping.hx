@@ -8,10 +8,10 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 class WiiRemoteMapping extends FlxTypedGamepadMapping<WiiRemoteID>
 {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 20;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 21;
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 22;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 23;
+	static inline final LEFT_ANALOG_STICK_FAKE_X:Int = 20;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y:Int = 21;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X:Int = 22;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y:Int = 23;
 	#end
 
 	override function initValues():Void

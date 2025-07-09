@@ -330,7 +330,7 @@ class BitmapFrontEnd
 
 		__doNotDelete = true;
 		__cacheCopy = [];
-		for (k=>e in _cache) {
+		for (k => e in _cache) {
 			if (e == null) continue;
 			if (e.assetsKey != null) {
 				__countCache.push(e);

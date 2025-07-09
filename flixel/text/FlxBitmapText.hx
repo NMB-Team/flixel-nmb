@@ -210,7 +210,7 @@ class FlxBitmapText extends FlxSprite
 
 		this.font = (font == null) ? FlxBitmapFont.getDefaultFont() : font;
 
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			pixels = new BitmapData(1, 1, true, FlxColor.TRANSPARENT);
 		}
@@ -258,7 +258,7 @@ class FlxBitmapText extends FlxSprite
 		}
 		pendingTextBitmapChange = pendingTextBitmapChange || Force;
 		checkPendingChanges(false);
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			super.drawFrame(Force);
 		}
@@ -272,7 +272,7 @@ class FlxBitmapText extends FlxSprite
 
 	function checkPendingChanges(useTiles:Bool = false):Void
 	{
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			useTiles = false;
 		}
@@ -303,7 +303,7 @@ class FlxBitmapText extends FlxSprite
 	static final frameDrawHelper = new ReusableFrame();
 	override function draw()
 	{
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			checkPendingChanges(false);
 			super.draw();
@@ -426,7 +426,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_clipRect(Rect:FlxRect):FlxRect
 	{
 		super.set_clipRect(Rect);
-		if (!FlxG.render.bilt)
+		if (!FlxG.render.blit)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -436,7 +436,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_color(Color:FlxColor):FlxColor
 	{
 		super.set_color(Color);
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -446,7 +446,7 @@ class FlxBitmapText extends FlxSprite
 	override function set_alpha(value:Float):Float
 	{
 		super.set_alpha(value);
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			pendingTextBitmapChange = true;
 		}
@@ -458,7 +458,7 @@ class FlxBitmapText extends FlxSprite
 		if (textColor != value)
 		{
 			textColor = value;
-			if (FlxG.render.bilt)
+			if (FlxG.render.blit)
 			{
 				pendingPixelsChange = true;
 			}
@@ -472,7 +472,7 @@ class FlxBitmapText extends FlxSprite
 		if (useTextColor != value)
 		{
 			useTextColor = value;
-			if (FlxG.render.bilt)
+			if (FlxG.render.blit)
 			{
 				pendingPixelsChange = true;
 			}
@@ -975,7 +975,7 @@ class FlxBitmapText extends FlxSprite
 	{
 		computeTextSize();
 
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			useTiles = false;
 		}
@@ -1043,7 +1043,7 @@ class FlxBitmapText extends FlxSprite
 
 	function drawLine(line:UnicodeString, posX:Int, posY:Int, useTiles:Bool = false):Void
 	{
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			useTiles = false;
 		}
@@ -1146,7 +1146,7 @@ class FlxBitmapText extends FlxSprite
 		var colorForFill:Int = background ? backgroundColor : FlxColor.TRANSPARENT;
 		var bitmap:BitmapData = null;
 
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			if (pixels == null || (frameWidth != pixels.width || frameHeight != pixels.height))
 			{
@@ -1198,7 +1198,7 @@ class FlxBitmapText extends FlxSprite
 			bitmap.unlock();
 		}
 
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			dirty = true;
 		}
@@ -1275,7 +1275,7 @@ class FlxBitmapText extends FlxSprite
 
 	function drawText(posX:Int, posY:Int, isFront:Bool = true, ?bitmap:BitmapData, useTiles:Bool = false):Void
 	{
-		if (FlxG.render.bilt)
+		if (FlxG.render.blit)
 		{
 			useTiles = false;
 		}
@@ -1484,7 +1484,7 @@ class FlxBitmapText extends FlxSprite
 		if (background != value)
 		{
 			background = value;
-			if (FlxG.render.bilt)
+			if (FlxG.render.blit)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1498,7 +1498,7 @@ class FlxBitmapText extends FlxSprite
 		if (backgroundColor != value)
 		{
 			backgroundColor = value;
-			if (FlxG.render.bilt)
+			if (FlxG.render.blit)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1523,7 +1523,7 @@ class FlxBitmapText extends FlxSprite
 		if (borderColor != value)
 		{
 			borderColor = value;
-			if (FlxG.render.bilt)
+			if (FlxG.render.blit)
 			{
 				pendingPixelsChange = true;
 			}
@@ -1697,17 +1697,6 @@ abstract CharList(Array<Float>) from Array<Float>
 	public inline function clear()
 	{
 		this.resize(0);
-	}
-
-	@:arrayAccess // TODO: deprecate
-	public inline function get(index:Int):Float
-	{
-		return this[index];
-	}
-	@:arrayAccess // TODO: deprecate
-	public inline function set(index:Int, value:Float):Float
-	{
-		return this[index] = value;
 	}
 }
 

@@ -61,9 +61,9 @@ class FlxAccelerometer
 		#end
 
 		#if js
-		x /= 10;
-		y /= 10;
-		z /= 10;
+		x *= .1;
+		y *= .1;
+		z *= .1;
 		#end
 	}
 }

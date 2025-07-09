@@ -14,8 +14,8 @@ import flixel.system.debug.console.ConsoleUtil;
 
 class CompletionHandler
 {
-	static inline var ENTRY_VALUE = "Entry Value";
-	static inline var ENTRY_TYPE = "Entry Type";
+	static inline final ENTRY_VALUE = "Entry Value";
+	static inline final ENTRY_TYPE = "Entry Type";
 
 	var completionList:CompletionList;
 	var input:TextField;

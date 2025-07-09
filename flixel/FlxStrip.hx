@@ -14,51 +14,44 @@ import flixel.util.FlxArrayUtil;
  *
  * WARNING: This class is EXTREMELY slow on Flash!
  */
-class FlxStrip extends FlxSprite
-{
+class FlxStrip extends FlxSprite {
 	/**
 	 * A `Vector` of floats where each pair of numbers is treated as a coordinate location (an x, y pair).
 	 */
-	public var vertices:DrawData<Float> = new DrawData<Float>();
+	public var vertices = new DrawData<Float>();
 
 	/**
 	 * A `Vector` of integers or indexes, where every three indexes define a triangle.
 	 */
-	public var indices:DrawData<Int> = new DrawData<Int>();
+	public var indices = new DrawData<Int>();
 
 	/**
 	 * A `Vector` of normalized coordinates used to apply texture mapping.
 	 */
-	public var uvtData:DrawData<Float> = new DrawData<Float>();
+	public var uvtData = new DrawData<Float>();
 
-	public var colors:DrawData<Int> = new DrawData<Int>();
+	public var colors = new DrawData<Int>();
 
-	public var repeat:Bool = false;
+	public var repeat = false;
 
-	override public function destroy():Void
-	{
-		vertices = FlxArrayUtil.clearArray(vertices);
-		indices = FlxArrayUtil.clearArray(indices);
-		uvtData = FlxArrayUtil.clearArray(uvtData);
-		colors = FlxArrayUtil.clearArray(colors);
+	override public function destroy():Void {
+		vertices = FlxArrayUtil.clearVector(vertices);
+		indices = FlxArrayUtil.clearVector(indices);
+		uvtData = FlxArrayUtil.clearVector(uvtData);
+		colors = FlxArrayUtil.clearVector(colors);
 
 		super.destroy();
 	}
 
-	// TODO: check this for cases when zoom is less than initial zoom...
-	override public function draw():Void
-	{
-		if (alpha == 0 || graphic == null || (vertices == null && vertices.length == 0))
-			return;
+	override public function draw():Void {
+		if (alpha == 0 || graphic == null || FlxArrayUtil.checkForNullVector(vertices)) return;
 
 		final cameras = getCamerasLegacy();
-		for (camera in cameras)
-		{
-			if (!camera.visible || !camera.exists)
-				continue;
+		for (camera in cameras) {
+			if (!camera.visible || !camera.exists) continue;
 
 			getScreenPosition(_point, camera).subtractPoint(offset);
-			camera.drawTriangles(graphic, vertices, indices, uvtData, colors, _point, angle, scale, origin, blend, repeat, antialiasing, colorTransform, shader);
+			camera.drawTrianglesAdvanced(graphic, vertices, indices, uvtData, colors, _point, angle, scale, origin, blend, repeat, antialiasing, colorTransform, shader);
 		}
 	}
 }

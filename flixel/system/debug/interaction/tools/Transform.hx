@@ -266,12 +266,12 @@ class Transform extends Tool
 
 private class Marker
 {
-	public static inline var MOUSE_RADIUS = 10;
+	public static inline final MOUSE_RADIUS = 10;
 
-	static inline var BUFFER = 2;
-	static inline var CIRCLE_RADIUS = 5;
-	static inline var RECT_MARGIN = 2;
-	static inline var RECT_SIZE = RECT_MARGIN * 2 + 1;
+	static inline final BUFFER = 2;
+	static inline final CIRCLE_RADIUS = 5;
+	static inline final RECT_MARGIN = 2;
+	static inline final RECT_SIZE = RECT_MARGIN * 2 + 1;
 
 	public var x:Float = 0;
 	public var y:Float = 0;

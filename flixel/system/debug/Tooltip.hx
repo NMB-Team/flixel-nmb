@@ -59,22 +59,22 @@ class TooltipOverlay extends Sprite
 	/**
 	 * The background color of all tooltips.
 	 */
-	static inline var BG_COLOR:FlxColor = 0xFF3A3A3A;
+	static inline final BG_COLOR:FlxColor = 0xFF3A3A3A;
 
 	/**
 	 * Alpha applied to the tooltips text.
 	 */
-	static inline var TEXT_ALPHA:Float = 0.8;
+	static inline final TEXT_ALPHA:Float = 0.8;
 
 	/**
 	 * How many pixels the tooltip should be away from the target in the x axis.
 	 */
-	static inline var MARGIN_X:Int = 10;
+	static inline final MARGIN_X:Int = 10;
 
 	/**
 	 * How many pixels the tooltip should be away from the target in the y axis.
 	 */
-	static inline var MARGIN_Y:Float = 10;
+	static inline final MARGIN_Y:Float = 10;
 
 	/**
 	 * Width of the tooltip. Using Sprite.width is super unreliable for some reason!

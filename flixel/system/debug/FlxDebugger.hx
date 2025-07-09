@@ -48,12 +48,12 @@ class FlxDebugger extends openfl.display.Sprite
 	/**
 	 * Internal, used to space out windows from the edges.
 	 */
-	public static inline var GUTTER:Int = 2;
+	public static inline final GUTTER:Int = 2;
 
 	/**
 	 * Internal, used to space out windows from the edges.
 	 */
-	public static inline var TOP_HEIGHT:Int = 20;
+	public static inline final TOP_HEIGHT:Int = 20;
 
 	public var stats:Stats;
 	public var log:Log;

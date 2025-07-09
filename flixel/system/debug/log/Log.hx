@@ -9,8 +9,8 @@ import openfl.text.TextFormat;
  */
 class Log extends Window
 {
-	public static inline var MAX_LOG_LINES:Int = 200;
-	static inline var LINE_BREAK:String = #if js "\n" #else "<br>" #end;
+	public static inline final MAX_LOG_LINES:Int = 200;
+	static inline final LINE_BREAK:String = #if js "\n" #else "<br>" #end;
 
 	var _text:TextField;
 	var _lines:Array<String>;

@@ -22,11 +22,11 @@ class Window extends Sprite
 	/**
 	 * The background color of the window.
 	 */
-	public static inline var BG_COLOR:FlxColor = 0xDD5F5F5F;
+	public static inline final BG_COLOR:FlxColor = 0xDD5F5F5F;
 
-	public static inline var HEADER_COLOR:FlxColor = 0xBB000000;
-	public static inline var HEADER_ALPHA:Float = 0.8;
-	public static inline var HEADER_HEIGHT:Int = 15;
+	public static inline final HEADER_COLOR:FlxColor = 0xBB000000;
+	public static inline final HEADER_ALPHA:Float = 0.8;
+	public static inline final HEADER_HEIGHT:Int = 15;
 
 	/**
 	 * How many windows there are currently in total.

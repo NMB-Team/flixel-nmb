@@ -1,5 +1,7 @@
 package flixel.tweens.motion;
 
+import flixel.math.FlxMath;
+
 /**
  * Determines a circular motion.
  */
@@ -59,8 +61,8 @@ class CircularMotion extends Motion
 	{
 		super.update(elapsed);
 		angle = _angleStart + _angleFinish * scale;
-		x = _centerX + Math.cos(angle) * _radius;
-		y = _centerY + Math.sin(angle) * _radius;
+		x = _centerX + FlxMath.fastCos(angle) * _radius;
+		y = _centerY + FlxMath.fastSin(angle) * _radius;
 		if (finished)
 		{
 			postUpdate();

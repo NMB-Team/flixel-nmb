@@ -8,6 +8,8 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.tweens.FlxEase.EaseFunction;
 import flixel.tweens.misc.AngleTween;
+import flixel.tweens.misc.BezierPathTween;
+import flixel.tweens.misc.BezierPathNumTween;
 import flixel.tweens.misc.ColorTween;
 import flixel.tweens.misc.FlickerTween;
 import flixel.tweens.misc.NumTween;
@@ -182,6 +184,34 @@ class FlxTween implements IFlxDestroyable
 	 * @since 4.2.0
 	 */
 	public static var globalManager:FlxTweenManager;
+
+	/**
+	 * Tweens numeric public properties of an Object and values of that object Array<Float>.
+	 *
+	 * @param	Object		The object containing the properties to tween.
+	 * @param	Values		An object containing key/value pairs of properties and target values Array<Float>.
+	 * @param	Duration	Duration of the tween in seconds.
+	 * @param	Options		A structure with tween options.
+	 * @return	The added VarTween object.
+	 */
+	public static function berizePathTween(Object:Dynamic, Values:Dynamic, Duration:Float = 1, ?Options:TweenOptions):BezierPathTween
+	{
+		return globalManager.bezierPathTween(Object, Values, Duration, Options);
+	}
+	
+	/**
+	 * Tweens numeric points of that object Array<Float>.
+	 *
+	 * @param	Points		The object containing the properties to tween.
+	 * @param	Duration		Duration of the twene in seconds.
+	 * @param	Options	A structure with tween options.
+	 * @param	TweenFunction		A function called when tween ends. Float->Void
+	 * @return	The added VarTween object.
+	 */
+	public function createBezierPathNumTween(Points:Array<Float>, Duration:Float, ?Options:TweenOptions, ?TweenFunction:Float->Void):BezierPathNumTween
+	{
+		return globalManager.bezierPathNumTween(Points, Duration, Options, TweenFunction);
+	}
 
 	/**
 	 * Tweens numeric public properties of an Object. Shorthand for creating a VarTween, starting it and adding it to the TweenManager.
@@ -1052,6 +1082,37 @@ class FlxTweenManager extends FlxBasic
 		super();
 		visible = false; // No draw-calls needed
 		FlxG.signals.preStateSwitch.add(clear);
+	}
+
+	/**
+	 * Tweens numeric public properties of an Object and it's numeric array values.
+	 *
+	 * @param	Object		The object containing the properties to tween.
+	 * @param	Values		An object containing key/value pairs of properties and target values. Dynamic<Array<Float>>
+	 * @param	Duration	Duration of the tween in seconds.
+	 * @param	Options		A structure with tween options.
+	 * @return	The added BezierPathTween.
+	 */
+	public function bezierPathTween(Object:Dynamic, Values:Dynamic<Array<Float>>, Duration:Float = 1, ?Options:TweenOptions):BezierPathTween
+	{
+		var tween = new BezierPathTween(Options, this);
+		tween.tween(Object, Values, Duration);
+		return add(tween);
+	}
+	
+	/**
+	 * Tween numeric public properties of points.
+	 * 
+	 * @param Points The point the tween creates. Array<Float>
+	 * @param Duration Duration of the tween in seconds.
+	 * @param Options A structure with tween options.
+	 * @param TweenFunction A function called at the end. Float->Void
+	 */
+	public function bezierPathNumTween(Points:Array<Float>, Duration:Float = 1, ?Options:TweenOptions, ?TweenFunction:Float->Void):BezierPathNumTween
+	{
+		var tween = new BezierPathNumTween(Options, this);
+		tween.tween(Points, Duration, TweenFunction);
+		return add(tween);
 	}
 
 	/**

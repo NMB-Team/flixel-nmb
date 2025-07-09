@@ -7,14 +7,14 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 class PS4Mapping extends FlxTypedGamepadMapping<PS4ID>
 {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 21;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 22;
+	static inline final LEFT_ANALOG_STICK_FAKE_X:Int = 21;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y:Int = 22;
 
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 23;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 24;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X:Int = 23;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y:Int = 24;
 
-	static inline var LEFT_TRIGGER_FAKE:Int = 25;
-	static inline var RIGHT_TRIGGER_FAKE:Int = 26;
+	static inline final LEFT_TRIGGER_FAKE:Int = 25;
+	static inline final RIGHT_TRIGGER_FAKE:Int = 26;
 	#end
 
 	override function initValues():Void

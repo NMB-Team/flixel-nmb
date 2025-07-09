@@ -92,7 +92,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public var luminance(get, never):Float;
 
-	static var COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
+	static final COLOR_REGEX = ~/^(0x|#)(([A-F0-9]{2}){3,4})$/i;
 
 	/**
 	 * Create a color from the least significant four bytes of an Int

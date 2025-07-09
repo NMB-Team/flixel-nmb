@@ -43,8 +43,8 @@ private interface IEmbeddedBitmapData
 private class RawGraphicAuto extends BitmapData {}
 class GraphicAuto extends RawGraphicAuto implements IEmbeddedBitmapData
 {
-	static inline var WIDTH = 128;
-	static inline var HEIGHT = 8;
+	static inline final WIDTH = 128;
+	static inline final HEIGHT = 8;
 
 	public var onLoad:()->Void;
 	public function new ()
@@ -60,8 +60,8 @@ class GraphicAuto extends RawGraphicAuto implements IEmbeddedBitmapData
 private class RawGraphicAutoAlt extends BitmapData {}
 class GraphicAutoAlt extends RawGraphicAutoAlt implements IEmbeddedBitmapData
 {
-	static inline var WIDTH = 128;
-	static inline var HEIGHT = 8;
+	static inline final WIDTH = 128;
+	static inline final HEIGHT = 8;
 
 	public var onLoad:()->Void;
 	public function new ()
@@ -77,8 +77,8 @@ class GraphicAutoAlt extends RawGraphicAutoAlt implements IEmbeddedBitmapData
 private class RawGraphicAutoFull extends BitmapData {}
 class GraphicAutoFull extends RawGraphicAutoFull implements IEmbeddedBitmapData
 {
-	static inline var WIDTH = 256;
-	static inline var HEIGHT = 48;
+	static inline final WIDTH = 256;
+	static inline final HEIGHT = 48;
 
 	public var onLoad:()->Void;
 	public function new ()

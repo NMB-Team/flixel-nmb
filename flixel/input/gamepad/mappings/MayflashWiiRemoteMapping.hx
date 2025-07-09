@@ -8,13 +8,13 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 class MayflashWiiRemoteMapping extends FlxTypedGamepadMapping<MayflashWiiRemoteID>
 {
 	#if FLX_JOYSTICK_API
-	static inline var REMOTE_DPAD_X:Int = 16;
-	static inline var REMOTE_DPAD_Y:Int = 17;
+	static inline final REMOTE_DPAD_X:Int = 16;
+	static inline final REMOTE_DPAD_Y:Int = 17;
 
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 18;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 19;
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 20;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 21;
+	static inline final LEFT_ANALOG_STICK_FAKE_X:Int = 18;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y:Int = 19;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X:Int = 20;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y:Int = 21;
 	#end
 
 	override function initValues():Void

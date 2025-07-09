@@ -171,7 +171,7 @@ class FlxColorTransformUtil
 	/**
 	 * Returns whether red, green, or blue multipliers are set to anything other than 1.
 	 */
-	public inline static function hasRGBMultipliers(transform:ColorTransform):Bool
+	public static inline function hasRGBMultipliers(transform:ColorTransform):Bool
 	{
 		return transform.redMultiplier != 1 || transform.greenMultiplier != 1 || transform.blueMultiplier != 1;
 	}
@@ -179,7 +179,7 @@ class FlxColorTransformUtil
 	/**
 	 * Returns whether red, green, blue, or alpha multipliers are set to anything other than 1.
 	 */
-	public inline static function hasRGBAMultipliers(transform:ColorTransform):Bool
+	public static inline function hasRGBAMultipliers(transform:ColorTransform):Bool
 	{
 		return transform.redMultiplier != 1 || transform.greenMultiplier != 1 || transform.blueMultiplier != 1 || transform.alphaMultiplier != 1;
 	}
@@ -187,7 +187,7 @@ class FlxColorTransformUtil
 	/**
 	 * Returns whether red, green, or blue offsets are set to anything other than 0.
 	 */
-	public inline static function hasRGBOffsets(transform:ColorTransform):Bool
+	public static inline function hasRGBOffsets(transform:ColorTransform):Bool
 	{
 		return transform.redOffset != 0 || transform.greenOffset != 0 || transform.blueOffset != 0;
 	}
@@ -195,7 +195,7 @@ class FlxColorTransformUtil
 	/**
 	 * Returns whether red, green, blue, or alpha offsets are set to anything other than 0.
 	 */
-	public inline static function hasRGBAOffsets(transform:ColorTransform):Bool
+	public static inline function hasRGBAOffsets(transform:ColorTransform):Bool
 	{
 		return transform.redOffset != 0 || transform.greenOffset != 0 || transform.blueOffset != 0 || transform.alphaOffset != 0;
 	}

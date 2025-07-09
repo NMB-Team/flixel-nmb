@@ -27,7 +27,7 @@ class FlxBasePreloader extends DefaultPreloader
 	/**
 	 * Add this string to allowedURLs array if you want to be able to test game with enabled site-locking on local machine
 	 */
-	public static inline var LOCAL:String = "localhost";
+	public static inline final LOCAL:String = "localhost";
 
 	/**
 	 * Change this if you want the flixel logo to show for more or less time.  Default value is 0 seconds (no delay).

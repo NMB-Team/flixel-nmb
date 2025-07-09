@@ -284,18 +284,12 @@ class FlxSprite extends FlxObject
 
 	public var onDraw(default, set):FlxSprite->Void;
 
-	public function set_onDraw(drawFunc:FlxSprite->Void):FlxSprite->Void {
+	@:noCompletion function set_onDraw(drawFunc:FlxSprite->Void):FlxSprite->Void {
 		__drawOverrided = drawFunc != null;
 		return onDraw = drawFunc;
 	}
 
 	@:noCompletion public var __drawOverrided:Bool = false; // Avoid null checks
-
-	/**
-	 * Whether or not to use a `ColorTransform` set via `setColorTransform()`.
-	 */
-	@:deprecated("useColorTransform is deprecated, use hasColorTransform(), instead") // 6.1.0
-	public var useColorTransform(default, null):Bool = false;
 
 	/**
 	 * Clipping rectangle for this sprite's frame. When `null`, the entire
@@ -1301,7 +1295,6 @@ class FlxSprite extends FlxObject
 	 * @param   blueOffset        The offset for the blue color channel value, in the range from `-255` to `255`.
 	 * @param   alphaOffset       The offset for alpha transparency channel value, in the range from `-255` to `255`.
 	 */
-	@:haxe.warning("-WDeprecated")
 	public function setColorTransform(redMultiplier = 1.0, greenMultiplier = 1.0, blueMultiplier = 1.0, alphaMultiplier = 1.0,
 			redOffset = 0.0, greenOffset = 0.0, blueOffset = 0.0, alphaOffset = 0.0):Void
 	{
@@ -1314,18 +1307,15 @@ class FlxSprite extends FlxObject
 		colorTransform.setMultipliers(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier);
 		colorTransform.setOffsets(redOffset, greenOffset, blueOffset, alphaOffset);
 
-		useColorTransform = hasColorTransformRaw();
 		dirty = true;
 	}
 
-	@:haxe.warning("-WDeprecated")
 	function updateColorTransform():Void
 	{
 		if (colorTransform == null)
 			colorTransform = new ColorTransform();
 
 		colorTransform.setMultipliers(color.redFloat, color.greenFloat, color.blueFloat, alpha);
-		useColorTransform = hasColorTransformRaw();
 		dirty = true;
 	}
 
@@ -1333,16 +1323,7 @@ class FlxSprite extends FlxObject
 	 * Whether this sprite has a color transform, menaing any of the following: less than full
 	 * `alpha`, a `color` tint, or a `colorTransform` whos values are not the default.
 	 */
-	@:haxe.warning("-WDeprecated")
 	public function hasColorTransform()
-	{
-		return useColorTransform || hasColorTransformRaw();
-	}
-
-	/**
-	 * Helper for the non-deprecated component of `hasColorTransform`
-	 */
-	function hasColorTransformRaw()
 	{
 		return alpha != 1 || color.rgb != 0xffffff || colorTransform.hasRGBAOffsets();
 	}

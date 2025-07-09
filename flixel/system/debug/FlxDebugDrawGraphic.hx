@@ -1,7 +1,6 @@
 package flixel.system.debug;
 
 import flixel.FlxG;
-import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import openfl.display.Graphics;
 

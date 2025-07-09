@@ -12,7 +12,7 @@ import openfl.display.ShaderParameter;
 
 class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 {
-	static inline var VERTICES_PER_QUAD = 4;
+	static inline final VERTICES_PER_QUAD = 4;
 
 	public var shader:FlxShader;
 

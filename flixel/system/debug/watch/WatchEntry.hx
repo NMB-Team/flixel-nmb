@@ -19,9 +19,9 @@ import flixel.system.debug.console.ConsoleUtil;
 
 class WatchEntry extends Sprite implements IFlxDestroyable
 {
-	static inline var GUTTER = 4;
-	static inline var TEXT_HEIGHT = 20;
-	static inline var MAX_NAME_WIDTH = 125;
+	static inline final GUTTER = 4;
+	static inline final TEXT_HEIGHT = 20;
+	static inline final MAX_NAME_WIDTH = 125;
 
 	public var data:WatchEntryData;
 	public var displayName(default, null):String;

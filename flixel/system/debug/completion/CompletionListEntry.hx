@@ -8,12 +8,12 @@ import openfl.text.TextFieldAutoSize;
 
 class CompletionListEntry extends Sprite
 {
-	public static inline var WIDTH = 150;
-	public static inline var HEIGHT = 20;
+	public static inline final WIDTH = 150;
+	public static inline final HEIGHT = 20;
 
-	static inline var COLOR_NORMAL = 0xFF5F5F5F;
-	static inline var COLOR_HIGHLIGHT = 0xFF6D6D6D;
-	static inline var GUTTER = 4;
+	static inline final COLOR_NORMAL = 0xFF5F5F5F;
+	static inline final COLOR_HIGHLIGHT = 0xFF6D6D6D;
+	static inline final GUTTER = 4;
 
 	static var normalBitmapData:BitmapData;
 	static var highlightBitmapData:BitmapData;

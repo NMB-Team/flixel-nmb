@@ -30,7 +30,7 @@ class Console extends Window
 	/**
 	 * The text that is displayed in the console's input field by default.
 	 */
-	static inline var DEFAULT_TEXT:String = #if hscript "(Click here / press [Tab] to enter command. Type 'help' for help.)" #else "Using the console requires hscript - please run 'haxelib install hscript'." #end;
+	static inline final DEFAULT_TEXT:String = #if hscript "(Click here / press [Tab] to enter command. Type 'help' for help.)" #else "Using the console requires hscript - please run 'haxelib install hscript'." #end;
 
 	/**
 	 * Map containing all registered Objects. You can use registerObject() or add them directly to this map.

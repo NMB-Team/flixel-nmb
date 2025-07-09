@@ -415,7 +415,7 @@ class SoundFrontEnd
 		#end
 	}
 
-	@:noCompletion inline static final _pressDelay = .5;
+	@:noCompletion static inline final _pressDelay = .5;
 	@:noCompletion private var volumeMult = 1;
 	@:noCompletion private var holdTime = .0;
 

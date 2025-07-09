@@ -90,35 +90,35 @@ private class Step extends IconBitmapData {}
 private class Stop extends IconBitmapData {}
 
 class Icon {
-	private static final DEFAULT_POS = 11;
+	static inline final defaultPos = 11;
 
-	public static final flixel = new Flixel(DEFAULT_POS, DEFAULT_POS);
-	public static final cross = new Cross(DEFAULT_POS, DEFAULT_POS);
-	public static final mover = new Mover(DEFAULT_POS, DEFAULT_POS);
-	public static final eraser = new Eraser(DEFAULT_POS, DEFAULT_POS);
-	public static final bitmapLog = new BitmapLog(DEFAULT_POS, DEFAULT_POS);
-	public static final transform = new Transform(DEFAULT_POS, DEFAULT_POS);
-	public static final scaleX = new ScaleX(DEFAULT_POS, DEFAULT_POS);
-	public static final scaleY = new ScaleY(DEFAULT_POS, DEFAULT_POS);
-	public static final scaleXY = new ScaleXY(DEFAULT_POS, DEFAULT_POS);
-	public static final rotate = new Rotate(DEFAULT_POS, DEFAULT_POS);
-	public static final drawDebug = new DrawDebug(DEFAULT_POS, DEFAULT_POS);
-	public static final log = new Log(DEFAULT_POS, DEFAULT_POS);
-	public static final stats = new Stats(DEFAULT_POS, DEFAULT_POS);
-	public static final watch = new Watch(DEFAULT_POS, DEFAULT_POS);
-	public static final console = new Console(DEFAULT_POS, DEFAULT_POS);
-	public static final arrowLeft = new ArrowLeft(DEFAULT_POS, DEFAULT_POS);
-	public static final arrowRight = new ArrowRight(DEFAULT_POS, DEFAULT_POS);
-	public static final close = new Close(DEFAULT_POS, DEFAULT_POS);
-	public static final interactive = new Interactive(DEFAULT_POS, DEFAULT_POS);
-	public static final windowHandle = new WindowHandle(DEFAULT_POS, DEFAULT_POS);
-	public static final minimize = new Minimize(DEFAULT_POS, DEFAULT_POS);
-	public static final maximize = new Maximize(DEFAULT_POS, DEFAULT_POS);
-	public static final open = new Open(DEFAULT_POS, DEFAULT_POS);
-	public static final pause = new Pause(DEFAULT_POS, DEFAULT_POS);
-	public static final recordOff = new RecordOff(DEFAULT_POS, DEFAULT_POS);
-	public static final recordOn = new RecordOn(DEFAULT_POS, DEFAULT_POS);
-	public static final restart = new Restart(DEFAULT_POS, DEFAULT_POS);
-	public static final step = new Step(DEFAULT_POS, DEFAULT_POS);
-	public static final stop = new Stop(DEFAULT_POS, DEFAULT_POS);
+	public static final flixel = new Flixel(defaultPos, defaultPos);
+	public static final cross = new Cross(defaultPos, defaultPos);
+	public static final mover = new Mover(defaultPos, defaultPos);
+	public static final eraser = new Eraser(defaultPos, defaultPos);
+	public static final bitmapLog = new BitmapLog(defaultPos, defaultPos);
+	public static final transform = new Transform(defaultPos, defaultPos);
+	public static final scaleX = new ScaleX(defaultPos, defaultPos);
+	public static final scaleY = new ScaleY(defaultPos, defaultPos);
+	public static final scaleXY = new ScaleXY(defaultPos, defaultPos);
+	public static final rotate = new Rotate(defaultPos, defaultPos);
+	public static final drawDebug = new DrawDebug(defaultPos, defaultPos);
+	public static final log = new Log(defaultPos, defaultPos);
+	public static final stats = new Stats(defaultPos, defaultPos);
+	public static final watch = new Watch(defaultPos, defaultPos);
+	public static final console = new Console(defaultPos, defaultPos);
+	public static final arrowLeft = new ArrowLeft(defaultPos, defaultPos);
+	public static final arrowRight = new ArrowRight(defaultPos, defaultPos);
+	public static final close = new Close(defaultPos, defaultPos);
+	public static final interactive = new Interactive(defaultPos, defaultPos);
+	public static final windowHandle = new WindowHandle(defaultPos, defaultPos);
+	public static final minimize = new Minimize(defaultPos, defaultPos);
+	public static final maximize = new Maximize(defaultPos, defaultPos);
+	public static final open = new Open(defaultPos, defaultPos);
+	public static final pause = new Pause(defaultPos, defaultPos);
+	public static final recordOff = new RecordOff(defaultPos, defaultPos);
+	public static final recordOn = new RecordOn(defaultPos, defaultPos);
+	public static final restart = new Restart(defaultPos, defaultPos);
+	public static final step = new Step(defaultPos, defaultPos);
+	public static final stop = new Stop(defaultPos, defaultPos);
 }

@@ -97,15 +97,15 @@ class FlxMath
 	 * no smaller than the minimum, and no larger than the maximum.
 	 * Leaving a bound `null` means that side is unbounded.
 	 *
-	 * @param	Value	Any number.
-	 * @param	Min		Any number.
-	 * @param	Max		Any number.
+	 * @param	value	Any number.
+	 * @param	min		Any number.
+	 * @param	max		Any number.
 	 * @return	The bounded value of the number.
 	 */
-	public static inline function bound(Value:Float, ?Min:Float, ?Max:Float):Float
+	public static inline function bound(value:Float, ?min:Float, ?max:Float):Float
 	{
-		final lowerBound:Float = (Min != null && Value < Min) ? Min : Value;
-		return (Max != null && lowerBound > Max) ? Max : lowerBound;
+		final lowerBound:Float = (min != null && value < min) ? min : value;
+		return (max != null && lowerBound > max) ? max : lowerBound;
 	}
 
 	/**
@@ -113,15 +113,15 @@ class FlxMath
 	 * no smaller than the minimum, and no larger than the maximum.
 	 * Leaving a bound `null` means that side is unbounded.
 	 *
-	 * @param	Value	Any integer.
-	 * @param	Min		Any integer.
-	 * @param	Max		Any integer.
+	 * @param	value	Any integer.
+	 * @param	min		Any integer.
+	 * @param	max		Any integer.
 	 * @return	The bounded value of the integer.
 	 */
-	public static inline function boundInt(Value:Int, ?Min:Int, ?Max:Int):Int
+	public static inline function boundInt(value:Int, ?min:Int, ?max:Int):Int
 	{
-		final lowerBound:Int = (Min != null && Value < Min) ? Min : Value;
-		return (Max != null && lowerBound > Max) ? Max : lowerBound;
+		final lowerBound:Int = (min != null && value < min) ? min : value;
+		return (max != null && lowerBound > max) ? max : lowerBound;
 	}
 
 	/**

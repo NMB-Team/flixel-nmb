@@ -7,14 +7,14 @@ import flixel.input.gamepad.mappings.FlxGamepadMapping;
 class XInputMapping extends FlxTypedGamepadMapping<XInputID>
 {
 	#if FLX_JOYSTICK_API
-	static inline var LEFT_ANALOG_STICK_FAKE_X:Int = 15;
-	static inline var LEFT_ANALOG_STICK_FAKE_Y:Int = 16;
+	static inline final LEFT_ANALOG_STICK_FAKE_X:Int = 15;
+	static inline final LEFT_ANALOG_STICK_FAKE_Y:Int = 16;
 
-	static inline var RIGHT_ANALOG_STICK_FAKE_X:Int = 17;
-	static inline var RIGHT_ANALOG_STICK_FAKE_Y:Int = 18;
+	static inline final RIGHT_ANALOG_STICK_FAKE_X:Int = 17;
+	static inline final RIGHT_ANALOG_STICK_FAKE_Y:Int = 18;
 
-	static inline var LEFT_TRIGGER_FAKE:Int = 19;
-	static inline var RIGHT_TRIGGER_FAKE:Int = 20;
+	static inline final LEFT_TRIGGER_FAKE:Int = 19;
+	static inline final RIGHT_TRIGGER_FAKE:Int = 20;
 	#end
 
 	override function initValues():Void

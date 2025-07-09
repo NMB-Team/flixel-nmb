@@ -1,7 +1,6 @@
 package flixel.system.frontEnds;
 
 import flixel.FlxG;
-import openfl.display.Stage;
 
 class RenderFrontEnd
 {
