@@ -212,7 +212,7 @@ class FlxBitmapDataUtil {
 	public static function replaceColor(bitmapData:BitmapData, color:FlxColor, newColor:FlxColor, fetchPositions = false, ?rect:FlxRect):Array<FlxPoint> {
 		var positions:Array<FlxPoint> = null;
 		if (fetchPositions)
-			positions = new Array<FlxPoint>();
+			positions = [];
 
 		var startX = 0;
 		var startY = 0;
@@ -255,7 +255,7 @@ class FlxBitmapDataUtil {
 		bitmapData.unlock();
 
 		if (changed && positions == null)
-			positions = new Array<FlxPoint>();
+			positions = [];
 
 		return positions;
 	}

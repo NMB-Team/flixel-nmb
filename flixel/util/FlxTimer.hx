@@ -8,10 +8,10 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  * `FlxTimers` are automatically updated and managed by the `globalManager`. They are deterministic
  * by default, unless [FlxG.fixedTimestep](https://api.haxeflixel.com/flixel/FlxG.html#fixedTimestep)
  * is set to false.
- * 
+ *
  * Note: timer duration is affected when [FlxG.timeScale](https://api.haxeflixel.com/flixel/FlxG.html#timeScale)
  * is changed.
- * 
+ *
  * Example: to create a timer that executes a function in 3 seconds
  * ```haxe
  * new FlxTimer().start(3.0, ()->{ FlxG.log.add("The FlxTimer has finished"); })
@@ -32,7 +32,7 @@ class FlxTimer implements IFlxDestroyable
 	{
 		return new FlxTimer().start(time, (_)->onComplete());
 	}
-	
+
 	/**
 	 * Handy tool to create and start a `FlxTimer`
 	 * @param   time        The duration of the timer, in seconds. If `0` then `onComplete`
@@ -46,7 +46,7 @@ class FlxTimer implements IFlxDestroyable
 	{
 		return new FlxTimer().start(time, (t)->onComplete(t.elapsedLoops), loops);
 	}
-		
+
 	/**
 	 * The global timer manager that handles global timers
 	 * @since 4.2.0

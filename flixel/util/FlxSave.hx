@@ -482,14 +482,14 @@ private class FlxSharedObject extends SharedObject
 			default:
 				"/tmp";
 		};
-		
+
 		final meta = openfl.Lib.current.stage?.application?.meta;
 		final appName = meta != null ? meta.get("file") : "default";
 		#end
-		
+
 		final localPath = getDefaultLocalPath(); // usually company name
 		final parts = #if js [base, subpath] #else [base, localPath, appName, subpath] #end;
-		
+
 		final fullPath = haxe.io.Path.normalize(haxe.io.Path.join(parts.filter(p -> p != null && p != "")));
 		return fullPath;
 	}
@@ -663,12 +663,12 @@ private class FlxSharedObject extends SharedObject
 	{
 		final extension = ".save";
 		final folder = "saves";
-		
+
 		helperPath(name); // applies naming conventions and slashes
-		
+
 		final subPath = '$folder/$name$extension';
 		final fullPath = getStoragePath(subPath);
-		
+
 		FlxG.log.advanced('Saved to $fullPath', FlxSave.saveLogStyle);
 		return fullPath;
 	}

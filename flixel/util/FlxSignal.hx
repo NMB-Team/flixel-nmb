@@ -134,7 +134,7 @@ private class FlxBaseSignal<T> implements IFlxSignal<T>
 		if (handler != null)
 			removeHandler(handler);
 	}
-	
+
 	inline function removeHandler(handler:FlxSignalHandler<T>):Void
 	{
 		if (processingListeners)

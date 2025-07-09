@@ -1,12 +1,34 @@
 {
     "haxe.enableCompilationServer": false,
-	"haxecheckstyle.sourceFolders": [
-		"flixel"
-	],
+	"haxe.displayPort": "auto",
+	"haxe.enableServerView": true,
+
 	"[haxe]": {
 		"editor.formatOnSave": false,
-		"editor.formatOnSaveMode": "modifications"
+		"editor.formatOnSaveMode": "modifications",
+		"editor.defaultFormatter": "nadako.vshaxe"
 	},
+
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"editor.trimAutoWhitespace": true,
+
+	"files.trimTrailingWhitespace": true,
+	"files.trimFinalNewlines": true,
+	"files.eol": "\n",
+	"files.associations": {
+		"*.hx": "haxe",
+		"*.hscript": "haxe",
+		"*.hsc": "haxe",
+		"*.hxs": "haxe",
+	},
+
+	"haxecheckstyle.configurationFile": "checkstyle.json",
+	"haxecheckstyle.sourceFolders": ["flixel"],
+	"haxecheckstyle.externalSourceRoots": [],
+	"haxecheckstyle.codeSimilarityBufferSize": 100,
+
 	"haxe.configurations": [
 		{
 			"label": "JS",
@@ -24,6 +46,7 @@
 			]
 		}
 	],
+
 	"lime.buildTypes": [
 		{
 			"label": "Final",

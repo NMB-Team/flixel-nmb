@@ -31,6 +31,7 @@ import flixel.system.scaleModes.RatioScaleMode;
 import flixel.util.FlxAxes;
 import flixel.util.FlxCollision;
 import flixel.util.FlxSave;
+import flixel.util.FlxStringUtil;
 import flixel.util.typeLimit.NextState;
 #if FLX_TOUCH
 import flixel.input.touch.FlxTouchManager;
@@ -104,7 +105,7 @@ class FlxG
 	 * The HaxeFlixel version, in semantic versioning syntax. Use `Std.string()`
 	 * on it to get a `String` formatted like this: `"HaxeFlixel MAJOR.MINOR.PATCH-COMMIT_SHA"`.
 	 */
-	public static var VERSION(default, null):FlxVersion = new FlxVersion(6, 5, 0);
+	public static var VERSION(default, null):FlxVersion = new FlxVersion(6, 5, 1);
 
 	/**
 	 * Internal tracker for game object.
@@ -498,7 +499,6 @@ class FlxG
 		return overlap(objectOrGroup1, objectOrGroup2, notifyCallback, FlxObject.separate);
 	}
 
-
 	/**
  	 * Centers `FlxSprite` by graphic size in game space, either by the x axis, y axis, or both.
  	 *
@@ -520,7 +520,7 @@ class FlxG
 		if (axes.y)
 		{
 			final offset = sprite.y - graphicBounds.y;
- 			sprite.y = (FlxG.height - graphicBounds.height) * .5 + offset;
+			sprite.y = (FlxG.height - graphicBounds.height) * .5 + offset;
 		}
 
 		graphicBounds.put();
@@ -545,7 +545,6 @@ class FlxG
 
 		return object;
 	}
-
 
 	/**
 	 * Regular `DisplayObject`s are normally displayed over the Flixel cursor and the Flixel debugger if simply
@@ -579,16 +578,35 @@ class FlxG
 	}
 
 	/**
+	 * Runs platform-specific code to open a URL in a web browser.
+	 * @param url The URL to open.
+	 */
+	public static function openURL(url:String, target = "_blank"):Void {
+		// Ensure you can't open protocols such as steam://, file://, etc
+		final protocol = url.split("://");
+		if (protocol.length == 1)
+			url = 'https://${url}';
+		else if (protocol[0] != 'http' && protocol[0] != 'https')
+			throw "openURL can only open http and https links.";
+
+		url = FlxStringUtil.sanitizeURL(url);
+		if (FlxStringUtil.isNullOrEmpty(url)) throw 'Invalid URL: "$url"';
+
+		// This should work on Windows and HTML5.
+		openURLBase(url, target);
+	}
+
+	/**
 	 * Opens a web page, by default a new tab or window. If the URL does not
 	 * already start with `"http://"` or `"https://"`, it gets added automatically.
 	 *
 	 * @param   url     The address of the web page.
 	 * @param   target  `"_blank"`, `"_self"`, `"_parent"` or `"_top"`
 	 */
-	public static inline function openURL(url:String, target = "_blank"):Void
+	public static inline function openURLBase(url:String, target = "_blank"):Void
 	{
 		// Ensure you can't open protocols such as steam://, file://, etc
-		final protocol:Array<String> = url.split("://");
+		final protocol = url.split("://");
 		if (protocol.length == 1)
 			url = 'https://${url}';
 		else if (protocol[0] != 'http' && protocol[0] != 'https')

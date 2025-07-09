@@ -727,6 +727,19 @@ class FlxSpriteUtil {
 	}
 
 	/**
+	 * Centers a sprite on another sprite based on the specified axes.
+	 *
+	 * @param sprite The sprite to be centered.
+	 * @param spr The target sprite on which to center.
+	 * @param axes The axes on which to center the sprite.
+	 */
+	public static function centerOnSprite(sprite:FlxSprite, spr:FlxSprite, axes:FlxAxes) {
+		final x = axes.x ? spr.x + (spr.width - sprite.width) * .5 : sprite.x;
+		final y = axes.y ? spr.y + (spr.height - sprite.height) * .5 : sprite.y;
+		return (axes.x && axes.y) ? ((x + y) * .5) : (axes.x ? x : y);
+	}
+
+	/**
 	 * Change's this sprite's color transform to brighten or darken it.
 	 * Mimics Adobe Animate's "Brightness" color effect
 	 *

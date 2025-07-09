@@ -74,12 +74,6 @@
 		},
 		{
 			"props": {
-				"option": "upperCase"
-			},
-			"type": "HexadecimalLiteral"
-		},
-		{
-			"props": {
 				"character": "  ",
 				"severity": "IGNORE"
 			},
@@ -95,23 +89,9 @@
 		},
 		{
 			"props": {
-				"allowProperties": false,
-				"allowMarkerInterfaces": true
-			},
-			"type": "Interface"
-		},
-		{
-			"props": {
 				"severity": "IGNORE"
 			},
 			"type": "LeftCurly"
-		},
-		{
-			"props": {
-				"max": 210,
-				"ignorePattern": "^$"
-			},
-			"type": "LineLength"
 		},
 		{
 			"props": {
@@ -264,12 +244,6 @@
 		},
 		{
 			"props": {
-				"prohibitMeta": false
-			},
-			"type": "RedundantAllowMeta"
-		},
-		{
-			"props": {
 				"ignoreFormat": "^$",
 				"max": 2,
 				"severity": "IGNORE"
@@ -313,12 +287,6 @@
 				"severity": "IGNORE"
 			},
 			"type": "StringLiteral"
-		},
-		{
-			"props": {
-				"format": "^\\s*(TODO|FIXME|HACK|XXX|BUG)"
-			},
-			"type": "TODOComment"
 		},
 		{
 			"props": {

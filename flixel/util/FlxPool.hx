@@ -25,7 +25,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 	#if FLX_TRACK_POOLS
 	/** Set to false before creating FlxGame to prevent logs */
 	public var autoLog = true;
-	
+
 	// For some reason, this causes CI errors: `final _tracked = new Map<T, String>();`
 	final _tracked:Map<T, String> = [];
 	final _leakCount:Map<String, Int> = [];
@@ -38,7 +38,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 	 * @param   constructor  A function that takes no args and creates an instance,
 	 *                       example: `FlxRect.new.bind(0, 0, 0, 0)`
 	 */
-	
+
 	public function new(constructor)
 	{
 		_constructor = constructor;
@@ -54,11 +54,11 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 			_constructor();
 		}
 		else _pool[--_count];
-		
+
 		#if FLX_TRACK_POOLS
 		trackGet(obj);
 		#end
-		
+
 		return obj;
 	}
 
@@ -85,7 +85,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 	{
 		obj.destroy();
 		_pool[_count++] = obj;
-		
+
 		#if FLX_TRACK_POOLS
 		trackPut(obj);
 		#end
@@ -119,7 +119,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		{
 			if (_pool.length == 0)
 				preAllocate(1);
-				
+
 			id = Type.getClassName(Type.getClass(_pool[0]))
 				.split(".")
 				.pop()
@@ -128,7 +128,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 				.split("Flx")
 				.pop();
 		}
-		
+
 		FlxG.watch.addFunction(id + "-pool", function()
 		{
 			var most = 0;
@@ -142,21 +142,21 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 					topStack = stack;
 				}
 			}
-			
+
 			var msg = '$length/$_totalCreated';
 			if (topStack != null)
 				msg += ' | $most from ${prettyStack(topStack)}';
 			return msg;
 		});
 	}
-	
+
 	function trackGet(obj:T)
 	{
 		final callStack = haxe.CallStack.callStack();
 		final stack = stackToString(callStack[2]);
 		if (stack == null)
 			return;
-			
+
 		if (autoLog && !_autoLogInitted && FlxG.signals != null)
 		{
 			_autoLogInitted = true;
@@ -164,21 +164,21 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 			if (FlxG.game != null && FlxG.state != null)
 				addLogs();
 		}
-		
+
 		_tracked[obj] = stack;
-		if (_leakCount.exists(stack) == false)
+		if (!_leakCount.exists(stack))
 			_leakCount[stack] = 0;
-			
+
 		_leakCount[stack]++;
 	}
-	
+
 	inline function trackPut(obj:T)
 	{
 		final stack = _tracked[obj];
 		_tracked.remove(obj);
 		_leakCount[stack]--;
 	}
-	
+
 	function stackToString(stack:haxe.CallStack.StackItem)
 	{
 		return switch (stack)
@@ -187,7 +187,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 			default: null;
 		}
 	}
-	
+
 	inline function prettyStack(pos:String)
 	{
 		return pos.split("/").pop().split(".hx").join("");

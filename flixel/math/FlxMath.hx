@@ -46,6 +46,12 @@ class FlxMath
 	public static inline final EPSILON:Float = 0.0000001;
 
 	/**
+	 * Euler's constant and the base of the natural logarithm.
+	 * Math.E is not a constant in Haxe, so we'll just define it ourselves.
+	 */
+	public static inline final E = 2.71828182845904523536;
+
+	/**
 	 * Quantizes a float value to the nearest multiple of the given snap value.
 	 *
 	 * @param f The float value to quantize.
@@ -53,8 +59,34 @@ class FlxMath
 	 */
 	public static inline function quantize(f:Float, snap:Float)
 	{
-		#if FLX_DEBUG FlxG.log.notice('Quantized snap: $snap'); #end
 		return ((Math.fround(f * snap)) / snap);
+	}
+
+	/**
+	 * Snap a value to another if it's within a certain distance (inclusive).
+	 *
+	 * Helpful when using functions like `smoothLerpPrecision` to ensure the value actually reaches the target.
+	 *
+	 * @param base The base value to conditionally snap.
+	 * @param target The target value to snap to.
+	 * @param threshold Maximum distance between the two for snapping to occur.
+	 *
+	 * @return `target` if `base` is within `threshold` of it, otherwise `base`.
+	 */
+	public static function snap(base:Float, target:Float, threshold:Float):Float
+	{
+		return Math.abs(base - target) <= threshold ? target : base;
+	}
+
+	/**
+	 * Get the logarithm of a value with a given base.
+	 * @param base The base of the logarithm.
+	 * @param value The value to get the logarithm of.
+	 * @return `log_base(value)`
+	 */
+	public static function logBase(base:Float, value:Float):Float
+	{
+		return Math.log(value) / Math.log(base);
 	}
 
 	/**
@@ -90,6 +122,16 @@ class FlxMath
 	{
 		if (decimals < 1) return Math.floor(value);
 		return Math.floor(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	}
+
+	/**
+	 * Get the base-2 exponent of a value.
+	 * @param x value
+	 * @return `2^x`
+	 */
+	public static function exp2(x:Float):Float
+	{
+		return Math.pow(2, x);
 	}
 
 	/**
@@ -138,6 +180,16 @@ class FlxMath
 	}
 
 	/**
+	 * Helper function to get the fractional part of a value.
+	 * @param x value
+	 * @return `x mod 1`.
+	 */
+	public static function fract(x:Float):Float
+	{
+		return x - Math.floor(x);
+	}
+
+	/**
 	 * Returns the linear interpolation of two numbers if `ratio`
 	 * is between 0 and 1, and the linear extrapolation otherwise.
 	 *
@@ -153,29 +205,6 @@ class FlxMath
 	public static inline function lerp(a:Float, b:Float, ratio:Float):Float
 	{
 		return a + ratio * (b - a);
-	}
-
-	/**
-	 * Adjusts the lerp value to be frame rate independent.
-	 * Multiplies the provided lerp value by the elapsed time adjusted to a 60 FPS base.
-	 *
-	 * @param lerp The original lerp value.
-	 */
-	public static inline function cameraLerp(lerp:Float):Float
-	{
-		// multiply the lerp value by the elapsed time scaled to 60 FPS
-		return lerp * (FlxG.elapsed * 60); // 1 / 60
-	}
-
-	/**
-	 * Calculates the difference between two values based on a ratio.
-	 * @param base The base value.
-	 * @param target The target value.
-	 * @param ratio The ratio to use for the calculation.
-	 */
-	public static inline function lerpDelta(base:Float, target:Float, ratio:Float):Float
-	{
-		return base + cameraLerp(ratio) * (target - base);
 	}
 
 	/**
@@ -235,6 +264,7 @@ class FlxMath
 		result.set(lerp(a.x, b.x, ratio), lerp(a.y, b.y, ratio));
 		a.putWeak();
 		b.putWeak();
+
 		return result;
 	}
 
@@ -250,7 +280,7 @@ class FlxMath
 	{
 		elapsed ??= FlxG.elapsed;
 		return from + FlxMath.bound(weight * 60 * elapsed, 0, 1) * (to - from);
-    }
+	}
 
 	/**
 	 * Returns the linear interpolation of two colors.
@@ -302,6 +332,58 @@ class FlxMath
 		final decayFactor = getExponentialDecayLerp(t, e);
 		return lerp(b, a, decayFactor);
 	}
+
+	/**
+	 * Exponential decay interpolation.
+	 *
+	 * Framerate-independent because the rate-of-change is proportional to the difference, so you can
+	 * use the time elapsed since the last frame as `deltaTime` and the function will be consistent.
+	 *
+	 * Equivalent to `smoothLerpPrecision(base, target, deltaTime, halfLife, 0.5)`.
+	 *
+	 * @param base The starting or current value.
+	 * @param target The value this function approaches.
+	 * @param deltaTime The change in time along the function in seconds.
+	 * @param halfLife Time in seconds to reach halfway to `target`.
+	 *
+	 * @see https://twitter.com/FreyaHolmer/status/1757918211679650262
+	 *
+	 * @return The interpolated value.
+	 */
+	public static function smoothLerpDecay(base:Float, target:Float, deltaTime:Float, halfLife:Float):Float
+	{
+		if (deltaTime == 0) return base;
+		if (base == target) return target;
+
+		return lerp(target, base, exp2(-deltaTime / halfLife));
+	}
+
+	/**
+	 * Exponential decay interpolation.
+	 *
+	 * Framerate-independent because the rate-of-change is proportional to the difference, so you can
+	 * use the time elapsed since the last frame as `deltaTime` and the function will be consistent.
+	 *
+	 * Equivalent to `smoothLerpDecay(base, target, deltaTime, -duration / logBase(2, precision))`.
+	 *
+	 * @param base The starting or current value.
+	 * @param target The value this function approaches.
+	 * @param deltaTime The change in time along the function in seconds.
+	 * @param duration Time in seconds to reach `target` within `precision`, relative to the original distance.
+	 * @param precision Relative target precision of the interpolation. Defaults to 1% distance remaining.
+	 *
+	 * @see https://twitter.com/FreyaHolmer/status/1757918211679650262
+	 *
+	 * @return The interpolated value.
+	 */
+	public static function smoothLerpPrecision(base:Float, target:Float, deltaTime:Float, duration:Float, precision = 0.01):Float
+	{
+		if (deltaTime == 0) return base;
+		if (base == target) return target;
+
+		return lerp(target, base, Math.pow(precision, deltaTime / duration));
+	}
+
 
 	/**
 	 * Linearly interpolates between two `FlxPoint` values over time.
@@ -909,6 +991,20 @@ class FlxMath
 	}
 
 	/**
+	 * Exponential interpolation
+	 * @see https://twitter.com/FreyaHolmer/status/1813629237187817600
+	 *
+	 * @param a Minimum value of the range
+	 * @param b Maximum value of the range
+	 * @param t A value from 0.0 to 1.0, optional, by default will be a random value.
+	 */
+	public static inline function eerp(a:Float, b:Float, ?t:Null<Float>):Float
+	{
+		t ??= FlxG.random.float();
+		return a * Math.exp(t * Math.log(b / a));
+	}
+
+	/**
 	 * Returns the bigger argument.
 	 */
 	public static inline function maxInt(a:Int, b:Int):Int
@@ -994,9 +1090,9 @@ class FlxMath
 
 	public static inline function normalize(value:Float, min:Float, max:Float)
 	{
-        final val = (value - min) / (max - min);
-        return FlxMath.bound(val, 0, 1);
-    }
+		final val = (value - min) / (max - min);
+		return FlxMath.bound(val, 0, 1);
+	}
 
 	/**
 	 * Returns null if the given number is NaN, otherwise returns the number itself.

@@ -14,14 +14,14 @@ class FlxGradient {
 	public static function createGradientMatrix(width:Int, height:Int, colors:Array<FlxColor>, chunkSize:UInt = 1, rotation = 90):GradientMatrix {
 		final gradientMatrix = new openfl.geom.Matrix();
 		final rot = flixel.math.FlxAngle.asRadians(rotation); // Rotation (in radians) that the gradient is rotated
-		final alpha = new Array<Float>(); // Create the alpha and ratio arrays
+		final alpha:Array<Float> = []; // Create the alpha and ratio arrays
 
 		gradientMatrix.createGradientBox(width, height / chunkSize, rot, 0, 0); // Last 2 values = horizontal and vertical shift (in pixels)
 
 		for (ai in 0...colors.length)
 			alpha.push(colors[ai].alphaFloat);
 
-		final ratio = new Array<Int>();
+		final ratio:Array<Int> = [];
 
 		if (colors.length == 2) {
 			ratio[0] = 0;
@@ -42,7 +42,7 @@ class FlxGradient {
 
 	public static function createGradientArray(width:Int, height:Int, colors:Array<FlxColor>, chunkSize:UInt = 1, rotation = 90, interpolate = true):Array<FlxColor> {
 		final data = createGradientBitmapData(width, height, colors, chunkSize, rotation, interpolate);
-		final result = new Array<Int>();
+		final result:Array<Int> = [];
 
 		for (y in 0...data.height)
 			result.push(data.getPixel32(0, y));

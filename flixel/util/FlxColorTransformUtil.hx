@@ -15,7 +15,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's values
-	 * 
+	 *
 	 * @param   rMult    The value for the red multiplier, ranges from 0 to 1
 	 * @param   gMult    The value for the green multiplier, ranges from 0 to 1
 	 * @param   bMult    The value for the blue multiplier, ranges from 0 to 1
@@ -37,7 +37,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's values
-	 * 
+	 *
 	 * @param   rMult    The value for the red multiplier, ranges from 0 to 1
 	 * @param   gMult    The value for the green multiplier, ranges from 0 to 1
 	 * @param   bMult    The value for the blue multiplier, ranges from 0 to 1
@@ -53,7 +53,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's values
-	 * 
+	 *
 	 * @param   colorMult  A `FlxColor` whos `redFloat`, `greenFloat`, `blueFloat` and
 	 *                    `alphaFloat` values determine the multipliers of this transform
 	 * @param   color      A `FlxColor` whos `red`, `green`, `blue` and `alpha` values
@@ -68,7 +68,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Scales each color's multiplier by the specifified amount
-	 * 
+	 *
 	 * @param   rMult  The amount to scale the red multiplier
 	 * @param   gMult  The amount to scale the green multiplier
 	 * @param   bMult  The amount to scale the blue multiplier
@@ -88,7 +88,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Scales each color's multiplier by the color's specifified normal values
-	 * 
+	 *
 	 * @param   color   A `FlxColor` whos `redFloat`, `greenFloat`, `blueFloat` and
 	 *                  `alphaFloat` values scale the multipliers of this transform
 	 * @since 6.1.0
@@ -105,7 +105,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's multipliers
-	 * 
+	 *
 	 * @param   rMult  The value for the red multiplier, ranges from 0 to 1
 	 * @param   gMult  The value for the green multiplier, ranges from 0 to 1
 	 * @param   bMult  The value for the blue multiplier, ranges from 0 to 1
@@ -123,7 +123,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's multipliers with a single color
-	 * 
+	 *
 	 * @param   color   A `FlxColor` whos `redFloat`, `greenFloat`, `blueFloat` and
 	 *                  `alphaFloat` values determine the multipliers of this transform
 	 * @since 6.1.0
@@ -140,7 +140,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's offsets
-	 * 
+	 *
 	 * @param   red    The value for the red offset, ranges from 0 to 255
 	 * @param   green  The value for the green offset, ranges from 0 to 255
 	 * @param   blue   The value for the blue offset, ranges from 0 to 255
@@ -158,7 +158,7 @@ class FlxColorTransformUtil
 
 	/**
 	 * Quick way to set all of a transform's offsets with a single color
-	 * 
+	 *
 	 * @param   color   A `FlxColor` whos `red`, `green`, `blue` and
 	 *                  `alpha` values determine the offsets of this transform
 	 * @since 6.1.0

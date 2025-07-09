@@ -278,7 +278,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	public static function gradient(Color1:FlxColor, Color2:FlxColor, Steps:Int, ?Ease:EaseFunction):Array<FlxColor>
 	{
-		final output = new Array<FlxColor>();
+		final output:Array<FlxColor> = [];
 
 		if (Ease == null)
 			Ease = FlxEase.linear;
@@ -474,10 +474,10 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	public inline function setRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
 		this = (boundChannel(Red) & 0xFF) << 16 | (boundChannel(Green) & 0xFF) << 8 | (boundChannel(Blue) & 0xFF) | (boundChannel(Alpha) & 0xFF) << 24;
- 		// red = Red;
- 		// green = Green;
- 		// blue = Blue;
- 		// alpha = Alpha;
+		// red = Red;
+		// green = Green;
+		// blue = Blue;
+		// alpha = Alpha;
 		return this;
 	}
 
@@ -513,10 +513,10 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	public inline function setRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor
 	{
 		this = setRGB(Std.int(Red * 255), Std.int(Green * 255), Std.int(Blue * 255), Std.int(Alpha * 255));
- 		// redFloat = Red;
- 		// greenFloat = Green;
- 		// blueFloat = Blue;
- 		// alphaFloat = Alpha;
+		// redFloat = Red;
+		// greenFloat = Green;
+		// blueFloat = Blue;
+		// alphaFloat = Alpha;
 		return this;
 	}
 
@@ -829,8 +829,8 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	// old version of get_hue(), inaccurate and slow
 	function get_hueOld():Float
 	{
- 		// 1.7320508075688772 = Math.sqrt(3)
- 		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
+		// 1.7320508075688772 = Math.sqrt(3)
+		final hueRad = Math.atan2(1.7320508075688772 * (greenFloat - blueFloat), 2 * redFloat - greenFloat - blueFloat);
 		final hue = (hueRad != 0) ? flixel.math.FlxAngle.TO_DEG * hueRad : 0;
 		return hue < 0 ? hue + 360 : hue;
 	}

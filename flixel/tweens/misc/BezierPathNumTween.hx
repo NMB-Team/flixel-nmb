@@ -46,7 +46,7 @@ class BezierPathNumTween extends FlxTween
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		value = bezierPath(scale,_points);
+		value = bezierPath(scale, _points);
 
 		if (_tweenFunction != null)
 			_tweenFunction(value);

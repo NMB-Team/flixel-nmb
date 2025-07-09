@@ -38,12 +38,7 @@ class FlxDebugger extends openfl.display.Sprite
 	 * The scale of the debug windows must be set before the `FlxGame` is made.
 	 * Can also use the compile flag `-DFLX_DEBUGGER_SCALE=2`
 	 */
-	public static var defaultScale:Int
-	#if FLX_DEBUGGER_SCALE
-	= Std.parseInt('${haxe.macro.Compiler.getDefine("FLX_DEBUGGER_SCALE")}');
-	#else
-	= 1;
-	#end
+	public static var defaultScale:Int = #if FLX_DEBUGGER_SCALE Std.parseInt('${haxe.macro.Compiler.getDefine("FLX_DEBUGGER_SCALE")}') #else 1 #end;
 
 	/**
 	 * Internal, used to space out windows from the edges.

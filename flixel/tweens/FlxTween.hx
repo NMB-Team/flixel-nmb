@@ -198,7 +198,7 @@ class FlxTween implements IFlxDestroyable
 	{
 		return globalManager.bezierPathTween(Object, Values, Duration, Options);
 	}
-	
+
 	/**
 	 * Tweens numeric points of that object Array<Float>.
 	 *
@@ -1099,10 +1099,10 @@ class FlxTweenManager extends FlxBasic
 		tween.tween(Object, Values, Duration);
 		return add(tween);
 	}
-	
+
 	/**
 	 * Tween numeric public properties of points.
-	 * 
+	 *
 	 * @param Points The point the tween creates. Array<Float>
 	 * @param Duration Duration of the tween in seconds.
 	 * @param Options A structure with tween options.
@@ -1619,7 +1619,7 @@ class FlxTweenManager extends FlxBasic
 		else
 		{
 			// check for dot paths and convert to object/field pairs
-			var propertyInfos = new Array<TweenProperty>();
+			var propertyInfos:Array<TweenProperty> = [];
 			for (fieldPath in fieldPaths)
 			{
 				var target:Dynamic = object;

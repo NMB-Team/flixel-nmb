@@ -292,7 +292,7 @@ class FlxStringUtil {
 		return formatPackage(Type.getEnumName(e), simple);
 	}
 
-	static function formatPackage(s:String, simple:Bool):String {
+	public static function formatPackage(s:String, simple:Bool):String {
 		if (s == null) return null;
 
 		s = s.replace("::", ".");
@@ -340,6 +340,31 @@ class FlxStringUtil {
 	}
 
 	/**
+	 * A regex to match valid URLs.
+	 */
+	public static final URL_REGEX = ~/^https?:\/?\/?(?:www\.)?[-a-zA-Z0-9@:%_\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+
+	/**
+	 * Sanitizes a URL via a regex.
+	 *
+	 * @param targetUrl The URL to sanitize.
+	 * @return The sanitized URL, or an empty string if the URL is invalid.
+	 */
+	public static function sanitizeURL(targetUrl:String):String {
+		targetUrl = (targetUrl ?? '').trim();
+		if (isNullOrEmpty(targetUrl)) return '';
+
+		final lowerUrl:String = targetUrl.toLowerCase();
+		if (!lowerUrl.startsWith('http:') && !lowerUrl.startsWith('https:'))
+			targetUrl = 'http://' + targetUrl;
+
+		if (URL_REGEX.match(targetUrl))
+			return URL_REGEX.matched(0);
+
+		return '';
+	}
+
+	/**
 	 * Generates a short visual hash of a string, useful for debug tags or identifiers.
 	 */
 	public static function shortHash(str:String, length = 6):String {
@@ -374,7 +399,7 @@ class FlxStringUtil {
 	public static function toIntArray(data:String):Array<Int> {
 		if (!isNullOrEmpty(data)) {
 			final strArray = data.split(",");
-			final iArray = new Array<Int>();
+			final iArray:Array<Int> = [];
 			for (str in strArray)
 				iArray.push(Std.parseInt(str));
 
@@ -392,7 +417,7 @@ class FlxStringUtil {
 	public static function toFloatArray(data:String):Array<Float> {
 		if (!isNullOrEmpty(data)) {
 			final strArray = data.split(",");
-			final fArray = new Array<Float>();
+			final fArray:Array<Float> = [];
 			for (str in strArray)
 				fArray.push(Std.parseFloat(str));
 
@@ -651,10 +676,11 @@ class FlxStringUtil {
 		return formattedString;
 	}
 
+	static final roman = ~/^(?=[MDCLXVI])M*(C[MD]|D?C*)(X[CL]|L?X*)(I[XV]|V?I*)$/i;
+
 	/**
 	 * Wether the string contains a valid roman numeral
 	 */
-	static final roman = ~/^(?=[MDCLXVI])M*(C[MD]|D?C*)(X[CL]|L?X*)(I[XV]|V?I*)$/i;
 	public static function isRomanNumeral(str:String):Bool {
 		return roman.match(str);
 	}
@@ -666,6 +692,75 @@ class FlxStringUtil {
 	 */
 	public static function toDashesCase(string:String):String {
 		return string.toLowerCase().replace(' ', '-');
+	}
+
+	/**
+	 * Strip a given prefix from a string.
+	 * @param value The string to strip.
+	 * @param prefix The prefix to strip. If the prefix isn't found, the original string is returned.
+	 * @return The stripped string.
+	 */
+	public static function stripPrefix(value:String, prefix:String):String {
+		if (value.startsWith(prefix))
+			return value.substr(prefix.length);
+		return value;
+	}
+
+	/**
+	 * Strip a given suffix from a string.
+	 * @param value The string to strip.
+	 * @param suffix The suffix to strip. If the suffix isn't found, the original string is returned.
+	 * @return The stripped string.
+	 */
+	public static function stripSuffix(value:String, suffix:String):String {
+		if (value.endsWith(suffix))
+			return value.substr(0, value.length - suffix.length);
+		return value;
+	}
+
+	/**
+	 * Converts a string to lower kebab case. For example, "Hello World" becomes "hello-world".
+	 *
+	 * @param value The string to convert.
+	 * @return The converted string.
+	 */
+	public static function toLowerKebabCase(value:String):String {
+		return value.toLowerCase().replace(' ', '-');
+	}
+
+	/**
+	 * Converts a string to upper kebab case, aka screaming kebab case. For example, "Hello World" becomes "HELLO-WORLD".
+	 *
+	 * @param value The string to convert.
+	 * @return The converted string.
+	 */
+	public static function toUpperKebabCase(value:String):String {
+		return value.toUpperCase().replace(' ', '-');
+	}
+
+	static final SANTIZE_REGEX = ~/[^-a-zA-Z0-9]/g;
+
+	/**
+	 * Remove all instances of symbols other than alpha-numeric characters (and dashes)from a string.
+	 * @param value The string to sanitize.
+	 * @return The sanitized string.
+	 */
+	public static function sanitize(value:String):String {
+		return SANTIZE_REGEX.replace(value, '');
+	}
+
+	/**
+	 * Like `join` but adds a word before the last element.
+	 * @param array The array to join.
+	 * @param separator The separator to use between elements.
+	 * @param andWord The word to use before the last element.
+	 * @return The joined string.
+	 */
+	public static function joinPlural(array:Array<String>, separator = ', ', andWord = 'and'):String {
+		if (array.length == 0) return '';
+		if (array.length == 1) return array[0];
+
+		return '${array.slice(0, array.length - 1).join(separator)} $andWord ${array[array.length - 1]}';
 	}
 }
 
