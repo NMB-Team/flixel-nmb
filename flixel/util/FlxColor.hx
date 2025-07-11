@@ -1,8 +1,8 @@
 package flixel.util;
 
 import flixel.math.FlxMath;
-import flixel.tweens.FlxEase;
 import flixel.system.macros.FlxMacroUtil;
+import flixel.tweens.FlxEase;
 
 /**
  * Class representing a color, based on Int. Provides a variety of methods for creating and converting colors.
@@ -114,10 +114,33 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 255
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
+	overload extern public static inline function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
 	{
 		var color = new FlxColor();
 		return color.setRGB(Red, Green, Blue, Alpha);
+	}
+
+	/**
+	 * Generate a color from an array of integer RGB values (0 to 255)
+	 * @param Array The array of RGB values, each value should be from 0 to 255
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromRGB(Array:Array<Int>):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setRGB(Array[0], Array[1], Array[2], 255);
+	}
+
+	/**
+	 * Generate a color from an array of integer RGB values (0 to 255)
+	 * @param Array The array of RGB values, each value should be from 0 to 255
+	 * @param Alpha How opaque the color should be, from 0 to 255
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromRGB(Array:Array<Int>, Alpha:Int = 255):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setRGB(Array[0], Array[1], Array[2], Alpha);
 	}
 
 	public static inline function fromRGBFast(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):FlxColor
@@ -141,10 +164,33 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 * @param Alpha	How opaque the color should be, from 0 to 1
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor
+	overload extern public static inline function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):FlxColor
 	{
 		var color = new FlxColor();
 		return color.setRGBFloat(Red, Green, Blue, Alpha);
+	}
+
+	/**
+	 * Generate a color from an array of float RGB values (0 to 1)
+	 * @param Array The array of RGB values, each value should be from 0 to 1
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromRGBFloat(Array:Array<Float>):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setRGBFloat(Array[0], Array[1], Array[2], Array[3]);
+	}
+
+	/**
+	 * Generate a color from an array of float RGB values (0 to 1)
+	 * @param Array The array of RGB values, each value should be from 0 to 1
+	 * @param Alpha How opaque the color should be, from 0 to 1
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromRGBFloat(Array:Array<Float>, Alpha:Float = 1):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setRGBFloat(Array[0], Array[1], Array[2], Alpha);
 	}
 
 	/**
@@ -157,10 +203,33 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 * @param Alpha		How opaque the color should be, from 0 to 1
 	 * @return The color as a FlxColor
 	 */
-	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):FlxColor
+	overload extern public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):FlxColor
 	{
 		var color = new FlxColor();
 		return color.setCMYK(Cyan, Magenta, Yellow, Black, Alpha);
+	}
+
+	/**
+	 * Generate a color from an array of CMYK values (0 to 1)
+	 * @param Array The array of CMYK, each value should be from 0 to 1
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromCMYK(Array:Array<Float>):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setCMYK(Array[0], Array[1], Array[2], Array[3], Array[4]);
+	}
+
+	/**
+	 * Generate a color from an array of CMYK values (0 to 1)
+	 * @param Array The array of CMYK, each value should be from 0 to 1
+	 * @param Alpha How opaque the color should be, from 0 to 1
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromCMYK(Array:Array<Float>, Alpha:Float):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setCMYK(Array[0], Array[1], Array[2], Array[3], Alpha);
 	}
 
 	/**
@@ -172,10 +241,33 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 	 * @return	The color as a FlxColor
 	 */
-	public static function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):FlxColor
+	overload extern public static inline function fromHSB(Hue:Float, Saturation:Float, Brightness:Float, Alpha:Float = 1):FlxColor
 	{
 		var color = new FlxColor();
 		return color.setHSB(Hue, Saturation, Brightness, Alpha);
+	}
+
+	/**
+	 * Generate a color from an array of HSB (aka HSV) components.
+	 * @param Array The array of HSB values
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromHSB(Array:Array<Float>):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setHSB(Array[0], Array[1], Array[2], Array[3]);
+	}
+
+	/**
+	 * Generate a color from an array of HSB (aka HSV) components.
+	 * @param Array The array of HSB values
+	 * @param Alpha How opaque the color should be, either between 0 and 1 or 0 and 255.
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromHSB(Array:Array<Float>, Alpha:Float = 1):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setHSB(Array[0], Array[1], Array[2], Alpha);
 	}
 
 	/**
@@ -187,10 +279,33 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 * @param	Alpha		How opaque the color should be, either between 0 and 1 or 0 and 255.
 	 * @return	The color as a FlxColor
 	 */
-	public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):FlxColor
+	overload extern public static inline function fromHSL(Hue:Float, Saturation:Float, Lightness:Float, Alpha:Float = 1):FlxColor
 	{
 		var color = new FlxColor();
 		return color.setHSL(Hue, Saturation, Lightness, Alpha);
+	}
+
+	/**
+	 * Generate a color from HSL components.
+	 * @param Array The array of HSL values.
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromHSL(Array:Array<Float>):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setHSL(Array[0], Array[1], Array[2], Array[3]);
+	}
+
+	/**
+	 * Generate a color from HSL components.
+	 * @param Array The array of HSL values.
+	 * @param Alpha How opaque the color should be, either between 0 and 1 or 0 and 255.
+	 * @return The color as a FlxColor
+	 */
+	overload extern public static inline function fromHSL(Array:Array<Float>, Alpha:Float = 1):FlxColor
+	{
+		var color = new FlxColor();
+		return color.setHSL(Array[0], Array[1], Array[2], Alpha);
 	}
 
 	/**
