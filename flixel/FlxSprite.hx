@@ -371,10 +371,10 @@ class FlxSprite extends FlxObject
 	@:noCompletion
 	@:noCompletion
 	static var __flashPointZero:Point = new Point();
-	
+
 	@:noCompletion
 	var _flashPointZero(get, never):Point;
-	
+
 	inline function get__flashPointZero()
 		return __flashPointZero;
 
@@ -2153,19 +2153,19 @@ abstract FlxSpriteFacingFlip(#if macro Int #else ByteUInt #end) #if !macro from 
 {
 	public var x(get, set):Bool;
 	public var y(get, set):Bool;
-	
+
 	public function new(x = false, y = false)
 	{
 		this = 0;
 		set_x(x);
 		set_y(y);
 	}
-	
+
 	inline function get_x():Bool
 	{
 		return this & 0x01 == 0x01;
 	}
-	
+
 	inline function set_x(i:Bool):Bool
 	{
 		if (i)
@@ -2174,12 +2174,12 @@ abstract FlxSpriteFacingFlip(#if macro Int #else ByteUInt #end) #if !macro from 
 			this &= 0xF0;
 		return i;
 	}
-	
+
 	inline function get_y():Bool
 	{
 		return this & 0x10 == 0x10;
 	}
-	
+
 	inline function set_y(i:Bool):Bool
 	{
 		if (i)
@@ -2188,12 +2188,12 @@ abstract FlxSpriteFacingFlip(#if macro Int #else ByteUInt #end) #if !macro from 
 			this &= 0x0F;
 		return i;
 	}
-	
+
 	@:from static function fromDynamic(i:FlxSpriteFacingFlipDynamic):FlxSpriteFacingFlip
 	{
 		return new FlxSpriteFacingFlip(i.x, i.y);
 	}
-	
+
 	@:to function toDynamic():FlxSpriteFacingFlipDynamic
 	{
 		return {

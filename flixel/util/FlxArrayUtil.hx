@@ -218,24 +218,6 @@ class FlxArrayUtil {
 	}
 
 	/**
-	 * Clears an array structure, but leaves the object data untouched
-	 * Useful for cleaning up temporary references to data you want to preserve.
-	 * WARNING: Does not attempt to properly destroy the contents.
-	 *
-	 * @param	vector		The vector to clear out
-	 * @param	Recursive	Whether to search for arrays inside of arr and clear them out, too
-	 */
-	public static function clearVector<T>(vector:Vector<T>, recursive = false):Vector<T> {
-		if (vector == null)
-			return vector;
-
-		while (vector.length > 0)
-			vector.pop();
-
-		return null;
-	}
-
-	/**
 	 * Flattens 2D arrays into 1D arrays.
 	 * Example: `[[1, 2], [3, 2], [1, 1]]` -> `[1, 2, 3, 2, 1, 1]`
 	 */
@@ -313,14 +295,6 @@ class FlxArrayUtil {
 	 * @since 6.4.0
 	 */
 	public static inline function checkForNullArray(s:Array<Dynamic>):Bool {
-		return s == null || s.length == 0;
-	}
-
-	/**
-	 * Returns true if `s` equals `null` or is empty. Only for Vector type
-	 * @since 6.4.0
-	 */
-	public static inline function checkForNullVector(s:Vector<Dynamic>):Bool {
 		return s == null || s.length == 0;
 	}
 }

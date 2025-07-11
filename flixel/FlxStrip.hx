@@ -35,16 +35,16 @@ class FlxStrip extends FlxSprite {
 	public var repeat = false;
 
 	override public function destroy():Void {
-		vertices = FlxArrayUtil.clearVector(vertices);
-		indices = FlxArrayUtil.clearVector(indices);
-		uvtData = FlxArrayUtil.clearVector(uvtData);
-		colors = FlxArrayUtil.clearVector(colors);
+		vertices = null;
+		indices = null;
+		uvtData = null;
+		colors = null;
 
 		super.destroy();
 	}
 
 	override public function draw():Void {
-		if (alpha == 0 || graphic == null || FlxArrayUtil.checkForNullVector(vertices)) return;
+		if (alpha == 0 || graphic == null || (vertices == null || vertices.length == 0)) return;
 
 		final cameras = getCamerasLegacy();
 		for (camera in cameras) {
