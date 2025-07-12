@@ -175,7 +175,7 @@ class FlxVirtualStick extends FlxSpriteContainer
 		else if (prev == 0 && curr == 0)
 			STOPPED;
 		else
-			throw 'Unexpected case - prev: $prev, curr:$curr';// not possible
+			throw 'Unexpected case - prev: $prev, curr:$curr'; // not possible
 	}
 }
 
