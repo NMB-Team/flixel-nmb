@@ -94,7 +94,7 @@ class LogStyle
 	 */
 	public function toLogString(data:Array<Any>) {
 		// Format FlxPoints, Arrays, Maps or turn the data entry into a String
-		final texts = new Array<String>();
+		final texts:Array<String> = [];
 		for (i in 0...data.length) {
 			final text = Std.string(data[i]);
 			texts.push(StringTools.htmlEscape(text)); // Make sure you can't insert html tags

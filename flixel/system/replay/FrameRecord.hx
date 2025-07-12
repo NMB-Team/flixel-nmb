@@ -125,7 +125,7 @@ class FrameRecord implements IFlxDestroyable
 				{
 					if (keys == null)
 					{
-						keys = new Array<CodeValuePair>();
+						keys = [];
 					}
 					keys.push(new CodeValuePair(Std.parseInt(keyPair[0]), Std.parseInt(keyPair[1])));
 				}

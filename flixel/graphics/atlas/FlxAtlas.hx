@@ -730,7 +730,7 @@ class FlxAtlas implements IFlxDestroyable
 			return null;
 		}
 
-		_tempStorage = new Array<TempAtlasObj>();
+		_tempStorage = [];
 		for (i in 0...numBitmaps)
 		{
 			_tempStorage.push({bmd: bitmaps[i], keyStr: keys[i]});
@@ -778,7 +778,7 @@ class FlxAtlas implements IFlxDestroyable
 	 */
 	public function createQueue():FlxAtlas
 	{
-		_tempStorage = new Array<TempAtlasObj>();
+		_tempStorage = [];
 		return this;
 	}
 
@@ -791,7 +791,7 @@ class FlxAtlas implements IFlxDestroyable
 	public function addToQueue(data:BitmapData, key:String):FlxAtlas
 	{
 		if (_tempStorage == null)
-			_tempStorage = new Array<TempAtlasObj>();
+			_tempStorage = [];
 
 		_tempStorage.push({bmd: data, keyStr: key});
 		return this;
@@ -897,11 +897,9 @@ class FlxAtlas implements IFlxDestroyable
 	function findNodeToInsert(insertWidth:Int, insertHeight:Int):FlxNode
 	{
 		// Node stack
-		var stack:Array<FlxNode> = new Array<FlxNode>();
+		var stack:Array<FlxNode> = [];
 		// Current node
 		var current:FlxNode = root;
-
-		var emptyNodes:Array<FlxNode> = new Array<FlxNode>();
 
 		var canPlaceRight:Bool = false;
 		var canPlaceLeft:Bool = false;

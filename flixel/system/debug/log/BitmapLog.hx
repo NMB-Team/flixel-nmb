@@ -109,7 +109,7 @@ class BitmapLog extends Window
 	{
 		super.onMouseDown(e);
 
-		if (_overHeader == false && _overHandle == false)
+		if (!_overHeader && !_overHandle)
 			state = DRAG(e.stageX, e.stageY, canvasOffset.x, canvasOffset.y);
 	}
 

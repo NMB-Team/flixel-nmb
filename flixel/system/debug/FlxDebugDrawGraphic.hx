@@ -24,16 +24,16 @@ abstract FlxDebugDrawGraphic(Graphics) from Graphics to Graphics
 		}
 		else
 		{
-			this.lineStyle(thickness, color.rgb, color.alphaFloat);
-			final half = thickness * 0.5;
+			this.lineStyle(thickness, color.rgb, color.alphaFloat, false, null, null, MITER, 255);
 
+			final half = thickness * 0.5;
 			this.drawRect(x + half, y + half, width - thickness, height - thickness);
 		}
 	}
 
 	public function drawLine(x1:Float, y1:Float, x2:Float, y2:Float, color:FlxColor, thickness = 1.0)
 	{
-		this.lineStyle(thickness, color.rgb, color.alphaFloat);
+		this.lineStyle(thickness, color.rgb, color.alphaFloat, false, null, null, MITER, 255);
 
 		this.moveTo(x1, y1);
 		this.lineTo(x2, y2);

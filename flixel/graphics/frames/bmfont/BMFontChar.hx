@@ -105,7 +105,7 @@ class BMFontChar
 	static function listFromBytes(bytes:BytesInput):Array<BMFontChar>
 	{
 		var blockSize = bytes.readInt32();
-		final chars = new Array<BMFontChar>();
+		final chars:Array<BMFontChar> = [];
 		while (blockSize > 0)
 		{
 			final char:BMFontChar = {

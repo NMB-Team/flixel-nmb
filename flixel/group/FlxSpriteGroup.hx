@@ -262,7 +262,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		var positions:Array<FlxPoint> = null;
 		if (FetchPositions)
 		{
-			positions = new Array<FlxPoint>();
+			positions = [];
 		}
 
 		var spritePositions:Array<FlxPoint>;
@@ -734,21 +734,21 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	override function set_x(Value:Float):Float
 	{
 		if (exists && x != Value)
-			transformChildren(xTransform, Value - x);// offset
+			transformChildren(xTransform, Value - x); // offset
 		return x = Value;
 	}
 
 	override function set_y(Value:Float):Float
 	{
 		if (exists && y != Value)
-			transformChildren(yTransform, Value - y);// offset
+			transformChildren(yTransform, Value - y); // offset
 		return y = Value;
 	}
 
 	override function set_angle(Value:Float):Float
 	{
 		if (exists && angle != Value)
-			transformChildren(angleTransform, Value - angle);// offset
+			transformChildren(angleTransform, Value - angle); // offset
 		return angle = Value;
 	}
 

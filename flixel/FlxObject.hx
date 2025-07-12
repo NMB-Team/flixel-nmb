@@ -1114,7 +1114,6 @@ class FlxObject extends FlxBasic
 		return (y - (camera.scroll.y * scrollFactor.y) - camera.viewMarginY) * camera.zoom;
 	}
 
-
 	/**
 	 * Returns the world position of this object.
 	 *
@@ -1272,8 +1271,42 @@ class FlxObject extends FlxBasic
 		if (!camera.visible || !camera.exists || !isOnScreen(camera))
 			return;
 
-		var rect = getBoundingBox(camera);
-		var gfx:Graphics = beginDrawDebug(camera);
+		final rect = getBoundingBox(camera);
+		final viewLeft = camera.viewMarginLeft - 1;
+		final viewRight = camera.viewMarginRight + 1;
+		final viewTop = camera.viewMarginTop - 1;
+		final viewBottom = camera.viewMarginBottom + 1;
+
+		// clamp the rect to the bounds of the camera
+		// this is neccesary to avoid big bitmaps when zoomed in
+		if (rect.x < viewLeft) {
+			rect.width -= (viewLeft - rect.x);
+			rect.x = viewLeft;
+		} else if (rect.x > viewRight) {
+			rect.x = viewRight;
+			rect.width = 0;
+		}
+
+		if (rect.right > viewRight)
+			rect.width = viewRight - rect.x;
+
+		if (rect.y < viewTop) {
+			rect.height -= (viewTop - rect.y);
+			rect.y = viewTop;
+		} else if (rect.y > viewBottom) {
+			rect.y = viewBottom;
+			rect.height = 0;
+		}
+
+		if (rect.bottom > viewBottom)
+			rect.height = viewBottom - rect.y;
+
+		rect.width = Math.max(0, rect.width);
+		rect.height = Math.max(0, rect.height);
+
+		if (rect.isEmpty) return;
+
+		final gfx = beginDrawDebug(camera);
 		drawDebugBoundingBox(gfx, rect, allowCollisions, immovable);
 		endDrawDebug(camera);
 	}
@@ -1300,8 +1333,8 @@ class FlxObject extends FlxBasic
 
 	function drawDebugBoundingBoxColor(gfx:FlxDebugDrawGraphic, rect:FlxRect, color:FlxColor)
 	{
-		color.alphaFloat = 0.75;
-		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1.0);
+		color.alphaFloat = .75;
+		gfx.drawBoundingBox(rect.x, rect.y, rect.width, rect.height, color, 1);
 	}
 
 	inline function beginDrawDebug(camera:FlxCamera):Graphics

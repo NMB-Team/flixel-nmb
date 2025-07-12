@@ -211,7 +211,7 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 	 */
 	public function getIsDown():Array<FlxInput<Key>>
 	{
-		var keysDown = new Array<FlxInput<Key>>();
+		var keysDown:Array<FlxInput<Key>> = [];
 
 		for (key in _keyListArray)
 		{

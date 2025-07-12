@@ -5,7 +5,7 @@ package flixel.util.typeLimit;
  * Prior to haxeFlixel 6, the `FlxGame` constructor took a `FlxState` class which meant initial
  * `FlxStates`could not have constructor args. In version 6.0.0 and higher, it now takes a function
  * that returns a newly created instance.
- * 
+ *
  * ## examples:
  * You can pass the state's contructor in directly:
  * ```haxe
@@ -22,7 +22,7 @@ package flixel.util.typeLimit;
  * 		return new PlayState();
  * });
  * ```
- * 
+ *
  * @since 5.6.0
  * @see [HaxeFlixel issue #2541](https://github.com/HaxeFlixel/flixel/issues/2541)
  */
@@ -30,7 +30,7 @@ abstract NextState(() -> FlxState) from () -> FlxState to () -> FlxState {
 	@:from public static function fromType(state:Class<FlxState>):NextState {
 		return () -> Type.createInstance(state, []);
 	}
-	
+
 	@:op(a()) public function createInstance():FlxState {
 		return this();
 	}

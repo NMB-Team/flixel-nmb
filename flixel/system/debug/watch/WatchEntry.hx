@@ -135,7 +135,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 	function getFormattedValue():String
 	{
 		var value:Dynamic = getValue();
-		return Std.string(formatValue(getValue()));
+		return Std.string(formatValue(value));
 	}
 
 	static function formatValue(value:Any):String

@@ -59,7 +59,7 @@ class BMFontPage
 	static function listFromBytes(bytes:BytesInput)
 	{
 		var blockSize = bytes.readInt32();
-		final pages = new Array<BMFontPage>();
+		final pages:Array<BMFontPage> = [];
 
 		var i = 0;
 		while (blockSize > 0)

@@ -1,5 +1,6 @@
 package flixel.system.replay;
 
+import js.html.AbortController;
 import flixel.FlxG;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxDestroyUtil;
@@ -39,7 +40,7 @@ class FlxReplay implements IFlxDestroyable
 	/**
 	 * Internal container for all the frames in this replay.
 	 */
-	final _frames = new Array<FrameRecord>();
+	final _frames:Array<FrameRecord> = [];
 
 	/**
 	 * Internal helper variable for keeping track of where we are in _frames during recording or replay.

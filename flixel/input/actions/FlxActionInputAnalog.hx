@@ -342,9 +342,9 @@ class FlxActionInputAnalog extends FlxActionInput
 					case PRESSED: checkAxis(A_X, PRESSED) || checkAxis(A_Y, PRESSED); // either one pressed
 					case RELEASED: checkAxis(A_X, RELEASED) || checkAxis(A_Y, RELEASED); // either one NOT pressed
 
-					case JUST_PRESSED: (checkAxis(A_X, JUST_PRESSED) && checkAxis(A_Y, JUST_PRESSED)) || // both just pressed == whole stick just pressed
-						(checkAxis(A_X, JUST_PRESSED) && checkAxis(A_Y, RELEASED)) || // one just pressed & other NOT pressed == whole stick just pressed
-						(checkAxis(A_X, RELEASED) && checkAxis(A_Y, JUST_PRESSED));
+					case JUST_PRESSED: (checkAxis(A_X, JUST_PRESSED) && checkAxis(A_Y, JUST_PRESSED)) // both just pressed == whole stick just pressed
+						|| (checkAxis(A_X, JUST_PRESSED) && checkAxis(A_Y, RELEASED)) // one just pressed & other NOT pressed == whole stick just pressed
+						|| (checkAxis(A_X, RELEASED) && checkAxis(A_Y, JUST_PRESSED));
 
 					case JUST_RELEASED: (checkAxis(A_X,
 							JUST_RELEASED) && checkAxis(A_Y,

@@ -7,7 +7,7 @@ class FlxSoundGroup {
 	/**
 	 * The sounds in this group
 	 */
-	public var members = new Array<FlxSound>();
+	public var members:Array<FlxSound> = [];
 
 	/**
 	 * The maximum number of sounds that can be in this group at once.

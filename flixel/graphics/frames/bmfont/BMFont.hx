@@ -54,9 +54,9 @@ class BMFont
 	{
 		var info:BMFontInfo = null;
 		var common:BMFontCommon = null;
-		final pages = new Array<BMFontPage>();
-		final chars = new Array<BMFontChar>();
-		final kernings = new Array<BMFontKerning>();
+		final pages:Array<BMFontPage> = [];
+		final chars:Array<BMFontChar> = [];
+		final kernings:Array<BMFontKerning> = [];
 		// we dont need these but they exists in the file
 		// var charCount = 0;
 		// var kerningCount = 0;

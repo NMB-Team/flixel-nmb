@@ -13,7 +13,7 @@ using flixel.util.FlxArrayUtil;
  * `getNeighbors` and `getDistance` to create you're own! For top-down maps, it may
  * be wiser to extend FlxDiagonalPathfinder, as it already has a lot of basic helpers.
  * @since 5.0.0
- * 
+ *
  * To use, either call `myPathfinder.findPath(myMap, start, end)` or
  * `myMap.findPathCustom(myPathfinder, start, end)`
  */
@@ -37,7 +37,7 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Creates a FlxTilemapPathPolicy.
-	 * 
+	 *
 	 * @param factory     A method to create `FlxTypedPathfinderData` instances.
 	 * Note: You don't need to create a new instances of the same policy for different maps.
 	 */
@@ -102,7 +102,7 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Helper for findPathIndices, after a data instance is already created.
-	 * 
+	 *
 	 * @param data   The pathfinder data for this current search.
 	 */
 	function findPathIndicesHelper(data:Data)
@@ -189,7 +189,7 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 				i++;
 		}
 
-		// Put our temp point back in the pool for reuse 
+		// Put our temp point back in the pool for reuse
 		tempPoint.put();
 	}
 
@@ -228,11 +228,11 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 				i++;
 		}
 
-		// Put our temp point back in the pool for reuse 
+		// Put our temp point back in the pool for reuse
 		p1.put();
 		p2.put();
 	}
-	
+
 	/**
 	 * Pathfinding helper function, floods a grid with distance information until it finds the end point.
 	 * NOTE: Currently this process does NOT use any kind of fancy heuristic! It's pretty brute.
@@ -247,10 +247,10 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 	{
 		return compute(createData(map, startIndex, endIndex), stopOnEnd);
 	}
-	
+
 	/**
 	 * Actually begins the brute pathfinding process.
-	 * 
+	 *
 	 * @param data      The pathfinder data for this current search.
 	 * @param stopOnEnd Whether to stop at the end or not. default true.
 	 * @return The pathfinder data that was passed in.
@@ -263,14 +263,14 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 		var current = [data.startIndex];
 		while (current.length > 0)
 		{
-			var neighbors = new Array<Int>();
+			var neighbors:Array<Int> = [];
 
 			// check all the current tiles for new paths
 			for (currentIndex in current)
 			{
 				// Get all traversible neighbors
 				var cellNeighbors = getNeighbors(data, currentIndex);
-				
+
 				// Compare the distance travelled to get there compared to previous paths
 				var distanceSoFar = data.distances[currentIndex];
 				for (neighbor in cellNeighbors)
@@ -309,14 +309,14 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 			// do this again with all the new neighbors
 			current = neighbors;
 		}
-		
+
 		return data;
 	}
 
 	/**
 	 * Intended to be overriden according to your pathfinder extension's needs.
 	 * Returns all neighbors this tile can travel to in a single "move".
-	 * 
+	 *
 	 * @param from The tile we're moving from.
 	 * @return A list of tile indices.
 	 */
@@ -327,9 +327,9 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Intended to be overriden according to your pathfinder extension's needs.  Otherwise throws an error
-	 * 
+	 *
 	 * Determines the weight or value of moving from one tile to another (lower being more valuable).
-	 * 
+	 *
 	 * @param from The tile we moved from.
 	 * @param to   The tile we moved to.
 	 * @return Float used for comparisons in finding the best route.
@@ -341,10 +341,10 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Intended to be overriden according to your pathfinder extension's needs.
-	 * 
+	 *
 	 * Determines whether the path has found the solution and can stop.  By default it
-	 * checks if there is any valid move to the end posiion.  
-	 * 
+	 * checks if there is any valid move to the end posiion.
+	 *
 	 * Note: The pathfinder will still continue computing paths if `stopOnEnd` is false.
 	 */
 	function isComplete(data:Data):Bool
@@ -354,7 +354,7 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Intended to be overriden according to your pathfinder extension's needs.
-	 * 
+	 *
 	 * Determines whether the tile has found the shortest path and can be avoided.
 	 * By default it returns true.
 	 */
@@ -365,7 +365,7 @@ class FlxTypedPathfinder<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfin
 
 	/**
 	 * Intended to be overriden according to your pathfinder extension's needs.
-	 * 
+	 *
 	 * Determines whether the pathfinder should even bother computing paths.  By default it
 	 * makes sure the supplied start and end positions are valid and have collision:NONE.
 	 */
@@ -391,7 +391,7 @@ class FlxDiagonalPathfinder extends FlxPathfinder
 
 		this.diagonalPolicy = diagonalPolicy;
 	}
-	
+
 	override function getNeighbors(data:FlxPathfinderData, from:Int)
 	{
 		var neighbors = [];
@@ -411,34 +411,34 @@ class FlxDiagonalPathfinder extends FlxPathfinder
 			var condition = condition && canGoHelper(to, dir);
 			if (condition)
 				neighbors.push(to);
-			
+
 			return condition;
 		}
 
 		var columns = data.map.widthInTiles;
 
 		// orthoginals
-		up    = addIf(up   , from - columns, UP   );
-		down  = addIf(down , from + columns, DOWN );
-		left  = addIf(left , from - 1      , LEFT );
-		right = addIf(right, from + 1      , RIGHT);
+		up    = addIf(up, from - columns, UP);
+		down  = addIf(down, from + columns, DOWN);
+		left  = addIf(left, from - 1, LEFT);
+		right = addIf(right, from + 1, RIGHT);
 
 		// diagonals
 		if (diagonalPolicy != NONE)
 		{
 			// only allow diagonal when 2 orthoginals is possible
-			addIf(up    && left , from - columns - 1, UP   | LEFT );
-			addIf(up    && right, from - columns + 1, UP   | RIGHT);
-			addIf(down  && left , from + columns - 1, DOWN | LEFT );
-			addIf(down  && right, from + columns + 1, DOWN | RIGHT);
+			addIf(up && left, from - columns - 1, UP | LEFT);
+			addIf(up && right, from - columns + 1, UP | RIGHT);
+			addIf(down && left, from + columns - 1, DOWN | LEFT);
+			addIf(down && right, from + columns + 1, DOWN | RIGHT);
 		}
 
 		return neighbors;
 	}
-	
+
 	/**
 	 * Determines which neighbors are inside the maps bounds.
-	 * 
+	 *
 	 * @param from The tile index we're moving from.
 	 * @return Direction flags indicating the direction.
 	 */
@@ -454,10 +454,10 @@ class FlxDiagonalPathfinder extends FlxPathfinder
 			y < data.map.heightInTiles - 1
 		);
 	}
-	
+
 	/**
 	 * Useful If you want to extend this with slight changes.
-	 * 
+	 *
 	 * @param data The pathfinder data for this current search.
 	 * @param to   The tile index we're moving from.
 	 * @param dir  The direction we came from.
@@ -489,8 +489,7 @@ class FlxDiagonalPathfinder extends FlxPathfinder
  * indices and returns whatever FlxPathfinderData you're looking for.
  * @since 5.0.0
  */
-typedef FlxPathfinderDataFactory<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfinderData<Tilemap>>
-	= (map:Tilemap, startIndex:Int, endIndex:Int)->Data;
+typedef FlxPathfinderDataFactory<Tilemap:FlxBaseTilemap<FlxObject>, Data:FlxTypedPathfinderData<Tilemap>> = (map:Tilemap, startIndex:Int, endIndex:Int)->Data;
 
 /**
  * The data used by Pathfinders to "solve" a single pathfinding request. A new Instance
@@ -529,7 +528,7 @@ class FlxTypedPathfinderData<Tilemap:FlxBaseTilemap<FlxObject>>
 	/**
 	 * Mainly a helper class for FlxTilemapPathPolicy.  Used to store data while the paths
 	 * are computed, but also useful for analyzing the data once it's done somputing.
-	 * 
+	 *
 	 * @param mapSize    The total number of tiles in the map
 	 * @param startIndex The start index of the path
 	 * @param endIndex   The end index of the path
@@ -539,15 +538,15 @@ class FlxTypedPathfinderData<Tilemap:FlxBaseTilemap<FlxObject>>
 		this.map = map;
 		distances = [ for (i in 0...map.totalTiles) -1 ];
 		distances[startIndex] = 0;
-		
+
 		moves = [ for (i in 0...map.totalTiles) -1 ];
-		
+
 		excluded = [startIndex];
-		
+
 		this.startIndex = startIndex;
 		this.endIndex = endIndex;
 	}
-	
+
 	/**
 	 * If possible, this returns the tile indices used to get there the fastest.
 	 * If impossible, null is returned.
@@ -556,25 +555,25 @@ class FlxTypedPathfinderData<Tilemap:FlxBaseTilemap<FlxObject>>
 	{
 		if (index == startIndex)
 			return [startIndex, index];
-		
+
 		if (moves[index] == -1)
 			return null;
-		
-		var path = new Array<Int>();
-		
+
+		var path:Array<Int> = [];
+
 		// Start at the end, check `moves` iteratively to see the neighbor that reached here first
 		while(index != -1)
 		{
 			path.unshift(index);
 			index = moves[index];
 		}
-		
+
 		if (path[0] != startIndex)
 			FlxG.log.error("getPathIndices ended up somewhere other than the start");
-		
+
 		return path;
 	}
-	
+
 	/**
 	 * If the desired start to end path was successful, this returns the tile indices used
 	 * to get there the fastest.  If unsuccessful, null is returned.

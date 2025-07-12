@@ -454,7 +454,7 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	 * @param   order  A constant that defines the sort order.
 	 *                     Possible values are `FlxSort.ASCENDING` (default) and `FlxSort.DESCENDING`.
 	 */
-	public inline function sort(func:(Int,T,T)->Int, order = FlxSort.ASCENDING):Void
+	public inline function sort(func:(Int, T, T)->Int, order = FlxSort.ASCENDING):Void
 	{
 		members.sort(func.bind(order));
 	}

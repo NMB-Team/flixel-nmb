@@ -38,7 +38,7 @@ class SwitchProMapping extends FlxTypedGamepadMapping<SwitchProID>
 			case SwitchProID.X: Y;
 			case SwitchProID.Y: X;
 			case SwitchProID.MINUS: BACK;
-			case SwitchProID.CAPTURE: EXTRA_0;//TODO: Define common Capture inputID?
+			case SwitchProID.CAPTURE: EXTRA_0; // TODO: Define common Capture inputID?
 			case SwitchProID.HOME: GUIDE;
 			case SwitchProID.PLUS: START;
 			case SwitchProID.LEFT_STICK_CLICK: LEFT_STICK_CLICK;

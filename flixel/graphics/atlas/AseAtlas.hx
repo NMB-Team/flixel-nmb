@@ -2,8 +2,7 @@ package flixel.graphics.atlas;
 
 import flixel.graphics.atlas.AtlasBase;
 
-typedef AseAtlasBase<T> = AtlasBase<T> &
-{
+typedef AseAtlasBase<T> = AtlasBase<T> & {
 	var meta:AseAtlasMeta;
 }
 
@@ -47,8 +46,7 @@ typedef AseAtlasMeta =
 
 typedef AseAtlasArray = AseAtlasBase<Array<AseAtlasFrame>>;
 
-typedef AseAtlasFrame = AtlasBase.AtlasFrame &
-{
+typedef AseAtlasFrame = AtlasBase.AtlasFrame & {
 	duration:Int
 }
 
@@ -84,8 +82,7 @@ abstract AseAtlasColor(String) to String
  * Tags are Aseprite's animation labels. They define a range of frames that all pertain to a
  * certain animation.
  */
-typedef AseAtlasTag = AseObject &
-{
+typedef AseAtlasTag = AseObject & {
 	/** The name of this tag */
 	var name:String;
 
@@ -155,8 +152,7 @@ enum abstract AseAtlasTagDirection(String) to String
  *
  * Note: These values are not implemented, or understood by any of Flixel's tools, yet.
  */
-typedef AseAtlasSlice = AseObject &
-{
+typedef AseAtlasSlice = AseObject & {
 	/** The name of this slice */
 	var name:String;
 
@@ -167,8 +163,7 @@ typedef AseAtlasSlice = AseObject &
 /**
  * The "keyframes" of a slice.
  */
-typedef AseAtlasSliceKey = AseObject &
-{
+typedef AseAtlasSliceKey = AseObject & {
 	/** The frame that the slice changes properties */
 	var frame:Int;
 
@@ -182,8 +177,7 @@ typedef AseAtlasSliceKey = AseObject &
 	@:optional var pivot:AtlasPos;
 }
 
-typedef AseAtlasLayer = AseObject &
-{
+typedef AseAtlasLayer = AseObject & {
 	/** The name of the layer */
 	var name:String;
 
@@ -210,8 +204,7 @@ typedef AseAtlasLayer = AseObject &
  *
  * Note: These values are not implemented, or understood by any of Flixel's tools, yet.
  */
-typedef AseAtlasCel = AseObject &
-{
+typedef AseAtlasCel = AseObject & {
 	/** The frame number associated with this data */
 	var frame:Int;
 

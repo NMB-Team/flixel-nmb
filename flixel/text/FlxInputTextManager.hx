@@ -30,7 +30,7 @@ class FlxInputTextManager extends FlxBasic
 	/**
 	 * Contains all of the currently registered input text objects.
 	 */
-	final _registeredInputTexts = new Array<IFlxInputText>();
+	final _registeredInputTexts:Array<IFlxInputText> = [];
 
 	/**
 	 * Whether we should use mac modifer keys or not. Behavior in linux is currently unknown

@@ -2,8 +2,7 @@ package flixel.graphics.atlas;
 
 import flixel.graphics.atlas.AtlasBase;
 
-typedef TexturePackerAtlasFrame = AtlasFrame &
-{
+typedef TexturePackerAtlasFrame = AtlasFrame & {
 	?duration:Int
 }
 

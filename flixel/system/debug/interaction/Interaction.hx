@@ -398,7 +398,7 @@ class Interaction extends Window
 				final scroll = FlxG.camera.scroll;
 				// Render a white rectangle centered at the selected item
 				gfx.lineStyle(1.0, 0xFFFFFF, 0.75);
-				gfx.drawRect(member.x - scroll.x - margin, member.y - scroll.y - margin, member.width + margin*2, member.height + margin*2);
+				gfx.drawRect(member.x - scroll.x - margin, member.y - scroll.y - margin, member.width + margin * 2, member.height + margin * 2);
 			}
 		}
 
@@ -614,7 +614,7 @@ class Interaction extends Window
 	 */
 	public function getItemsWithinState(state:FlxState, area:FlxRect):Array<FlxObject>
 	{
-		final items = new Array<FlxObject>();
+		final items:Array<FlxObject> = [];
 
 		addItemsWithinArea(items, state.members, area);
 		if (state.subState != null)

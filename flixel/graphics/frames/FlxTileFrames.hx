@@ -225,7 +225,7 @@ class FlxTileFrames extends FlxFramesCollection
 	 */
 	public static function fromAtlasByPrefix(Frames:FlxAtlasFrames, Prefix:String):FlxTileFrames
 	{
-		var framesToAdd = new Array<FlxFrame>();
+		var framesToAdd:Array<FlxFrame> = [];
 
 		for (frame in Frames.frames)
 		{

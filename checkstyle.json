@@ -109,14 +109,6 @@
 		},
 		{
 			"props": {
-				"maxPrivate": 100,
-				"maxPublic": 100,
-				"maxTotal": 100
-			},
-			"type": "MethodCount"
-		},
-		{
-			"props": {
 				"max": 50,
 				"ignoreEmptyLines": true,
 				"severity": "IGNORE"
@@ -234,13 +226,6 @@
 				"tokens": []
 			},
 			"type": "ParameterName"
-		},
-		{
-			"props": {
-				"max": 12,
-				"ignoreOverriddenMethods": false
-			},
-			"type": "ParameterNumber"
 		},
 		{
 			"props": {

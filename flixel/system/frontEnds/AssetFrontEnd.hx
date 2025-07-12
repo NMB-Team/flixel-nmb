@@ -63,7 +63,7 @@ class AssetFrontEnd
 
 		#if FLX_VALIDATE_CUSTOM_ASSETS_DIRECTORY
 		// Verify valid directory
-		if (sys.FileSystem.exists(directory) == false)
+		if (!sys.FileSystem.exists(directory))
 			throw 'Error finding custom asset directory:"$directory" from given path: $rawPath';
 		#end
 
@@ -671,7 +671,7 @@ enum abstract FlxAssetType(String)
 	var FONT = "font";
 
 	/** Image assets, such as *.png or *.jpg files */
-	var IMAGE ="image";
+	var IMAGE = "image";
 
 	/** Audio assets, such as *.ogg or *.wav files */
 	var SOUND = "sound";

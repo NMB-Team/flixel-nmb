@@ -205,7 +205,7 @@ class FlxFramesCollection implements IFlxDestroyable
 	 */
 	public function getAllByPrefix(prefix:String)
 	{
-		final list = new Array<FlxFrame>();
+		final list:Array<FlxFrame> = [];
 		forEachByPrefix(prefix, (frame)->list.push(frame), false);
 		return list;
 	}

@@ -52,10 +52,10 @@ class FlxMouseEventManager extends FlxBasic
 		{
 			clearRegistry();
 		}
-		_list = new Array<FlxMouseEvent<FlxObject>>();
-		_overList = new Array<FlxMouseEvent<FlxObject>>();
-		_downList = new Array<FlxMouseEvent<FlxObject>>();
-		_clickList = new Array<FlxMouseEvent<FlxObject>>();
+		_list = [];
+		_overList = [];
+		_downList = [];
+		_clickList = [];
 
 		FlxG.signals.preStateSwitch.add(removeAll);
 	}
@@ -72,7 +72,7 @@ class FlxMouseEventManager extends FlxBasic
 	{
 		super.update(elapsed);
 
-		var currentOverObjects = new Array<FlxMouseEvent<FlxObject>>();
+		var currentOverObjects:Array<FlxMouseEvent<FlxObject>> = [];
 
 		for (event in _list)
 		{
@@ -336,7 +336,7 @@ class FlxMouseEventManager extends FlxBasic
 	 */
 	public function reorder():Void
 	{
-		var orderedObjects = new Array<FlxMouseEvent<FlxObject>>();
+		var orderedObjects:Array<FlxMouseEvent<FlxObject>> = [];
 
 		traverseFlxGroup(FlxG.state, orderedObjects);
 

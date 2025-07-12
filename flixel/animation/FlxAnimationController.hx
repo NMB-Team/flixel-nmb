@@ -351,7 +351,7 @@ class FlxAnimationController implements IFlxDestroyable
 	public function addByNames(Name:String, FrameNames:Array<String>, FrameRate = 30., Looped:Bool = true, FlipX:Bool = false, FlipY:Bool = false):Void
 	{
 		if (_sprite.frames == null) return;
-		var indices:Array<Int> = new Array<Int>();
+		var indices:Array<Int> = [];
 		byNamesHelper(indices, FrameNames); // finds frames and appends them to the blank array
 
 		if (indices.length > 0)
@@ -401,7 +401,7 @@ class FlxAnimationController implements IFlxDestroyable
 			FlipX:Bool = false, FlipY:Bool = false):Void
 	{
 		if (_sprite.frames == null) return;
-		var frameIndices:Array<Int> = new Array<Int>();
+		var frameIndices:Array<Int> = [];
 		// finds frames and appends them to the blank array
 		byStringIndicesHelper(frameIndices, Prefix, Indices, Postfix);
 
@@ -455,7 +455,7 @@ class FlxAnimationController implements IFlxDestroyable
 			FlipY:Bool = false):Void
 	{
 		if (_sprite.frames == null) return;
-		var frameIndices:Array<Int> = new Array<Int>();
+		var frameIndices:Array<Int> = [];
 		// finds frames and appends them to the blank array
 		byIndicesHelper(frameIndices, Prefix, Indices, Postfix);
 
@@ -534,7 +534,7 @@ class FlxAnimationController implements IFlxDestroyable
 	public function addByPrefix(name:String, prefix:String, frameRate = 30.0, looped = true, flipX = false, flipY = false):Void
 	{
 		if (_sprite.frames == null) return;
-		final animFrames:Array<FlxFrame> = new Array<FlxFrame>();
+		final animFrames:Array<FlxFrame> = [];
 		findByPrefix(animFrames, prefix); // adds valid frames to animFrames
 
 		if (animFrames.length > 0)
@@ -569,7 +569,7 @@ class FlxAnimationController implements IFlxDestroyable
 		}
 
 		if (_sprite.frames == null) return;
-		final animFrames:Array<FlxFrame> = new Array<FlxFrame>();
+		final animFrames:Array<FlxFrame> = [];
 		findByPrefix(animFrames, prefix); // adds valid frames to animFrames
 
 		if (animFrames.length > 0)

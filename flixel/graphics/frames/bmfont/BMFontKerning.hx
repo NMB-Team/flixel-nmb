@@ -63,7 +63,7 @@ class BMFontKerning
 	static function listFromBytes(bytes:BytesInput)
 	{
 		var blockSize = bytes.readInt32();
-		final kernings = new Array<BMFontKerning>();
+		final kernings:Array<BMFontKerning> = [];
 		while (blockSize > 0)
 		{
 			final kerning:BMFontKerning =
@@ -73,7 +73,7 @@ class BMFontKerning
 				amount: bytes.readInt16()
 			};
 			kernings.push(kerning);
-			blockSize -= 10;// 4 + 4 + 2
+			blockSize -= 10; // 4 + 4 + 2
 		}
 		return kernings;
 	}

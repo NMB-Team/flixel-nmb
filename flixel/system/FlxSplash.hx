@@ -25,7 +25,7 @@ class FlxSplash extends FlxState {
 	static inline final YELLOW = 0xffffc132;
 	static inline final RED = 0xfff5274e;
 	static inline final BLUE = 0xff3641ff;
-	static inline final LIGHT_BLUE = 0xff04cdfb;	
+	static inline final LIGHT_BLUE = 0xff04cdfb;
 
 	var _sprite:Sprite;
 	var _gfx:Graphics;

@@ -202,7 +202,7 @@ class FlxAsepriteUtil
 				if (direction == PINGPONG_REVERSE)
 					frames.reverse();
 
-				var i = frames.length - 1;// skip last frame
+				var i = frames.length - 1; // skip last frame
 				while (i-- > 1) // skip first frame too
 					frames.push(frames[i]);
 		}

@@ -89,7 +89,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 		// JSON-Hash
 		else
 		{
-			for (name=>frame in data.frames.toHash())
+			for (name => frame in data.frames.toHash())
 				texturePackerHelper(name, frame, frames, useFrameDuration);
 		}
 
@@ -306,7 +306,7 @@ class FlxAtlasFrames extends FlxFramesCollection
 			if (rect.width == 0 || rect.height == 0)
 			{
 				if (!trimmed)
-					size.setSize(1,1);
+					size.setSize(1, 1);
 
 				var frame = frames.addEmptyFrame(size);
 

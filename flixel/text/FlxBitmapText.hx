@@ -808,7 +808,7 @@ class FlxBitmapText extends FlxSprite
 
 		function addWord(word:String, wordWidth = -1)
 		{
-			line = line + word;// `line += word` is broken in html5 on haxe 4.2.5
+			line = line + word; // `line += word` is broken in html5 on haxe 4.2.5
 			lineWidth += (wordWidth < 0 ? getWordWidth(word) : wordWidth) + letterSpacing;
 		}
 
@@ -914,7 +914,7 @@ class FlxBitmapText extends FlxSprite
 
 				if (lineWidth <= _fieldWidth - 2 * padding) // the char fits, add it
 				{
-					line = line + char;// `line += char` is broken in html5 on haxe 4.2.5
+					line = line + char; // `line += char` is broken in html5 on haxe 4.2.5
 					lineWidth += letterSpacing;
 				}
 				else // the char cannot fit on the current line
@@ -924,7 +924,7 @@ class FlxBitmapText extends FlxSprite
 						lines.push(line);
 						line = "";
 						lineWidth = startX;
-						break;// skip all remaining space/tabs in the "word"
+						break; // skip all remaining space/tabs in the "word"
 					}
 					else
 					{

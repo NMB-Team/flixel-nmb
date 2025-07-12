@@ -410,7 +410,7 @@ class FlxGamepadManager implements IFlxInputManager
 		return if (name.contains("ouya"))
 				OUYA; // "OUYA Game Controller"
 			else if (name.contains("wireless controller") || name.contains("ps4") || name.contains("dualshock 4"))
- 				PS4; // "Wireless Controller" or "PS4 controller"
+				PS4; // "Wireless Controller" or "PS4 controller"
 			else if (name.contains("ps5") || name.contains('dualsense'))
 				PS5;
 			else if (name.contains("logitech"))
@@ -430,7 +430,7 @@ class FlxGamepadManager implements IFlxInputManager
 			else if (name.contains("joycon (r)"))
 				SWITCH_JOYCON_RIGHT;
 			else if (name.contains("mfi"))
-				MFI;// Keep last. "mfi" may show up in brand names, words, serials or SKUs
+				MFI; // Keep last. "mfi" may show up in brand names, words, serials or SKUs
 			else
 				UNKNOWN;
 	}

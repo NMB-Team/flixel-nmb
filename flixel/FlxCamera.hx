@@ -2006,7 +2006,7 @@ class FlxCamera extends FlxBasic
 		if (axes.x)
 		{
 			final offset = sprite.x - graphicBounds.x;
- 			sprite.x = (width - graphicBounds.width) * .5 + offset;
+			sprite.x = (width - graphicBounds.width) * .5 + offset;
 		}
 
 		if (axes.y)

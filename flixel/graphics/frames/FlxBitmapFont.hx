@@ -466,7 +466,7 @@ class FlxBitmapFont extends FlxFramesCollection
 		final h:Float = charFrame.sourceSize.y + (offset != null && offset.y > 0 ? offset.y : 0);
 		charFrame.sourceSize.set(w, h);
 		if (offset != null)
-			charFrame.offset.add(offset);//calls putWeak
+			charFrame.offset.add(offset); //calls putWeak
 		charFrame.name = charName;
 		pushFrame(charFrame, true);
 		charMap.set(charCode, charFrame);

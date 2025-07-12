@@ -836,7 +836,7 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 		final result = Math.floor((worldY - y) / scaledTileHeight);
 
 		if (bind)
-			return result < 0 ? 0 : (result >= heightInTiles ? heightInTiles -1 : result);
+			return result < 0 ? 0 : (result >= heightInTiles ? heightInTiles - 1 : result);
 
 		return result;
 	}
@@ -979,7 +979,7 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 						result.x += scaledTileWidth;
 
 					// set result to left side
-					result.y = m * result.x + b;//mx + b
+					result.y = m * result.x + b; //mx + b
 				}
 				else
 				{
