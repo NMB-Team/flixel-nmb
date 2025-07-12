@@ -1116,16 +1116,24 @@ class FlxSprite extends FlxObject
 		drawFrameComplex(_frame, camera);
 	}
 
-	function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void {
-		final matrix = this._matrix; // TODO: Just use local?
+	public function prepareDrawMatrix(matrix:FlxMatrix, ?camera:FlxCamera) {
+		if (camera == null)
+			camera = this.getDefaultCamera();
+
+		prepareFrameDrawMatrix(matrix, _frame, camera);
+	}
+
+	function prepareFrameDrawMatrix(matrix:FlxMatrix, frame:FlxFrame, camera:FlxCamera)
+	{
+		matrix.identity();
 		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX() != camera.flipX, checkFlipY() != camera.flipY);
 		matrix.translate(-origin.x, -origin.y);
 
 		if (frameOffsetAngle != null && frameOffsetAngle != angle)
 		{
 			final angleOff = (frameOffsetAngle - angle) * FlxAngle.TO_RAD;
-			final cos = FlxMath.fastCos(angleOff);
-			final sin = FlxMath.fastSin(angleOff);
+			final cos = Math.cos(angleOff);
+			final sin = Math.sin(angleOff);
 			// cos doesnt need to be negated
 			_matrix.rotateWithTrig(cos, -sin);
 			_matrix.translate(-frameOffset.x, -frameOffset.y);
@@ -1162,6 +1170,14 @@ class FlxSprite extends FlxObject
 			layer.drawPixels(this, camera, frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
 		else
 			camera.drawPixels(frame, framePixels, matrix, colorTransform, blend, antialiasing, shaderEnabled ? shader : null);
+	}
+
+	function drawFrameComplex(frame:FlxFrame, camera:FlxCamera):Void
+	{
+		final matrix = this._matrix; // TODO: Just use local?
+		prepareFrameDrawMatrix(matrix, frame, camera);
+
+		camera.drawPixels(frame, framePixels, matrix, colorTransform, blend, antialiasing, shader);
 	}
 
 	/**

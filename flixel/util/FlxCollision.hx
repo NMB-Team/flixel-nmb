@@ -1,7 +1,5 @@
 package flixel.util;
 
-import openfl.display.BitmapData;
-import openfl.geom.Rectangle;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -12,6 +10,9 @@ import flixel.math.FlxMatrix;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.tile.FlxTileblock;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 
 /**
  * FlxCollision
@@ -22,159 +23,193 @@ import flixel.tile.FlxTileblock;
 class FlxCollision
 {
 	// Optimization: Local static vars to reduce allocations
-	static var pointA:FlxPoint = new FlxPoint();
-	static var pointB:FlxPoint = new FlxPoint();
-	static var centerA:FlxPoint = new FlxPoint();
-	static var centerB:FlxPoint = new FlxPoint();
-	static var matrixA:FlxMatrix = new FlxMatrix();
-	static var matrixB:FlxMatrix = new FlxMatrix();
-	static var testMatrix:FlxMatrix = new FlxMatrix();
-	static var boundsA:FlxRect = new FlxRect();
-	static var boundsB:FlxRect = new FlxRect();
-	static var intersect:FlxRect = new FlxRect();
-	static var flashRect:Rectangle = new Rectangle();
+	static final testMatrix = new FlxMatrix();
+	static final flashRect = new Rectangle();
+	static final zero = new Point();
 
 	/**
 	 * A Pixel Perfect Collision check between two FlxSprites. It will do a bounds check first, and if that passes it will run a
 	 * pixel perfect match on the intersecting area. Works with rotated and animated sprites. May be slow, so use it sparingly.
 	 *
-	 * @param   contact         The first FlxSprite to test against
-	 * @param   target          The second FlxSprite to test again, sprite order is irrelevant
-	 * @param   alphaTolerance  The tolerance value above which alpha pixels are included. Default to 1 (anything that is not fully invisible).
-	 * @param   camera          If the collision is taking place in a camera other than FlxG.camera (the default/current) then pass it here
+	 * @param   spriteA         The first FlxSprite to test against
+	 * @param   spriteB         The second FlxSprite to test against
+	 * @param   alphaTolerance  The tolerance value above which alpha pixels are included.
+	 *                          Default to 1 (anything that is not fully invisible).
+	 * @param   camera          If the collision is taking place in a camera other than
+	 *                          `FlxG.camera` (the default/current) then pass it here
 	 * @return  Whether the sprites collide
 	 */
-	public static function pixelPerfectCheck(contact:FlxSprite, target:FlxSprite, alphaTolerance:Int = 1, ?camera:FlxCamera):Bool
+	public static function pixelPerfectCheck(spriteA:FlxSprite, spriteB:FlxSprite, alphaTolerance:Int = 1, ?camera:FlxCamera):Bool
 	{
 		// if either of the angles are non-zero, consider the angles of the sprites in the pixel check
-		final advanced = contact.angle != 0 || target.angle != 0
-			|| contact.scale.x != 1 || contact.scale.y != 1
-			|| target.scale.x != 1 || target.scale.y != 1;
+		final advanced = spriteA.angle != 0 || spriteB.angle != 0
+			|| spriteA.scale.x != 1 || spriteA.scale.y != 1
+			|| spriteB.scale.x != 1 || spriteB.scale.y != 1;
 
-		contact.getScreenBounds(boundsA, camera);
-		target.getScreenBounds(boundsB, camera);
+		final boundsA = spriteA.getScreenBounds(camera);
+		final boundsB = spriteB.getScreenBounds(camera);
 
-		boundsA.intersection(boundsB, intersect.set());
+		final intersect = boundsA.intersection(boundsB);
+		boundsA.put();
+		boundsB.put();
 
 		if (intersect.isEmpty || intersect.width < 1 || intersect.height < 1)
 		{
 			return false;
 		}
 
-		//	Thanks to Chris Underwood for helping with the translate logic :)
-		matrixA.identity();
-		matrixA.translate(-(intersect.x - boundsA.x), -(intersect.y - boundsA.y));
+		spriteA.drawFrame();
+		spriteB.drawFrame();
 
-		matrixB.identity();
-		matrixB.translate(-(intersect.x - boundsB.x), -(intersect.y - boundsB.y));
+		var bmpA:BitmapData = spriteA.framePixels;
+		var bmpB:BitmapData = spriteB.framePixels;
 
-		contact.drawFrame();
-		target.drawFrame();
-
-		var testA:BitmapData = contact.framePixels;
-		var testB:BitmapData = target.framePixels;
-
-		var overlapWidth:Int = Std.int(intersect.width);
-		var overlapHeight:Int = Std.int(intersect.height);
+		final overlapWidth = Std.int(intersect.width);
+		final overlapHeight = Std.int(intersect.height);
 
 		// More complicated case, if either of the sprites is rotated
 		if (advanced)
 		{
 			testMatrix.identity();
-
-			// translate the matrix to the center of the sprite
-			testMatrix.translate(-contact.origin.x, -contact.origin.y);
-
-			// rotate the matrix according to angle
-			testMatrix.rotate(contact.angle * FlxAngle.TO_RAD);
-			testMatrix.scale(contact.scale.x, contact.scale.y);
-
-			// translate it back!
-			testMatrix.translate(boundsA.width * .5, boundsA.height * .5);
+			spriteA.prepareDrawMatrix(testMatrix, camera);
+			testMatrix.translate(-intersect.x, -intersect.y);
 
 			// prepare an empty canvas
-			var testA2:BitmapData = FlxBitmapDataPool.get(Math.floor(boundsA.width), Math.floor(boundsA.height), true, FlxColor.TRANSPARENT, false);
+			final tempA = FlxBitmapDataPool.get(overlapWidth, overlapHeight, true, FlxColor.TRANSPARENT, false);
 
 			// plot the sprite using the matrix
-			testA2.draw(testA, testMatrix, null, null, null, false);
-			testA = testA2;
+			tempA.draw(bmpA, testMatrix, null, null, null, false);
+			bmpA = tempA;
 
 			// (same as above)
 			testMatrix.identity();
-			testMatrix.translate(-target.origin.x, -target.origin.y);
-			testMatrix.rotate(target.angle * FlxAngle.TO_RAD);
-			testMatrix.scale(target.scale.x, target.scale.y);
-			testMatrix.translate(boundsB.width * .5, boundsB.height * .5);
+			spriteB.prepareDrawMatrix(testMatrix, camera);
+			testMatrix.translate(-intersect.x, -intersect.y);
 
-			var testB2:BitmapData = FlxBitmapDataPool.get(Math.floor(boundsB.width), Math.floor(boundsB.height), true, FlxColor.TRANSPARENT, false);
-			testB2.draw(testB, testMatrix, null, null, null, false);
-			testB = testB2;
+			final tempB = FlxBitmapDataPool.get(overlapWidth, overlapHeight, true, FlxColor.TRANSPARENT, false);
+			tempB.draw(bmpB, testMatrix, null, null, null, false);
+			bmpB = tempB;
 		}
 
-		boundsA.x = Std.int(-matrixA.tx);
-		boundsA.y = Std.int(-matrixA.ty);
-		boundsA.width = overlapWidth;
-		boundsA.height = overlapHeight;
+		intersect.put();
 
-		boundsB.x = Std.int(-matrixB.tx);
-		boundsB.y = Std.int(-matrixB.ty);
-		boundsB.width = overlapWidth;
-		boundsB.height = overlapHeight;
-
-		boundsA.copyToFlash(flashRect);
-		var pixelsA = testA.getPixels(flashRect);
-
-		boundsB.copyToFlash(flashRect);
-		var pixelsB = testB.getPixels(flashRect);
-
-		var hit = false;
-
-		// Analyze overlapping area of BitmapDatas to check for a collision (alpha values >= alphaTolerance)
-		var alphaA:Int = 0;
-		var alphaB:Int = 0;
-		var overlapPixels:Int = overlapWidth * overlapHeight;
-		var alphaIdx:Int = 0;
-
-		// check even pixels
-		for (i in 0...Math.ceil(overlapPixels * .5))
-		{
-			alphaIdx = i << 3;
-			pixelsA.position = pixelsB.position = alphaIdx;
-			alphaA = pixelsA.readUnsignedByte();
-			alphaB = pixelsB.readUnsignedByte();
-
-			if (alphaA >= alphaTolerance && alphaB >= alphaTolerance)
-			{
-				hit = true;
-				break;
-			}
-		}
-
-		if (!hit)
-		{
-			// check odd pixels
-			for (i in 0...overlapPixels >> 1)
-			{
-				alphaIdx = (i << 3) + 4;
-				pixelsA.position = pixelsB.position = alphaIdx;
-				alphaA = pixelsA.readUnsignedByte();
-				alphaB = pixelsB.readUnsignedByte();
-
-				if (alphaA >= alphaTolerance && alphaB >= alphaTolerance)
-				{
-					hit = true;
-					break;
-				}
-			}
-		}
+		flashRect.setTo(0, 0, overlapWidth, overlapHeight);
+		final pixelsA = bmpA.getPixels(flashRect);
+		final pixelsB = bmpB.getPixels(flashRect);
 
 		if (advanced)
 		{
-			FlxBitmapDataPool.put(testA);
-			FlxBitmapDataPool.put(testB);
+			FlxBitmapDataPool.put(bmpA);
+			FlxBitmapDataPool.put(bmpB);
 		}
 
-		return hit;
+		// Analyze overlapping area of BitmapDatas to check for a collision (alpha values >= alphaTolerance)
+		final overlapPixels = overlapWidth * overlapHeight;
+		var alphaIdx:Int = 0;
+
+		// check every pixel's alpha against the tolerance, in an interlaced search pattern
+		final pixels = overlapWidth * overlapHeight;
+		// check every 4 pixels first, then the ones in between
+		final numPasses = 4;
+		final bytesPer = 4; // RGBA
+		for (pass in 0...numPasses)
+		{
+			final passLength = Math.ceil((pixels - pass) / numPasses);
+			for (i in 0...passLength)
+			{
+				final alphaIdx = (i * bytesPer * numPasses) + pass * bytesPer;
+				pixelsA.position = pixelsB.position = alphaIdx;
+				final alphaA = pixelsA.readUnsignedByte();
+				final alphaB = pixelsB.readUnsignedByte();
+
+				if (alphaA >= alphaTolerance && alphaB >= alphaTolerance)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates a new `Bitmap` showing the pixel-perfect overlap of the two sprites. `spriteA`
+	 * will show as red for every pixel above the alpha threshold, `spriteB` will show as blue
+	 * and any pixels where both sprites pass the threshold will show as white. The image size
+	 * is determined by how much the sprites overlap, in the camera's view.
+	 *
+	 * Note: This is mainly used debug `pixelPerfectCheck` calls.
+	 *
+	 * @param   spriteA         The first FlxSprite to test against
+	 * @param   spriteB         The second FlxSprite to test against
+	 * @param   alphaTolerance  The tolerance value above which alpha pixels are included.
+	 *                          Default to 1 (anything that is not fully invisible).
+	 * @param   camera          If the collision is taking place in a camera other than
+	 *                          `FlxG.camera` (the default/current) then pass it here
+	 */
+	public static function drawPixelPerfectCheck(spriteA:FlxSprite, spriteB:FlxSprite, alphaTolerance = 1, ?camera:FlxCamera):Null<BitmapData>
+	{
+		// if either of the angles are non-zero, consider the angles of the sprites in the pixel check
+		final advanced = spriteA.angle != 0 || spriteB.angle != 0 || spriteA.scale.x != 1 || spriteA.scale.y != 1 || spriteB.scale.x != 1
+			|| spriteB.scale.y != 1;
+
+		final boundsA = spriteA.getScreenBounds(camera);
+		final boundsB = spriteB.getScreenBounds(camera);
+		final intersect = boundsA.intersection(boundsB);
+		boundsA.put();
+		boundsB.put();
+
+		if (intersect.isEmpty || intersect.width < 1 || intersect.height < 1)
+		{
+			intersect.put();
+
+			return null;
+		}
+
+		spriteA.drawFrame();
+		spriteB.drawFrame();
+
+		var bmpA = spriteA.framePixels;
+		var bmpB = spriteB.framePixels;
+
+		final overlapWidth = Std.int(intersect.width);
+		final overlapHeight = Std.int(intersect.height);
+
+		// More complicated case, if either of the sprites is rotated
+		if (advanced)
+		{
+			final testMatrix = new FlxMatrix();
+
+			spriteA.prepareDrawMatrix(testMatrix, camera);
+			testMatrix.translate(-intersect.x, -intersect.y);
+			final testA2 = FlxBitmapDataPool.get(overlapWidth, overlapHeight, true, 0x0, true);
+			testA2.draw(bmpA, testMatrix, null, null, null, false);
+			bmpA = testA2;
+
+			spriteB.prepareDrawMatrix(testMatrix, camera);
+			testMatrix.translate(-intersect.x, -intersect.y);
+			final testB2 = FlxBitmapDataPool.get(overlapWidth, overlapHeight, true, 0x0, true);
+			testB2.draw(bmpB, testMatrix, null, null, null, false);
+			bmpB = testB2;
+		}
+
+		intersect.put();
+
+		final result = new BitmapData(overlapWidth, overlapHeight, false, 0x0);
+		final flashRect = new Rectangle(0, 0, overlapWidth, overlapHeight);
+		final temp = FlxBitmapDataPool.get(overlapWidth, overlapHeight, true, 0x0, true);
+		temp.threshold(bmpA, flashRect, zero, ">", alphaTolerance << 24, 0xFFff0000, 0xFF000000);
+		result.copyChannel(temp, flashRect, zero, RED, RED);
+		temp.threshold(bmpB, flashRect, zero, ">", alphaTolerance << 24, 0xFF0000ff, 0xFF000000);
+		result.copyChannel(bmpB, flashRect, zero, BLUE, BLUE);
+		result.threshold(result, flashRect, zero, "==", 0xFFff00ff, 0xFFffffff, 0xFFff00ff);
+		FlxBitmapDataPool.put(temp);
+
+		if (advanced)
+		{
+			FlxBitmapDataPool.put(bmpA);
+			FlxBitmapDataPool.put(bmpB);
+		}
+
+		return result;
 	}
 
 	/**

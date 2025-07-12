@@ -261,7 +261,7 @@ class BitmapLog extends Window
 
 		final canvasBmd = canvas.bitmapData;
 
-		if (index < 0)
+		if (index < 0 || index >= entries.length)
 		{
 			// wiping transparent doesn't work for some reason
 			canvasBmd.fillRect(canvasBmd.rect, FlxColor.WHITE);
