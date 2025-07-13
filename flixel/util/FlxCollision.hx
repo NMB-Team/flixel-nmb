@@ -144,8 +144,10 @@ class FlxCollision
 	 *                          Default to 1 (anything that is not fully invisible).
 	 * @param   camera          If the collision is taking place in a camera other than
 	 *                          `FlxG.camera` (the default/current) then pass it here
+	 * @param   resultingPos    Optional point used to retrive the position of the intersection
+	 *                          of the two sprites
 	 */
-	public static function drawPixelPerfectCheck(spriteA:FlxSprite, spriteB:FlxSprite, alphaTolerance = 1, ?camera:FlxCamera):Null<BitmapData>
+	public static function drawPixelPerfectCheck(spriteA:FlxSprite, spriteB:FlxSprite, alphaTolerance = 1, ?camera:FlxCamera, ?resultingPos:FlxPoint):Null<BitmapData>
 	{
 		// if either of the angles are non-zero, consider the angles of the sprites in the pixel check
 		final advanced = spriteA.angle != 0 || spriteB.angle != 0 || spriteA.scale.x != 1 || spriteA.scale.y != 1 || spriteB.scale.x != 1
@@ -156,6 +158,9 @@ class FlxCollision
 		final intersect = boundsA.intersection(boundsB);
 		boundsA.put();
 		boundsB.put();
+
+		if (resultingPos != null)
+			resultingPos.set(intersect.x, intersect.y);
 
 		if (intersect.isEmpty || intersect.width < 1 || intersect.height < 1)
 		{
