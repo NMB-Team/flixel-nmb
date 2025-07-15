@@ -82,6 +82,11 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	public var maxSize(get, set):Int;
 
 	/**
+	 * The clip rect transform method children will make when setting a clip rect to a FlxSpriteGroup.
+	 */
+	public var clipRectBehavior(default, set):FlxSpriteGroupClipRectBehavior = LEGACY;
+
+	/**
 	 * Optimization to allow setting position of group without transforming children twice.
 	 */
 	var _skipTransformChildren:Bool = false;
@@ -1104,7 +1109,16 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		if (ClipRect == null)
 			Sprite.clipRect = null;
 		else
-			Sprite.clipRect = FlxRect.get(ClipRect.x - Sprite.x + x, ClipRect.y - Sprite.y + y, ClipRect.width, ClipRect.height);
+		{
+			switch (clipRectBehavior)
+			{
+				case LEGACY:
+					Sprite.clipRect = FlxRect.get(ClipRect.x - Sprite.x + x, ClipRect.y - Sprite.y + y, ClipRect.width, ClipRect.height);
+				case SCALED:
+					Sprite.clipRect = FlxRect.get((ClipRect.x - Sprite.x + x) * (1 / Sprite.scale.x), (ClipRect.y - Sprite.y + y) * (1 / Sprite.scale.y),
+						ClipRect.width * (1 / Sprite.scale.x), ClipRect.height * (1 / Sprite.scale.y));
+			}
+		}
 	}
 
 	// Functions for the FlxCallbackPoint
@@ -1215,8 +1229,21 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		return Frames;
 	}
 
+	inline function set_clipRectBehavior(behavior:FlxSpriteGroupClipRectBehavior)
+	{
+		clipRectBehavior = behavior;
+		clipRect = clipRect;
+		return behavior;
+	}
+
 	/**
 	 * This functionality isn't supported in SpriteGroup
 	 */
 	override inline function updateColorTransform():Void {}
+}
+
+enum FlxSpriteGroupClipRectBehavior
+{
+	LEGACY;
+	SCALED;
 }
