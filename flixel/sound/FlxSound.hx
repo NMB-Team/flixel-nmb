@@ -646,7 +646,16 @@ class FlxSound extends FlxBasic
 
 		_time = StartTime;
 		_paused = false;
+
+		if (_channel != null)
+		{
+			_channel.removeEventListener(Event.SOUND_COMPLETE, stopped);
+			_channel.stop();
+			_channel = null;
+		}
+
 		_channel = _sound.play(_time, 0, _transform);
+
 		if (_channel != null)
 		{
 			#if FLX_PITCH
