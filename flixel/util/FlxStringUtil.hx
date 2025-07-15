@@ -292,6 +292,14 @@ class FlxStringUtil {
 		return formatPackage(Type.getEnumName(e), simple);
 	}
 
+	/**
+	 * Take a fully qualified class name and simplify it to just the class name,
+	 * optionally including the package name.
+	 *
+	 * @param	s	The fully qualified class name.
+	 * @param	simple	Whether to strip the package name or not.
+	 * @return	The simplified class name.
+	 */
 	public static function formatPackage(s:String, simple:Bool):String {
 		if (s == null) return null;
 
@@ -354,7 +362,7 @@ class FlxStringUtil {
 		targetUrl = (targetUrl ?? '').trim();
 		if (isNullOrEmpty(targetUrl)) return '';
 
-		final lowerUrl:String = targetUrl.toLowerCase();
+		final lowerUrl = targetUrl.toLowerCase();
 		if (!lowerUrl.startsWith('http:') && !lowerUrl.startsWith('https:'))
 			targetUrl = 'http://' + targetUrl;
 
