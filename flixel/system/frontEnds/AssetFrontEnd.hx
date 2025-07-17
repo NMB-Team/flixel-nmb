@@ -3,17 +3,17 @@ package flixel.system.frontEnds;
 import flixel.FlxG;
 import flixel.system.FlxAssets;
 import flixel.system.debug.log.LogStyle;
+import haxe.Json;
 import haxe.io.Bytes;
 import haxe.io.Path;
-import haxe.Json;
 import haxe.xml.Access;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
-import openfl.utils.Assets;
-import openfl.utils.AssetType;
-import openfl.utils.AssetCache;
-import openfl.utils.Future;
 import openfl.text.Font;
+import openfl.utils.AssetCache;
+import openfl.utils.AssetType;
+import openfl.utils.Assets;
+import openfl.utils.Future;
 
 using StringTools;
 
@@ -173,14 +173,14 @@ class AssetFrontEnd
 	 * @param   id        The id of the asset, usually a path
 	 * @param   type      The type of asset to look for, determines the type
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public function getAsset(id:String, type:FlxAssetType, useCache = true, ?logStyle:LogStyle):Null<Any>
 	{
 		inline function log(message:String)
 		{
 			if (logStyle == null)
-				logStyle = LogStyle.ERROR;
+				logStyle = FlxG.log.styles.ERROR;
 			FlxG.log.advanced(message, logStyle);
 		}
 
@@ -359,7 +359,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the sound
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 * @return  A new `Sound` object Note: Dos not return a `FlxSound`
 	 */
 	public inline function getSound(id:String, useCache = true, ?logStyle:LogStyle):Sound
@@ -372,7 +372,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the sound
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 * @return  A new `Sound` object Note: Dos not return a `FlxSound`
 	 */
 	public inline function getSoundAddExt(id:String, useCache = true, ?logStyle:LogStyle):Sound
@@ -418,7 +418,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public inline function getText(id:String, useCache = true, ?logStyle:LogStyle):String
 	{
@@ -447,7 +447,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public inline function getXml(id:String, useCache = true, ?logStyle:LogStyle)
 	{
@@ -477,7 +477,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public inline function getJson(id:String, useCache = true, ?logStyle:LogStyle):Dynamic
 	{
@@ -506,7 +506,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public inline function getBytes(id:String, useCache = true, ?logStyle:LogStyle):Bytes
 	{
@@ -530,7 +530,7 @@ class AssetFrontEnd
 	 *
 	 * @param   id        The ID or asset path for the asset
 	 * @param   useCache  Whether to allow use of the asset cache (if one exists)
-	 * @param   logStyle  How to log, if the asset is not found. Uses `LogStyle.ERROR` by default
+	 * @param   logStyle  How to log, if the asset is not found. Uses `FlxG.log.styles.ERROR` by default
 	 */
 	public inline function getFont(id:String, useCache = true, ?logStyle:LogStyle):Font
 	{

@@ -509,7 +509,7 @@ class FlxG
  	 */
 	public static function centerGraphic<T:FlxSprite>(sprite:T, axes:FlxAxes = XY):T
 	{
-		final graphicBounds = sprite.getGraphicBounds();
+		final graphicBounds = sprite.getAccurateScreenBounds();
 
 		if (axes.x)
 		{

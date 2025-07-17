@@ -168,7 +168,7 @@ class ConsoleUtil
 	 */
 	public static inline function log(text:Dynamic):Void
 	{
-		FlxG.log.advanced([text], LogStyle.CONSOLE);
+		FlxG.log.advanced([text], FlxG.log.styles.CONSOLE);
 	}
 }
 

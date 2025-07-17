@@ -1,6 +1,5 @@
 package flixel.util;
 
-import flixel.system.debug.log.LogStyle;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import openfl.errors.Error;
 import openfl.net.SharedObject;
@@ -58,8 +57,6 @@ import haxe.Exception;
 class FlxSave implements IFlxDestroyable
 {
 	static var invalidChars = ~/[ ~%&\\;:"',<>?#]+/g;
-
-	public static final saveLogStyle = new LogStyle("[SAVE] ", "54FFEE", 12, true);
 
 	/**
 	 * Checks for `~%&\;:"',<>?#` or space characters
@@ -669,7 +666,7 @@ private class FlxSharedObject extends SharedObject
 		final subPath = '$folder/$name$extension';
 		final fullPath = getStoragePath(subPath);
 
-		FlxG.log.advanced('Saved to $fullPath', FlxSave.saveLogStyle);
+		FlxG.log.advanced('Saved to $fullPath', FlxG.log.styles.SAVE);
 		return fullPath;
 	}
 

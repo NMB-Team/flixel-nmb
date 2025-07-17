@@ -11,15 +11,6 @@ using flixel.util.FlxStringUtil;
  */
 class LogStyle
 {
-	public static final NORMAL = new LogStyle();
-	public static final WARNING = new LogStyle("[WARNING] ", "D9F85C", 12, false, false, false, false, "flixel/sounds/beep", true);
-	public static final ERROR = new LogStyle("[ERROR] ", "FF8888", 12, false, false, false, false, "flixel/sounds/beep", true);
-	public static final CRITICAL = new LogStyle("[CRITICAL] ", "FF0033", 12, false, false, false, false, "flixel/sounds/beep", true, true);
-	public static final NOTICE = new LogStyle("[NOTICE] ", "5CF878", 12, false);
-	public static final CONSOLE = new LogStyle("[CONSOLE] ", "5A96FA", 12, false);
-	public static final TRACE = new LogStyle("[TRACE] ", "FC763D", 12, false);
-	public static final BRACKET = new LogStyle("> ", "7982DB", 12, false);
-
 	/**
 	 * A prefix which is always attached to the start of the logged data
 	 */
