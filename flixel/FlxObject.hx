@@ -1282,10 +1282,10 @@ class FlxObject extends FlxBasic
 			return;
 
 		final rect = getBoundingBox(camera);
-		final viewLeft = camera.viewMarginLeft - 1;
-		final viewRight = camera.viewMarginRight + 1;
-		final viewTop = camera.viewMarginTop - 1;
-		final viewBottom = camera.viewMarginBottom + 1;
+		final viewLeft = camera.viewMarginLeft - 2;
+		final viewRight = camera.viewMarginRight + 2;
+		final viewTop = camera.viewMarginTop - 2;
+		final viewBottom = camera.viewMarginBottom + 2;
 
 		// clamp the rect to the bounds of the camera
 		// this is neccesary to avoid big bitmaps when zoomed in
