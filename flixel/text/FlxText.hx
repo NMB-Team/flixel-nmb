@@ -884,7 +884,7 @@ class FlxText extends FlxSprite
 				FlxG.bitmap.remove(graphic);
 
 			// Need to generate a new buffer to store the text graphic
-			final key:String = FlxG.bitmap.getUniqueKey("text");
+			final key:String = FlxG.bitmap.getUniqueKey('text(${this.text})');
 			makeGraphic(newWidth, newHeight, FlxColor.TRANSPARENT, false, key);
 			width = Math.ceil(newWidthFloat);
 			height = Math.ceil(newHeightFloat);
