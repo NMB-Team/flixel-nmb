@@ -123,6 +123,13 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 */
 	public var justPressedTimeInTicks(get, never):Float;
 
+	/**
+	 * If true — automatically adjusts the mouse cursor's scale
+	 * based on the current window or screen size,
+	 * keeping its appearance proportional when the resolution changes.
+	 */
+	public var adjustSize = true;
+
 	#if FLX_MOUSE_ADVANCED
 	/**
 	 * Check to see if the right mouse button is currently pressed.
@@ -440,6 +447,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 
 		_cursorBitmapData = FlxDestroyUtil.dispose(_cursorBitmapData);
 		FlxG.signals.postGameStart.remove(onGameStart);
+		FlxG.signals.gameResized.remove((w, h) -> onResize(w, h));
 	}
 
 	/**
@@ -488,6 +496,29 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 
 		FlxG.signals.postGameStart.add(onGameStart);
 		Mouse.hide();
+
+		FlxG.signals.gameResized.add((w, h) -> onResize(w, h));
+	}
+
+	function onResize(w:Int, h:Int):Void {
+		if (cursorContainer == null) return;
+
+		if (adjustSize) {
+			if (!FlxG.fullscreen) {
+				final widthScreen = FlxG.stage.window.display.bounds.width / w;
+				final heightScreen = FlxG.stage.window.display.bounds.height / h;
+				if (widthScreen == heightScreen) {
+					cursorContainer.scaleX = cursor.scaleX / widthScreen;
+					cursorContainer.scaleY = cursor.scaleY / heightScreen;
+				}
+			} else {
+				cursorContainer.scaleX = cursor.scaleX;
+				cursorContainer.scaleY = cursor.scaleY;
+			}
+		} else {
+			cursorContainer.scaleX = cursor.scaleX;
+			cursorContainer.scaleY = cursor.scaleY;
+		}
 	}
 
 	/**
