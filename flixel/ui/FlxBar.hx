@@ -894,6 +894,7 @@ class FlxBar extends FlxSprite
 					if (angle != 0)
 						_matrix.rotateWithTrig(_cosAngle, _sinAngle);
 				}
+				_matrix.concat(transform);
 
 				getScreenPosition(_point, camera).subtract(offset);
 				_point.add(origin.x, origin.y);

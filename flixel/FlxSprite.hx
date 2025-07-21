@@ -266,6 +266,13 @@ class FlxSprite extends FlxObject
 	public var scale(default, null):FlxPoint;
 
 	/**
+	 * An `FlxMatrix` that is concatenated to the internal matrix.
+	 * Use this if you want to make unique changes to the rendering of `this` sprite.
+	 * @since 6.5.1
+	 */
+	public var transform(default, null):FlxMatrix;
+
+	/**
 	 * Blending modes, just like Photoshop or whatever, e.g. "multiply", "screen", etc.
 	 */
 	public var blend(default, set):BlendMode;
@@ -453,6 +460,7 @@ class FlxSprite extends FlxObject
 		frameOffset = FlxPoint.get();
 		origin = FlxPoint.get();
 		scale = FlxPoint.get(1, 1);
+		transform = new FlxMatrix();
 		_matrix = new FlxMatrix();
 		_scaledOrigin = new FlxPoint();
 		_scaledFrameOffset = new FlxPoint();
@@ -488,6 +496,7 @@ class FlxSprite extends FlxObject
 		_flashRect = null;
 		_flashRect2 = null;
 		_matrix = null;
+		transform = null;
 		blend = null;
 
 		frames = null;
@@ -1151,6 +1160,7 @@ class FlxSprite extends FlxObject
 			if (angle != 0)
 				matrix.rotateWithTrig(_cosAngle, _sinAngle);
 		}
+		_matrix.concat(transform);
 
 		getScreenPosition(_point, camera).subtract(offset);
 		if (animation.curAnim != null)
@@ -1717,7 +1727,7 @@ class FlxSprite extends FlxObject
 		if (FlxG.render.tile)
 			return false;
 
-		return isSimpleRenderBlit(camera);
+		return isSimpleRenderBlit(camera) && transform.isIdentity();
 	}
 
 	/**
@@ -2169,6 +2179,7 @@ interface IFlxSprite extends IFlxBasic
 	var offset(default, null):FlxPoint;
 	var origin(default, null):FlxPoint;
 	var scale(default, null):FlxPoint;
+	var transform(default, null):FlxMatrix;
 	var velocity(default, null):FlxPoint;
 	var maxVelocity(default, null):FlxPoint;
 	var acceleration(default, null):FlxPoint;

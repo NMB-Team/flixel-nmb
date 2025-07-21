@@ -136,6 +136,8 @@ class FlxLabel extends FlxSprite {
 			origin.set(_width * .5, height * .5);
 			_matrix.rotateWithTrig(_cosAngle, _sinAngle);
 		}
+		_matrix.concat(transform);
+
 		getScreenPosition(_point, camera).subtractPoint(offset);
 		_point.add(origin.x, origin.y);
 		_matrix.translate(_point.x, _point.y);
