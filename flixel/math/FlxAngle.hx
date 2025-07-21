@@ -23,12 +23,12 @@ class FlxAngle
 	/**
 	 * Convert radians to degrees by multiplying it with this value.
 	 */
-	public static inline final TO_DEG:Float = 57.29577951308232; // 180 / Math.PI;
+	public static inline final TO_DEG:Float = 57.295779513082320876798154814105; // 180 / Math.PI;
 
 	/**
 	 * Convert degrees to radians by multiplying it with this value.
 	 */
-	public static inline final TO_RAD:Float = .017453292519943295; // Math.PI / 180;
+	public static inline final TO_RAD:Float = .017453292519943295769236907684886; // Math.PI / 180;
 
 	/**
 	 * Generate a sine and cosine table during compilation
@@ -122,7 +122,7 @@ class FlxAngle
 	/**
 	 * Performs exponential interpolation between two angles (a and b) over time.
 	 * This is similar to `lerpElapsed`, but takes into account the circular nature of angles.
-	 * 
+	 *
 	 * @param a The starting angle.
 	 * @param b The target angle.
 	 * @param t The interpolation factor (usually in the range [0, 1]).
