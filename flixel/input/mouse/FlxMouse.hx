@@ -758,7 +758,11 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 		else
 			hideCursor();
 
-		onResize(FlxG.stage.window.width, FlxG.stage.window.height);
+		if (value) {
+			onResize(FlxG.stage.window.width, FlxG.stage.window.height);
+			FlxG.signals.gameResized.add((w, h) -> onResize(w, h));
+		} else
+			FlxG.signals.gameResized.remove((w, h) -> onResize(w, h));
 
 		return visible = value;
 	}
