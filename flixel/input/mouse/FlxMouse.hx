@@ -501,7 +501,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	}
 
 	function onResize(w:Int, h:Int):Void {
-		if (cursorContainer == null) return;
+		if (cursorContainer == null || !visible) return;
 
 		if (adjustSize) {
 			if (!FlxG.fullscreen) {
@@ -757,6 +757,8 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 			showCursor();
 		else
 			hideCursor();
+
+		onResize(FlxG.stage.window.width, FlxG.stage.window.height);
 
 		return visible = value;
 	}
