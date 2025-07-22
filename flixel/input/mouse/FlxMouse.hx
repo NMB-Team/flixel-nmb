@@ -5,6 +5,8 @@ import flixel.FlxG;
 import flixel.input.FlxInput.FlxInputState;
 import flixel.input.IFlxInputManager;
 import flixel.input.mouse.FlxMouseButton.FlxMouseButtonID;
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.system.FlxAssets;
 import flixel.system.replay.MouseRecord;
 import flixel.util.FlxDestroyUtil;
@@ -69,6 +71,26 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	public var useSystemCursor(default, set):Bool = false;
 
 	/**
+	 * Check to see if mouse has just been moved upwards.
+	 */
+	public var justMovedUp(get, never):Bool;
+
+	/**
+	 * Check to see if mouse has just been moved downwards.
+	 */
+	public var justMovedDown(get, never):Bool;
+
+	/**
+	 * Check to see if mouse has just been moved leftwards.
+	 */
+	public var justMovedLeft(get, never):Bool;
+
+	/**
+	 * Check to see if mouse has just been moved rightwards.
+	 */
+	public var justMovedRight(get, never):Bool;
+
+	/**
 	 * Check to see if the mouse has just been moved.
 	 * @since 4.4.0
 	 */
@@ -122,6 +144,28 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 * @since 4.3.0
 	 */
 	public var justPressedTimeInTicks(get, never):Float;
+
+	/**
+	 * Time in ticks that had passed since of last press
+	 */
+	public var ticksDeltaSincePress(get, never):Float;
+
+	/**
+	 * The speed of this mouse, always updates.
+	 */
+	public var velocity(default, null):FlxPoint = FlxPoint.get();
+
+	/**
+	 * The threshold to surpass for a movement check to be returned as true.
+	 */
+	public var swipeThreshold(default, null):FlxPoint = FlxPoint.get(100, 100);
+
+	/**
+	 * The FlxFlick class responsible for managing flicks.
+	 */
+	#if FLX_POINTER_INPUT
+	public var flickManager(default, null):FlxFlick = new FlxFlick();
+	#end
 
 	/**
 	 * If true — automatically adjusts the mouse cursor's scale
@@ -229,6 +273,16 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 
 	// Helper variable for cleaning up memory
 	var _stage:Stage;
+
+	/**
+	 * Helper variables for movement checks
+	 */
+	var _startX:Float = 0;
+
+	var _startY:Float = 0;
+
+	var _swipeDeltaX(get, never):Float;
+	var _swipeDeltaY(get, never):Float;
 
 	/**
 	 * Helper variables for flash native cursors
@@ -447,6 +501,14 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 
 		_cursorBitmapData = FlxDestroyUtil.dispose(_cursorBitmapData);
 		FlxG.signals.postGameStart.remove(onGameStart);
+
+		velocity = FlxDestroyUtil.put(velocity);
+		swipeThreshold = FlxDestroyUtil.put(swipeThreshold);
+
+		#if FLX_POINTER_INPUT
+		flickManager.destroy();
+		#end
+
 		FlxG.signals.gameResized.remove((w, h) -> onResize(w, h));
 	}
 
@@ -527,6 +589,7 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	 */
 	function update():Void
 	{
+		calculateVelocity();
 		_prevX = x;
 		_prevY = y;
 		_prevViewX = viewX;
@@ -558,6 +621,34 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 			wheel = 0;
 		}
 		_wheelUsed = false;
+		if (justPressed)
+		{
+			_startX = viewX;
+			_startY = viewY;
+		}
+
+		#if FLX_POINTER_INPUT
+		if (justReleased)
+		{
+			flickManager.initFlick(velocity);
+		}
+
+		if (pressed)
+		{
+			flickManager.destroy();
+		}
+
+		flickManager.update(FlxG.elapsed);
+		#end
+	}
+
+	function calculateVelocity():Void
+	{
+		if (!pressed)
+			return;
+
+		velocity.x = deltaViewX;
+		velocity.y = deltaViewY;
 	}
 
 	/**
@@ -622,64 +713,132 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 	}
 	#end
 
-	inline function get_justMoved():Bool
+	@:noCompletion
+	function get_justMoved():Bool
 		return _prevX != x || _prevY != y;
 
+	@:noCompletion
+	function get_justMovedUp():Bool
+	{
+		var swiped:Bool = _swipeDeltaY < -swipeThreshold.y;
+		if (swiped)
+			_startY = viewY;
+		return swiped;
+	}
+
+	@:noCompletion
+	function get_justMovedDown():Bool
+	{
+		var swiped:Bool = _swipeDeltaY > swipeThreshold.y;
+		if (swiped)
+			_startY = viewY;
+		return swiped;
+	}
+
+	@:noCompletion
+	function get_justMovedLeft():Bool
+	{
+		var swiped:Bool = _swipeDeltaX < -swipeThreshold.x;
+		if (swiped)
+			_startX = viewX;
+		return swiped;
+	}
+
+	@:noCompletion
+	function get_justMovedRight():Bool
+	{
+		var swiped:Bool = _swipeDeltaX > swipeThreshold.x;
+		if (swiped)
+			_startX = viewX;
+		return swiped;
+	}
+
+	@:noCompletion
+	inline function get__swipeDeltaX():Float
+		return viewX - _startX;
+
+	@:noCompletion
+	inline function get__swipeDeltaY():Float
+		return viewY - _startY;
+
+	@:noCompletion
 	inline function get_deltaX():Int
 		return x - _prevX;
 
+	@:noCompletion
 	inline function get_deltaY():Int
 		return y - _prevY;
 
+	@:noCompletion
 	inline function get_deltaViewX():Int
 		return viewX - _prevViewX;
 
+	@:noCompletion
 	inline function get_deltaViewY():Int
 		return viewY - _prevViewY;
 
-	inline function get_pressed():Bool
+	@:noCompletion
+	function get_pressed():Bool
 		return _leftButton.pressed;
 
-	inline function get_justPressed():Bool
+	@:noCompletion
+	function get_justPressed():Bool
 		return _leftButton.justPressed;
 
+	@:noCompletion
 	inline function get_released():Bool
 		return _leftButton.released;
 
-	inline function get_justReleased():Bool
+	@:noCompletion
+	function get_justReleased():Bool
 		return _leftButton.justReleased;
 
-	inline function get_justPressedTimeInTicks():Float
+	@:noCompletion
+	function get_justPressedTimeInTicks():Float
 		return _leftButton.justPressedTimeInTicks;
 
+	@:noCompletion
+	function get_ticksDeltaSincePress():Float
+		return FlxG.game.ticks - justPressedTimeInTicks;
+
 	#if FLX_MOUSE_ADVANCED
+	@:noCompletion
 	inline function get_pressedRight():Bool
 		return _rightButton.pressed;
 
+	@:noCompletion
 	inline function get_justPressedRight():Bool
 		return _rightButton.justPressed;
 
+	@:noCompletion
 	inline function get_releasedRight():Bool
 		return _rightButton.released;
 
+	@:noCompletion
 	inline function get_justReleasedRight():Bool
 		return _rightButton.justReleased;
 
+	@:noCompletion
 	inline function get_justPressedTimeInTicksRight():Float
 		return _rightButton.justPressedTimeInTicks;
 
+	@:noCompletion
 	inline function get_pressedMiddle():Bool
 		return _middleButton.pressed;
 
+	@:noCompletion
 	inline function get_justPressedMiddle():Bool
 		return _middleButton.justPressed;
 
+	@:noCompletion
 	inline function get_releasedMiddle():Bool
 		return _middleButton.released;
 
+	@:noCompletion
 	inline function get_justReleasedMiddle():Bool
 		return _middleButton.justReleased;
 
+	@:noCompletion
 	inline function get_justPressedTimeInTicksMiddle():Float
 		return _middleButton.justPressedTimeInTicks;
 	#end

@@ -87,6 +87,7 @@ private enum HelperDefines
 	FLX_JOYSTICK_API;
 	FLX_GAMEINPUT_API;
 	FLX_ACCELEROMETER;
+	FLX_GYROSCOPE;
 	FLX_DRAW_QUADS;
 	FLX_POINT_POOL;
 	FLX_PITCH;
@@ -252,8 +253,10 @@ class FlxDefines
 		if (defined("cpp") && defined("steamwrap"))
 			define(FLX_STEAMWRAP);
 
-		if (defined("mobile") || defined("js"))
+		if (defined("mobile") || defined("js")) {
 			define(FLX_ACCELEROMETER);
+			define(FLX_GYROSCOPE);
+		}
 
 		// #if (openfl >= "8.0.0")
 		// should always be defined as of 5.5.1 and, therefore, deprecated

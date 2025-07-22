@@ -299,6 +299,8 @@ class FlxTimerManager extends FlxBasic
 
 		for (timer in _timers)
 		{
+			if (timer == null) continue;
+
 			if (timer.active && !timer.finished && timer.time >= 0)
 			{
 				var timerLoops:Int = timer.elapsedLoops;
@@ -356,11 +358,13 @@ class FlxTimerManager extends FlxBasic
 	{
 		var timersToFinish:Array<FlxTimer> = [];
 		for (timer in _timers)
-			if (timer.loops > 0 && timer.active)
+			if (timer != null && timer.loops > 0 && timer.active)
 				timersToFinish.push(timer);
 
 		for (timer in timersToFinish)
 		{
+			if (timer == null) continue;
+
 			while (!timer.finished)
 			{
 				timer.update(timer.timeLeft);
@@ -386,6 +390,7 @@ class FlxTimerManager extends FlxBasic
 	public function forEach(func:FlxTimer->Void)
 	{
 		for (timer in _timers)
-			func(timer);
+			if (timer != null)
+				func(timer);
 	}
 }
