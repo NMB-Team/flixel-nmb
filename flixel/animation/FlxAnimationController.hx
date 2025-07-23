@@ -841,7 +841,7 @@ class FlxAnimationController implements IFlxDestroyable
 		while (i-- > 0)
 		{
 			final frame = frames[i];
-			if (frame.parent.shader == null)
+			if (frame.parent.shader.isDestroyed)
 				invalid.unshift(frames.splice(i, 1)[0]);
 		}
 

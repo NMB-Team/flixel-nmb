@@ -414,7 +414,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 		return bounds;
 	}
 
-	override public function addQuad(frame:FlxFrame, matrix:FlxMatrix, ?transform:ColorTransform):Void
+	public function addQuad(frame:FlxFrame, matrix:FlxMatrix, ?transform:ColorTransform):Void
 	{
 		final prevVerticesPos:Int = verticesPosition;
 		final prevIndicesPos:Int = indicesPosition;

@@ -655,9 +655,9 @@ class FlxCamera extends FlxBasic
 
 	public function alterScreenPosition(spr:FlxObject, pos:FlxPoint):FlxPoint return pos;
 
-	@:noCompletion public function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets = false, ?blend:BlendMode, smooth = false, ?shader:FlxShader) {
+	@:noCompletion public #if FLX_RENDER_TRIANGLE inline #end function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets = false, ?blend:BlendMode, smooth = false, ?shader:FlxShader) {
 		#if FLX_RENDER_TRIANGLE
-		return startTrianglesBatch(graphic, smooth, colored, blend);
+		return startTrianglesBatch(graphic, smooth, colored, blend, hasColorOffsets, shader);
 		#else
 
 		if (_currentDrawItem != null
@@ -804,7 +804,7 @@ class FlxCamera extends FlxBasic
 			}
 
 			#if FLX_RENDER_TRIANGLE
-			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
+			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend, hasColorOffsets, shader);
 			#else
 			final drawItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, blend, smoothing, shader);
 			#end
@@ -841,7 +841,7 @@ class FlxCamera extends FlxBasic
 			#if !FLX_RENDER_TRIANGLE
 			final drawItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, blend, smoothing, shader);
 			#else
-			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
+			final drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend, hasColorOffsets, shader);
 			#end
 			drawItem.addQuad(frame, _helperMatrix, transform);
 		}

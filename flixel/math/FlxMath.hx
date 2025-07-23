@@ -1118,7 +1118,6 @@ class FlxMath
 	 */
 	public static inline function mod(a:Float, b:Float):Float
 	{
-		b = Math.abs(b);
-		return a - b * Math.ffloor(a / b);
+		return a - b * Std.int(a / b);
 	}
 }

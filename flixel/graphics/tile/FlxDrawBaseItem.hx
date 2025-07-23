@@ -10,7 +10,7 @@ import openfl.geom.ColorTransform;
 /**
  * @author Zaphod
  */
-class FlxDrawBaseItem<T>
+abstract class FlxDrawBaseItem<T:FlxDrawBaseItem<T>>
 {
 	/**
 	 * Tracks the total number of draw calls made each frame.
@@ -56,7 +56,7 @@ class FlxDrawBaseItem<T>
 		drawCalls++;
 	}
 
-	public function addQuad(frame:FlxFrame, matrix:FlxMatrix, ?transform:ColorTransform):Void {}
+	public abstract function addQuad(frame:FlxFrame, matrix:FlxMatrix, ?transform:ColorTransform):Void;
 
 	function get_numVertices():Int
 	{

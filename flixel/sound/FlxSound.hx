@@ -117,11 +117,6 @@ class FlxSound extends FlxBasic
 	public var length(get, never):Float;
 
 	/**
-	 * The latency of the sound in milliseconds.
-	 */
-	public var latency(get, never):Float;
-
-	/**
 	 * The sound group this sound belongs to, can only be in one group.
 	 */
 	@:allow(flixel.sound.FlxSoundGroup)
@@ -826,17 +821,6 @@ class FlxSound extends FlxBasic
 	inline function get_length():Float
 	{
 		return _length;
-	}
-
-	function get_latency():Float
-	{
-		if (_channel != null)
-		{
-			@:privateAccess
-			if (_channel.__audioSource != null)
-				return _channel.__audioSource.latency;
-		}
-		return 0;
 	}
 
 	override public function toString():String

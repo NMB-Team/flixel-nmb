@@ -148,9 +148,7 @@ private class FlxBaseSignal<T> implements IFlxSignal<T>
 
 	public function has(listener:T):Bool
 	{
-		if (listener == null)
-			return false;
-		return getHandler(listener) != null;
+		return listener != null && getHandler(listener) != null;
 	}
 
 	public inline function removeAll():Void
@@ -186,7 +184,7 @@ private class FlxBaseSignal<T> implements IFlxSignal<T>
 		}
 	}
 
-	function getHandler(listener:T):FlxSignalHandler<T>
+	function getHandler(listener:T):Null<FlxSignalHandler<T>>
 	{
 		for (handler in handlers)
 		{
@@ -288,13 +286,15 @@ private class Macro
 	{
 		return macro
 		{
-			processingListeners = true;
-			for (handler in handlers)
-			{
-				handler.listener($a{exprs});
+			if (handlers != null && handlers.length != 0) {
+				processingListeners = true;
+				for (handler in handlers)
+				{
+					handler.listener($a{exprs});
 
-				if (handler.dispatchOnce)
-					removeHandler(handler);
+					if (handler.dispatchOnce)
+						removeHandler(handler);
+				}
 			}
 
 			processingListeners = false;

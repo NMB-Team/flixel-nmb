@@ -1,5 +1,6 @@
 package flixel.util;
 
+import flixel.util.FlxArrayUtil;
 import flixel.util.FlxPool.IFlxPooled;
 import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
@@ -28,7 +29,7 @@ class FlxDestroyUtil {
 	 * @return	null
 	 */
 	public static function destroyArray<T:IFlxDestroyable>(array:Array<T>):Array<T> {
-		if (array == null) return null;
+		if (FlxArrayUtil.checkForNullArray(array)) return null;
 
 		for (e in array) destroy(e);
 
@@ -67,7 +68,7 @@ class FlxDestroyUtil {
 	 * @return	null
 	 */
 	public static function putArray<T:IFlxPooled>(array:Array<T>):Array<T> {
-		if (array == null) return null;
+		if (FlxArrayUtil.checkForNullArray(array)) return null;
 
 		for (e in array) put(e);
 

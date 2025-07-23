@@ -691,7 +691,7 @@ abstract FlxColor(Int) from Int from UInt to Int to UInt
 	 */
 	inline function setHueChromaMatch(Hue:Float, Chroma:Float, Match:Float, Alpha:Float):FlxColor
 	{
-		Hue %= 360;
+		Hue = FlxMath.mod(Hue, 360);
 		final hueD = Hue / 60;
 		final mid = Chroma * (1 - Math.abs(hueD % 2 - 1)) + Match;
 		Chroma += Match;

@@ -32,50 +32,23 @@ class FlxGraphicsShader extends GraphicsShader
 		// Note: this is being set to false somewhere!
 		uniform bool hasTransform;
 		uniform bool hasColorTransform;
-		uniform vec4 _camSize;
 
-		vec4 transform(vec4 color, vec4 mult, vec4 offset, float alpha)
-		{
-			color = clamp(offset + (color * mult), 0.0, 1.0);
-			return vec4(color.rgb, 1.0) * color.a * alpha;
-		}
-
-		vec4 transformIf(bool hasTransform, vec4 color, vec4 mult, vec4 offset, float alpha)
-		{
-			return mix(color * alpha, transform(color, mult, offset, alpha), float(hasTransform));
-		}
-
-		vec4 applyFlixelEffects(vec4 color) {
-			if (!hasTransform && !openfl_HasColorTransform)
+		vec4 flixel_applyColorTransform(vec4 color) {
+			if (!isFlixelDraw || color.a == 0.0)
 				return color;
 
-			color = mix(color, vec4(0.0), float(color.a == 0.0));
+			if (openfl_HasColorTransform || hasTransform || hasColorTransform) {
+				float _tempAlpha = color.a;
+				color.rgb /= _tempAlpha;
+				color = clamp(openfl_ColorOffsetv + color * openfl_ColorMultiplierv, 0.0, 1.0);
+				color.rgb = color.rgb * _tempAlpha;
+			}
 
-			bool _hasTransform = openfl_HasColorTransform || hasColorTransform;
-			return transformIf(_hasTransform, color, openfl_ColorMultiplierv, openfl_ColorOffsetv, openfl_Alphav);
+			return color * openfl_Alphav;
 		}
 
 		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord) {
-			vec4 color = texture(bitmap, coord);
-			return applyFlixelEffects(color);
-		}
-
-		float map(float value, float min1, float max1, float min2, float max2) {
-			return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
-		}
-
-		vec2 getCamPos(vec2 pos) {
-			vec4 size = _camSize / vec4(openfl_TextureSize, openfl_TextureSize);
-			return vec2(map(pos.x, size.x, size.x + size.z, 0.0, 1.0), map(pos.y, size.y, size.y + size.w, 0.0, 1.0));
-		}
-
-		vec2 camToOg(vec2 pos) {
-			vec4 size = _camSize / vec4(openfl_TextureSize, openfl_TextureSize);
-			return vec2(map(pos.x, 0.0, 1.0, size.x, size.x + size.z), map(pos.y, 0.0, 1.0, size.y, size.y + size.w));
-		}
-
-		vec4 textureCam(sampler2D bitmap, vec2 pos) {
-			return flixel_texture2D(bitmap, camToOg(pos));
+			return flixel_applyColorTransform(texture(bitmap, coord));
 		}
 	", true)
 	@:glFragmentBody("
