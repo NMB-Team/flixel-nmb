@@ -37,6 +37,7 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 		rects.length = 0;
 		transforms.length = 0;
 		alphas.resize(0);
+		shader = null;
 		if (colorMultipliers != null)
 			colorMultipliers.resize(0);
 		if (colorOffsets != null)
