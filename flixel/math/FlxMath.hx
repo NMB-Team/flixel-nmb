@@ -228,7 +228,7 @@ class FlxMath
 	{
 		elapsed ??= FlxG.elapsed;
 		// scale the time factor by elapsed time and frame rate, then bound the result between 0 and 1
-		return FlxMath.bound(factor * 60 * elapsed, 0, 1);
+		return bound(factor * 60 * elapsed, 0, 1);
 	}
 
 	/**
@@ -279,7 +279,7 @@ class FlxMath
 	public static inline function ilerp(from:Float, to:Float, weight:Float, ?elapsed:Float):Float
 	{
 		elapsed ??= FlxG.elapsed;
-		return from + FlxMath.bound(weight * 60 * elapsed, 0, 1) * (to - from);
+		return from + bound(weight * 60 * elapsed, 0, 1) * (to - from);
 	}
 
 	/**
@@ -723,7 +723,7 @@ class FlxMath
 	{
 		final dx = (SpriteA.x + SpriteA.origin.x) - (SpriteB.x + SpriteB.origin.x);
 		final dy = (SpriteA.y + SpriteA.origin.y) - (SpriteB.y + SpriteB.origin.y);
-		return Std.int(FlxMath.vectorLength(dx, dy));
+		return Std.int(vectorLength(dx, dy));
 	}
 
 	/**
@@ -760,7 +760,7 @@ class FlxMath
 		final dx = (Sprite.x + Sprite.origin.x) - Target.x;
 		final dy = (Sprite.y + Sprite.origin.y) - Target.y;
 		Target.putWeak();
-		return Std.int(FlxMath.vectorLength(dx, dy));
+		return Std.int(vectorLength(dx, dy));
 	}
 
 	/**
@@ -798,7 +798,7 @@ class FlxMath
 	{
 		final dx = (Sprite.x + Sprite.origin.x) - FlxG.mouse.viewX;
 		final dy = (Sprite.y + Sprite.origin.y) - FlxG.mouse.viewY;
-		return Std.int(FlxMath.vectorLength(dx, dy));
+		return Std.int(vectorLength(dx, dy));
 	}
 
 	/**
@@ -834,7 +834,7 @@ class FlxMath
 	{
 		final dx = (Sprite.x + Sprite.origin.x) - Touch.viewX;
 		final dy = (Sprite.y + Sprite.origin.y) - Touch.viewY;
-		return Std.int(FlxMath.vectorLength(dx, dy));
+		return Std.int(vectorLength(dx, dy));
 	}
 
 	/**
@@ -1091,7 +1091,7 @@ class FlxMath
 	public static inline function normalize(value:Float, min:Float, max:Float)
 	{
 		final val = (value - min) / (max - min);
-		return FlxMath.bound(val, 0, 1);
+		return bound(val, 0, 1);
 	}
 
 	/**
