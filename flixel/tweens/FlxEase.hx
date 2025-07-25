@@ -222,7 +222,7 @@ class FlxEase
 
 	public static function expoInOut(t:Float):Float
 	{
-		return t < .5 ? Math.pow(2, 10 * (t * 2 - 1)) * .5 : (-Math.pow(2, -10 * (t * 2 - 1)) + 2) * .5;
+		return t == 0 ? 0 : (t == 1 ? 1 : (t < .5 ? Math.pow(2, 10 * (t * 2 - 1)) * .5 : (-Math.pow(2, -10 * (t * 2 - 1)) + 2) * .5));
 	}
 
 	public static inline function backIn(t:Float):Float
