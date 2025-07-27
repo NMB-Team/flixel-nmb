@@ -27,7 +27,8 @@ class FlxGraphicsShader extends openfl.display.GraphicsShader {
 	", true)
 	@:glFragmentHeader("
 		// Note: this is being set to false somewhere!
-		uniform bool hasTransform;
+		uniform bool isFlixelDraw;
+		#define hasTransform isFlixelDraw
 		uniform bool hasColorTransform;
 
 		vec4 transform(vec4 color, vec4 mult, vec4 offset, float alpha) {
@@ -35,12 +36,12 @@ class FlxGraphicsShader extends openfl.display.GraphicsShader {
 			return vec4(color.rgb, 1.0) * color.a * alpha;
 		}
 
-		vec4 transformIf(bool hasTransform, vec4 color, vec4 mult, vec4 offset, float alpha) {
-			return mix(color * alpha, transform(color, mult, offset, alpha), float(hasTransform));
+		vec4 transformIf(bool _isFlixelDraw, vec4 color, vec4 mult, vec4 offset, float alpha) {
+			return mix(color * alpha, transform(color, mult, offset, alpha), float(_isFlixelDraw));
 		}
 
 		vec4 applyFlixelEffects(vec4 color) {
-			if (!hasTransform && !openfl_HasColorTransform)
+			if (!isFlixelDraw && !openfl_HasColorTransform)
 				return color;
 
 			color = mix(color, vec4(0.0), float(color.a == 0.0));

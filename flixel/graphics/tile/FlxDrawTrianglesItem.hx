@@ -76,7 +76,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 			shader.colorOffset.value = null;
 		}
 
-		setParameterValue(shader.hasTransform, true);
+		setParameterValue(shader.isFlixelDraw, true);
 		setParameterValue(shader.hasColorTransform, colored || hasColorOffsets);
 
 		camera.canvas.graphics.overrideBlendMode(blend);

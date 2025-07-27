@@ -141,7 +141,7 @@ class FlxDrawQuadsItem extends FlxDrawBaseItem<FlxDrawQuadsItem>
 			shader.colorOffset.value = colorOffsets;
 		}
 
-		setParameterValue(shader.hasTransform, true);
+		setParameterValue(shader.isFlixelDraw, true);
 		setParameterValue(shader.hasColorTransform, colored || hasColorOffsets);
 
 		camera.canvas.graphics.overrideBlendMode(blend);
