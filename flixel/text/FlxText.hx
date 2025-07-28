@@ -608,8 +608,11 @@ class FlxText extends FlxSprite
 		return (textField != null) ? (textField.autoSize != TextFieldAutoSize.NONE) : false;
 	}
 
+	public var allowStop = false;
 	function set_text(Text:String):String
 	{
+		if (allowStop && text == Text) return Text;
+
 		text = Text;
 		if (textField != null)
 		{
