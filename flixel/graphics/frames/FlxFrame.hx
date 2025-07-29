@@ -816,17 +816,17 @@ class FlxFrame implements IFlxDestroyable
  */
 enum abstract FlxFrameType(ByteInt)
 {
-	var REGULAR = 0;
-	var EMPTY = 2;
-	var GLYPH = 3;
+	final REGULAR = 0;
+	final EMPTY = 2;
+	final GLYPH = 3;
 }
 
 enum abstract FlxFrameAngle(ByteInt) from ByteInt to ByteInt
 {
-	var ANGLE_0 = 0;
-	var ANGLE_90 = 90;
-	var ANGLE_NEG_90 = -90;
-	var ANGLE_270 = -90;
+	final ANGLE_0 = 0;
+	final ANGLE_90 = 90;
+	final ANGLE_NEG_90 = -90;
+	final ANGLE_270 = -90;
 }
 
 /**
@@ -836,16 +836,17 @@ enum abstract FlxFrameAngle(ByteInt) from ByteInt to ByteInt
 @:forward(put)
 abstract FlxUVRect(FlxRect) from FlxRect to flixel.util.FlxPool.IFlxPooled
 {
+	/** Left */
 	public var left(get, set):Float;
 	inline function get_left():Float { return this.x; }
 	inline function set_left(value):Float { return this.x = value; }
 
-	/** Top */
+	/** Right */
 	public var right(get, set):Float;
 	inline function get_right():Float { return this.y; }
 	inline function set_right(value):Float { return this.y = value; }
 
-	/** Right */
+	/** Top */
 	public var top(get, set):Float;
 	inline function get_top():Float { return this.width; }
 	inline function set_top(value):Float { return this.width = value; }
@@ -923,7 +924,7 @@ abstract MatrixVector(Vector<Float>)
 		ty = 0;
 	}
 
-	public inline function set(a = 1.0, b = 0.0, c = 0.0, d = 1.0, tx = 0.0, ty = 0.0)
+	public #if !hl inline #end function set(a = 1.0, b = 0.0, c = 0.0, d = 1.0, tx = 0.0, ty = 0.0)
 	{
 		set_a(a);
 		set_b(b);
@@ -936,19 +937,19 @@ abstract MatrixVector(Vector<Float>)
 
 	public inline function translate(dx:Float, dy:Float)
 	{
-		tx += dx;
-		ty += dy;
+		tx = tx + dx;
+		ty = ty + dy;
 		return this;
 	}
 
 	public inline function scale(sx:Float, sy:Float)
 	{
-		a *= sx;
-		b *= sy;
-		c *= sx;
-		d *= sy;
-		tx *= sx;
-		ty *= sy;
+		a = a * sx;
+		b = b * sy;
+		c = c * sx;
+		d = d * sy;
+		tx = tx * sx;
+		ty = ty * sy;
 		return this;
 	}
 
