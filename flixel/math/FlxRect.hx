@@ -353,10 +353,10 @@ class FlxRect implements IFlxPooled
 	 */
 	public inline function union(Rect:FlxRect):FlxRect
 	{
-		var minX:Float = Math.min(x, Rect.x);
-		var minY:Float = Math.min(y, Rect.y);
-		var maxX:Float = Math.max(right, Rect.right);
-		var maxY:Float = Math.max(bottom, Rect.bottom);
+		final minX:Float = Math.min(x, Rect.x);
+		final minY:Float = Math.min(y, Rect.y);
+		final maxX:Float = Math.max(right, Rect.right);
+		final maxY:Float = Math.max(bottom, Rect.bottom);
 
 		Rect.putWeak();
 		return set(minX, minY, maxX - minX, maxY - minY);
@@ -654,7 +654,10 @@ class FlxRect implements IFlxPooled
 	}
 }
 
-@:forward @:forward.new @:forward.variance abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled {
+@:forward
+@:forward.new
+@:forward.variance
+abstract FlxReadOnlyRect(FlxRect) from FlxRect to IFlxPooled {
 	public static var pool(get, never):IFlxPool<FlxRect>;
 	static inline function get_pool() {
 		return FlxRect.pool;

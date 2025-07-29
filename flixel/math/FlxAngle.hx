@@ -23,12 +23,12 @@ class FlxAngle
 	/**
 	 * Convert radians to degrees by multiplying it with this value.
 	 */
-	public static inline final TO_DEG:Float = 57.295779513082320876798154814105; // 180 / Math.PI;
+	public static inline final TO_DEG = 57.295779513082320876798154814105; // 180 / Math.PI;
 
 	/**
 	 * Convert degrees to radians by multiplying it with this value.
 	 */
-	public static inline final TO_RAD:Float = .017453292519943295769236907684886; // Math.PI / 180;
+	public static inline final TO_RAD = .017453292519943295769236907684886; // Math.PI / 180;
 
 	/**
 	 * Generate a sine and cosine table during compilation

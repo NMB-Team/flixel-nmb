@@ -96,8 +96,7 @@ class HTML5FrontEnd
 		{
 			return MAC;
 		}
-		else
-			return FlxPlatform.UNKNOWN;
+		return FlxPlatform.UNKNOWN;
 	}
 
 	function getOnMobile():Bool

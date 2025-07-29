@@ -562,26 +562,14 @@ class FlxGraphic implements IFlxDestroyable
 		return assetsClass != null || assetsKey != null;
 	}
 
-	public function incrementUseCount()
-	{
-		useCount++;
-	}
-
-	public function addToUseCount(count:Int)
+	public function incrementUseCount(?count = 1)
 	{
 		useCount += count;
 	}
 
-	public function decreasseToUseCount(count:Int)
+	public function decrementUseCount(?count = 1)
 	{
 		useCount -= count;
-		checkUseCount();
-	}
-
-	public function decrementUseCount()
-	{
-		useCount--;
-
 		checkUseCount();
 	}
 
@@ -623,7 +611,7 @@ class FlxGraphic implements IFlxDestroyable
 		}
 
 		#if FLX_OPENGL_AVAILABLE
-		var max:Int = FlxG.bitmap.maxTextureSize;
+		final max = FlxG.bitmap.maxTextureSize;
 		if (max > 0)
 		{
 			if (width > max || height > max)

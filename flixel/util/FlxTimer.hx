@@ -14,7 +14,11 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  *
  * Example: to create a timer that executes a function in 3 seconds
  * ```haxe
- * new FlxTimer().start(3.0, ()->{ FlxG.log.add("The FlxTimer has finished"); })
+ * new FlxTimer().start(3, Void -> FlxG.log.add("The FlxTimer has finished"));
+ * ```
+ * Or you can use `wait`, it's simple method to create FlxTimer
+ * ```haxe
+ * FlxTimer.wait(3, () -> FlxG.log.add("The FlxTimer has finished"));
  * ```
  * @see [FlxG.fixedTimestep](https://api.haxeflixel.com/flixel/FlxG.html#fixedTimestep)
  * @see [FlxG.timeScale](https://api.haxeflixel.com/flixel/FlxG.html#timeScale)

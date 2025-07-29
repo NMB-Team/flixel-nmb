@@ -80,7 +80,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 
 	public function updateSize(nameWidth:Float, windowWidth:Float):Void
 	{
-		var textWidth = windowWidth - removeButton.width - GUTTER;
+		final textWidth = windowWidth - removeButton.width - GUTTER;
 
 		nameText.width = nameWidth;
 		valueText.x = nameWidth + GUTTER;
@@ -109,7 +109,7 @@ class WatchEntry extends Sprite implements IFlxDestroyable
 	function setNameText(name:String)
 	{
 		nameText.text = name;
-		var currentWidth = nameText.textWidth + 4;
+		final currentWidth = nameText.textWidth + 4;
 		nameText.width = Math.min(currentWidth, MAX_NAME_WIDTH);
 	}
 

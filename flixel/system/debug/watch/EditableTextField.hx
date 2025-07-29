@@ -124,7 +124,7 @@ class EditableTextField extends TextField implements IFlxDestroyable
 
 	function cycleEnumValue(e:Enum<Dynamic>, modifier:Int):Void
 	{
-		var values = e.getConstructors();
+		final values = e.getConstructors();
 		var index = values.indexOf(text);
 		if (index == -1)
 			index = 0;

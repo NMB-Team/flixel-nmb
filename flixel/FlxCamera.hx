@@ -880,21 +880,20 @@ class FlxCamera extends FlxBasic
 
 			position.putWeak();
 
-			if (!_bounds.overlaps(bounds)) drawVertices.splice(drawVertices.length - verticesLength, verticesLength);
-			else {
+			if (_bounds.overlaps(bounds)) {
 				trianglesSprite.graphics.clear();
 				trianglesSprite.graphics.beginBitmapFill(graphic.bitmap, null, repeat, smoothing);
 				trianglesSprite.graphics.drawTriangles(drawVertices, indices, uvtData);
 				trianglesSprite.graphics.endFill();
 
-				if (_useBlitMatrix) _helperMatrix.copyFrom(_blitMatrix);
-				else {
+				if (_useBlitMatrix) {
 					_helperMatrix.identity();
 					_helperMatrix.translate(-viewMarginLeft, -viewMarginTop);
 					if (scaleX < initialZoom || scaleY < initialZoom) {
 						_helperMatrix.scale(scaleX, scaleY);
 					}
-				}
+				} else
+					_helperMatrix.copyFrom(_blitMatrix);
 
 				buffer.draw(trianglesSprite, _helperMatrix);
 				#if FLX_DEBUG
@@ -906,7 +905,8 @@ class FlxCamera extends FlxBasic
 					buffer.draw(FlxSpriteUtil.flashGfxSprite, _helperMatrix);
 				}
 				#end
-			}
+			} else
+				drawVertices.splice(drawVertices.length - verticesLength, verticesLength);
 
 			bounds.put();
 		} else {
@@ -1097,7 +1097,6 @@ class FlxCamera extends FlxBasic
 
 		super.destroy();
 	}
-
 
 	/**
 	 * Updates the camera scroll as well as special effects like screen-shake or fades.

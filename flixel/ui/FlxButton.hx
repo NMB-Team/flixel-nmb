@@ -125,7 +125,7 @@ class FlxButton extends FlxTypedButton<FlxText>
 /**
  * A simple button class that calls a function when clicked by the mouse.
  */
-#if !display
+#if FLX_GENERIC
 @:generic
 #end
 class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput

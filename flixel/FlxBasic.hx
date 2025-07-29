@@ -114,8 +114,7 @@ class FlxBasic implements IFlxDestroyable
 	 */
 	public function kill():Void
 	{
-		alive = false;
-		exists = false;
+		alive = exists = false;
 	}
 
 	/**
@@ -124,8 +123,7 @@ class FlxBasic implements IFlxDestroyable
 	 */
 	public function revive():Void
 	{
-		alive = true;
-		exists = true;
+		alive = exists = true;
 	}
 
 	/**

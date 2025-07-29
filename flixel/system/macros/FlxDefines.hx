@@ -8,7 +8,7 @@ import haxe.macro.Expr.Position;
 import haxe.io.Path;
 
 using StringTools;
-#if (flixel_addons >= "3.2.2")
+#if (flixel_addons >= "3.3.0")
 import flixel.addons.system.macros.FlxAddonDefines;
 #end
 
@@ -127,7 +127,7 @@ class FlxDefines
 		defineInversions();
 		defineHelperDefines();
 
-		#if (flixel_addons >= "3.2.2")
+		#if (flixel_addons >= "3.3.0")
 		flixel.addons.system.macros.FlxAddonDefines.run();
 		#end
 
@@ -326,7 +326,7 @@ class FlxDefines
 
 	static function swfVersionError(feature:String, version:String, define:UserDefines)
 	{
-		var errorMessage = '$feature only supported in Flash Player version $version or higher. '
+		final errorMessage = '$feature only supported in Flash Player version $version or higher. '
 			+ 'Define ${define.getName()} to disable this feature or add <set name="SWF_VERSION" value="$version" /> to your Project.xml.';
 
 		if (!defined("flash" + version.replace(".", "_")) && !defined(define))
