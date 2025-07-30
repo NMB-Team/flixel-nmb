@@ -1547,7 +1547,7 @@ class FlxCamera extends FlxBasic
 				color.alphaFloat *= _fxFlashAlpha;
 				fill(color);
 			} else {
-				final alpha = _fxFlashAlpha.alphaFloat * _fxFlashAlpha;
+				final alpha = _fxFlashColor.alphaFloat * _fxFlashAlpha;
 				fill(_fxFlashColor.rgb, true, alpha, canvas.graphics);
 			}
 		}
